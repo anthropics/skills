@@ -1,0 +1,136 @@
+---
+# Skills 2.0 Evaluation Configuration
+# Defines test cases for automated quality verification of ros2-engineering-skills
+#
+# Each eval runs a prompt through the skill and compares the output
+# against expected criteria. Results include:
+#   - pass_rate: percentage of criteria met
+#   - execution_time_ms: wall-clock time
+#   - token_count: approximate tokens consumed
+
+skill: ros2-engineering-skills
+version: 1.0.0
+classification: capability
+deprecation-risk: medium
+
+evals:
+  - name: qos-compatibility-analysis
+    description: >
+      Validates that the skill correctly identifies QoS incompatibilities
+      and provides actionable DDS-compliant suggestions.
+    prompt: prompts/qos-compatibility.md
+    expected: expected/qos-compatibility.md
+    criteria:
+      - id: identify-incompatibility
+        description: "Must correctly identify QoS incompatibility between BEST_EFFORT publisher and RELIABLE subscriber"
+        weight: 1.0
+      - id: explain-rxo
+        description: "Must explain DDS RxO (Request-vs-Offered) semantics"
+        weight: 0.8
+      - id: suggest-fix
+        description: "Must suggest switching subscriber to BEST_EFFORT or publisher to RELIABLE"
+        weight: 1.0
+    timeout: 60000
+    tags: [qos, dds, communication]
+
+  - name: package-scaffolding
+    description: >
+      Validates that the skill generates correct ROS 2 package structures
+      following all naming conventions and dependency declarations.
+    prompt: prompts/package-creation.md
+    expected: expected/package-creation.md
+    criteria:
+      - id: correct-structure
+        description: "Must generate valid ROS 2 package with correct directory structure"
+        weight: 1.0
+      - id: naming-conventions
+        description: "Must follow snake_case naming conventions"
+        weight: 0.8
+      - id: lifecycle-support
+        description: "Must include lifecycle node support for C++ packages"
+        weight: 0.8
+      - id: dependency-declarations
+        description: "Must declare all dependencies in package.xml format 3"
+        weight: 1.0
+    timeout: 60000
+    tags: [package, scaffolding, build]
+
+  - name: launch-file-review
+    description: >
+      Validates that the skill detects common launch file issues including
+      missing functions, deprecated keywords, and anti-patterns.
+    prompt: prompts/launch-validation.md
+    expected: expected/launch-validation.md
+    criteria:
+      - id: detect-missing-function
+        description: "Must detect missing generate_launch_description function"
+        weight: 1.0
+      - id: flag-deprecated-keywords
+        description: "Must flag deprecated keywords (node_executable, node_name)"
+        weight: 0.8
+      - id: warn-hardcoded-paths
+        description: "Must warn about hardcoded paths"
+        weight: 0.6
+      - id: identify-duplicate-names
+        description: "Must identify duplicate node names"
+        weight: 0.8
+    timeout: 60000
+    tags: [launch, validation, static-analysis]
+
+  - name: lifecycle-node-design
+    description: >
+      Validates that the skill recommends lifecycle nodes for hardware drivers
+      and correctly describes state transitions and error handling.
+    prompt: prompts/lifecycle-design.md
+    expected: expected/lifecycle-design.md
+    criteria:
+      - id: recommend-lifecycle
+        description: "Must recommend lifecycle node for hardware driver"
+        weight: 1.0
+      - id: describe-transitions
+        description: "Must describe state transitions (unconfigured -> inactive -> active)"
+        weight: 0.8
+      - id: error-handling
+        description: "Must include error handling with on_error callback"
+        weight: 0.8
+      - id: safe-shutdown
+        description: "Must implement safe shutdown in on_deactivate"
+        weight: 1.0
+    timeout: 60000
+    tags: [lifecycle, hardware, safety]
+
+  - name: rosbag2-playback-qos
+    description: >
+      Validates that the skill correctly analyzes rosbag2 metadata for QoS
+      profiles and identifies playback compatibility issues.
+    prompt: prompts/rosbag2-playback.md
+    expected: expected/rosbag2-playback.md
+    criteria:
+      - id: parse-metadata
+        description: "Must parse rosbag2 metadata for QoS profiles"
+        weight: 1.0
+      - id: transient-local-warning
+        description: "Must identify TRANSIENT_LOCAL playback issues"
+        weight: 0.8
+      - id: recommend-queue-size
+        description: "Must recommend --read-ahead-queue-size for large bags"
+        weight: 0.6
+    timeout: 60000
+    tags: [rosbag2, playback, qos]
+
+# Parity test configuration for deprecation assessment
+parity_test:
+  enabled: true
+  description: >
+    Compare skill ON vs skill OFF to measure value-add.
+    If delta drops below threshold for 3 consecutive runs,
+    the skill becomes a deprecation candidate.
+  threshold: 5.0
+  consecutive_failures_for_deprecation: 3
+  metrics:
+    - name: accuracy
+      weight: 1.0
+    - name: completeness
+      weight: 0.8
+    - name: actionability
+      weight: 0.6
