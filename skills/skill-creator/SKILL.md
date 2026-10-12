@@ -374,6 +374,8 @@ This step matters — bad eval queries lead to bad descriptions.
 
 ### Step 3: Run the optimization loop
 
+Run these commands from the `skill-creator` directory with PyYAML installed (`python -m pip install pyyaml`); `run_eval.py`, `run_loop.py`, and `improve_description.py` use it to read skill frontmatter.
+
 Tell the user: "This will take some time — I'll run the optimization loop in the background and check on it periodically."
 
 Save the eval set to the workspace, then run in the background:
