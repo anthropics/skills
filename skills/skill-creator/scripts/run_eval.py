@@ -10,13 +10,14 @@ import json
 import os
 import select
 import shutil
+import signal
 import subprocess
 import sys
 import tempfile
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
-from contextlib import contextmanager
+from contextlib import contextmanager, suppress
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
@@ -133,14 +134,14 @@ def run_single_query(
         return tool_name in TRIGGER_TOOLS and clean_name in input_text
 
     def assert_decoy_is_alone(init_event: dict) -> None:
-        registered = set(init_event.get("skills") or [])
-        registered.update(init_event.get("slash_commands") or [])
-        if skill_name in registered:
+        names = [*(init_event.get("skills") or []), *(init_event.get("slash_commands") or [])]
+        if skill_name in {name.rsplit(":", 1)[-1] for name in names}:
             raise SkillAlreadyRegistered(
                 f"{skill_name!r} is registered outside the probe root (a "
-                f"user-level ~/.claude/skills entry or a plugin). It answers "
-                f"the queries under its real name, so every trigger would be "
-                f"scored as a miss. Remove or rename that copy for the eval."
+                f"user-level ~/.claude/skills entry, a plugin, or a built-in "
+                f"command). It answers the queries under its real name, so "
+                f"every trigger would be scored as a miss. Remove or rename "
+                f"that copy for the eval."
             )
 
     with probe_root(fixture) as project_root:
@@ -178,6 +179,7 @@ def run_single_query(
             stderr=subprocess.DEVNULL,
             cwd=project_root,
             env=env,
+            start_new_session=True,
         )
 
         start_time = time.time()
@@ -188,20 +190,13 @@ def run_single_query(
         accumulated_json = ""
 
         try:
-            while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
+            exited = False
+            while not exited and time.time() - start_time < timeout:
                 ready, _, _ = select.select([process.stdout], [], [], 1.0)
                 if not ready:
                     continue
-
                 chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
-                    break
+                exited = not chunk
                 buffer += chunk.decode("utf-8", errors="replace")
 
                 while "\n" in buffer:
@@ -260,9 +255,9 @@ def run_single_query(
                         return False
         finally:
             # Clean up process on any exit path (return, exception, timeout)
-            if process.poll() is None:
-                process.kill()
-                process.wait()
+            with suppress(ProcessLookupError):
+                os.killpg(process.pid, signal.SIGKILL)
+            process.wait()
 
         return False
 
