@@ -48,6 +48,14 @@ FIXTURE_HELP = (
 )
 
 
+def _remove_entry(path: Path) -> None:
+    """Remove path without following a symlink at its final component."""
+    if path.is_symlink() or path.is_file():
+        path.unlink()
+    elif path.is_dir():
+        shutil.rmtree(path)
+
+
 @contextmanager
 def probe_root(fixture: Path | None = None):
     """Yield a private project root for one probe run, removed on exit.
@@ -81,11 +89,12 @@ def probe_root(fixture: Path | None = None):
             # would re-register real skills inside the probe root, and the
             # real name outcompetes the decoy: the exact false-miss failure
             # this isolation exists to prevent.
-            for leaked in (root / ".claude" / "skills", root / ".claude" / "commands"):
-                if leaked.is_symlink():
-                    leaked.unlink()
-                elif leaked.is_dir():
-                    shutil.rmtree(leaked)
+            claude_dir = root / ".claude"
+            if claude_dir.is_symlink() or not claude_dir.is_dir():
+                _remove_entry(claude_dir)
+            else:
+                _remove_entry(claude_dir / "skills")
+                _remove_entry(claude_dir / "commands")
         (root / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
         yield root
     finally:
