@@ -35,7 +35,8 @@ class BoundingBoxExitTests(unittest.TestCase):
 
     def test_invalid_boxes_exit_nonzero(self):
         result = self.run_checker([20, 10, 40, 25])
-        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.returncode, 1)
+        self.assertNotIn("Traceback", result.stdout + result.stderr)
         self.assertIn("FAILURE: intersection", result.stdout)
 
     def test_valid_boxes_exit_zero(self):
