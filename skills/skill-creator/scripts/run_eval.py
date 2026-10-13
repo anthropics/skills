@@ -22,8 +22,9 @@ from pathlib import Path
 from scripts.utils import parse_skill_md
 
 DEFAULT_TIMEOUT = 120
-
 MAX_PROBE_TURNS = 4
+TRIGGER_TOOLS = ("Skill", "Read")
+
 
 class SkillAlreadyRegistered(RuntimeError):
     """The skill under test is registered outside the probe root.
@@ -45,12 +46,12 @@ FIXTURE_HELP = (
 )
 
 
-def _remove_entry(path: Path) -> None:
-    """Remove path without following a symlink at its final component."""
-    if path.is_symlink() or path.is_file():
-        path.unlink()
-    elif path.is_dir():
-        shutil.rmtree(path)
+def fixture_dir(value: str) -> Path:
+    """Argparse type for --fixture: an existing directory."""
+    path = Path(value)
+    if not path.is_dir():
+        raise argparse.ArgumentTypeError(f"fixture directory not found: {path}")
+    return path
 
 
 @contextmanager
@@ -71,30 +72,33 @@ def probe_root(fixture: Path | None = None):
         fixture: Directory to copy, for skills whose queries need context to be
             answerable (a git repo, a project tree). Copied rather than used in
             place so parallel probes cannot collide and the original stays
-            untouched. Any .claude/skills or .claude/commands the fixture
-            carries is stripped from the copy, so the decoy stays the only
-            registered skill; a symlinked .claude is dropped rather than
-            followed. Other symlinks are copied as links, so a probe writing
-            through one reaches its target. When omitted the probe gets a
-            bare directory.
+            untouched. The fixture's .claude/skills and .claude/commands are
+            not copied, so it cannot register a competing copy of the skill;
+            a .claude that is a symlink or a file is not copied either. Other
+            symlinks are copied as links, so a probe writing through one
+            reaches its target. When omitted the probe gets a bare directory.
 
     Yields:
         Path to a temporary directory containing .claude/commands/.
     """
-    root = Path(tempfile.mkdtemp(prefix="skill-eval-"))
-    try:
+    with tempfile.TemporaryDirectory(prefix="skill-eval-", ignore_cleanup_errors=True) as tmp:
+        root = Path(tmp)
         if fixture is not None:
-            shutil.copytree(fixture, root, symlinks=True, dirs_exist_ok=True)
-            claude_dir = root / ".claude"
-            if claude_dir.is_symlink() or not claude_dir.is_dir():
-                _remove_entry(claude_dir)
-            else:
-                _remove_entry(claude_dir / "skills")
-                _remove_entry(claude_dir / "commands")
+            fixture_claude = fixture / ".claude"
+
+            def skip_registrations(directory: str, names: list[str]) -> set[str]:
+                current = Path(directory)
+                if current == fixture and (fixture_claude.is_symlink() or fixture_claude.is_file()):
+                    return {".claude"}
+                if current == fixture_claude:
+                    return {"skills", "commands"}
+                return set()
+
+            shutil.copytree(
+                fixture, root, symlinks=True, dirs_exist_ok=True, ignore=skip_registrations
+            )
         (root / ".claude" / "commands").mkdir(parents=True, exist_ok=True)
         yield root
-    finally:
-        shutil.rmtree(root, ignore_errors=True)
 
 
 def run_single_query(
@@ -126,7 +130,7 @@ def run_single_query(
     clean_name = f"{skill_name}-skill-{unique_id}"
 
     def is_trigger(tool_name: str | None, input_text: str) -> bool:
-        return tool_name in ("Skill", "Read") and clean_name in input_text
+        return tool_name in TRIGGER_TOOLS and clean_name in input_text
 
     def assert_decoy_is_alone(init_event: dict) -> None:
         registered = set(init_event.get("skills") or [])
@@ -222,11 +226,13 @@ def run_single_query(
                         if se_type == "content_block_start":
                             cb = se.get("content_block", {})
                             pending_tool_name = (
-                                cb.get("name", "") if cb.get("type") == "tool_use" else None
+                                cb.get("name")
+                                if cb.get("type") == "tool_use" and cb.get("name") in TRIGGER_TOOLS
+                                else None
                             )
                             accumulated_json = ""
 
-                        elif se_type == "content_block_delta":
+                        elif se_type == "content_block_delta" and pending_tool_name:
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
@@ -301,6 +307,7 @@ def run_eval(
             try:
                 query_triggers[query].append(future.result())
             except SkillAlreadyRegistered:
+                executor.shutdown(wait=False, cancel_futures=True)
                 raise
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
@@ -345,7 +352,7 @@ def main():
     parser.add_argument("--description", default=None, help="Override description to test")
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="Timeout per query in seconds")
-    parser.add_argument("--fixture", default=None, help=FIXTURE_HELP)
+    parser.add_argument("--fixture", type=fixture_dir, default=None, help=FIXTURE_HELP)
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
@@ -361,13 +368,8 @@ def main():
 
     name, original_description, content = parse_skill_md(skill_path)
     description = args.description or original_description
-    fixture = Path(args.fixture) if args.fixture else None
-    if fixture and not fixture.is_dir():
-        print(f"Error: fixture directory not found: {fixture}", file=sys.stderr)
-        sys.exit(1)
-
     if args.verbose:
-        print(f"Fixture: {fixture or 'none (bare temp dir per probe)'}", file=sys.stderr)
+        print(f"Fixture: {args.fixture or 'none (bare temp dir per probe)'}", file=sys.stderr)
         print(f"Evaluating: {description}", file=sys.stderr)
 
     try:
@@ -377,7 +379,7 @@ def main():
             description=description,
             num_workers=args.num_workers,
             timeout=args.timeout,
-            fixture=fixture,
+            fixture=args.fixture,
             runs_per_query=args.runs_per_query,
             trigger_threshold=args.trigger_threshold,
             model=args.model,

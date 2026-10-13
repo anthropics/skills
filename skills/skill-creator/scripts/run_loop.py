@@ -17,7 +17,7 @@ from pathlib import Path
 
 from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
-from scripts.run_eval import DEFAULT_TIMEOUT, FIXTURE_HELP, SkillAlreadyRegistered, run_eval
+from scripts.run_eval import DEFAULT_TIMEOUT, FIXTURE_HELP, SkillAlreadyRegistered, fixture_dir, run_eval
 from scripts.utils import parse_skill_md
 
 
@@ -248,7 +248,7 @@ def main():
     parser.add_argument("--description", default=None, help="Override starting description")
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
     parser.add_argument("--timeout", type=int, default=DEFAULT_TIMEOUT, help="Timeout per query in seconds")
-    parser.add_argument("--fixture", default=None, help=FIXTURE_HELP)
+    parser.add_argument("--fixture", type=fixture_dir, default=None, help=FIXTURE_HELP)
     parser.add_argument("--max-iterations", type=int, default=5, help="Max improvement iterations")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
@@ -267,11 +267,6 @@ def main():
         sys.exit(1)
 
     name, _, _ = parse_skill_md(skill_path)
-
-    fixture = Path(args.fixture) if args.fixture else None
-    if fixture and not fixture.is_dir():
-        print(f"Error: fixture directory not found: {fixture}", file=sys.stderr)
-        sys.exit(1)
 
     # Set up live report path
     if args.report != "none":
@@ -311,7 +306,7 @@ def main():
             verbose=args.verbose,
             live_report_path=live_report_path,
             log_dir=log_dir,
-            fixture=fixture,
+            fixture=args.fixture,
         )
     except SkillAlreadyRegistered as e:
         print(f"Error: {e}", file=sys.stderr)
