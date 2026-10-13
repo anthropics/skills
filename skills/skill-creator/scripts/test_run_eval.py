@@ -1,5 +1,9 @@
 """Regression tests for trigger evaluation input handling."""
 
+import json
+import subprocess
+import sys
+import tempfile
 import unittest
 from concurrent.futures import Future
 from pathlib import Path
@@ -55,6 +59,25 @@ class RunEvalTests(unittest.TestCase):
         self.assertEqual(output["summary"]["total"], 2)
         self.assertEqual(CompletedExecutor.submitted, 2)
 
+
+    def test_cli_validation_error_has_no_traceback(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory)
+            (path / "SKILL.md").write_text("---\nname: synthetic\ndescription: synthetic\n---\ncontent\n")
+            eval_file = path / "eval.json"
+            eval_file.write_text(json.dumps([{"query": "same prompt", "should_trigger": True}, {"query": "same prompt", "should_trigger": False}]))
+            root = Path(__file__).resolve().parent.parent
+            for module in ("run_eval", "run_loop"):
+                with self.subTest(module=module):
+                    args = [sys.executable, "-m", "scripts." + module,
+                            "--eval-set", str(eval_file), "--skill-path", str(path)]
+                    if module == "run_loop":
+                        args += ["--model", "unused", "--report", "none", "--holdout", "0"]
+                    result = subprocess.run(args, cwd=root, capture_output=True, text=True)
+                    self.assertEqual(result.returncode, 1)
+                    self.assertIn("Error: Duplicate eval query", result.stderr)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertEqual(result.stdout, "")
 
 if __name__ == "__main__":
     unittest.main()
