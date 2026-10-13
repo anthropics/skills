@@ -44,7 +44,8 @@ class SkillAlreadyRegistered(RuntimeError):
 FIXTURE_HELP = (
     "Directory copied in as each probe's sandbox (default: a bare temp dir). "
     "Point it at a fixture that makes the queries answerable when the skill "
-    "needs context, e.g. a throwaway git repo. The original stays untouched."
+    "needs context, e.g. a throwaway git repo. The original stays untouched, "
+    "except through symlinks inside it, which are copied as links."
 )
 
 
@@ -76,7 +77,10 @@ def probe_root(fixture: Path | None = None):
             place so parallel probes cannot collide and the original stays
             untouched. Any .claude/skills or .claude/commands the fixture
             carries is stripped from the copy, so the decoy stays the only
-            registered skill. When omitted the probe gets a bare directory.
+            registered skill; a symlinked .claude is dropped rather than
+            followed. Other symlinks are copied as links, so a probe writing
+            through one reaches its target. When omitted the probe gets a
+            bare directory.
 
     Yields:
         Path to a temporary directory containing .claude/commands/.
