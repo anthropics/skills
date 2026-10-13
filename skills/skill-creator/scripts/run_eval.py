@@ -286,17 +286,21 @@ def main():
     if args.verbose:
         print(f"Evaluating: {description}", file=sys.stderr)
 
-    output = run_eval(
-        eval_set=eval_set,
-        skill_name=name,
-        description=description,
-        num_workers=args.num_workers,
-        timeout=args.timeout,
-        project_root=project_root,
-        runs_per_query=args.runs_per_query,
-        trigger_threshold=args.trigger_threshold,
-        model=args.model,
-    )
+    try:
+        output = run_eval(
+            eval_set=eval_set,
+            skill_name=name,
+            description=description,
+            num_workers=args.num_workers,
+            timeout=args.timeout,
+            project_root=project_root,
+            runs_per_query=args.runs_per_query,
+            trigger_threshold=args.trigger_threshold,
+            model=args.model,
+        )
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(1)
 
     if args.verbose:
         summary = output["summary"]
