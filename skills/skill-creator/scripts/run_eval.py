@@ -23,10 +23,6 @@ from scripts.utils import parse_skill_md
 
 DEFAULT_TIMEOUT = 120
 
-# Triggering is an opening move: Claude orients itself (a pwd, an ls) for a
-# turn or two, then consults the skill. A probe that hasn't reached for it
-# within this many assistant turns is a miss; letting it continue means every
-# non-triggering run executes the entire queried task.
 MAX_PROBE_TURNS = 4
 
 class SkillAlreadyRegistered(RuntimeError):
@@ -89,10 +85,6 @@ def probe_root(fixture: Path | None = None):
     try:
         if fixture is not None:
             shutil.copytree(fixture, root, symlinks=True, dirs_exist_ok=True)
-            # A fixture carrying its own .claude/skills or .claude/commands
-            # would re-register real skills inside the probe root, and the
-            # real name outcompetes the decoy: the exact false-miss failure
-            # this isolation exists to prevent.
             claude_dir = root / ".claude"
             if claude_dir.is_symlink() or not claude_dir.is_dir():
                 _remove_entry(claude_dir)
@@ -175,8 +167,6 @@ def run_single_query(
         # programmatic subprocess usage is safe.
         env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
 
-        # Without an explicit stdin the CLI waits several seconds on every
-        # probe for piped input that never arrives.
         process = subprocess.Popen(
             cmd,
             stdin=subprocess.DEVNULL,
@@ -311,8 +301,6 @@ def run_eval(
             try:
                 query_triggers[query].append(future.result())
             except SkillAlreadyRegistered:
-                # Scoring this as a failed probe would report the silent 0%
-                # this check exists to catch.
                 raise
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
@@ -375,9 +363,6 @@ def main():
     description = args.description or original_description
     fixture = Path(args.fixture) if args.fixture else None
     if fixture and not fixture.is_dir():
-        # copytree failures inside the pool are caught per probe and scored
-        # False, so a typo'd path would report a plausible 0/N instead of
-        # failing loudly here.
         print(f"Error: fixture directory not found: {fixture}", file=sys.stderr)
         sys.exit(1)
 

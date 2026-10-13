@@ -270,9 +270,6 @@ def main():
 
     fixture = Path(args.fixture) if args.fixture else None
     if fixture and not fixture.is_dir():
-        # copytree failures inside the pool are caught per probe and scored
-        # False, so a typo'd path would report a plausible 0/N instead of
-        # failing loudly here.
         print(f"Error: fixture directory not found: {fixture}", file=sys.stderr)
         sys.exit(1)
 
