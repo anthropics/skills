@@ -117,5 +117,28 @@ class EvalErrorTests(unittest.TestCase):
         self.assertIn("accuracy=0%", stderr.getvalue())
 
 
+    def test_report_accepts_explicit_null_holdout_results(self):
+        data = {"holdout": 0, "history": [{
+            "iteration": 1, "description": "description",
+            "train_passed": 1, "train_total": 1,
+            "train_results": [{"query": "synthetic", "should_trigger": True,
+                               "triggers": 1, "runs": 1}],
+            "test_results": None,
+        }]}
+        report = generate_html(data)
+        self.assertIn('<span class="score score-good">1/1</span>', report)
+        self.assertNotIn('class="test-col positive-col"', report)
+
+    def test_report_does_not_treat_invalid_falsy_results_as_no_holdout(self):
+        for invalid in (0, False):
+            with self.subTest(invalid=invalid):
+                data = {"history": [{
+                    "iteration": 1, "description": "description",
+                    "train_passed": 0, "train_total": 0,
+                    "train_results": [], "test_results": invalid,
+                }]}
+                with self.assertRaises(TypeError):
+                    generate_html(data)
+
 if __name__ == "__main__":
     unittest.main()
