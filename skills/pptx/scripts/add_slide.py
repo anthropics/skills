@@ -193,12 +193,54 @@ def _register_slide(unpacked_dir: Path, dest: str, source_desc: str, after_rid: 
     rid = _add_to_presentation_rels(unpacked_dir, dest)
     slide_id = _get_next_slide_id(unpacked_dir)
     pos, total = _insert_into_sld_id_lst(unpacked_dir, slide_id, rid, after_rid)
+    _insert_into_section_lst(unpacked_dir, slide_id, after_rid)
 
     print(f"Created ppt/slides/{dest} from {source_desc}")
     print(
         f'Inserted <p:sldId id="{slide_id}" r:id="{rid}"/> into <p:sldIdLst> '
         f"at position {pos} of {total}"
     )
+
+
+def _insert_into_section_lst(unpacked_dir: Path, slide_id: int, after_rid: str | None = None) -> None:
+    pres_path = unpacked_dir / "ppt" / "presentation.xml"
+    if not pres_path.exists():
+        return
+    xml = pres_path.read_text(encoding="utf-8")
+    if "p14:sectionLst" not in xml:
+        return
+
+    entry = f'<p14:sldId id="{slide_id}"/>'
+    inserted = False
+
+    if after_rid:
+        after_m = re.search(rf'<p:sldId\b[^>]*\bid="(\d+)"[^>]*r:id="{re.escape(after_rid)}"', xml)
+        if not after_m:
+            after_m = re.search(rf'<p:sldId\b[^>]*r:id="{re.escape(after_rid)}"[^>]*\bid="(\d+)"', xml)
+        if after_m:
+            after_slide_id = after_m.group(1)
+            m = re.search(rf'<p14:sldId\b[^>]*\bid="{re.escape(after_slide_id)}"[^>]*/>', xml)
+            if m:
+                xml = xml[:m.end()] + f"\n            {entry}" + xml[m.end():]
+                inserted = True
+
+    if not inserted:
+        r_matches = list(re.finditer(r"</p14:sldIdLst>", xml))
+        if r_matches:
+            last_end = r_matches[-1].start()
+            xml = xml[:last_end] + f"  {entry}\n          " + xml[last_end:]
+            inserted = True
+        elif re.search(r"<p14:sldIdLst\s*/>", xml):
+            xml = re.sub(
+                r"<p14:sldIdLst\s*/>",
+                f"<p14:sldIdLst>\n            {entry}\n          </p14:sldIdLst>",
+                xml,
+                count=1,
+            )
+            inserted = True
+
+    if inserted:
+        pres_path.write_text(xml, encoding="utf-8")
 
 
 def _add_to_content_types(unpacked_dir: Path, dest: str) -> None:
