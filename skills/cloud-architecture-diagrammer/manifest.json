@@ -1,0 +1,37 @@
+{
+  "files": {
+    "LICENSE.txt": "bc6b3af2f331cbc7fb0da1344efb2cbe5877a31498b4d70dbc7000f3405a1362",
+    "SKILL.md": "99e6eb5aa0c36ce3068fd27d1d7a45ac3711099dfaf0530010929a10008e1a2e",
+    "references/common-methodology.md": "b1bc17bca04bbee6eaf1642d39467cccf4ce4b7db24a160bc1b68c9da39c7803",
+    "references/domain-contract.json": "83228fcb8f293d2d81ab2ea6e200cf6ea66620beafc2db2d728292bf8ad84410",
+    "references/icon-policy.md": "e8b3ec43a68e58b76cc1f699c96a22c439bfe413919fc0bdfd4b54de2b7a6607",
+    "references/topology-workflow.md": "e047fdae31f278dfb26179aa7666dd6cd3afc0124e1f5ac51458adb673323f9f",
+    "scripts/diagram_renderer.py": "f6ff369ba8e87611a9aedf5450086f3eca7a109f5da59c890cd6f15b4c1ec033",
+    "scripts/fonts/lato/Lato-Regular.ttf": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
+    "scripts/fonts/lato/OFL.txt": "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423",
+    "scripts/fonts/lato/provenance.json": "0a39c534c037b0be50e826c304585dc3e6983dc4efb303ac999e1462f49ce051",
+    "scripts/icon-policy.json": "38f7cce62cd171bd5660edba4b69c4d6f6606a2779cba748c68c2012101326ed",
+    "scripts/model.py": "9448180b0779c0edbcb0486ee2640744eeb51c588ee9c0933a8ea1618af70585",
+    "scripts/publication.py": "bc8357860edbf09f282c3854b3a0f9a5dc7f6711085cb61e7577d1de7a51ba08",
+    "scripts/recalculate.py": "56cc6fa58b0af1f3b71524d29dc03e29ff30fe9369c19862fdc72a669ca43ece",
+    "scripts/workbook-contract.json": "2319bde2a7bf3669dcf9bb65d041b4de09fb57fa15c5ad9be496c2fbb604f34f",
+    "scripts/workbook_builder.py": "38e3ac68e85de58e15cc482c8652f0529b8b8174f506f0354e788b3bdf554196",
+    "scripts/workbook_validator.py": "3b314620f56f26482e4857148e6347adf99f0e79ad14a28bc1de6d60c3b718aa"
+  },
+  "generated_files": [
+    "LICENSE.txt",
+    "references/common-methodology.md",
+    "scripts/diagram_renderer.py",
+    "scripts/fonts/lato/Lato-Regular.ttf",
+    "scripts/fonts/lato/OFL.txt",
+    "scripts/fonts/lato/provenance.json",
+    "scripts/icon-policy.json",
+    "scripts/model.py",
+    "scripts/publication.py",
+    "scripts/recalculate.py",
+    "scripts/workbook-contract.json",
+    "scripts/workbook_builder.py",
+    "scripts/workbook_validator.py"
+  ],
+  "version": 1
+}
