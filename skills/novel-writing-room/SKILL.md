@@ -191,6 +191,7 @@ text that does contain defects, run the demonstration fixtures:
 taxonomy - seven injected defects and one planted false positive in a single public-domain passage -
 and [references/sample-multivoice-passage.md](references/sample-multivoice-passage.md) demonstrates
 the per-voice and frame-knowledge rules on a two-voice excerpt. Both carry answer keys.
+For a worked example on a complete novel, read [references/case-study-the-saga-for-donna.md](references/case-study-the-saga-for-donna.md).
 
 ## Drafting mode - reading a book that is not finished yet
 
