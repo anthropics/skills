@@ -25,6 +25,9 @@ import defusedxml.minidom
 from office.helpers import SLIDE_REL_TYPE, opc_target, rels_source_part
 
 
+REL_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+
+
 def _slide_rids(pres_rels_path: Path, unpacked_dir: Path) -> dict[str, str]:
     source_part = rels_source_part(pres_rels_path, unpacked_dir)
     rels_dom = defusedxml.minidom.parse(str(pres_rels_path))
@@ -61,10 +64,17 @@ def get_slides_in_sldidlst(unpacked_dir: Path) -> set[str]:
     for el in pres_dom.getElementsByTagName("*"):
         tag = el.tagName.split(":")[-1]
         if tag == "sldId":
-            rid = el.getAttribute("r:id")
+            rid = el.getAttributeNS(REL_NS, "id")
+            if not rid:
+                rid = el.getAttribute("r:id")
             if not rid:
                 for attr in el.attributes.values():
-                    if attr.name.endswith(":id") and attr.name != "id":
+                    if attr.namespaceURI == REL_NS and (attr.localName == "id" or attr.name.endswith(":id")):
+                        rid = attr.value
+                        break
+            if not rid:
+                for attr in el.attributes.values():
+                    if attr.name == "r:id" or (attr.name.endswith(":id") and attr.name != "id" and not attr.namespaceURI):
                         rid = attr.value
                         break
             if rid:

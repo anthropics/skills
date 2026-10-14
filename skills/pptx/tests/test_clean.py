@@ -151,3 +151,44 @@ def test_zero_matching_slides_refuses_to_clean(tmp_path):
         remove_orphaned_slides(tmp_path)
 
     assert slide1.exists()
+
+
+def test_namespace_collision_resolves_relationship_id(tmp_path):
+    """Ensure rel:id is resolved by relationship namespace over ignorable ext:id attributes."""
+    ppt_dir = tmp_path / "ppt"
+    slides_dir = ppt_dir / "slides"
+    slides_dir.mkdir(parents=True)
+    slide1 = slides_dir / "slide1.xml"
+    slide1.write_text("<xml/>", encoding="utf-8")
+    orphan = slides_dir / "slide2.xml"
+    orphan.write_text("<xml/>", encoding="utf-8")
+
+    rels_dir = ppt_dir / "_rels"
+    rels_dir.mkdir(parents=True)
+    rels_content = """<?xml version="1.0" encoding="UTF-8"?>
+    <Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+        <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide1.xml"/>
+        <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide2.xml"/>
+    </Relationships>"""
+    (rels_dir / "presentation.xml.rels").write_text(rels_content, encoding="utf-8")
+
+    pres_content = """<?xml version="1.0" encoding="UTF-8"?>
+    <p:presentation xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"
+                    xmlns:rel="http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+                    xmlns:ext="http://example.com/ext"
+                    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                    mc:Ignorable="ext">
+        <p:sldIdLst>
+            <p:sldId id="256" ext:id="rId2" rel:id="rId1"/>
+        </p:sldIdLst>
+    </p:presentation>"""
+    (ppt_dir / "presentation.xml").write_text(pres_content, encoding="utf-8")
+
+    referenced = get_slides_in_sldidlst(tmp_path)
+    assert referenced == {"slide1.xml"}
+
+    removed = remove_orphaned_slides(tmp_path)
+    assert slide1.exists()
+    assert not orphan.exists()
+    assert str(Path("ppt/slides/slide2.xml")) in [str(Path(r)) for r in removed]
+
