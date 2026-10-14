@@ -69,7 +69,56 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if not self.validate_slides():
             all_valid = False
 
+        if not self.validate_sections():
+            all_valid = False
+
         return all_valid
+
+    def validate_sections(self) -> bool:
+        pres_path = self.unpacked_dir / "ppt" / "presentation.xml"
+        if not pres_path.exists():
+            return True
+        xml = pres_path.read_text(encoding="utf-8")
+        if "p14:sectionLst" not in xml:
+            return True
+
+        import re
+
+        sld_ids = set(re.findall(r'<p:sldId[^>]*\bid="(\d+)"', xml))
+        section_lst_match = re.search(r'<p14:sectionLst\b[^>]*>(.*?)</p14:sectionLst>', xml, re.DOTALL)
+        if not section_lst_match:
+            return True
+        section_xml = section_lst_match.group(1)
+        section_sld_ids = set(re.findall(r'<p14:sldId[^>]*\bid="(\d+)"', section_xml))
+
+        orphaned = section_sld_ids - sld_ids
+        missing = sld_ids - section_sld_ids
+
+        empty_sections = []
+        for sm in re.finditer(r'<p14:section\b([^>]*)>(.*?)</p14:section>', section_xml, re.DOTALL):
+            attrs, body = sm.group(1), sm.group(2)
+            name_m = re.search(r'name="([^"]+)"', attrs)
+            sec_name = name_m.group(1) if name_m else "unnamed"
+            if not re.search(r'<p14:sldId\b', body):
+                empty_sections.append(sec_name)
+
+        problems = []
+        if orphaned:
+            problems.append(f"Section list references {len(orphaned)} deleted slide id(s): {sorted(orphaned)}")
+        if missing:
+            problems.append(f"Section list omits {len(missing)} slide id(s) present in <p:sldIdLst>: {sorted(missing)}")
+        if empty_sections:
+            problems.append(f"Found {len(empty_sections)} empty section(s) with no slides: {empty_sections}")
+
+        if problems:
+            print(f"FAILED - Found {len(problems)} section problem(s) in ppt/presentation.xml:")
+            for p in problems:
+                print(f"  {p}")
+            return False
+
+        if self.verbose:
+            print("PASSED - Section list is in sync with <p:sldIdLst>")
+        return True
 
     def _package_map(self) -> dict:
         wanted = []
