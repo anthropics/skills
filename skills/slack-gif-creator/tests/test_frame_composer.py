@@ -17,8 +17,10 @@ class CenteredTextTests(unittest.TestCase):
         native = background.copy()
         draw = ImageDraw.Draw(native)
         font = ImageFont.load_default()
-        draw.text((0, 0), text, font=font, fill="black")
-        caption = native.crop(draw.textbbox((0, 0), text, font=font))
+        # Leave padding so negative font bearings are not clipped by the canvas.
+        native_position = (32, 32)
+        draw.text(native_position, text, font=font, fill="black")
+        caption = native.crop(draw.textbbox(native_position, text, font=font))
         expected = background.copy()
         expected.paste(caption, (
             (expected.width - caption.width + 1) // 2,
@@ -31,6 +33,11 @@ class CenteredTextTests(unittest.TestCase):
 
     def test_centers_multiline_caption(self):
         self.assert_text_centered("Hello\nSlack")
+
+    def test_centers_text_with_negative_bearings(self):
+        for text in ("s", "x", ","):
+            with self.subTest(text=text):
+                self.assert_text_centered(text)
 
 
 if __name__ == "__main__":
