@@ -1,6 +1,6 @@
 # Guide d'utilisation de Cloud Estimation
 
-Ce guide accompagne la [suite et ses bundles](../skill-updates/2026-10-07/cloud-estimation-suite/README.md).
+Ce guide accompagne la [suite et ses bundles](../cloud-estimation-suite/README.md).
 Consultez aussi le [guide anglais](cloud-estimation-guide.md).
 
 ## Pourquoi utiliser la suite
@@ -28,7 +28,7 @@ de service. Une option alternative ne s'ajoute pas à une autre dans un budget.
 Un prix inconnu reste « à chiffrer » et rend les totaux concernés incomplets.
 Une section sans objet porte `Non applicable` et sa raison ; aucun onglet n'est
 supprimé. Les douze onglets sont décrits dans « Lire et contrôler le XLSX ».
-Le [contrat d'entrée commun](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-estimation-orchestrator/references/intake.md)
+Le [contrat d'entrée commun](../skills/cloud-estimation-orchestrator/references/intake.md)
 précise le modèle et les interfaces de génération.
 
 ## Choisir le bon skill
@@ -41,28 +41,35 @@ selon les inconnues qui changent le résultat.
 
 | Skill | Utiliser quand | Pourquoi | Entrées minimales | Résultat distinctif |
 |---|---|---|---|---|
-| [`cloud-estimation-orchestrator`](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-estimation-orchestrator/SKILL.md) | Plusieurs domaines ou estimations existantes | Éviter les doublons et contradictions | Périmètre, inventaire, estimations, sources, contraintes | Un modèle consolidé avec un propriétaire par tâche |
-| [`infra-work-estimator`](../skill-updates/2026-10-07/cloud-estimation-suite/infra-work-estimator/SKILL.md) | Travaux d'infrastructure | Chiffrer le travail restant | Environnements, état actuel/cible, réseaux, services, couverture existante | JH bruts, couverts et nets avec dépendances |
-| [`cloud-architecture-advisor`](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-architecture-advisor/SKILL.md) | Choix d'hébergement | Comparer pertinence et responsabilité opérationnelle | Charge, croissance, disponibilité, RTO/RPO, équipe | Décision d'architecture et alternatives rejetées |
-| [`kubernetes-architect`](../skill-updates/2026-10-07/cloud-estimation-suite/kubernetes-architect/SKILL.md) | Pertinence ou conception Kubernetes | Rendre explicite la charge de plateforme | Besoins de cluster, charge, isolation, équipe, reprise | Justification de Kubernetes ou `Non applicable` |
-| [`cicd-devsecops-estimator`](../skill-updates/2026-10-07/cloud-estimation-suite/cicd-devsecops-estimator/SKILL.md) | Chaîne de build et livraison | Chiffrer promotion, contrôles et rollback | Dépôts, pipeline existant, environnements, runners, contrôles | Tâches et preuves de livraison sécurisée |
-| [`server-hardening-estimator`](../skill-updates/2026-10-07/cloud-estimation-suite/server-hardening-estimator/SKILL.md) | Sécurité des hôtes | Identifier les contrôles et leur maintien | Inventaire, OS, exposition, accès, patching, sauvegardes | Baseline de durcissement et preuves de restauration |
-| [`hosting-capacity-simulator`](../skill-updates/2026-10-07/cloud-estimation-suite/hosting-capacity-simulator/SKILL.md) | Dimensionnement ou surcharge | Distinguer mesures et hypothèses | Charge/pics, CPU, mémoire, stockage, IOPS, débit, concurrence | Sensibilités, plafonds et réserve après panne |
-| [`cloud-provider-selector`](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-provider-selector/SKILL.md) | Comparaison de fournisseurs | Comparer des services admissibles à périmètre égal | Architecture, régions, critères, prix datés, horizon | Scores justifiés et TCO sur trois ans |
-| [`finops-optimizer`](../skill-updates/2026-10-07/cloud-estimation-suite/finops-optimizer/SKILL.md) | Optimisation d'une plateforme existante | Étayer économies et réversibilité | Facturation autorisée, métriques, période, couverture, pics | Économies prévisionnelles ou mesurées, effort et retour |
-| [`cloud-migration-estimator`](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-migration-estimator/SKILL.md) | Transition source vers cible | Couvrir intégrité, bascule et retour arrière | Inventaire source/cible, volumes, dépendances, fenêtre, RTO/RPO | Phases, répétition, cutover, rollback et hypercare |
-| [`cloud-architecture-diagrammer`](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-architecture-diagrammer/SKILL.md) | Inventaire et flux à représenter | Garder diagramme et classeur cohérents | IDs des composants, environnements, flux prouvés, inconnues | Diagramme intégré avec registre des composants et flux |
+| [`cloud-estimation-orchestrator`](../skills/cloud-estimation-orchestrator/SKILL.md) | Plusieurs domaines ou estimations existantes | Éviter les doublons et contradictions | Périmètre, inventaire, estimations, sources, contraintes | Un modèle consolidé avec un propriétaire par tâche |
+| [`infra-work-estimator`](../skills/infra-work-estimator/SKILL.md) | Travaux d'infrastructure | Chiffrer le travail restant | Environnements, état actuel/cible, réseaux, services, couverture existante | JH bruts, couverts et nets avec dépendances |
+| [`cloud-architecture-advisor`](../skills/cloud-architecture-advisor/SKILL.md) | Choix d'hébergement | Comparer pertinence et responsabilité opérationnelle | Charge, croissance, disponibilité, RTO/RPO, équipe | Décision d'architecture et alternatives rejetées |
+| [`kubernetes-architect`](../skills/kubernetes-architect/SKILL.md) | Pertinence ou conception Kubernetes | Rendre explicite la charge de plateforme | Besoins de cluster, charge, isolation, équipe, reprise | Justification de Kubernetes ou `Non applicable` |
+| [`cicd-devsecops-estimator`](../skills/cicd-devsecops-estimator/SKILL.md) | Chaîne de build et livraison | Chiffrer promotion, contrôles et rollback | Dépôts, pipeline existant, environnements, runners, contrôles | Tâches et preuves de livraison sécurisée |
+| [`server-hardening-estimator`](../skills/server-hardening-estimator/SKILL.md) | Sécurité des hôtes | Identifier les contrôles et leur maintien | Inventaire, OS, exposition, accès, patching, sauvegardes | Baseline de durcissement et preuves de restauration |
+| [`hosting-capacity-simulator`](../skills/hosting-capacity-simulator/SKILL.md) | Dimensionnement ou surcharge | Distinguer mesures et hypothèses | Charge/pics, CPU, mémoire, stockage, IOPS, débit, concurrence | Sensibilités, plafonds et réserve après panne |
+| [`cloud-provider-selector`](../skills/cloud-provider-selector/SKILL.md) | Comparaison de fournisseurs | Comparer des services admissibles à périmètre égal | Architecture, régions, critères, prix datés, horizon | Scores justifiés et TCO sur trois ans |
+| [`finops-optimizer`](../skills/finops-optimizer/SKILL.md) | Optimisation d'une plateforme existante | Étayer économies et réversibilité | Facturation autorisée, métriques, période, couverture, pics | Économies prévisionnelles ou mesurées, effort et retour |
+| [`cloud-migration-estimator`](../skills/cloud-migration-estimator/SKILL.md) | Transition source vers cible | Couvrir intégrité, bascule et retour arrière | Inventaire source/cible, volumes, dépendances, fenêtre, RTO/RPO | Phases, répétition, cutover, rollback et hypercare |
+| [`cloud-architecture-diagrammer`](../skills/cloud-architecture-diagrammer/SKILL.md) | Inventaire et flux à représenter | Garder diagramme et classeur cohérents | IDs des composants, environnements, flux prouvés, inconnues | Diagramme intégré avec registre des composants et flux |
 
 ## Installation
 
-Depuis les [bundles distribués](../skill-updates/2026-10-07/cloud-estimation-suite/bundles/),
-inspectez le [manifest et ses hashes SHA-256](../skill-updates/2026-10-07/cloud-estimation-suite/bundles/manifest.json).
+Dans Claude Code, installez toute la suite depuis le marketplace du dépôt :
+
+```
+/plugin marketplace add anthropics/skills
+/plugin install cloud-estimation-skills@anthropic-agent-skills
+```
+
+Pour une installation manuelle, construisez les archives `.skill` avec
+`python tooling/build_bundles.py` depuis le [dossier de la suite](../cloud-estimation-suite/README.md)
+et inspectez le `bundles/manifest.json` généré et ses hashes SHA-256.
 Chaque fichier `.skill` est une archive compatible ZIP : extrayez le dossier
 complet du skill, en conservant `SKILL.md`, références, scripts, assets, licence
 et manifest de membres ensemble.
-
-Pour Codex, utilisez `$CODEX_HOME/skills` ou le répertoire de skills configuré.
-Pour Claude Code, utilisez `~/.claude/skills`. Installez dans une destination
+Pour Codex, utilisez `$CODEX_HOME/skills` ou le répertoire de skills configuré ;
+pour Claude Code, utilisez `~/.claude/skills`. Installez dans une destination
 absente ; si un skill y existe déjà, examinez son contenu et ses modifications
 avant tout remplacement. Vérifiez ensuite que l'assistant découvre le nom exact
 du skill dans votre session. Le dossier d'auteur du dépôt n'est pas requis à
@@ -70,7 +77,7 @@ l'exécution : les bundles sont autonomes.
 
 Le runtime public nécessite Python 3.11+, openpyxl et Pillow. Excel COM sous
 Windows ou LibreOffice fournit le recalcul natif. Voir les commandes et limites
-dans [Regenerate and validate](../skill-updates/2026-10-07/cloud-estimation-suite/README.md#regenerate-and-validate).
+dans [Regenerate and validate](../cloud-estimation-suite/README.md#regenerate-and-validate).
 L'installation ne donne aucune autorisation de modifier un compte cloud.
 
 ## Préparer le brief
@@ -95,7 +102,7 @@ Préparez ce qui est disponible et marquez le reste comme inconnu :
 
 Sans mesures nécessaires, demandez un instrument de collecte en lecture seule
 et une tâche préalable bloquante. Gardez les documents privés hors des exemples
-publics. Le [contrat d'intake](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-estimation-orchestrator/references/intake.md)
+publics. Le [contrat d'intake](../skills/cloud-estimation-orchestrator/references/intake.md)
 décrit le traitement des données manquantes.
 
 ## Parcours standard
@@ -229,7 +236,7 @@ Intègre le rendu final au `.xlsx` commun avec son registre de composants/flux.
 ## Exemples de bout en bout
 
 Ces trois demandes utilisent des champs à remplir, sans données client ni prix
-inventés. La [démonstration synthétique](../skill-updates/2026-10-07/cloud-estimation-suite/README.md#workbook-and-synthetic-example)
+inventés. La [démonstration synthétique](../cloud-estimation-suite/README.md#workbook-and-synthetic-example)
 montre un classeur complet, mais ses tarifs et sa capacité ne sont pas des devis
 ou mesures réutilisables.
 
@@ -273,7 +280,7 @@ sans annoncer zéro économie ou un retour sur investissement complet.
 Relisez baseline dans `01_Hypotheses`, actions dans `04_Taches_JH`, justification
 dans `09_Arbitrages` et preuves dans `10_Sources`. Un gain reste prévisionnel
 jusqu'à une mise en œuvre autorisée et une mesure après changement comparable.
-Le [catalogue d'optimisation](../skill-updates/2026-10-07/cloud-estimation-suite/finops-optimizer/references/optimisation-catalogue.md)
+Le [catalogue d'optimisation](../skills/finops-optimizer/references/optimisation-catalogue.md)
 précise les contrôles par action.
 
 ### C — Kubernetes, runtime managé ou VPS, puis fournisseur
@@ -295,9 +302,9 @@ Si prix ou éligibilité manquent, conserve « à chiffrer » et le choix provis
 
 Relisez l'ADR (décision d'architecture) dans `09_Arbitrages`, la comparaison dans
 `06_Scenarios` et la synthèse dans `11_Synthese`. Vérifiez les critères et raisons
-de rejet avec la [matrice de décision](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-architecture-advisor/references/decision-matrix.md),
-la [checklist Kubernetes](../skill-updates/2026-10-07/cloud-estimation-suite/kubernetes-architect/references/cluster-checklist.md)
-et les [règles de scoring fournisseur](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-provider-selector/references/scoring.md).
+de rejet avec la [matrice de décision](../skills/cloud-architecture-advisor/references/decision-matrix.md),
+la [checklist Kubernetes](../skills/kubernetes-architect/references/cluster-checklist.md)
+et les [règles de scoring fournisseur](../skills/cloud-provider-selector/references/scoring.md).
 Ajoutez capacité, sécurité ou livraison seulement si le périmètre le nécessite.
 
 ## Lire et contrôler le XLSX
@@ -328,7 +335,7 @@ positifs des contrôles : erreurs de formule, écarts de rapprochement et delta
 d'inventaire nuls. L'ouverture native et la validation des caches sont deux
 preuves distinctes. Ne sauvegardez jamais via openpyxl un classeur chargé avec
 `data_only=True` : les formules seraient perdues. Les contrôles détaillés restent
-dans le [gate de livraison](../skill-updates/2026-10-07/cloud-estimation-suite/cloud-estimation-orchestrator/SKILL.md#pre-delivery-gate).
+dans le [gate de livraison](../skills/cloud-estimation-orchestrator/SKILL.md#pre-delivery-gate).
 
 ## Limites et sécurité
 
@@ -348,7 +355,7 @@ Gardez sources privées, secrets, identifiants de compte/projet, chemins interne
 devis réels et topologie client hors des bundles et exemples publics. Utilisez
 des données synthétiques pour une démonstration ; un scan sans correspondance
 ne prouve pas à lui seul l'anonymat. Les détails figurent dans la
-[politique de données publiques](../skill-updates/2026-10-07/cloud-estimation-suite/README.md#icon-and-public-data-policy).
+[politique de données publiques](../cloud-estimation-suite/README.md#icon-and-public-data-policy).
 
 ## Dépannage
 
