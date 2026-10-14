@@ -120,23 +120,23 @@ class PPTXSchemaValidator(BaseSchemaValidator):
             print("PASSED - Charts satisfy the constraints PowerPoint enforces")
         return True
 
-    def _original_slide_defects(self, schema) -> set[str]:
+    def _original_slide_defects(self, schema) -> dict[str, list[str]]:
         import tempfile
         import zipfile
 
         from helpers.pptx_slide import SLIDE_PART_RE, fatal_slide_errors
 
         if self.original_file is None:
-            return set()
+            return {}
 
-        found: set[str] = set()
+        found: dict[str, list[str]] = {}
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
             try:
                 with zipfile.ZipFile(self.original_file, "r") as zf:
                     safe_extract(zf, temp_path)
             except (zipfile.BadZipFile, ValueError, OSError):
-                return set()  
+                return {}
 
             for part in sorted(temp_path.rglob("*.xml")):
                 relative = part.relative_to(temp_path).as_posix()
@@ -147,7 +147,9 @@ class PPTXSchemaValidator(BaseSchemaValidator):
                 )
                 if ok is None or ok or not errors:
                     continue
-                found |= set(fatal_slide_errors(set(errors)))
+                fatals = list(fatal_slide_errors(set(errors)))
+                if fatals:
+                    found[relative] = fatals
         return found
 
     def validate_slides(self):
@@ -179,8 +181,10 @@ class PPTXSchemaValidator(BaseSchemaValidator):
             if ok:
                 continue
 
+            part_inherited = inherited.get(relative, [])
             for message in fatal_slide_errors(set(errors)):
-                if message in inherited:
+                if message in part_inherited:
+                    part_inherited.remove(message)
                     continue  
                 problems.append(f"{relative}: {message}")
 
