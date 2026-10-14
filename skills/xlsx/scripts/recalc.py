@@ -93,22 +93,52 @@ def external_links_at_risk(filename):
         values = load_workbook(filename, data_only=True)
         stack.callback(values.close)
 
-        external_names = [
-            name
-            for name, dn in formulas.defined_names.items()
-            if isinstance(getattr(dn, "value", None), str) and EXTERNAL_REF_RE.search(dn.value)
-        ]
-        name_re = (
-            re.compile(r"\b(" + "|".join(re.escape(n) for n in external_names) + r")\b")
-            if external_names
-            else None
-        )
+        def _resolve_external_names(ws):
+            names_map = {}
+            if hasattr(formulas, "defined_names") and formulas.defined_names:
+                for name, dn in formulas.defined_names.items():
+                    val = getattr(dn, "value", None) or getattr(dn, "attr_text", None)
+                    if isinstance(val, str):
+                        names_map[name.lower()] = val
+            if hasattr(ws, "defined_names") and ws.defined_names:
+                for name, dn in ws.defined_names.items():
+                    val = getattr(dn, "value", None) or getattr(dn, "attr_text", None)
+                    if isinstance(val, str):
+                        names_map[name.lower()] = val
+
+            memo = {}
+
+            def reaches_external(name_lower, visited):
+                if name_lower in visited:
+                    return False
+                if name_lower in memo:
+                    return memo[name_lower]
+                val = names_map.get(name_lower)
+                if not val or not isinstance(val, str):
+                    return False
+                if EXTERNAL_REF_RE.search(val):
+                    memo[name_lower] = True
+                    return True
+                new_visited = visited | {name_lower}
+                for token in re.findall(r"\b[A-Za-z_][A-Za-z0-9_.]*\b", val):
+                    t_lower = token.lower()
+                    if t_lower in names_map and reaches_external(t_lower, new_visited):
+                        memo[name_lower] = True
+                        return True
+                memo[name_lower] = False
+                return False
+
+            external_names = [name for name in names_map if reaches_external(name, set())]
+            if not external_names:
+                return None
+            return re.compile(r"\b(" + "|".join(re.escape(n) for n in external_names) + r")\b", re.IGNORECASE)
 
         at_risk = []
         for sheet in formulas.sheetnames:
             ws = formulas[sheet]
             if not hasattr(ws, "iter_rows"):  
                 continue
+            name_re = _resolve_external_names(ws)
             cached = values[sheet]
             for row in ws.iter_rows():
                 for cell in row:
