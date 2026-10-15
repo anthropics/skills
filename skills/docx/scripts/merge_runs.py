@@ -57,7 +57,9 @@ def merge_runs(input_dir: str) -> tuple[int, str]:
         for container in {run.parentNode for run in runs}:
             merge_count += _merge_runs_in(container, run_names)
 
-        doc_xml.write_bytes(dom.toxml(encoding="UTF-8"))
+        doc_xml.write_bytes(
+            _serialize(root).encode("utf-8"),
+        )
         return merge_count, f"Merged {merge_count} runs"
 
     except Exception as e:
@@ -150,9 +152,11 @@ def _merge_runs_in(container, run_names: set[str]) -> int:
         while True:
             next_elem = _next_element_sibling(run)
             if next_elem and _is_run(next_elem, run_names) and _can_merge(run, next_elem):
-                _merge_run_content(run, next_elem)
-                container.removeChild(next_elem)
-                merge_count += 1
+                if _merge_run_content(run, next_elem):
+                    container.removeChild(next_elem)
+                    merge_count += 1
+                else:
+                    break
             else:
                 break
 
@@ -203,12 +207,83 @@ def _can_merge(run1, run2) -> bool:
     return rpr1.toxml() == rpr2.toxml()  
 
 
-def _merge_run_content(target, source):
+XMLNS_NS = "http://www.w3.org/2000/xmlns/"
+
+
+def _namespace_bindings(node) -> dict[str, str]:
+    """Effective namespace bindings in scope at ``node``, innermost wins."""
+    bindings: dict[str, str] = {}
+
+    def walk(n):
+        if n.nodeType != n.ELEMENT_NODE:
+            return
+        walk(n.parentNode)
+        attrs = n.attributes
+        if attrs is not None:
+            for attr in attrs.values():
+                if attr.name == "xmlns":
+                    bindings[""] = attr.value
+                elif attr.name.startswith("xmlns:"):
+                    bindings[attr.name.split(":", 1)[1]] = attr.value
+
+    walk(node)
+    return bindings
+
+
+def _prefix_of(name: str) -> str | None:
+    return name.split(":", 1)[0] if ":" in name else None
+
+
+def _merge_run_content(target, source) -> bool:
+    """Move source content into target; redeclare any namespace bindings the
+    moved content needs that target's scope does not already provide.
+
+    Uses ``setAttributeNS`` so the serializer emits a proper ``xmlns:``
+    attribute (plain ``setAttribute`` is dropped by minidom's namespace-aware
+    serialization).
+
+    Returns False when a moved element's prefix is bound to a different URI on
+    the source side than on the target side; the caller should skip the merge
+    rather than write XML with a silently rebased prefix.
+    """
+    target_bindings = _namespace_bindings(target)
+    source_bindings = _namespace_bindings(source)
+    pending: list = []
     for child in list(source.childNodes):
-        if child.nodeType == child.ELEMENT_NODE:
-            name = child.localName or child.tagName
-            if name != "rPr" and not name.endswith(":rPr"):
-                target.appendChild(child)
+        if child.nodeType != child.ELEMENT_NODE:
+            continue
+        name = child.localName or child.tagName
+        if name == "rPr" or name.endswith(":rPr"):
+            continue
+        prefix = getattr(child, "prefix", None) or _prefix_of(child.tagName)
+        if prefix is not None and prefix != "xml":
+            source_uri = source_bindings.get(prefix)
+            if source_uri is None:
+                return False
+            if target_bindings.get(prefix) not in (None, source_uri):
+                return False
+            if prefix not in target_bindings:
+                target.setAttributeNS(XMLNS_NS, f"xmlns:{prefix}", source_uri)
+                target_bindings[prefix] = source_uri
+        pending.append(child)
+    for child in pending:
+        target.appendChild(child)
+    return True
+
+
+def _serialize(node) -> str:
+    """Serialize the DOM preserving namespace declarations and text content.
+
+    minidom's default ``toxml()`` drops ``xmlns:`` attributes on elements it
+    re-serializes. This wrapper writes to a string buffer via ``writexml``
+    (which keeps namespace attributes) and returns the result without the
+    XML declaration that ``toxml`` would add.
+    """
+    import io
+
+    buf = io.StringIO()
+    node.writexml(buf)
+    return buf.getvalue()
 
 
 def _element_text(elem) -> str:
