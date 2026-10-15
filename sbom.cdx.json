@@ -1,0 +1,1589 @@
+{
+  "bomFormat": "CycloneDX",
+  "specVersion": "1.5",
+  "serialNumber": "urn:uuid:b47f9d27-87cc-41bc-a2c8-541d6ceab222",
+  "version": 1,
+  "metadata": {
+    "timestamp": "2026-02-24T19:00:00Z",
+    "lifecycles": [
+      {
+        "phase": "development",
+        "description": "Source SBOM representing the repository at development time. Includes all direct dependencies, development tooling, bundled assets, and skill sub-components."
+      }
+    ],
+    "tools": {
+      "components": [
+        {
+          "type": "application",
+          "name": "Claude Code",
+          "version": "claude-sonnet-4-6",
+          "manufacturer": {
+            "name": "Anthropic",
+            "url": ["https://www.anthropic.com"]
+          }
+        }
+      ]
+    },
+    "component": {
+      "type": "application",
+      "bom-ref": "pkg:github/anthropics/skills@1.0.0",
+      "name": "anthropic-agent-skills",
+      "version": "1.0.0",
+      "description": "Anthropic example Agent Skills — a curated collection of skills extending Claude Code capabilities across document processing (docx, xlsx, pdf, pptx), visual design, MCP building, web testing, GIF creation, and more.",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0",
+            "acknowledgement": "declared"
+          }
+        }
+      ],
+      "externalReferences": [
+        {
+          "type": "vcs",
+          "url": "https://github.com/anthropics/skills"
+        },
+        {
+          "type": "website",
+          "url": "https://github.com/anthropics/skills"
+        }
+      ],
+      "properties": [
+        {
+          "name": "cdx:source:commit",
+          "value": "1ed29a03dc852d30fa6ef2ca53a67dc2c2c2c563"
+        },
+        {
+          "name": "cdx:source:branch",
+          "value": "main"
+        },
+        {
+          "name": "cdx:source:repositoryCreated",
+          "value": "2025-10-15"
+        },
+        {
+          "name": "cdx:source:lastModified",
+          "value": "2026-02-06"
+        }
+      ]
+    }
+  },
+  "components": [
+
+
+    {
+      "type": "application",
+      "bom-ref": "skill:algorithmic-art",
+      "name": "algorithmic-art",
+      "description": "Creating algorithmic art using p5.js with seeded randomness and interactive parameter exploration.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/algorithmic-art" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:brand-guidelines",
+      "name": "brand-guidelines",
+      "description": "Applies Anthropic's official brand colors and typography to artifacts.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/brand-guidelines" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:canvas-design",
+      "name": "canvas-design",
+      "description": "Create beautiful visual art in .png and .pdf documents using design philosophy.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/canvas-design" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:doc-coauthoring",
+      "name": "doc-coauthoring",
+      "description": "Structured workflow for co-authoring documentation, proposals, technical specs, and decision docs.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/doc-coauthoring" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:docx",
+      "name": "docx",
+      "description": "Create, read, edit, and manipulate Word documents (.docx files) with tracked changes and comments.",
+      "licenses": [
+        {
+          "license": {
+            "name": "Proprietary — Anthropic, PBC",
+            "text": {
+              "contentType": "text/plain",
+              "content": "See skills/docx/LICENSE.txt"
+            }
+          }
+        }
+      ],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/docx" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:frontend-design",
+      "name": "frontend-design",
+      "description": "Create distinctive, production-grade frontend interfaces with high design quality.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/frontend-design" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:internal-comms",
+      "name": "internal-comms",
+      "description": "Resources for writing internal communications: status reports, newsletters, FAQs, incident reports.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/internal-comms" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:mcp-builder",
+      "name": "mcp-builder",
+      "description": "Guide for creating high-quality MCP (Model Context Protocol) servers in Python or Node/TypeScript.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/mcp-builder" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:pdf",
+      "name": "pdf",
+      "description": "Comprehensive PDF manipulation: read, extract, merge, split, fill forms, encrypt, and OCR.",
+      "licenses": [
+        {
+          "license": {
+            "name": "Proprietary — Anthropic, PBC",
+            "text": {
+              "contentType": "text/plain",
+              "content": "See skills/pdf/LICENSE.txt"
+            }
+          }
+        }
+      ],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/pdf" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:pptx",
+      "name": "pptx",
+      "description": "Create, read, edit, and manipulate PowerPoint presentations (.pptx files).",
+      "licenses": [
+        {
+          "license": {
+            "name": "Proprietary — Anthropic, PBC",
+            "text": {
+              "contentType": "text/plain",
+              "content": "See skills/pptx/LICENSE.txt"
+            }
+          }
+        }
+      ],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/pptx" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:skill-creator",
+      "name": "skill-creator",
+      "description": "Guide for creating and packaging new Agent Skills that extend Claude Code capabilities.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/skill-creator" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:slack-gif-creator",
+      "name": "slack-gif-creator",
+      "description": "Create animated GIFs optimized for Slack with size constraints and validation tools.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/slack-gif-creator" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:theme-factory",
+      "name": "theme-factory",
+      "description": "Toolkit for styling artifacts (slides, docs, HTML pages) with 10 pre-set themes or custom themes.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/theme-factory" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:webapp-testing",
+      "name": "webapp-testing",
+      "description": "Toolkit for testing local web applications using Playwright: screenshots, browser logs, UI verification.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/webapp-testing" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:web-artifacts-builder",
+      "name": "web-artifacts-builder",
+      "description": "Suite for creating multi-component HTML artifacts using React, Tailwind CSS, and shadcn/ui.",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "skill:xlsx",
+      "name": "xlsx",
+      "description": "Create, read, edit, and manipulate Excel spreadsheets (.xlsx files) with formula recalculation.",
+      "licenses": [
+        {
+          "license": {
+            "name": "Proprietary — Anthropic, PBC",
+            "text": {
+              "contentType": "text/plain",
+              "content": "See skills/xlsx/LICENSE.txt"
+            }
+          }
+        }
+      ],
+      "properties": [
+        { "name": "cdx:skill:path", "value": "skills/xlsx" }
+      ]
+    },
+
+
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/anthropic@0.39.0",
+      "name": "anthropic",
+      "version": "0.39.0",
+      "description": "Anthropic's official Python client library for the Claude AI API.",
+      "purl": "pkg:pypi/anthropic@0.39.0",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/anthropic/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=0.39.0" },
+        { "name": "cdx:python:requirementFile", "value": "skills/mcp-builder/scripts/requirements.txt" },
+        { "name": "cdx:python:usedBy", "value": "skills/mcp-builder/scripts/evaluation.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/mcp@1.1.0",
+      "name": "mcp",
+      "version": "1.1.0",
+      "description": "Model Context Protocol (MCP) Python SDK for building MCP clients and servers.",
+      "purl": "pkg:pypi/mcp@1.1.0",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/mcp/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=1.1.0" },
+        { "name": "cdx:python:requirementFile", "value": "skills/mcp-builder/scripts/requirements.txt" },
+        { "name": "cdx:python:usedBy", "value": "skills/mcp-builder/scripts/connections.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/mcp-builder/scripts/evaluation.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pillow@11.3.0",
+      "name": "Pillow",
+      "version": "11.3.0",
+      "description": "Python Imaging Library fork — image reading, writing, and processing.",
+      "purl": "pkg:pypi/pillow@11.3.0",
+      "licenses": [{ "license": { "id": "HPND" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/Pillow/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=10.0.0" },
+        { "name": "cdx:python:requirementFile", "value": "skills/slack-gif-creator/requirements.txt" },
+        { "name": "cdx:python:usedBy", "value": "skills/slack-gif-creator/core/frame_composer.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/create_validation_image.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pptx/scripts/thumbnail.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/imageio@2.37.0",
+      "name": "imageio",
+      "version": "2.37.0",
+      "description": "Easy image reading and writing using a large set of formats including GIF.",
+      "purl": "pkg:pypi/imageio@2.37.0",
+      "licenses": [{ "license": { "id": "BSD-2-Clause" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/imageio/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=2.31.0" },
+        { "name": "cdx:python:requirementFile", "value": "skills/slack-gif-creator/requirements.txt" },
+        { "name": "cdx:python:usedBy", "value": "skills/slack-gif-creator/core/gif_builder.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/imageio-ffmpeg@0.6.0",
+      "name": "imageio-ffmpeg",
+      "version": "0.6.0",
+      "description": "FFmpeg wrapper for imageio — provides video read/write support via FFmpeg binaries.",
+      "purl": "pkg:pypi/imageio-ffmpeg@0.6.0",
+      "licenses": [{ "license": { "id": "BSD-2-Clause" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/imageio-ffmpeg/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=0.4.9" },
+        { "name": "cdx:python:requirementFile", "value": "skills/slack-gif-creator/requirements.txt" },
+        { "name": "cdx:python:note", "value": "Bundles FFmpeg binaries (GPL-3.0); see THIRD_PARTY_NOTICES.md" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/numpy@1.24.0",
+      "name": "numpy",
+      "version": "1.24.0",
+      "description": "Fundamental package for scientific computing with Python — N-dimensional array support.",
+      "purl": "pkg:pypi/numpy@1.24.0",
+      "licenses": [{ "license": { "id": "BSD-3-Clause" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/numpy/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": ">=1.24.0" },
+        { "name": "cdx:python:requirementFile", "value": "skills/slack-gif-creator/requirements.txt" },
+        { "name": "cdx:python:usedBy", "value": "skills/slack-gif-creator/core/frame_composer.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/defusedxml",
+      "name": "defusedxml",
+      "version": "unspecified",
+      "description": "Defusing XML bombs and other XML vulnerabilities — safe XML parsing for untrusted documents.",
+      "purl": "pkg:pypi/defusedxml",
+      "licenses": [{ "license": { "id": "PSF-2.0" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/defusedxml/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/docx/scripts/comment.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pptx/scripts/clean.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pptx/scripts/thumbnail.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pypdf",
+      "name": "pypdf",
+      "version": "unspecified",
+      "description": "Pure Python PDF library for reading, writing, splitting, merging, and annotating PDFs.",
+      "purl": "pkg:pypi/pypdf",
+      "licenses": [{ "license": { "id": "BSD-3-Clause" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/pypdf/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/check_fillable_fields.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/extract_form_field_info.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/fill_fillable_fields.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/fill_pdf_form_with_annotations.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pdf2image",
+      "name": "pdf2image",
+      "version": "unspecified",
+      "description": "Python wrapper around Poppler's pdftoppm and pdftocairo to convert PDFs to PIL images.",
+      "purl": "pkg:pypi/pdf2image",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/pdf2image/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/convert_pdf_to_images.py" },
+        { "name": "cdx:python:note", "value": "Requires system dependency: Poppler (GPL-2.0-or-later)" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pdfplumber",
+      "name": "pdfplumber",
+      "version": "unspecified",
+      "description": "Plumb a PDF for detailed information about each text character, rectangle, and line.",
+      "purl": "pkg:pypi/pdfplumber",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/pdfplumber/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/pdf/scripts/extract_form_structure.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/openpyxl",
+      "name": "openpyxl",
+      "version": "unspecified",
+      "description": "Python library to read/write Excel 2010 xlsx/xlsm/xltx/xltm files.",
+      "purl": "pkg:pypi/openpyxl",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/openpyxl/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/xlsx/scripts/recalc.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/playwright",
+      "name": "playwright",
+      "version": "unspecified",
+      "description": "Python bindings for the Playwright browser automation library.",
+      "purl": "pkg:pypi/playwright",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/playwright/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (referenced in SKILL.md)" },
+        { "name": "cdx:python:usedBy", "value": "skills/webapp-testing" },
+        { "name": "cdx:python:usedBy", "value": "skills/webapp-testing/examples/console_logging.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/webapp-testing/examples/element_discovery.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/webapp-testing/examples/static_html_automation.py" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:pypi/pyyaml",
+      "name": "PyYAML",
+      "version": "unspecified",
+      "description": "YAML parser and emitter for Python.",
+      "purl": "pkg:pypi/pyyaml",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pypi.org/project/PyYAML/" }
+      ],
+      "properties": [
+        { "name": "cdx:python:requirementSpec", "value": "unspecified (inferred from imports)" },
+        { "name": "cdx:python:usedBy", "value": "skills/skill-creator/scripts/quick_validate.py" }
+      ]
+    },
+
+
+    {
+      "type": "application",
+      "bom-ref": "pkg:generic/libreoffice",
+      "name": "LibreOffice",
+      "version": "unspecified",
+      "description": "Free and open-source office suite. Used via soffice CLI for document conversion and rendering in docx, pptx, and xlsx skills.",
+      "licenses": [{ "license": { "id": "LGPL-2.1-only" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://www.libreoffice.org" }
+      ],
+      "properties": [
+        { "name": "cdx:component:kind", "value": "system-dependency" },
+        { "name": "cdx:python:usedBy", "value": "skills/docx/scripts/office/soffice.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/pptx/scripts/office/soffice.py" },
+        { "name": "cdx:python:usedBy", "value": "skills/xlsx/scripts/office/soffice.py" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "pkg:generic/ffmpeg@7.0.2",
+      "name": "FFmpeg",
+      "version": "7.0.2",
+      "description": "Complete, cross-platform multimedia framework. Bundled by imageio-ffmpeg for video encoding in the slack-gif-creator skill.",
+      "purl": "pkg:generic/ffmpeg@7.0.2",
+      "licenses": [{ "license": { "id": "GPL-3.0-only" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://ffmpeg.org" },
+        { "type": "distribution", "url": "https://ffmpeg.org/releases/ffmpeg-7.0.2.tar.xz" }
+      ],
+      "properties": [
+        { "name": "cdx:component:kind", "value": "bundled-binary" },
+        { "name": "cdx:component:bundledBy", "value": "imageio-ffmpeg" },
+        { "name": "cdx:skill:usedBy", "value": "skill:slack-gif-creator" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "pkg:generic/poppler",
+      "name": "Poppler",
+      "version": "unspecified",
+      "description": "PDF rendering library. Required as a system dependency by pdf2image (pdftoppm) in the pdf skill.",
+      "licenses": [{ "license": { "id": "GPL-2.0-or-later" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://poppler.freedesktop.org" }
+      ],
+      "properties": [
+        { "name": "cdx:component:kind", "value": "system-dependency" },
+        { "name": "cdx:skill:usedBy", "value": "skill:pdf" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "pkg:generic/nodejs@18.0.0",
+      "name": "Node.js",
+      "version": "18.0.0",
+      "description": "JavaScript runtime environment. Required (>=18) by web-artifacts-builder for React/Vite scaffolding and by pptx for pptxgenjs.",
+      "purl": "pkg:generic/nodejs@18.0.0",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://nodejs.org" }
+      ],
+      "properties": [
+        { "name": "cdx:component:kind", "value": "system-dependency" },
+        { "name": "cdx:component:minimumVersion", "value": "18" },
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" },
+        { "name": "cdx:skill:usedBy", "value": "skill:pptx" }
+      ]
+    },
+    {
+      "type": "application",
+      "bom-ref": "pkg:npm/pnpm",
+      "name": "pnpm",
+      "version": "unspecified",
+      "description": "Fast, disk space efficient Node.js package manager. Used by init-artifact.sh to scaffold React projects.",
+      "purl": "pkg:npm/pnpm",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://pnpm.io" }
+      ],
+      "properties": [
+        { "name": "cdx:component:kind", "value": "build-tool" },
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+
+
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/pptxgenjs",
+      "name": "pptxgenjs",
+      "version": "unspecified",
+      "description": "JavaScript library for creating PowerPoint presentations from scratch in Node.js or browsers.",
+      "purl": "pkg:npm/pptxgenjs",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://www.npmjs.com/package/pptxgenjs" }
+      ],
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:pptx" }
+      ]
+    },
+
+
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/vite@5.4.11",
+      "name": "vite",
+      "version": "5.4.11",
+      "description": "Next-generation frontend build tool. Pinned to 5.4.11 for Node 18; latest used for Node 20+.",
+      "purl": "pkg:npm/vite@5.4.11",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "externalReferences": [
+        { "type": "website", "url": "https://www.npmjs.com/package/vite" }
+      ],
+      "properties": [
+        { "name": "cdx:npm:note", "value": "Version 5.4.11 for Node 18; 'latest' for Node 20+" },
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react",
+      "name": "react",
+      "version": "unspecified",
+      "description": "JavaScript library for building user interfaces.",
+      "purl": "pkg:npm/react",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react-dom",
+      "name": "react-dom",
+      "version": "unspecified",
+      "description": "React DOM rendering package.",
+      "purl": "pkg:npm/react-dom",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40vitejs%2Fplugin-react",
+      "name": "@vitejs/plugin-react",
+      "version": "unspecified",
+      "description": "Vite plugin for React (Fast Refresh + JSX transform).",
+      "purl": "pkg:npm/%40vitejs%2Fplugin-react",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/tailwindcss@3.4.1",
+      "name": "tailwindcss",
+      "version": "3.4.1",
+      "description": "Utility-first CSS framework.",
+      "purl": "pkg:npm/tailwindcss@3.4.1",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/postcss",
+      "name": "postcss",
+      "version": "unspecified",
+      "description": "Tool for transforming styles with JS plugins.",
+      "purl": "pkg:npm/postcss",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/autoprefixer",
+      "name": "autoprefixer",
+      "version": "unspecified",
+      "description": "PostCSS plugin to add vendor prefixes to CSS rules.",
+      "purl": "pkg:npm/autoprefixer",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40types%2Fnode",
+      "name": "@types/node",
+      "version": "unspecified",
+      "description": "TypeScript type definitions for Node.js.",
+      "purl": "pkg:npm/%40types%2Fnode",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:npm:devDependency", "value": "true" },
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/tailwindcss-animate",
+      "name": "tailwindcss-animate",
+      "version": "unspecified",
+      "description": "Tailwind CSS plugin for creating smooth animations.",
+      "purl": "pkg:npm/tailwindcss-animate",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/class-variance-authority",
+      "name": "class-variance-authority",
+      "version": "unspecified",
+      "description": "CVA: utility for creating component variants with Tailwind CSS.",
+      "purl": "pkg:npm/class-variance-authority",
+      "licenses": [{ "license": { "id": "Apache-2.0" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/clsx",
+      "name": "clsx",
+      "version": "unspecified",
+      "description": "A tiny utility for constructing className strings conditionally.",
+      "purl": "pkg:npm/clsx",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/tailwind-merge",
+      "name": "tailwind-merge",
+      "version": "unspecified",
+      "description": "Utility to merge Tailwind CSS classes without conflicts.",
+      "purl": "pkg:npm/tailwind-merge",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/lucide-react",
+      "name": "lucide-react",
+      "version": "unspecified",
+      "description": "Beautiful and consistent icon pack for React (Lucide icons).",
+      "purl": "pkg:npm/lucide-react",
+      "licenses": [{ "license": { "id": "ISC" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/next-themes",
+      "name": "next-themes",
+      "version": "unspecified",
+      "description": "Perfect dark mode support for React apps.",
+      "purl": "pkg:npm/next-themes",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [
+        { "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-accordion",
+      "name": "@radix-ui/react-accordion",
+      "version": "unspecified",
+      "description": "Radix UI Accordion primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-accordion",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-aspect-ratio",
+      "name": "@radix-ui/react-aspect-ratio",
+      "version": "unspecified",
+      "description": "Radix UI Aspect Ratio primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-aspect-ratio",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-avatar",
+      "name": "@radix-ui/react-avatar",
+      "version": "unspecified",
+      "description": "Radix UI Avatar primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-avatar",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-checkbox",
+      "name": "@radix-ui/react-checkbox",
+      "version": "unspecified",
+      "description": "Radix UI Checkbox primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-checkbox",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-collapsible",
+      "name": "@radix-ui/react-collapsible",
+      "version": "unspecified",
+      "description": "Radix UI Collapsible primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-collapsible",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-context-menu",
+      "name": "@radix-ui/react-context-menu",
+      "version": "unspecified",
+      "description": "Radix UI Context Menu primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-context-menu",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-dialog",
+      "name": "@radix-ui/react-dialog",
+      "version": "unspecified",
+      "description": "Radix UI Dialog primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-dialog",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-dropdown-menu",
+      "name": "@radix-ui/react-dropdown-menu",
+      "version": "unspecified",
+      "description": "Radix UI Dropdown Menu primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-dropdown-menu",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-hover-card",
+      "name": "@radix-ui/react-hover-card",
+      "version": "unspecified",
+      "description": "Radix UI Hover Card primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-hover-card",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-label",
+      "name": "@radix-ui/react-label",
+      "version": "unspecified",
+      "description": "Radix UI Label primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-label",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-menubar",
+      "name": "@radix-ui/react-menubar",
+      "version": "unspecified",
+      "description": "Radix UI Menubar primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-menubar",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-navigation-menu",
+      "name": "@radix-ui/react-navigation-menu",
+      "version": "unspecified",
+      "description": "Radix UI Navigation Menu primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-navigation-menu",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-popover",
+      "name": "@radix-ui/react-popover",
+      "version": "unspecified",
+      "description": "Radix UI Popover primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-popover",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-progress",
+      "name": "@radix-ui/react-progress",
+      "version": "unspecified",
+      "description": "Radix UI Progress primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-progress",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-radio-group",
+      "name": "@radix-ui/react-radio-group",
+      "version": "unspecified",
+      "description": "Radix UI Radio Group primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-radio-group",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-scroll-area",
+      "name": "@radix-ui/react-scroll-area",
+      "version": "unspecified",
+      "description": "Radix UI Scroll Area primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-scroll-area",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-select",
+      "name": "@radix-ui/react-select",
+      "version": "unspecified",
+      "description": "Radix UI Select primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-select",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-separator",
+      "name": "@radix-ui/react-separator",
+      "version": "unspecified",
+      "description": "Radix UI Separator primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-separator",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-slider",
+      "name": "@radix-ui/react-slider",
+      "version": "unspecified",
+      "description": "Radix UI Slider primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-slider",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-slot",
+      "name": "@radix-ui/react-slot",
+      "version": "unspecified",
+      "description": "Radix UI Slot primitive for React — render-delegation.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-slot",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-switch",
+      "name": "@radix-ui/react-switch",
+      "version": "unspecified",
+      "description": "Radix UI Switch primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-switch",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-tabs",
+      "name": "@radix-ui/react-tabs",
+      "version": "unspecified",
+      "description": "Radix UI Tabs primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-tabs",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-toast",
+      "name": "@radix-ui/react-toast",
+      "version": "unspecified",
+      "description": "Radix UI Toast primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-toast",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-toggle",
+      "name": "@radix-ui/react-toggle",
+      "version": "unspecified",
+      "description": "Radix UI Toggle primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-toggle",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-toggle-group",
+      "name": "@radix-ui/react-toggle-group",
+      "version": "unspecified",
+      "description": "Radix UI Toggle Group primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-toggle-group",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40radix-ui%2Freact-tooltip",
+      "name": "@radix-ui/react-tooltip",
+      "version": "unspecified",
+      "description": "Radix UI Tooltip primitive for React.",
+      "purl": "pkg:npm/%40radix-ui%2Freact-tooltip",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/sonner",
+      "name": "sonner",
+      "version": "unspecified",
+      "description": "An opinionated toast component for React.",
+      "purl": "pkg:npm/sonner",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/cmdk",
+      "name": "cmdk",
+      "version": "unspecified",
+      "description": "Fast, unstyled command menu React component.",
+      "purl": "pkg:npm/cmdk",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/vaul",
+      "name": "vaul",
+      "version": "unspecified",
+      "description": "Unstyled drawer component for React.",
+      "purl": "pkg:npm/vaul",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/embla-carousel-react",
+      "name": "embla-carousel-react",
+      "version": "unspecified",
+      "description": "A bare-bones carousel library with great fluid motion.",
+      "purl": "pkg:npm/embla-carousel-react",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react-day-picker",
+      "name": "react-day-picker",
+      "version": "unspecified",
+      "description": "Flexible date picker component for React.",
+      "purl": "pkg:npm/react-day-picker",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react-resizable-panels",
+      "name": "react-resizable-panels",
+      "version": "unspecified",
+      "description": "React components for resizable panel groups and layouts.",
+      "purl": "pkg:npm/react-resizable-panels",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/date-fns",
+      "name": "date-fns",
+      "version": "unspecified",
+      "description": "Modern JavaScript date utility library.",
+      "purl": "pkg:npm/date-fns",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/react-hook-form",
+      "name": "react-hook-form",
+      "version": "unspecified",
+      "description": "Performant, flexible, extensible forms with easy-to-use validation.",
+      "purl": "pkg:npm/react-hook-form",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/%40hookform%2Fresolvers",
+      "name": "@hookform/resolvers",
+      "version": "unspecified",
+      "description": "Validation resolvers for react-hook-form (Zod, Yup, Joi, etc.).",
+      "purl": "pkg:npm/%40hookform%2Fresolvers",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:npm/zod",
+      "name": "zod",
+      "version": "unspecified",
+      "description": "TypeScript-first schema declaration and validation library.",
+      "purl": "pkg:npm/zod",
+      "licenses": [{ "license": { "id": "MIT" } }],
+      "scope": "required",
+      "properties": [{ "name": "cdx:skill:usedBy", "value": "skill:web-artifacts-builder" }]
+    },
+
+
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-arsenal-sc",
+      "name": "Arsenal SC",
+      "version": "unspecified",
+      "description": "A grotesque sans-serif typeface. The Arsenal SC Project Authors.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/ArsenalSC-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/ArsenalSC-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-big-shoulders",
+      "name": "Big Shoulders",
+      "description": "A condensed, high-contrast typeface.",
+      "version": "unspecified",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/BigShoulders-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/BigShoulders-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-boldonse",
+      "name": "Boldonse",
+      "version": "unspecified",
+      "description": "A heavy display typeface. Google Fonts.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Boldonse-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Boldonse-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-bricolage-grotesque",
+      "name": "Bricolage Grotesque",
+      "version": "unspecified",
+      "description": "A variable grotesque inspired by old type-setting manuals.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/BricolageGrotesque-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/BricolageGrotesque-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-crimson-pro",
+      "name": "Crimson Pro",
+      "version": "unspecified",
+      "description": "An old-style serif inspired by the work of Jan Tschichold.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/CrimsonPro-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/CrimsonPro-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-dm-mono",
+      "name": "DM Mono",
+      "version": "unspecified",
+      "description": "A monospace companion to DM Sans and DM Serif.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/DMMono-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/DMMono-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-erica-one",
+      "name": "Erica One",
+      "version": "unspecified",
+      "description": "A bold display typeface by LatinoType Limitada.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/EricaOne-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/EricaOne-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-geist-mono",
+      "name": "Geist Mono",
+      "version": "unspecified",
+      "description": "A monospace typeface by Vercel.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/GeistMono-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/GeistMono-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-gloock",
+      "name": "Gloock",
+      "version": "unspecified",
+      "description": "A contemporary high-contrast serif typeface.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Gloock-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Gloock-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-ibm-plex-mono",
+      "name": "IBM Plex Mono",
+      "version": "unspecified",
+      "description": "IBM's monospace typeface, part of the IBM Plex type family.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/IBMPlexMono-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/IBMPlexMono-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-ibm-plex-serif",
+      "name": "IBM Plex Serif",
+      "version": "unspecified",
+      "description": "IBM's serif typeface, part of the IBM Plex type family.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/IBMPlexSerif-Regular.ttf" },
+        { "name": "cdx:asset:note", "value": "Bundled in canvas-fonts directory; OFL license inferred from IBM Plex family" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-instrument-sans",
+      "name": "Instrument Sans",
+      "version": "unspecified",
+      "description": "A geometric sans-serif typeface by Instrument.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/InstrumentSans-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/InstrumentSans-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-instrument-serif",
+      "name": "Instrument Serif",
+      "version": "unspecified",
+      "description": "A high-contrast serif companion to Instrument Sans.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/InstrumentSerif-Regular.ttf" },
+        { "name": "cdx:asset:note", "value": "Bundled in canvas-fonts directory; OFL license inferred from Instrument type family" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-italiana",
+      "name": "Italiana",
+      "version": "unspecified",
+      "description": "An elegant display serif by Santiago Orozco.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Italiana-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Italiana-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-jetbrains-mono",
+      "name": "JetBrains Mono",
+      "version": "unspecified",
+      "description": "A monospace typeface for developers by JetBrains.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/JetBrainsMono-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/JetBrainsMono-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-jura",
+      "name": "Jura",
+      "version": "unspecified",
+      "description": "A geometric sans-serif with multiple stylistic sets.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Jura-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Jura-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-libre-baskerville",
+      "name": "Libre Baskerville",
+      "version": "unspecified",
+      "description": "A web-optimized version of Baskerville.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/LibreBaskerville-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/LibreBaskerville-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-lora",
+      "name": "Lora",
+      "version": "unspecified",
+      "description": "A well-balanced contemporary serif with roots in calligraphy.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Lora-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Lora-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-national-park",
+      "name": "National Park",
+      "version": "unspecified",
+      "description": "A bold, friendly display typeface inspired by US National Park signage.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/NationalPark-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/NationalPark-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-nothing-you-could-do",
+      "name": "Nothing You Could Do",
+      "version": "unspecified",
+      "description": "A handwriting-style font by Kimberly Geswein.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/NothingYouCouldDo-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/NothingYouCouldDo-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-outfit",
+      "name": "Outfit",
+      "version": "unspecified",
+      "description": "A geometric sans-serif designed for digital interfaces.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Outfit-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Outfit-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-pixelify-sans",
+      "name": "Pixelify Sans",
+      "version": "unspecified",
+      "description": "A pixel-inspired sans-serif typeface.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/PixelifySans-Medium.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/PixelifySans-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-poiret-one",
+      "name": "Poiret One",
+      "version": "unspecified",
+      "description": "An elegant art-deco style typeface by Denis Masharov.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/PoiretOne-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/PoiretOne-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-red-hat-mono",
+      "name": "Red Hat Mono",
+      "version": "unspecified",
+      "description": "A monospace typeface by Red Hat.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/RedHatMono-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/RedHatMono-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-silkscreen",
+      "name": "Silkscreen",
+      "version": "unspecified",
+      "description": "A pixelated bitmap-style font.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Silkscreen-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Silkscreen-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-smooch-sans",
+      "name": "Smooch Sans",
+      "version": "unspecified",
+      "description": "A grotesque sans-serif typeface.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/SmoochSans-Medium.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/SmoochSans-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-tektur",
+      "name": "Tektur",
+      "version": "unspecified",
+      "description": "A techno display typeface.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/Tektur-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/Tektur-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-work-sans",
+      "name": "Work Sans",
+      "version": "unspecified",
+      "description": "A sans-serif typeface optimized for screen use at medium and large sizes.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/WorkSans-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/WorkSans-OFL.txt" }
+      ]
+    },
+    {
+      "type": "library",
+      "bom-ref": "pkg:generic/font-young-serif",
+      "name": "Young Serif",
+      "version": "unspecified",
+      "description": "A contemporary serif typeface inspired by 1960s advertising lettering.",
+      "licenses": [{ "license": { "id": "OFL-1.1" } }],
+      "properties": [
+        { "name": "cdx:asset:type", "value": "font" },
+        { "name": "cdx:asset:path", "value": "skills/canvas-design/canvas-fonts/YoungSerif-Regular.ttf" },
+        { "name": "cdx:asset:licenseFile", "value": "skills/canvas-design/canvas-fonts/YoungSerif-OFL.txt" }
+      ]
+    }
+  ]
+}
