@@ -1,0 +1,35 @@
+{
+  "name": "Create Tasks from Specification",
+  "skills": ["spec-to-implementation", "task-manager"],
+  "query": "Read the Payment Integration spec and create implementation tasks in our Tasks database",
+  "expected_behavior": [
+    "Step 1: Uses Notion:notion-search to find Payment Integration spec or asks for URL",
+    "Step 2: Fetches spec page using Notion:notion-fetch to read full content",
+    "Step 3: Parses spec using reference/spec-parsing.md patterns to identify work items",
+    "Step 4: Breaks down into appropriately-sized tasks using breakdown patterns from reference/task-creation.md",
+    "Step 5: Uses Notion:notion-search to find Tasks database location",
+    "Step 6: Fetches Tasks database using Notion:notion-fetch to get schema, property names, and data sources",
+    "Step 7: Identifies correct data source from <data-source> tags in fetch results",
+    "Step 8: Optionally creates implementation plan page first (recommended per workflow)",
+    "Step 9: For each task - creates task page using Notion:notion-create-pages with parent: { data_source_id: 'collection://...' }",
+    "Step 10: Sets task properties from schema: Title, Status (To Do), Priority, Related Tasks (link to spec)",
+    "Step 11: Includes task description with context, acceptance criteria from spec, dependencies",
+    "Step 12: Links tasks to spec page using <mention-page> and to each other for dependencies",
+    "Step 13: Sequences tasks appropriately (setup → implementation → testing per reference/task-creation.md)",
+    "Step 14: Reports summary: 'Created X tasks for Payment Integration: [task list with links]'"
+  ],
+  "success_criteria": [
+    "Spec is found using Notion:notion-search before attempting to fetch",
+    "Task database is found using Notion:notion-search before attempting to fetch schema",
+    "Database schema is fetched and data source identified from <data-source> tags",
+    "Multiple tasks created (at least 3-5) covering spec scope",
+    "Tasks are right-sized per reference/task-creation.md (1-2 days each)",
+    "Each task has clear acceptance criteria extracted from spec",
+    "Tasks are properly sequenced with dependencies using relation properties",
+    "All tasks link back to original spec using mention-page tags",
+    "Task properties match exact schema from fetched database",
+    "Tasks use correct parent (data_source_id: 'collection://...') for database placement",
+    "Uses correct tool names and sequence: Notion:notion-search (2x) → Notion:notion-fetch (2x) → Notion:notion-create-pages (Nx)"
+  ]
+}
+

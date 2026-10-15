@@ -1,0 +1,20 @@
+{
+  "name": "dr-desouz-ai-skills",
+  "interface": {
+    "displayName": "Dr. De.Souz.AI Skills"
+  },
+  "plugins": [
+    {
+      "name": "brianjosh",
+      "source": {
+        "source": "local",
+        "path": "./plugins/brianjosh"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
