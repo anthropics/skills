@@ -1,6 +1,6 @@
 ---
 name: quantitative-resume-auditor
-description: Audits resumes with Python: metric density (M/B ratio) vs. 3.0 Gold Standard. With a JD: token coverage, knockout flags, False-Miss audit. Triggers on resume audit, density check, or JD gap analysis.
+description: "Audits resumes with Python: metric density (M/B ratio) vs. 3.0 Gold Standard. With a JD: token coverage, knockout flags, False-Miss audit. Triggers on resume audit, density check, or JD gap analysis."
 ---
 
 <!--
@@ -34,13 +34,15 @@ Count every instance of a quantitative data point in the resume text. Every uniq
 
 *Rule:* If a bullet contains multiple numbers, count each valid distinct metric toward `M`. Dates (e.g., `2021-2023`) do NOT count as metrics.
 
-### Step 2 - Bullet Counting (B)
+### Step 2 - Bullet Counting (B) and Quantified Bullets (Q)
 
 Count the total number of bullet points (`B`) across all work experience entries.
 
+Count the number of bullets that contain at least 1 metric (`Q`).
+
 Compute:
 - `Metric Density = M / B`
-- `Quantification Rate = (Bullets with at least 1 metric / B) * 100%`
+- `Quantification Rate = (Q / B) * 100%`
 
 **Density Benchmarks:**
 - `< 1.0`: Weak - highly subjective, narrative-heavy. Needs immediate quantification.
@@ -56,7 +58,7 @@ A table with M, B, Q, Density Score, Quantification Rate, and Status.
 
 **2. Category Breakdown**
 List the count per category so the M total is independently verifiable.
-Example: `Percentages: 34 | Currency: 5 | Headcount: 8 | Years: 30`
+Example: `Percentages & Rates: 34 | Currency & Financials: 5 | Headcount & Scale: 8 | Time & Duration: 30`
 
 **3. Gap Analysis**
 
