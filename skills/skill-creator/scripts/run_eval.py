@@ -28,11 +28,11 @@ def _check_installed_skill(skill_name: str, allow: bool) -> None:
 
     A claude -p session loads user-level skills regardless of its cwd, so the
     real skill sits next to the probe with the same description and a cleaner
-    name — and wins: measured on this setup, the model invoked the real skill
-    6/6 runs and the probe 0/6. Scores measured that way are garbage in both
-    directions (the misses are false negatives, and the Read-credit "hits"
-    are the model inspecting the file, not using it). Park the skill (rename
-    its SKILL.md) for the duration of the eval.
+    name, and the model picks the real one. Scores are then wrong in both
+    directions: sessions that used the real skill count as misses, while the
+    fallback Read-detection credits mere inspection of the probe file as a
+    trigger. Park the skill (rename its SKILL.md) for the duration of the
+    eval.
     """
     if allow:
         return
@@ -41,10 +41,8 @@ def _check_installed_skill(skill_name: str, allow: bool) -> None:
     if installed.exists():
         raise SystemExit(
             f"Error: skill '{skill_name}' is installed at {installed}.\n"
-            "Eval sessions load user-level skills regardless of cwd, so the real "
-            "skill steals triggers from the probe (measured 6/6 real vs 0/6 probe) "
-            "and the scores are meaningless. Park it for the eval (rename SKILL.md "
-            "to SKILL.md.parked, restore afterwards), or pass --allow-installed-skill."
+            "Park it for the eval (rename SKILL.md to SKILL.md.parked, restore "
+            "afterwards), or pass --allow-installed-skill."
         )
 
 
@@ -73,17 +71,16 @@ def run_single_query(
 
     The query runs in its own throwaway project root (a fresh temp dir,
     optionally seeded from a copy of env_template), with the probe command
-    file in that root's .claude/commands/. The isolation is the point: with
-    a shared commands dir every parallel worker's session sees all the
-    in-flight probes — near-identical descriptions competing for one query —
-    and a run is credited with probability ~1/num_workers no matter how good
-    the description is.
+    file in that root's .claude/commands/. A shared commands dir would put
+    every in-flight probe in every session's sight: near-identical
+    descriptions competing for one query, so a run is credited with
+    probability ~1/num_workers regardless of description quality.
 
     Uses --include-partial-messages to detect triggering from stream events
-    as they arrive. A tool call that isn't the probe is NOT a verdict: the
-    model may legitimately run something else first (e.g. `git status`)
-    before consulting the skill, so detection keeps reading and only
-    concludes on a positive match, the result event, or EOF.
+    as they arrive. A tool call that isn't the probe is not a verdict — the
+    model may run something else first (e.g. `git status`) before consulting
+    the skill — so detection keeps reading and only concludes on a positive
+    match, the result event, or EOF.
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
@@ -94,10 +91,10 @@ def run_single_query(
     try:
         if env_template:
             # Seed the isolated root so workspace-context queries ("commit",
-            # "format this report") keep their referent. A copy, not symlinks:
-            # unprivileged symlink creation fails on Windows without
-            # Developer Mode (WinError 1314), which would silently leave the
-            # root empty — the failure mode upstream #1559 describes.
+            # "format this report") keep their referent. A copy rather than
+            # symlinks: symlink creation needs elevation or Developer Mode on
+            # Windows (WinError 1314), so link-based seeding fails there and
+            # leaves the root empty.
             shutil.copytree(env_template, iso_root, dirs_exist_ok=True)
         commands_dir.mkdir(parents=True, exist_ok=True)
         # Use YAML block scalar to avoid breaking on quotes in description
@@ -189,10 +186,11 @@ def run_single_query(
                                 pending_tool_name = tool_name
                                 accumulated_json = ""
                             else:
-                                # Not a verdict — reset and keep reading. The
-                                # model may still consult the skill after a
-                                # preliminary tool call; exiting early here
-                                # reverses scores (upstream #1706).
+                                # Not a verdict — reset and keep reading.
+                                # The model may still consult the skill
+                                # after a preliminary tool call, and exiting
+                                # early here would score those runs as
+                                # misses.
                                 pending_tool_name = None
                                 accumulated_json = ""
 
