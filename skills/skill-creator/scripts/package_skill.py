@@ -12,6 +12,7 @@ Example:
 
 import fnmatch
 import sys
+import tempfile
 import zipfile
 from pathlib import Path
 from scripts.quick_validate import validate_skill
@@ -87,11 +88,14 @@ def package_skill(skill_path, output_dir=None):
     skill_filename = output_path / f"{skill_name}.skill"
 
     # Create the .skill file (zip format)
+    temporary_archive = None
     try:
-        with zipfile.ZipFile(skill_filename, 'w', zipfile.ZIP_DEFLATED) as zipf:
+        with tempfile.NamedTemporaryFile(prefix=f".{skill_name}-", suffix=".tmp", dir=output_path, delete=False) as temporary:
+            temporary_archive = Path(temporary.name)
+        with zipfile.ZipFile(temporary_archive, 'w', zipfile.ZIP_DEFLATED) as zipf:
             # Walk through the skill directory, excluding build artifacts
             for file_path in skill_path.rglob('*'):
-                if not file_path.is_file():
+                if not file_path.is_file() or file_path == temporary_archive:
                     continue
                 arcname = file_path.relative_to(skill_path.parent)
                 if should_exclude(arcname):
@@ -100,11 +104,17 @@ def package_skill(skill_path, output_dir=None):
                 zipf.write(file_path, arcname)
                 print(f"  Added: {arcname}")
 
+        temporary_archive.replace(skill_filename)
         print(f"\n✅ Successfully packaged skill to: {skill_filename}")
         return skill_filename
 
     except Exception as e:
         print(f"❌ Error creating .skill file: {e}")
+        if temporary_archive is not None:
+            try:
+                temporary_archive.unlink(missing_ok=True)
+            except OSError as cleanup_error:
+                print(f"   Temporary archive was kept at {temporary_archive}: {cleanup_error}")
         return None
 
 
