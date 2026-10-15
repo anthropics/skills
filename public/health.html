@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Check - Piano Tutor</title>
+</head>
+<body>
+    <h1>OK</h1>
+    <p>Service: Piano Tutor Frontend</p>
+    <p>Status: Healthy</p>
+    <p>Timestamp: <span id="timestamp"></span></p>
+    <script>
+        document.getElementById('timestamp').textContent = new Date().toISOString();
+    </script>
+</body>
+</html>

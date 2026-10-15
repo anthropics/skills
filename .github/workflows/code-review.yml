@@ -1,0 +1,204 @@
+name: Code Review & Quality Checks
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [main, develop]
+
+jobs:
+  lint-and-format:
+    name: Lint & Format Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint
+        run: npm run lint
+        continue-on-error: false
+
+      - name: Run Prettier check
+        run: npm run format:check
+        continue-on-error: false
+
+  type-check:
+    name: TypeScript Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: TypeScript check
+        run: npm run type-check
+
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test -- --coverage
+
+      - name: Check coverage threshold
+        run: |
+          if [ -f coverage/coverage-summary.json ]; then
+            COVERAGE=$(node -pe "JSON.parse(require('fs').readFileSync('coverage/coverage-summary.json')).total.lines.pct")
+            echo "Coverage: $COVERAGE%"
+            if [ $(echo "$COVERAGE < 70" | bc) -eq 1 ]; then
+              echo "❌ Coverage below 70% threshold"
+              exit 1
+            fi
+            echo "✅ Coverage meets 70% threshold"
+          fi
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Run npm audit
+        run: npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Check for console.log
+        run: |
+          if grep -r "console\.log" src/components src/hooks src/pages --include="*.tsx" --include="*.ts" --exclude="*.test.*"; then
+            echo "❌ Found console.log statements in production code"
+            echo "Please remove console.log before merging"
+            exit 1
+          fi
+          echo "✅ No console.log found"
+
+  accessibility:
+    name: Accessibility Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for aria-labels
+        run: |
+          echo "Checking for accessibility attributes..."
+          # This is a simple check - consider using @axe-core/cli for comprehensive checks
+          if grep -r "<button" src/components --include="*.tsx" | grep -v "aria-label"; then
+            echo "⚠️ Found buttons without aria-label - please add accessibility attributes"
+          fi
+
+  backend-lint:
+    name: Backend Lint & Type Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install flake8 mypy black
+          pip install -r requirements.txt || pip install -e .
+
+      - name: Run flake8
+        run: |
+          cd backend
+          flake8 app/ --max-line-length=100 --exclude=__pycache__
+
+      - name: Run black check
+        run: |
+          cd backend
+          black --check app/
+
+      - name: Run mypy
+        run: |
+          cd backend
+          mypy app/ --ignore-missing-imports
+
+  performance:
+    name: Bundle Size Check
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Check bundle size
+        run: |
+          if [ -d dist ]; then
+            BUNDLE_SIZE=$(du -sb dist | cut -f1)
+            BUNDLE_SIZE_MB=$((BUNDLE_SIZE / 1024 / 1024))
+            echo "Bundle size: ${BUNDLE_SIZE_MB}MB"
+            if [ $BUNDLE_SIZE_MB -gt 5 ]; then
+              echo "❌ Bundle size exceeds 5MB limit"
+              exit 1
+            fi
+            echo "✅ Bundle size within limits"
+          fi
