@@ -1,6 +1,6 @@
 ---
 name: spec-driven-development
-description: Run feature work through Spec Driven Development (SDD) — EARS-formatted requirements, a design document, an ordered task list, and objective requirement-to-test traceability with human approval gates. Creates .specs/<feature>/ with requirements.md, design.md and tasks.md, then verifies every R<n> maps to a real, existing test using scripts/check_traceability.py. Use when starting or planning a new feature, when the user mentions specs, requirements, EARS, SDD, traceability, or approval gates, or before declaring implementation work done.
+description: Run feature work through Spec Driven Development (SDD) — EARS-formatted requirements, a design document, an ordered task list, and objective requirement-to-test traceability with human approval gates. Creates .specs/<feature>/ with requirements.md, design.md and tasks.md, then verifies every R<n> maps to a real, existing test using scripts/check_traceability.py, and records cross-feature decisions as ADRs. Use when starting or planning a new feature, when the user mentions specs, requirements, EARS, SDD, traceability, approval gates, or architecture decision records, or before declaring implementation work done.
 author: jordimarsal
 version: "1.0"
 tags:
@@ -43,7 +43,10 @@ draft spec → [Spec Gate: human approval] → implement in batches → verify t
      `depends_on` and `refs: R<n>`; sized for 2–4 task batches
 2. **Stop at the Spec Gate.** Present the spec to the human and wait for
    explicit approval. Do not start implementing on your own approval. Revise
-   in place if changes are requested.
+   in place if changes are requested. When a design decision will bind
+   *future* features too (database, transport, pattern, convention), record
+   it as an ADR before moving on
+   ([references/adr.md](references/adr.md)).
 3. **Implement in batches.** Work 2–4 consecutive tasks per pass; a task is
    only checked `[x]` when its change AND its tests exist and pass. Maintain
    the traceability table as you go

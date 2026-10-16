@@ -69,6 +69,14 @@ result it did not execute; keeps replies to one line pointing at files
 (`done T8-T11 -> progress file`); on receiving the "Nothing was written"
 opener, complies immediately — first file first, no explanation.
 
+## Big logs: delegate, don't read
+
+When a log is too big to read in session (~200+ lines, or you need "where did
+it fail", not the whole file), dispatch one read-only subagent to extract
+evidence — quoted lines plus the commands that produced them — and verify
+every quote against the original before acting on it
+([references/log-delegation.md](references/log-delegation.md)).
+
 ## Orchestrator never does
 
 - Never implement the work yourself — you decompose, dispatch, and verify.
@@ -80,7 +88,8 @@ opener, complies immediately — first file first, no explanation.
 
 Deep dives: [references/batching-and-dispatch.md](references/batching-and-dispatch.md) ·
 [references/stall-recovery.md](references/stall-recovery.md) ·
-[references/evidence-checks.md](references/evidence-checks.md)
+[references/evidence-checks.md](references/evidence-checks.md) ·
+[references/log-delegation.md](references/log-delegation.md)
 
 ---
 
