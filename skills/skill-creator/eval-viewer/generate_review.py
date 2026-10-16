@@ -285,7 +285,18 @@ def generate_html(
     if session_token:
         embedded["session_token"] = session_token
 
-    data_json = json.dumps(embedded)
+    # Eval outputs are untrusted. Escape characters that could close the
+    # <script> block (e.g. "</script>") or break the JS literal; the result
+    # still parses to the identical object. Without this, injected script
+    # could read session_token and forge feedback.
+    data_json = (
+        json.dumps(embedded)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
