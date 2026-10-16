@@ -14,10 +14,12 @@ No dependencies beyond the Python stdlib are required.
 
 import argparse
 import base64
+import hmac
 import json
 import mimetypes
 import os
 import re
+import secrets
 import signal
 import subprocess
 import sys
@@ -252,8 +254,13 @@ def generate_html(
     skill_name: str,
     previous: dict[str, dict] | None = None,
     benchmark: dict | None = None,
+    session_token: str | None = None,
 ) -> str:
-    """Generate the complete standalone HTML page with embedded data."""
+    """Generate the complete standalone HTML page with embedded data.
+
+    ``session_token`` is only set when the page is served by ReviewHandler;
+    the page echoes it back on every /api/feedback request.
+    """
     template_path = Path(__file__).parent / "viewer.html"
     template = template_path.read_text()
 
@@ -275,8 +282,21 @@ def generate_html(
     }
     if benchmark:
         embedded["benchmark"] = benchmark
+    if session_token:
+        embedded["session_token"] = session_token
 
-    data_json = json.dumps(embedded)
+    # Eval outputs are untrusted. Escape characters that could close the
+    # <script> block (e.g. "</script>") or break the JS literal; the result
+    # still parses to the identical object. Without this, injected script
+    # could read session_token and forge feedback.
+    data_json = (
+        json.dumps(embedded)
+        .replace("<", "\\u003c")
+        .replace(">", "\\u003e")
+        .replace("&", "\\u0026")
+        .replace("\u2028", "\\u2028")
+        .replace("\u2029", "\\u2029")
+    )
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
@@ -310,7 +330,22 @@ class ReviewHandler(BaseHTTPRequestHandler):
 
     Regenerates the HTML on each page load so that refreshing the browser
     picks up new eval outputs without restarting the server.
+
+    The server listens on localhost, which every web page open in the user's
+    browser can reach. To stop another site from overwriting feedback.json
+    (CSRF) or reading the review data (DNS rebinding), every request must:
+
+    - carry a Host header naming this server (localhost / 127.0.0.1 + port);
+    - carry no Origin header, or one for this server;
+    and every /api/feedback request must also:
+    - carry the per-run session token in the X-Review-Token header. The token
+      is only embedded in the page this server serves, and a custom header
+      cannot be sent cross-origin without a CORS preflight, which this server
+      never approves;
+    - for POST, be sent as Content-Type: application/json.
     """
+
+    TOKEN_HEADER = "X-Review-Token"
 
     def __init__(
         self,
@@ -319,6 +354,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
         feedback_path: Path,
         previous: dict[str, dict],
         benchmark_path: Path | None,
+        session_token: str,
         *args,
         **kwargs,
     ):
@@ -327,9 +363,42 @@ class ReviewHandler(BaseHTTPRequestHandler):
         self.feedback_path = feedback_path
         self.previous = previous
         self.benchmark_path = benchmark_path
+        self.session_token = session_token
         super().__init__(*args, **kwargs)
 
+    def _send_json(self, status: int, body: bytes) -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _rejection_reason(self, api: bool) -> str | None:
+        """Return why this request must be refused, or None if it may proceed."""
+        port = self.server.server_address[1]
+        local_hosts = {f"localhost:{port}", f"127.0.0.1:{port}"}
+        if self.headers.get("Host", "") not in local_hosts:
+            return "unexpected Host header"
+        origin = self.headers.get("Origin")
+        if origin is not None and origin not in {f"http://{h}" for h in local_hosts}:
+            return "cross-origin request"
+        if api:
+            token = self.headers.get(self.TOKEN_HEADER, "")
+            if not hmac.compare_digest(token.encode(), self.session_token.encode()):
+                return "missing or invalid session token"
+        return None
+
+    def _reject_if_untrusted(self, api: bool) -> bool:
+        """Send 403 and return True when the request fails _rejection_reason."""
+        reason = self._rejection_reason(api)
+        if reason is None:
+            return False
+        self._send_json(403, json.dumps({"error": f"Forbidden: {reason}"}).encode())
+        return True
+
     def do_GET(self) -> None:
+        if self._reject_if_untrusted(api=self.path == "/api/feedback"):
+            return
         if self.path == "/" or self.path == "/index.html":
             # Regenerate HTML on each request (re-scans workspace for new outputs)
             runs = find_runs(self.workspace)
@@ -339,7 +408,9 @@ class ReviewHandler(BaseHTTPRequestHandler):
                     benchmark = json.loads(self.benchmark_path.read_text())
                 except (json.JSONDecodeError, OSError):
                     pass
-            html = generate_html(runs, self.skill_name, self.previous, benchmark)
+            html = generate_html(
+                runs, self.skill_name, self.previous, benchmark, self.session_token
+            )
             content = html.encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
@@ -360,6 +431,12 @@ class ReviewHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:
         if self.path == "/api/feedback":
+            if self._reject_if_untrusted(api=True):
+                return
+            content_type = self.headers.get("Content-Type", "").split(";")[0].strip().lower()
+            if content_type != "application/json":
+                self._send_json(415, b'{"error":"Expected Content-Type: application/json"}')
+                return
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
             try:
@@ -438,7 +515,10 @@ def main() -> None:
     # Kill any existing process on the target port
     port = args.port
     _kill_port(port)
-    handler = partial(ReviewHandler, workspace, skill_name, feedback_path, previous, benchmark_path)
+    session_token = secrets.token_urlsafe(32)
+    handler = partial(
+        ReviewHandler, workspace, skill_name, feedback_path, previous, benchmark_path, session_token
+    )
     try:
         server = HTTPServer(("127.0.0.1", port), handler)
     except OSError:

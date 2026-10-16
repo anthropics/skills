@@ -648,6 +648,20 @@
     // ---- Embedded data (injected by generate_review.py) ----
     /*__EMBEDDED_DATA__*/
 
+    // The server only accepts /api/feedback requests that echo back the
+    // session token it embedded in this page (absent in --static mode).
+    function apiHeaders(extra) {
+      const headers = Object.assign({}, extra);
+      if (EMBEDDED_DATA.session_token) headers["X-Review-Token"] = EMBEDDED_DATA.session_token;
+      return headers;
+    }
+
+    // Treat non-2xx responses (e.g. a stale page after a server restart) as failures.
+    function checkOk(resp) {
+      if (!resp.ok) throw new Error("HTTP " + resp.status);
+      return resp;
+    }
+
     // ---- State ----
     let feedbackMap = {};  // run_id -> feedback text
     let currentIndex = 0;
@@ -663,7 +677,7 @@
         || Object.keys(EMBEDDED_DATA.previous_outputs || {}).length > 0;
       if (!hasPrevious) {
         try {
-          const resp = await fetch("/api/feedback");
+          const resp = checkOk(await fetch("/api/feedback", { headers: apiHeaders() }));
           const data = await resp.json();
           if (data.reviews) {
             for (const r of data.reviews) feedbackMap[r.run_id] = r.feedback;
@@ -1011,9 +1025,9 @@
 
       fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: apiHeaders({ "Content-Type": "application/json" }),
         body: JSON.stringify({ reviews, status: "in_progress" }),
-      }).then(() => {
+      }).then(checkOk).then(() => {
         document.getElementById("feedback-status").textContent = "Saved";
       }).catch(() => {
         // Static mode or server unavailable — no-op on auto-save,
@@ -1043,9 +1057,9 @@
       const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
       fetch("/api/feedback", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: apiHeaders({ "Content-Type": "application/json" }),
         body: payload,
-      }).then(() => {
+      }).then(checkOk).then(() => {
         document.getElementById("done-overlay").classList.add("visible");
       }).catch(() => {
         // Server not available (static mode) — download as file
