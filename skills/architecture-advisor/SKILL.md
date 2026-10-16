@@ -1,16 +1,17 @@
 ---
 name: architecture-advisor
 description: Choose and justify a core architecture pattern for a service or module — layered, hexagonal, clean, CQRS, microservices, modular monolith, event-driven, functional core/imperative shell — using three selectors (domain complexity, team size, scaling needs), plus overlay tables for API style, frontend integration and data persistence. Produces a written justification with accepted trade-offs and rejected alternatives, ready for a design document. Use when starting a new service or module, filling the architectural decisions section of a design doc, deciding monolith vs microservices, or when asked which architecture fits.
-author: jordimarsal
-version: "1.0"
-tags:
-  - architecture
-  - design
-  - hexagonal
-  - clean-architecture
-  - cqrs
-  - microservices
-  - decision-making
+metadata:
+  author: jordimarsal
+  version: '1.0'
+  tags:
+    - architecture
+    - design
+    - hexagonal
+    - clean-architecture
+    - cqrs
+    - microservices
+    - decision-making
 ---
 
 # Architecture Advisor
