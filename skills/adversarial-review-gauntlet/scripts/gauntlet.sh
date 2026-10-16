@@ -161,7 +161,7 @@ fi
 if [ "${#GAPS[@]}" -eq 0 ]; then VERDICT="PASS"; RC=0; else VERDICT="REJECT"; RC=1; fi
 
 json_escape() {  # json_escape <string> — quote for embedding in JSON
-  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n' ' '
+  printf '%s' "$1" | sed 's/\\/\\\\/g; s/"/\\"/g' | tr '\n\t\r' '   '
 }
 
 if [ "$JSON" -eq 1 ]; then

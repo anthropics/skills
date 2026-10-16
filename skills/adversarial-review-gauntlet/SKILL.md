@@ -1,15 +1,16 @@
 ---
 name: adversarial-review-gauntlet
 description: Run a sequential adversarial review (G1-G4) over a finished feature before declaring it done — G1 mechanical correctness (spec trio complete, all tasks checked, traceability gap-free via scripts/gauntlet.sh), G2 adversarial behavior, G3 maintainability, G4 evidence with a written report. A G1 REJECT stops everything. Use after the last implementation batch, before a completion gate or final human approval, when self-reviewing a feature, or when asked to gauntlet, adversarially review, or harden a feature.
-author: jordimarsal
-version: "1.0"
-tags:
-  - review
-  - testing
-  - quality
-  - adversarial
-  - verification
-  - gates
+metadata:
+  author: jordimarsal
+  version: '1.0'
+  tags:
+    - review
+    - testing
+    - quality
+    - adversarial
+    - verification
+    - gates
 ---
 
 # Adversarial Review Gauntlet

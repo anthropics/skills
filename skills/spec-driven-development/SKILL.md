@@ -1,15 +1,17 @@
 ---
 name: spec-driven-development
-description: Run feature work through Spec Driven Development (SDD) — EARS-formatted requirements, a design document, an ordered task list, and objective requirement-to-test traceability with human approval gates. Creates .specs/<feature>/ with requirements.md, design.md and tasks.md, then verifies every R<n> maps to a real, existing test using scripts/check_traceability.py, and records cross-feature decisions as ADRs. Use when starting or planning a new feature, when the user mentions specs, requirements, EARS, SDD, traceability, approval gates, or architecture decision records, or before declaring implementation work done.
-author: jordimarsal
-version: "1.0"
-tags:
-  - sdd
-  - specs
-  - requirements
-  - ears
-  - traceability
-  - testing
+description: Run feature work through Spec Driven Development (SDD) — EARS-formatted requirements, a design document, an ordered task list, and objective requirement-to-test traceability with human approval gates. Creates a spec directory per feature with requirements.md, design.md and tasks.md, then verifies every requirement ID maps to a real, existing test using scripts/check_traceability.py, and records cross-feature decisions as ADRs. Use when starting or planning a new feature, when the user mentions specs, requirements, EARS, SDD, traceability, approval gates, or architecture decision records, or before declaring implementation work done.
+metadata:
+  author: jordimarsal
+  version: '1.0'
+  tags:
+    - sdd
+    - specs
+    - requirements
+    - ears
+    - traceability
+    - testing
+    - adr
 ---
 
 # Spec Driven Development

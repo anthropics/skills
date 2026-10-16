@@ -1,15 +1,16 @@
 ---
 name: agent-dispatch-discipline
 description: Orchestrate subagent work without stalls, drift, or phantom results — batch sizing (2-4 tasks per dispatch, never 5+), dispatch message anatomy, on-disk evidence checks after every batch, the "Nothing was written" re-dispatch opener, fresh-session restarts at ~70% context, and result-to-file replies. Use when dispatching work to subagents, coordinating multi-agent sessions, or when a subagent returns an empty reply, claims results without files, or degrades as its context fills.
-author: jordimarsal
-version: "1.0"
-tags:
-  - agents
-  - subagents
-  - orchestration
-  - batching
-  - stalls
-  - multi-agent
+metadata:
+  author: jordimarsal
+  version: '1.0'
+  tags:
+    - agents
+    - subagents
+    - orchestration
+    - batching
+    - stalls
+    - multi-agent
 ---
 
 # Agent Dispatch Discipline
