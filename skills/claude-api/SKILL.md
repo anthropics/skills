@@ -105,7 +105,7 @@ license: Complete terms in LICENSE.txt
 ### Current Model Catalog and First-Party Pricing
 - Reference the following catalog for model IDs, context capacities, and first-party Anthropic API token rates (cached `2026-10-06`; first-party rates also apply to Microsoft Foundry via Microsoft Marketplace, whereas Amazon Bedrock and Google Cloud Vertex AI apply partner-operated pricing documented at `https://aws.amazon.com/bedrock/pricing/` and `https://cloud.google.com/vertex-ai/generative-ai/pricing#claude-models` or via `shared/live-sources.md`):
 
-| Model Name | Exact Model ID | Context Window | Max Output | Input $/1M \vert{} Output $/1M |
+| Model Name | Exact Model ID | Context Window | Max Output | Input $/1M | Output $/1M |
 |---|---|---|---|---|---|
 | Claude Fable 5.1 | `claude-fable-5-1` | 1M (default & max) | 128K | $10.00 | $50.00 |
 | Claude Mythos 5.1 (Project Glasswing only) | `claude-mythos-5-1` | 1M (default & max) | 128K | $10.00 | $50.00 |
