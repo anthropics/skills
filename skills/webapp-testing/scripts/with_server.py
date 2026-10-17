@@ -43,6 +43,10 @@ def stop_servers(server_processes):
     Signalling only the direct child leaves those grandchildren running and
     they get orphaned (reparented to init/systemd). Sending the signal to the
     process group instead tears down the entire tree.
+
+    The shell exiting is not proof that the group is gone: it may have
+    backgrounded the server, or a descendant may ignore SIGTERM. So the group
+    itself is checked and signalled, independently of the shell's lifetime.
     """
     if not server_processes:
         return
@@ -50,39 +54,48 @@ def stop_servers(server_processes):
     for process in server_processes:
         _signal_group(process, signal.SIGTERM)
     for i, process in enumerate(server_processes):
-        try:
-            process.wait(timeout=5)
-        except subprocess.TimeoutExpired:
+        if not _wait_group(process, timeout=5):
             _signal_group(process, signal.SIGKILL)
-            try:
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                pass
+            if not _wait_group(process, timeout=5):
+                print(f"Warning: server {i+1} process group {process.pid} did not exit")
+                continue
         print(f"Server {i+1} stopped")
     server_processes.clear()
     print("All servers stopped")
 
 
+# Each server is started with start_new_session=True, so its process group ID
+# is the shell's PID. The ID stays valid after the shell exits: a PID is not
+# reused while a process group with that ID still has members.
+
+def _group_alive(process):
+    # Reap the shell first, otherwise its zombie keeps the group "alive".
+    process.poll()
+    try:
+        os.killpg(process.pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
+def _wait_group(process, timeout):
+    """Wait until every process in the server's group has exited."""
+    deadline = time.monotonic() + timeout
+    while _group_alive(process):
+        if time.monotonic() >= deadline:
+            return False
+        time.sleep(0.1)
+    return True
+
+
 def _signal_group(process, sig):
-    """Send a signal to the server's process group, falling back to the
-    direct child if the group cannot be resolved."""
-    if process.poll() is not None:
-        return
+    """Send a signal to the server's whole process group."""
+    process.poll()
     try:
-        pgid = os.getpgid(process.pid)
-    except (ProcessLookupError, OSError):
-        pgid = None
-    if pgid is not None:
-        try:
-            os.killpg(pgid, sig)
-            return
-        except ProcessLookupError:
-            return
-        except OSError:
-            pass
-    try:
-        process.send_signal(sig)
-    except (ProcessLookupError, OSError):
+        os.killpg(process.pid, sig)
+    except (ProcessLookupError, PermissionError):
         pass
 
 
