@@ -271,6 +271,66 @@ class TestExternalLinksAtRisk(unittest.TestCase):
         result = self._save_and_check(wb, "no_ext_links.xlsx")
         self.assertEqual(result, [])
 
+    def test_workbook_level_alias_to_worksheet_scoped_name(self):
+        """Workbook-level alias referring to use-site worksheet-scoped name (repro PR #2019)."""
+        wb = Workbook()
+        main = wb.active
+        main.title = "Main"
+        other = wb.create_sheet("Other")
+        attach_external_link(wb)
+        # Local2 scoped to Main points to external workbook
+        main.defined_names.add(
+            DefinedName("Local2", attr_text="'[1]Sheet1'!$D$9", localSheetId=0)
+        )
+        # Alias2 is a workbook-level name referring to Local2
+        wb.defined_names.add(DefinedName("Alias2", attr_text="Local2"))
+        main["A1"] = "=Alias2"  # Indirect alias on Main -> at risk
+        main["A2"] = "=Local2"  # Direct local name on Main -> at risk
+        other["A1"] = "=Alias2"  # On Other, Local2 does not exist -> safe
+        other["A2"] = "=Main!A1"  # Ordinary cross-sheet cell reference -> safe
+        result = self._save_and_check(wb, "workbook_alias_to_scoped.xlsx")
+        self.assertIn("Main!A1", result)
+        self.assertIn("Main!A2", result)
+        self.assertNotIn("Other!A1", result)
+        self.assertNotIn("Other!A2", result)
+
+    def test_multi_hop_workbook_alias_to_scoped_name(self):
+        """Multi-hop workbook alias chain preserving use-site worksheet scope: TopAlias -> MidAlias -> LocalName."""
+        wb = Workbook()
+        main = wb.active
+        main.title = "Main"
+        attach_external_link(wb)
+        main.defined_names.add(
+            DefinedName("LocalTarget", attr_text="'[1]Sheet1'!$A$5", localSheetId=0)
+        )
+        wb.defined_names.add(DefinedName("MidAlias", attr_text="LocalTarget"))
+        wb.defined_names.add(DefinedName("TopAlias", attr_text="MidAlias"))
+        main["A1"] = "=TopAlias"
+        result = self._save_and_check(wb, "multi_hop_workbook_alias.xlsx")
+        self.assertEqual(result, ["Main!A1"])
+
+    def test_workbook_alias_multi_sheet_independent_local_names(self):
+        """Identically named local definitions on different sheets evaluated via global alias."""
+        wb = Workbook()
+        sheet_a = wb.active
+        sheet_a.title = "SheetA"
+        sheet_b = wb.create_sheet("SheetB")
+        attach_external_link(wb)
+        # SheetA's LocalData is external
+        sheet_a.defined_names.add(
+            DefinedName("LocalData", attr_text="'[1]Sheet1'!$B$2", localSheetId=0)
+        )
+        # SheetB's LocalData is internal constant 999
+        sheet_b.defined_names.add(
+            DefinedName("LocalData", attr_text="999", localSheetId=1)
+        )
+        wb.defined_names.add(DefinedName("SharedAlias", attr_text="LocalData"))
+        sheet_a["A1"] = "=SharedAlias"  # Resolves to SheetA's external LocalData -> at risk
+        sheet_b["A1"] = "=SharedAlias"  # Resolves to SheetB's internal LocalData -> safe
+        result = self._save_and_check(wb, "multi_sheet_local_alias.xlsx")
+        self.assertIn("SheetA!A1", result)
+        self.assertNotIn("SheetB!A1", result)
+
 
 if __name__ == "__main__":
     unittest.main()

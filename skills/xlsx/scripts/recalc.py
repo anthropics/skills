@@ -192,14 +192,14 @@ def external_links_at_risk(filename):
                     if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
                         target_scope = s_lower
                     elif ref_lower in global_names:
-                        target_scope = None
+                        target_scope = s_lower if s_lower in scoped_names else None
                     else:
                         continue
                 else:
                     if scope is not None and ref_lower in scoped_names.get(scope, {}):
                         target_scope = scope
                     elif ref_lower in global_names:
-                        target_scope = None
+                        target_scope = scope
                     else:
                         continue
 
@@ -222,14 +222,14 @@ def external_links_at_risk(filename):
                     if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
                         target_scope = s_lower
                     elif ref_lower in global_names:
-                        target_scope = None
+                        target_scope = s_lower if s_lower in scoped_names else None
                     else:
                         continue
                 else:
                     if ref_lower in scoped_names.get(current_sheet_lower, {}):
                         target_scope = current_sheet_lower
                     elif ref_lower in global_names:
-                        target_scope = None
+                        target_scope = current_sheet_lower
                     else:
                         continue
 
