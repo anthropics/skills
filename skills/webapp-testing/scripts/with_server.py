@@ -14,10 +14,13 @@ Usage:
       -- python test.py
 """
 
-import subprocess
+import atexit
+import os
+import signal
 import socket
-import time
+import subprocess
 import sys
+import time
 import argparse
 
 def is_server_ready(port, timeout=30):
@@ -30,6 +33,73 @@ def is_server_ready(port, timeout=30):
         except (socket.error, ConnectionRefusedError):
             time.sleep(0.5)
     return False
+
+
+def stop_servers(server_processes):
+    """Stop all servers, killing the whole process group of each one.
+
+    Because servers are started with shell=True (e.g. "npm run dev"), the
+    direct child is a shell that spawns further children (npm -> node/vite).
+    Signalling only the direct child leaves those grandchildren running and
+    they get orphaned (reparented to init/systemd). Sending the signal to the
+    process group instead tears down the entire tree.
+    """
+    if not server_processes:
+        return
+    print(f"\nStopping {len(server_processes)} server(s)...")
+    for process in server_processes:
+        _signal_group(process, signal.SIGTERM)
+    for i, process in enumerate(server_processes):
+        try:
+            process.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            _signal_group(process, signal.SIGKILL)
+            try:
+                process.wait(timeout=5)
+            except subprocess.TimeoutExpired:
+                pass
+        print(f"Server {i+1} stopped")
+    server_processes.clear()
+    print("All servers stopped")
+
+
+def _signal_group(process, sig):
+    """Send a signal to the server's process group, falling back to the
+    direct child if the group cannot be resolved."""
+    if process.poll() is not None:
+        return
+    try:
+        pgid = os.getpgid(process.pid)
+    except (ProcessLookupError, OSError):
+        pgid = None
+    if pgid is not None:
+        try:
+            os.killpg(pgid, sig)
+            return
+        except ProcessLookupError:
+            return
+        except OSError:
+            pass
+    try:
+        process.send_signal(sig)
+    except (ProcessLookupError, OSError):
+        pass
+
+
+def _install_cleanup_handlers(server_processes):
+    """Ensure servers are stopped even if this wrapper is interrupted
+    (SIGINT/SIGTERM/SIGHUP) or exits unexpectedly."""
+    def handler(signum, frame):
+        stop_servers(server_processes)
+        sys.exit(128 + signum)
+
+    for signum in (signal.SIGINT, signal.SIGTERM, signal.SIGHUP):
+        try:
+            signal.signal(signum, handler)
+        except (ValueError, OSError):
+            pass
+
+    atexit.register(stop_servers, server_processes)
 
 
 def main():
@@ -59,18 +129,22 @@ def main():
         servers.append({'cmd': cmd, 'port': port})
 
     server_processes = []
+    _install_cleanup_handlers(server_processes)
 
     try:
         # Start all servers
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            # Use shell=True to support commands with cd and &&
+            # Use shell=True to support commands with cd and &&.
+            # start_new_session=True puts each server in its own process group
+            # so the whole tree (sh -> npm -> node/vite) can be killed on exit.
+            # stdout/stderr are inherited (not piped) so a chatty server cannot
+            # fill an undrained pipe buffer and deadlock.
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                start_new_session=True,
             )
             server_processes.append(process)
 
@@ -90,16 +164,7 @@ def main():
 
     finally:
         # Clean up all servers
-        print(f"\nStopping {len(server_processes)} server(s)...")
-        for i, process in enumerate(server_processes):
-            try:
-                process.terminate()
-                process.wait(timeout=5)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                process.wait()
-            print(f"Server {i+1} stopped")
-        print("All servers stopped")
+        stop_servers(server_processes)
 
 
 if __name__ == '__main__':
