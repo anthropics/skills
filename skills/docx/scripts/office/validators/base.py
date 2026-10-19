@@ -21,6 +21,21 @@ def _load_schema(schema_path: str):
         )
     return lxml.etree.XMLSchema(xsd_doc)
 
+
+_SAFE_PARSER = lxml.etree.XMLParser(
+    resolve_entities=False, no_network=True, load_dtd=False
+)
+
+
+def safe_parse(source):
+    """Parse an XML file or file-like object securely without entity resolution."""
+    return lxml.etree.parse(source, parser=_SAFE_PARSER)
+
+
+def safe_fromstring(text):
+    """Parse an XML string securely without entity resolution."""
+    return lxml.etree.fromstring(text, parser=_SAFE_PARSER)
+
 class BaseSchemaValidator:
 
     IGNORED_VALIDATION_ERRORS = [
@@ -164,7 +179,7 @@ class BaseSchemaValidator:
 
         for xml_file in self.xml_files:
             try:
-                lxml.etree.parse(str(xml_file))
+                safe_parse(str(xml_file))
             except lxml.etree.XMLSyntaxError as e:
                 errors.append(
                     f"  {xml_file.relative_to(self.unpacked_dir)}: "
@@ -191,7 +206,7 @@ class BaseSchemaValidator:
 
         for xml_file in self.xml_files:
             try:
-                root = lxml.etree.parse(str(xml_file)).getroot()
+                root = safe_parse(str(xml_file)).getroot()
                 declared = set(root.nsmap.keys()) - {None}  
 
                 for attr_val in [
@@ -221,7 +236,7 @@ class BaseSchemaValidator:
 
         for xml_file in self.xml_files:
             try:
-                root = lxml.etree.parse(str(xml_file)).getroot()
+                root = safe_parse(str(xml_file)).getroot()
                 file_ids = {}  
 
                 mc_elements = root.xpath(
@@ -335,7 +350,7 @@ class BaseSchemaValidator:
 
         for rels_file in rels_files:
             try:
-                rels_root = lxml.etree.parse(str(rels_file)).getroot()
+                rels_root = safe_parse(str(rels_file)).getroot()
 
                 rels_dir = rels_file.parent
 
@@ -421,7 +436,7 @@ class BaseSchemaValidator:
                 continue
 
             try:
-                rels_root = lxml.etree.parse(str(rels_file)).getroot()
+                rels_root = safe_parse(str(rels_file)).getroot()
                 rid_to_type = {}
 
                 for rel in rels_root.findall(
@@ -441,7 +456,7 @@ class BaseSchemaValidator:
                         )
                         rid_to_type[rid] = type_name
 
-                xml_root = lxml.etree.parse(str(xml_file)).getroot()
+                xml_root = safe_parse(str(xml_file)).getroot()
 
                 r_ns = self.OFFICE_RELATIONSHIPS_NAMESPACE
                 rid_attrs_to_check = ["id", "embed", "link"]
@@ -523,7 +538,7 @@ class BaseSchemaValidator:
             return False
 
         try:
-            root = lxml.etree.parse(str(content_types_file)).getroot()
+            root = safe_parse(str(content_types_file)).getroot()
             declared_parts = set()
             declared_extensions = set()
 
@@ -578,7 +593,7 @@ class BaseSchemaValidator:
                     continue
 
                 try:
-                    root_tag = lxml.etree.parse(str(xml_file)).getroot().tag
+                    root_tag = safe_parse(str(xml_file)).getroot().tag
                     root_name = root_tag.split("}")[-1] if "}" in root_tag else root_tag
 
                     if root_name in declarable_roots and path_str not in declared_parts:
@@ -727,7 +742,7 @@ class BaseSchemaValidator:
 
     def _clean_ignorable_namespaces(self, xml_doc):
         xml_string = lxml.etree.tostring(xml_doc, encoding="unicode")
-        xml_copy = lxml.etree.fromstring(xml_string)
+        xml_copy = safe_fromstring(xml_string)
 
         for elem in xml_copy.iter():
             attrs_to_remove = []
@@ -784,7 +799,7 @@ class BaseSchemaValidator:
             schema = _load_schema(str(schema_path))
 
             with open(xml_file, "r") as f:
-                xml_doc = lxml.etree.parse(f)
+                xml_doc = safe_parse(f)
 
             xml_doc, _ = self._remove_template_tags_from_text_nodes(xml_doc)
             xml_doc = self._preprocess_for_mc_ignorable(xml_doc)
@@ -844,7 +859,7 @@ class BaseSchemaValidator:
         template_pattern = re.compile(r"\{\{[^}]*\}\}")
 
         xml_string = lxml.etree.tostring(xml_doc, encoding="unicode")
-        xml_copy = lxml.etree.fromstring(xml_string)
+        xml_copy = safe_fromstring(xml_string)
 
         def process_text_content(text, content_type):
             if not text:
