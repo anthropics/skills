@@ -37,6 +37,44 @@ Only blocks when: disk critical, OR complex task completed without learning capt
 | Stale growth-log | mtime comparison | Block if complex task |
 | Rationalization patterns | Regex | Warn only (never blocks) |
 
+## Gate Logging
+
+A gate that only logs its negative outcomes cannot report a rate. If every line is `blocked`,
+then `blocked / total` is 1.0 for any input — that number describes the bookkeeping, not the
+gate. The rule: **when a gate cannot measure itself it must say so, and the fix belongs in the
+log, not in the gate.**
+
+One record per gate per session:
+
+| Field | Meaning |
+|---|---|
+| `gate` | gate name |
+| `status` | `measured` / `satisfied` / `dead` / `uncomputable` |
+| `allowed` | count only — never one line per allowed event |
+| `blocks`, `warns` | one line each, carrying the reason |
+| `block_rate` | `blocks / (blocks + allowed)`, `null` when uncomputable |
+
+`allowed` is aggregated on purpose. In one deployment the gate logged 963 blocks; the allow side
+is plausibly two orders of magnitude larger, and per-event allow lines at that volume swamp the
+log and slow the next audit while adding nothing — the count is all the rate needs. Blocks and
+warns stay per-event because each one carries a reason worth reading.
+
+Status is exclusive and total:
+
+| Status | Condition | Meaning |
+|---|---|---|
+| `measured` | allowed > 0, blocks > 0 | both sides observed |
+| `satisfied` | allowed > 0, blocks = 0 | gate ran, nothing to stop |
+| `dead` | allowed = 0, blocks > 0 | everything blocked — suspect the predicate |
+| `uncomputable` | both zero | the gate never ran |
+
+`dead` and `satisfied` are the pair that matters: a single-sided log makes them identical, and
+that is how a broken gate survives review as health.
+
+Acceptance: a whole-session gate report must be reproducible **in one command from the log**, not
+by rereading a transcript. Reference implementation and tests live under `scripts/` —
+`python scripts/gate_log.py --selftest`.
+
 ## Install
 
 ```json
