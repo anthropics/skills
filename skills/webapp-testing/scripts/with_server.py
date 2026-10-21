@@ -19,23 +19,45 @@ import socket
 import time
 import sys
 import argparse
+import os
+import re
 import shlex
 
 
-def parse_server_command(cmd_str: str) -> tuple[list[str], str | None]:
-    """Parse a server command into argv tokens and an optional working directory.
+def parse_server_command(cmd_str: str) -> tuple[list[str], str | None, dict[str, str]]:
+    """Parse a server command into argv tokens, an optional working directory,
+    and a dict of environment variable assignments.
 
-    Supports simple directory switching patterns like:
+    Supports patterns like:
       "cd backend && python server.py"
+      "PORT=8080 python server.py"
+      "cd backend && PORT=8080 NODE_ENV=dev python server.py"
     without invoking shell=True.
+
+    Leading NAME=value tokens are extracted into an env dict so they can be
+    passed via the ``env`` parameter of ``subprocess.Popen`` instead of being
+    mistaken for the executable name.
     """
     tokens = shlex.split(cmd_str)
+    cwd_dir: str | None = None
+
+    # Handle optional "cd <dir> &&" prefix
     if len(tokens) >= 4 and tokens[0] == "cd" and tokens[2] == "&&":
         cwd_dir = tokens[1]
-        actual_argv = tokens[3:]
-        return actual_argv, cwd_dir
+        tokens = tokens[3:]
 
-    return tokens, None
+    # Extract leading NAME=value environment assignments
+    env_vars: dict[str, str] = {}
+    _env_re = re.compile(r'^([A-Za-z_][A-Za-z0-9_]*)=(.*)$')
+    while tokens:
+        m = _env_re.match(tokens[0])
+        if m:
+            env_vars[m.group(1)] = m.group(2)
+            tokens = tokens[1:]
+        else:
+            break
+
+    return tokens, cwd_dir, env_vars
 
 def is_server_ready(port, timeout=30):
     """Wait for server to be ready by polling the port."""
@@ -82,10 +104,20 @@ def main():
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            argv, cwd = parse_server_command(server['cmd'])
+            argv, cwd, env_vars = parse_server_command(server['cmd'])
+
+            # Merge any leading NAME=value assignments into a copy of the
+            # current environment so the child process sees them, just as a
+            # shell would.
+            popen_env = None
+            if env_vars:
+                popen_env = os.environ.copy()
+                popen_env.update(env_vars)
+
             process = subprocess.Popen(
                 argv,
                 cwd=cwd,
+                env=popen_env,
                 shell=False,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
