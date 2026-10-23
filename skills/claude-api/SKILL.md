@@ -156,7 +156,7 @@ Route all core model interactions through `POST /v1/messages`:
 | Claude Haiku 5.5 | `claude-haiku-5-5` | 1M | $0.10 | $0.50 |
 | Claude Haiku 4.5 | `claude-haiku-4-5` | 200K | $1.00 | $5.00 |
 
-Apply Anthropic first-party API rates from the `2026-10-06` catalog above to first-party API calls and Microsoft Foundry deployments billed through the Microsoft Marketplace. Consult [Bedrock](https://aws.amazon.com/bedrock/pricing/), [Vertex AI](https://www.google.com/search?q=https://cloud.google.com/vertex-ai/generative-ai/pricing%23claude-models), or the Pricing entry in `shared/live-sources.md` for partner-operated pricing on Amazon Bedrock and Google Cloud Vertex AI.
+Apply Anthropic first-party API rates from the `2026-10-06` catalog above to first-party API calls and Microsoft Foundry deployments billed through the Microsoft Marketplace. Consult [Bedrock](https://aws.amazon.com/bedrock/pricing/), [Vertex AI](https://cloud.google.com/vertex-ai/generative-ai/pricing%23claude-models), or the Pricing entry in `shared/live-sources.md` for partner-operated pricing on Amazon Bedrock and Google Cloud Vertex AI.
 
 ### Model Resolution Rules
 - Select `claude-opus-5-5` as the mandatory default model across all code generation unless the user explicitly specifies another model.
