@@ -35,11 +35,17 @@ class GIFBuilder:
         """
         Add a frame to the GIF.
 
+        The frame is copied, so later changes to the caller's array or image
+        do not affect frames that were already added.
+
         Args:
             frame: Frame as numpy array or PIL Image (will be converted to RGB)
         """
         if isinstance(frame, Image.Image):
             frame = np.array(frame.convert("RGB"))
+        else:
+            # Store a snapshot, not a reference to the caller's (possibly reused) array.
+            frame = np.array(frame)
 
         # Ensure frame is correct size
         if frame.shape[:2] != (self.height, self.width):
