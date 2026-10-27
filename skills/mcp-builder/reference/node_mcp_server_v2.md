@@ -2,7 +2,7 @@
 
 This guide covers building MCP servers with **v2 of the MCP TypeScript SDK** (`@modelcontextprotocol/server`), the current stable release. If the project already depends on the v1 package `@modelcontextprotocol/sdk`, use the [v1 guide](./node_mcp_server.md) or migrate first (see [Migrating a v1 Server](#migrating-a-v1-server)).
 
-Code patterns are adapted from the [MCP TypeScript SDK examples](https://github.com/modelcontextprotocol/typescript-sdk/tree/main/examples) (Apache-2.0). The full v2 documentation index is `https://ts.sdk.modelcontextprotocol.io/v2/llms.txt`; every page is also served as markdown at its `.md` URL.
+Code patterns are adapted from the [MCP TypeScript SDK examples](https://github.com/modelcontextprotocol/typescript-sdk/tree/main/examples). The full v2 documentation index is `https://ts.sdk.modelcontextprotocol.io/v2/llms.txt`; every page is also served as markdown at its `.md` URL.
 
 ---
 
@@ -61,7 +61,7 @@ Most published examples and training data show v1 code. Translate it before use:
 | `McpError`, `ErrorCode` | `ProtocolError`, `ProtocolErrorCode` |
 | Node.js 18+ | Node.js 20+ |
 
-Do not use imports from `@modelcontextprotocol/sdk/...`, raw-shape schemas, Zod 3 or `zod/v3`, or hand-wired `StreamableHTTPServerTransport` instances in a v2 server.
+Do not use imports from `@modelcontextprotocol/sdk/...`, raw-shape schemas, Zod 3 or `zod/v3`, hand-wired `StreamableHTTPServerTransport` instances, or a shared `McpServer` instance returned from the factory (one created at module scope and reused across HTTP requests) in a v2 server.
 
 ---
 
@@ -100,7 +100,7 @@ Name the package and server `{service}-mcp-server` (lowercase, hyphens, no versi
     "dev": "tsx watch src/index.ts",
     "smoke": "tsx scripts/smoke.ts"
   },
-  "engines": { "node": ">=20" },
+  "engines": { "node": ">=20.3" },
   "dependencies": {
     "@modelcontextprotocol/express": "^2.0.2",
     "@modelcontextprotocol/node": "^2.1.1",
@@ -120,7 +120,7 @@ Name the package and server `{service}-mcp-server` (lowercase, hyphens, no versi
 
 - `bin` plus the `#!/usr/bin/env node` line at the top of `src/index.ts` let hosts launch the server with `npx -y {service}-mcp-server`
 - A stdio-only server can drop `express`, `@types/express`, and the two adapter packages
-- Keep `zod` at `^4.2.0` or later: v2 does not support Zod 3, and Zod 4.0–4.1 drops `.describe()` text from the advertised schemas
+- Keep `zod` at `^4.2.0` or later: v2 does not support Zod 3, and Zod 4.0–4.1 schemas fail to type-check in `registerTool`. If the server runs anyway (`tsx` skips type-checking), the SDK logs a fallback warning and, before 4.1.13, drops `.describe()` text from the advertised schemas
 
 ### tsconfig.json
 
@@ -153,6 +153,7 @@ Write a `createServer()` function that builds a fresh `McpServer` and registers 
 - `serveStdio(createServer)` calls it once for the stdio connection
 - `createMcpHandler(createServer)` calls it once **per HTTP request**, so the HTTP server keeps no state between requests and scales horizontally as-is
 - Register everything inside the factory, never on a shared instance outside it
+- Return a new `McpServer` from every call. A factory that returns one shared instance passes manual tests and the self-check script, because they send one request at a time. A request that arrives while another is being served fails with `-32603` "Internal server error", and the cause goes only to the handler's `onerror` option
 - Keep the factory cheap: create API clients, connection pools, caches, and configuration once at module scope and close over them
 - Behind `createMcpHandler`, the factory receives the request context: `createMcpHandler(({ authInfo }) => ...)` builds an instance for one authenticated caller
 
@@ -168,12 +169,13 @@ const response = await fetch(url, {
   // Aborts when the client cancels the call, or after 30 seconds
   signal: AbortSignal.any([signal, AbortSignal.timeout(30_000)])
 });
-if (!response.ok) throw new Error(httpErrorMessage(response.status));
+if (!response.ok) throw new ApiError(response.status);
 ```
 
 - Send whatever the API requires (API key, `User-Agent`, version header) here, in one place
 - Tool handlers pass `ctx.mcpReq.signal`, so a cancelled call also cancels its upstream request
 - Map HTTP statuses and timeouts to messages that say how to recover (`httpErrorMessage` in the complete example): "Rate limit exceeded. Wait a minute before making more requests."
+- `ApiError` takes its message from `httpErrorMessage` and keeps the HTTP status, so a caller can treat a 404 differently from a 401 or a 429
 - Tool handlers can let these errors propagate: the SDK turns anything a tool handler throws into an `isError: true` result whose text is the error's `message`
 
 ---
@@ -235,6 +237,8 @@ When a result includes `structuredContent`, the spec says it SHOULD also include
 List and search tools take `limit` and `offset` and return where the next page starts:
 
 ```typescript
+const nextOffset = offset + users.length;
+const hasMore = data.total > nextOffset;
 const page = {
   total: data.total,
   count: users.length,
@@ -249,16 +253,18 @@ In Markdown mode, end the text with how to get more, e.g. `More results: call ag
 
 ### Character Limit
 
-Cap responses with a `CHARACTER_LIMIT` (25,000 characters is a good default). Stay under it by returning **fewer items**, never by cutting text: `next_offset` then points at the first item left out, and the JSON text still matches `structuredContent`.
+Cap responses with a `CHARACTER_LIMIT` (25,000 characters is a good default). Stay under it by returning **fewer items**, never by cutting text: `next_offset` then points at the first item left out, and the JSON text still matches `structuredContent`. Measure the text the tool sends, not an intermediate value: pretty-printing and the page fields count too.
 
 ```typescript
 let users = data.users;
-while (users.length > 1 && JSON.stringify(users).length > CHARACTER_LIMIT) {
+let result = render(users);
+while (users.length > 1 && result.text.length > CHARACTER_LIMIT) {
   users = users.slice(0, Math.ceil(users.length / 2));
+  result = render(users);
 }
-const nextOffset = offset + users.length;
-const hasMore = data.total > nextOffset;
 ```
+
+`render(users)` builds the page and its text in the requested format; see the [complete example](#complete-example).
 
 ### Errors
 
@@ -317,7 +323,7 @@ async function apiRequest<T>(
     }
     throw error;
   }
-  if (!response.ok) throw new Error(httpErrorMessage(response.status));
+  if (!response.ok) throw new ApiError(response.status);
   return (await response.json()) as T;
 }
 
@@ -334,6 +340,13 @@ function httpErrorMessage(status: number): string {
       return "Rate limit exceeded. Wait a minute before making more requests.";
     default:
       return `The Example API returned HTTP ${status}.`;
+  }
+}
+
+// Keeps the HTTP status so callers can tell a 404 from other failures
+class ApiError extends Error {
+  constructor(readonly status: number) {
+    super(httpErrorMessage(status));
   }
 }
 
@@ -354,10 +367,10 @@ const UserSchema = z.object({
 
 type User = z.infer<typeof UserSchema>;
 
-interface UserPage {
-  users: User[];
-  total: number;
-}
+const UserPageSchema = z.object({
+  users: z.array(UserSchema),
+  total: z.number()
+});
 
 function formatUser(user: User): string {
   const lines = [`## ${user.name} (${user.id})`, `- Email: ${user.email}`];
@@ -393,37 +406,43 @@ Use example_get_user instead when you already have a user ID.`,
       annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: true }
     },
     async ({ query, limit, offset, response_format }, ctx) => {
-      const data = await apiRequest<UserPage>("users/search", { q: query, limit, offset }, ctx.mcpReq.signal);
+      const raw = await apiRequest<unknown>("users/search", { q: query, limit, offset }, ctx.mcpReq.signal);
+      const data = UserPageSchema.parse(raw); // Validates the upstream data and drops fields outside the schema
+
+      // Builds the page for these users and its text in the requested format
+      const render = (users: User[]) => {
+        const nextOffset = offset + users.length;
+        const hasMore = data.total > nextOffset;
+        const page = {
+          total: data.total,
+          count: users.length,
+          offset,
+          users,
+          has_more: hasMore,
+          ...(hasMore ? { next_offset: nextOffset } : {})
+        };
+        if (response_format === ResponseFormat.JSON) return { page, text: JSON.stringify(page, null, 2) };
+        const lines = [`# Users matching '${query}'`, `Showing ${users.length} of ${data.total}.`, ""];
+        lines.push(users.map(formatUser).join("\n\n"));
+        if (hasMore) lines.push("", `More results: call again with offset=${nextOffset}.`);
+        return { page, text: lines.join("\n") };
+      };
 
       // Stay under CHARACTER_LIMIT by returning fewer users; next_offset then points at the first one left out
       let users = data.users;
-      while (users.length > 1 && JSON.stringify(users).length > CHARACTER_LIMIT) {
+      let result = render(users);
+      while (users.length > 1 && result.text.length > CHARACTER_LIMIT) {
         users = users.slice(0, Math.ceil(users.length / 2));
+        result = render(users);
       }
-      const nextOffset = offset + users.length;
-      const hasMore = data.total > nextOffset;
-      const page = {
-        total: data.total,
-        count: users.length,
-        offset,
-        users,
-        has_more: hasMore,
-        ...(hasMore ? { next_offset: nextOffset } : {})
-      };
 
       if (response_format === ResponseFormat.JSON) {
-        return {
-          content: [{ type: "text", text: JSON.stringify(page, null, 2) }],
-          structuredContent: page
-        };
+        return { content: [{ type: "text", text: result.text }], structuredContent: result.page };
       }
       if (users.length === 0) {
         return { content: [{ type: "text", text: `No users match '${query}'. Try a shorter or different query.` }] };
       }
-      const lines = [`# Users matching '${query}'`, `Showing ${users.length} of ${data.total}.`, ""];
-      lines.push(users.map(formatUser).join("\n\n"));
-      if (hasMore) lines.push("", `More results: call again with offset=${nextOffset}.`);
-      return { content: [{ type: "text", text: lines.join("\n") }] };
+      return { content: [{ type: "text", text: result.text }] };
     }
   );
 
@@ -559,8 +578,11 @@ server.registerResource(
     if (!/^U\d+$/.test(String(userId))) {
       throw new ProtocolError(ProtocolErrorCode.InvalidParams, `User IDs look like U123, got "${userId}"`);
     }
-    const user = await apiRequest<unknown>(`users/${userId}`, {}, ctx.mcpReq.signal).catch(() => null);
-    if (!user) throw new ResourceNotFoundError(uri.href);
+    const user = await apiRequest<unknown>(`users/${userId}`, {}, ctx.mcpReq.signal).catch((error: unknown) => {
+      // Only a 404 means the resource is missing; a 401, 429, or timeout keeps its own error
+      if (error instanceof ApiError && error.status === 404) throw new ResourceNotFoundError(uri.href);
+      throw error;
+    });
     return { contents: [{ uri: uri.href, mimeType: "application/json", text: JSON.stringify(user) }] };
   }
 );
@@ -709,7 +731,7 @@ The codemod rewrites imports, `package.json`, registration calls, and handler co
 - [ ] Error messages say what went wrong and how to recover
 
 ### Implementation
-- [ ] Everything is registered inside the `createServer()` factory; shared clients live at module scope
+- [ ] `createServer()` returns a new `McpServer` on every call, with everything registered inside it; shared clients live at module scope
 - [ ] Upstream requests pass `ctx.mcpReq.signal` and have a timeout
 - [ ] Strict TypeScript; no `any`; upstream data validated where it feeds `structuredContent`
 - [ ] Nothing writes to stdout in a stdio server
