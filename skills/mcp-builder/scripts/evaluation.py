@@ -144,9 +144,8 @@ async def agent_loop(
         )
         messages.append({"role": "assistant", "content": response.content})
 
-    response_text = next(
-        (block.text for block in response.content if hasattr(block, "text")),
-        None,
+    response_text = "".join(
+        block.text for block in response.content if block.type == "text"
     )
     return response_text, tool_metrics
 
