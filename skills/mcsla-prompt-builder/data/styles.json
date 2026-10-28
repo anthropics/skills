@@ -1,0 +1,11 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md — named platform styles (Higgsfield-tuned, also work on FAL Kling 3.0 / Seedance 2.0 / Veo 3.1)",
+  "platform_styles": [
+    {"name": "Cinematic", "description": "polished, high-contrast, professional"},
+    {"name": "VHS", "description": "retro grain, color bleed, analog warmth"},
+    {"name": "Super 8MM", "description": "warm film grain, soft vignette, nostalgic"},
+    {"name": "Anamorphic", "description": "ultra-wide, lens flares, epic scale"},
+    {"name": "Abstract", "description": "surreal, non-representational, artistic"}
+  ]
+}

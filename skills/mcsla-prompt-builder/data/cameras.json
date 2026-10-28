@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "source": "OSideMedia/higgsfield-ai-prompt-skill v3.7.0 vocab.md, cloned 2026-05-09",
+  "categories": {
+    "linear": [
+      {"name": "Dolly In", "what": "smooth track toward subject"},
+      {"name": "Dolly Out", "what": "smooth track away from subject"},
+      {"name": "Dolly Left", "what": "smooth lateral track left"},
+      {"name": "Dolly Right", "what": "smooth lateral track right"},
+      {"name": "Dolly Zoom In", "what": "simultaneous dolly + counter-zoom (Vertigo/Hitchcock effect)"},
+      {"name": "Dolly Zoom Out", "what": "reverse dolly zoom"},
+      {"name": "Super Dolly In", "what": "exaggerated fast version of dolly"},
+      {"name": "Super Dolly Out", "what": "exaggerated fast dolly out"},
+      {"name": "Truck", "what": "alternate term for lateral dolly"}
+    ],
+    "vertical": [
+      {"name": "Crane Up", "what": "vertical rise"},
+      {"name": "Crane Down", "what": "vertical descent"},
+      {"name": "Crane Over The Head", "what": "directly overhead, top-down"},
+      {"name": "Levitation", "what": "smooth dreamlike float upward"},
+      {"name": "Tilt Up", "what": "camera rotates on horizontal axis upward"},
+      {"name": "Tilt Down", "what": "camera rotates on horizontal axis downward"}
+    ],
+    "orbit_arc": [
+      {"name": "360 Orbit", "what": "complete circle around subject"},
+      {"name": "Arc", "what": "semi-circular sweep"},
+      {"name": "Lazy Susan", "what": "slow turntable rotation — product reveals"},
+      {"name": "Robo Arm", "what": "precision mechanical arc path — product reveals"}
+    ],
+    "zoom": [
+      {"name": "Crash Zoom In", "what": "rapid sudden zoom in"},
+      {"name": "Crash Zoom Out", "what": "rapid sudden zoom out"},
+      {"name": "Rack Focus", "what": "refocus between near and far subjects"}
+    ],
+    "follow_immersive": [
+      {"name": "Action Run", "what": "low follow behind running subject"},
+      {"name": "FPV Drone", "what": "fast agile aerial weaving"},
+      {"name": "Handheld", "what": "organic shaky realistic movement"},
+      {"name": "Head Tracking", "what": "locked to character's head"},
+      {"name": "Snorricam", "what": "mounted on actor, background sways"}
+    ],
+    "cinematic": [
+      {"name": "Bullet Time", "what": "slow-motion sweep around frozen subject"},
+      {"name": "Dutch Angle", "what": "tilted diagonal composition"},
+      {"name": "Fisheye", "what": "wide distortion lens"},
+      {"name": "Whip Pan", "what": "fast blur pan"},
+      {"name": "Overhead", "what": "direct top-down"},
+      {"name": "Flying", "what": "free-floating aerial glide"}
+    ],
+    "ugc": [
+      {"name": "iPhone selfie feel", "what": "front-camera POV, slight handheld wobble, natural skin texture, vertical 9:16"},
+      {"name": "Mirror selfie", "what": "subject reflected in bedroom/bathroom mirror, phone visible in hand"},
+      {"name": "Tripod fixed", "what": "static lockoff, slight room lighting drift, conversational framing"},
+      {"name": "Locked-off doc", "what": "documentary realism, no movement, real-life ambient sound"},
+      {"name": "Phone overhead flat-lay", "what": "top-down phone-camera angle on flat surface, product centered"},
+      {"name": "Ring-light vlog", "what": "vlog YouTube-style framing, soft ring-light catchlights, 4:5 or 9:16 crop"}
+    ],
+    "angles": [
+      {"name": "Low Angle", "what": "looks up at subject (power, dominance)"},
+      {"name": "High Angle", "what": "looks down (vulnerability, smallness)"},
+      {"name": "Eye Level", "what": "neutral conversational"},
+      {"name": "Bird's-Eye View", "what": "directly overhead"},
+      {"name": "Worm's-Eye View", "what": "extreme low looking up"},
+      {"name": "Ground Level", "what": "camera on ground surface"},
+      {"name": "Canted Angle", "what": "Dutch tilt for unease/tension"},
+      {"name": "Static Oblique", "what": "angled perspective off-axis"},
+      {"name": "Over-the-Shoulder", "what": "OTS conversation framing"},
+      {"name": "POV", "what": "first-person camera as character's eyes"}
+    ],
+    "time_based": [
+      {"name": "Hyperlapse", "what": "moving camera + time-lapse"},
+      {"name": "Timelapse Human", "what": "fixed camera, fast-forward time, human subject"},
+      {"name": "Timelapse Landscape", "what": "fixed camera, fast-forward time, landscape"},
+      {"name": "Low Shutter", "what": "motion blur from slow shutter speed"}
+    ]
+  },
+  "cut_vocabulary": {
+    "double_contrast": "Every cut changes BOTH shot size AND camera character. Never repeat the same mode across a cut.",
+    "camera_character": ["Handheld", "Static/locked-off", "Stabilized tracking", "Crane/vertical", "Aerial/drone"],
+    "180_rule": "Keep camera on one side of the imaginary line between subjects to preserve screen direction.",
+    "exit_frame_implicit_cut": "Once a character leaves frame, they are gone. Never choreograph exit + re-entry in the same continuous shot.",
+    "causally_motivated_insert": "Sub-second (0.3-0.5s) static detail with named subject ('HIS hand'), never generic ('a hand').",
+    "match_cut": "Cut between two shots linked by shape, motion, or composition.",
+    "smash_cut": "Abrupt jarring cut with no transitional softening.",
+    "L_cut": "Audio from next shot leads picture.",
+    "J_cut": "Picture from next shot leads audio.",
+    "whip_pan_transition": "Blur pan that bridges two shots as a single motion."
+  }
+}
