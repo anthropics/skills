@@ -144,9 +144,11 @@ if response.stop_reason == "pause_turn":
     )
 ```
 
-**Note:** the SDK tool runners do not auto-resume `pause_turn` (as of `@anthropic-ai/sdk` 0.110.0 / `anthropic` 0.116.0) - a paused turn ends the runner and is returned as the final message, with no error. In TypeScript you can resume inside the iteration body (push the paused assistant turn back onto the runner); in Python the runner cannot be resumed mid-loop - restart a new runner with the paused turn appended, or handle `pause_turn` in a manual loop. See each language's `tool-use.md` for the pattern.
+**Python:** With `anthropic` 1.1.0 and later, the tool runner automatically resumes `pause_turn`, including when streaming. Use `max_iterations` to bound total runner iterations and check the final message's `stop_reason` in case the limit leaves it paused; see [Python tool use](../python/claude-api/tool-use.md#server-tools-with-the-tool-runner). On older Python SDK versions, upgrade or handle `pause_turn` in a manual loop.
 
-Set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the full guide, see: `https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons`
+**TypeScript:** As of `@anthropic-ai/sdk` 0.110.0, the runner does not auto-resume `pause_turn` - a paused turn is returned as the final message, with no error. You can resume inside the iteration body by pushing the paused assistant turn back onto the runner; see [TypeScript tool use](../typescript/claude-api/tool-use.md#server-tools-with-the-tool-runner).
+
+For a manual loop, set a `max_continuations` limit (e.g., 5) to prevent infinite loops. For the full guide, see: `https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons`
 
 > **Security:** The tool runner executes your tool functions automatically whenever Claude requests them. For tools with side effects (sending emails, modifying databases, financial transactions), validate inputs and gate destructive operations behind human approval. **Both** the tool runner and the manual loop support this - with the tool runner, gate inside the tool's run function (prompt the user and return a "user declined" result instead of executing), or inspect the tool call in each yielded message and take over message history with `set_messages_params()` / `setMessagesParams()` to allow or deny *before* the tool runs (it executes your function automatically only if you don't intervene); with the manual loop you gate inline before calling the function.
 
