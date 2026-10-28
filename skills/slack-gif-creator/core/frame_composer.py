@@ -88,8 +88,8 @@ def draw_text(
         bbox = draw.textbbox((0, 0), text, font=font)
         text_width = bbox[2] - bbox[0]
         text_height = bbox[3] - bbox[1]
-        x = position[0] - text_width // 2
-        y = position[1] - text_height // 2
+        x = position[0] - text_width // 2 - bbox[0]
+        y = position[1] - text_height // 2 - bbox[1]
         position = (x, y)
 
     draw.text(position, text, fill=color, font=font)
