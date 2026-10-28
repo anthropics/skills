@@ -1,0 +1,51 @@
+{
+  "skill_name": "pdf",
+  "description": "Testing PDF reading, extraction, and generation capabilities with objective verification of output.",
+  "evals": [
+    {
+      "id": "eval-1",
+      "name": "extract-text-from-invoice",
+      "prompt": "Extract all line items and total amount from this invoice PDF. Format as a table with: item name, quantity, unit price, and total price.",
+      "expected_output": "Structured table extracted from PDF with accurate line items and totals matching the source document. All numbers should be correctly transcribed.",
+      "files": ["sample_invoice.pdf"],
+      "expectations": [
+        "Successfully reads PDF file",
+        "Extracts all line items without omission",
+        "Correctly transcribes numbers (no OCR errors)",
+        "Maintains formatting (quantities, prices align)",
+        "Calculates or verifies totals",
+        "Handles currency formatting correctly"
+      ]
+    },
+    {
+      "id": "eval-2",
+      "name": "generate-report-pdf",
+      "prompt": "Create a PDF report with: title 'Q4 2026 Sales Report', executive summary (2 paragraphs), a table of sales by region, and a conclusion. Format: standard 8.5x11 inch page with 1-inch margins.",
+      "expected_output": "Valid PDF file with all requested sections, proper formatting, readable fonts, and correct page dimensions.",
+      "expectations": [
+        "PDF is valid and opens in standard readers",
+        "Contains all requested sections in correct order",
+        "Text is readable (font size >=10pt)",
+        "Page size is 8.5x11 inches (US Letter)",
+        "Margins are approximately 1 inch",
+        "Table is properly formatted with alignment",
+        "No rendering errors or corruption"
+      ]
+    },
+    {
+      "id": "eval-3",
+      "name": "merge-multiple-pdfs",
+      "prompt": "Merge these 3 PDF files into a single document: cover.pdf, content.pdf, appendix.pdf. Preserve original formatting and add a table of contents referencing page numbers.",
+      "expected_output": "Single merged PDF with all pages in correct order, table of contents with accurate page numbers, and no loss of formatting or text.",
+      "files": ["cover.pdf", "content.pdf", "appendix.pdf"],
+      "expectations": [
+        "All pages present in correct order",
+        "Table of contents created with accurate page numbers",
+        "Original formatting preserved from each input file",
+        "No text loss or corruption",
+        "PDF is valid and opens cleanly",
+        "File size is reasonable (not bloated)"
+      ]
+    }
+  ]
+}

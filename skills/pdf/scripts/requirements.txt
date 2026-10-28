@@ -1,0 +1,4 @@
+pypdf>=4.0.0
+pdfplumber>=0.10.0
+pdf2image>=1.16.0
+pillow>=10.0.0

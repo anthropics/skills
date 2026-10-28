@@ -1,0 +1,48 @@
+{
+  "skill_name": "doc-coauthoring",
+  "description": "Testing the doc-coauthoring workflow: guiding users through structured documentation creation with three stages (Context Gathering, Refinement, Reader Testing).",
+  "evals": [
+    {
+      "id": "eval-1",
+      "name": "onboarding-guide-creation",
+      "prompt": "I need to write an onboarding guide for new employees at our 50-person startup. It should cover company culture, team structure, technical setup, and first-week logistics. Where do I even start? This feels overwhelming.",
+      "expected_output": "Structured workflow guiding through Stage 1 (Context Gathering): understanding audience (new technical hires), success criteria (feel ready on day 1), existing materials (scattered Notion docs), and outlining structure. Then preview of Stage 2 (Refinement) and Stage 3 (Reader Testing).",
+      "expectations": [
+        "Identifies this as a document that needs multiple perspectives (HR, tech leads, past hires)",
+        "Asks clarifying questions about scope (just day 1 setup? first month?)",
+        "Suggests context-gathering interviews or worksheets",
+        "Helps organize scattered source material",
+        "Provides rough timeline estimate (likely 1-2 hours for this document type)",
+        "Prepares for refinement stage with specific sections to focus on"
+      ]
+    },
+    {
+      "id": "eval-2",
+      "name": "technical-spec-refinement",
+      "prompt": "I have a rough technical spec for our new API, but it's scattered across several documents and my teammates keep asking clarifying questions about different endpoints. What's the next step to make this actually usable?",
+      "expected_output": "Transition into Stage 2 (Refinement & Structure): consolidating scattered content, organizing endpoints logically, adding examples and error codes, refining explanations for different audiences, and preparing for reader testing with specific reviewers.",
+      "expectations": [
+        "Recognizes this is mid-process (already has raw content, now needs polish)",
+        "Suggests consolidation strategy (extract key info, eliminate duplication)",
+        "Proposes structure (overview → authentication → endpoints by resource → examples → troubleshooting)",
+        "Identifies missing content (error codes, retry logic, rate limits)",
+        "Recommends specific reviewers for next stage (backend engineers, client SDK maintainer, support)",
+        "Estimates refinement time (likely 2-4 hours for technical spec)"
+      ]
+    },
+    {
+      "id": "eval-3",
+      "name": "policy-document-testing",
+      "prompt": "We've written a new remote work policy. It feels comprehensive but we're worried it might be confusing or too restrictive. How do we know if it's actually good before we send it to the whole company?",
+      "expected_output": "Stage 3 (Reader Testing) workflow: identifying test readers (different departments, management levels), specific feedback questions, gathering feedback systematically, and iterating based on patterns in the feedback.",
+      "expectations": [
+        "Suggests testing with 4-5 representatives (engineer, manager, HR, someone in different timezone, someone working hybrid)",
+        "Proposes specific questions for readers (not just 'is this good?')",
+        "Recommends gathering feedback in structured format (survey with clear sections)",
+        "Identifies patterns to look for (confusion points, perceived unfairness, missing scenarios)",
+        "Guides on which feedback to act on (consensus vs. minority concerns)",
+        "Estimates testing time (30-45 min for readers, 1 hour to integrate feedback)"
+      ]
+    }
+  ]
+}
