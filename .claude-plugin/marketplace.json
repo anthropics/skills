@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "git-flow-agent-guard",
+      "description": "Stack-agnostic Git workflow enforcement with branch protection, local CI pre-flight, risk-gated auto-merge, and audit logging",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/git-flow-agent-guard"
+      ]
     }
   ]
 }
