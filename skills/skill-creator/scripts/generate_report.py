@@ -217,7 +217,9 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
         test_total = h.get("test_total")
         description = h.get("description", "")
         train_results = h.get("train_results", h.get("results", []))
-        test_results = h.get("test_results", [])
+        test_results = h.get("test_results")
+        if test_results is None:
+            test_results = []
 
         # Create lookups for results by query
         train_by_query = {r["query"]: r for r in train_results}
@@ -234,7 +236,7 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
                 if r.get("should_trigger", True):
                     correct += triggers
                 else:
-                    correct += runs - triggers
+                    correct += runs - triggers - r.get("errors", 0)
             return correct, total
 
         train_correct, train_runs = aggregate_runs(train_results)
