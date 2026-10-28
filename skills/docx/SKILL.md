@@ -32,6 +32,16 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 - **Don't use a table as a horizontal rule** — use a paragraph bottom border instead.
 - **Dot-leader / right-aligned-on-same-line:** use `PositionalTab` (`alignment: PositionalTabAlignment.RIGHT`, `leader: PositionalTabLeader.DOT`) inside a `TextRun`, not literal `.` or space padding.
 
+## Blank pages / page breaks
+
+Stray blank pages (typically right after a title page) come from stacked breaks. Never add a break without checking what already ends the previous content:
+
+- **Check first:** look at the last paragraphs before the insertion point for `<w:br w:type="page"/>`, a `<w:sectPr>` inside a `<w:pPr>` (section break, usually next-page), or `pageBreakBefore` on the following heading. If one exists, do not add another.
+- **docx-js:** prefer `pageBreakBefore: true` on the first paragraph of the new page over a separate `Paragraph` containing `PageBreak`, and don't stack mechanisms: a new `sections` entry, a `PageBreak` paragraph and `pageBreakBefore` each start a new page.
+- **Editing existing XML:** if the title-page paragraph already carries `<w:sectPr>` (next-page section break), adding a `<w:br w:type="page"/>` paragraph after it produces a blank page; insert the content directly with no extra break. Content placed after a paragraph that carries `<w:sectPr>` lands in the next section, so insert before that paragraph if it should stay in the current one.
+- **Full page:** if the previous page is filled exactly (table/image), the mandatory trailing empty paragraph moves to the next page and creates a blank sheet. Shrink that paragraph (font size 2pt / spacing 0) or remove it.
+- **Always verify page count:** after rendering to PDF, run `pdftotext -f N -l N out.pdf -` for each page (or `pdfinfo`) and fix any page with no text and no image.
+
 ## Verify the output
 
 After writing a `.docx`, render it and look at it:
