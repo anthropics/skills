@@ -290,7 +290,7 @@ Output from Benchmark mode. Located at `benchmarks/<timestamp>/benchmark.json`.
   - `skill_name`: Name of the skill
   - `timestamp`: When the benchmark was run
   - `evals_run`: List of eval names or IDs
-  - `runs_per_configuration`: Number of runs per config (e.g. 3)
+  - `runs_per_configuration`: Measured number of runs for each eval/config pair (e.g. 3), or `null` when counts vary; use the individual `runs` entries for the exact counts
 - `runs[]`: Individual run results
   - `eval_id`: Numeric eval identifier
   - `eval_name`: Human-readable eval name (used as section header in the viewer)

@@ -7,7 +7,7 @@ a tiny HTTP server. Feedback auto-saves to feedback.json in the workspace.
 
 Usage:
     python generate_review.py <workspace-path> [--port PORT] [--skill-name NAME]
-    python generate_review.py <workspace-path> --previous-feedback /path/to/old/feedback.json
+    python generate_review.py <workspace-path> --previous-workspace /path/to/old/workspace
 
 No dependencies beyond the Python stdlib are required.
 """
@@ -61,7 +61,7 @@ def find_runs(workspace: Path) -> list[dict]:
     """Recursively find directories that contain an outputs/ subdirectory."""
     runs: list[dict] = []
     _find_runs_recursive(workspace, workspace, runs)
-    runs.sort(key=lambda r: (r.get("eval_id", float("inf")), r["id"]))
+    runs.sort(key=lambda r: (r["eval_id"] is None, r["eval_id"] or 0, r["id"]))
     return runs
 
 
@@ -89,7 +89,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
 
     # Try eval_metadata.json
     for candidate in [run_dir / "eval_metadata.json", run_dir.parent / "eval_metadata.json"]:
-        if candidate.exists():
+        if candidate.resolve().is_relative_to(root.resolve()) and candidate.exists():
             try:
                 metadata = json.loads(candidate.read_text())
                 prompt = metadata.get("prompt", "")
@@ -116,7 +116,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     if not prompt:
         prompt = "(No prompt found)"
 
-    run_id = str(run_dir.relative_to(root)).replace("/", "-").replace("\\", "-")
+    run_id = run_dir.relative_to(root).as_posix()
 
     # Collect output files
     outputs_dir = run_dir / "outputs"
@@ -129,7 +129,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     # Load grading if present
     grading = None
     for candidate in [run_dir / "grading.json", run_dir.parent / "grading.json"]:
-        if candidate.exists():
+        if candidate.resolve().is_relative_to(root.resolve()) and candidate.exists():
             try:
                 grading = json.loads(candidate.read_text())
             except (json.JSONDecodeError, OSError):
@@ -210,12 +210,56 @@ def embed_file(path: Path) -> dict:
         }
 
 
+def validate_feedback(data: object) -> None:
+    """Reject malformed feedback before it can replace a usable feedback file."""
+    if not isinstance(data, dict) or not isinstance(data.get("reviews"), list):
+        raise ValueError("Expected JSON object with a 'reviews' array")
+    if "status" in data and data["status"] not in ("in_progress", "complete"):
+        raise ValueError("Invalid feedback status")
+    seen = set()
+    for item in data["reviews"]:
+        if not isinstance(item, dict):
+            raise ValueError("Each review must be an object")
+        run_id = item.get("run_id")
+        if not isinstance(run_id, str) or not run_id or not isinstance(item.get("feedback"), str):
+            raise ValueError("Each review requires a nonempty string run_id and string feedback")
+        if "timestamp" in item and not isinstance(item["timestamp"], str):
+            raise ValueError("Review timestamp must be a string")
+        if run_id in seen:
+            raise ValueError(f"Duplicate review run_id: {run_id}")
+        seen.add(run_id)
+
+
+class FeedbackConflictError(ValueError):
+    """Legacy feedback cannot be assigned to a run without guessing."""
+
+
+def migrate_feedback(data: dict, runs: list[dict]) -> dict:
+    """Migrate only unambiguous legacy flattened IDs; keep unresolved notes intact."""
+    aliases: dict[str, list[str]] = {}
+    for run in runs:
+        aliases.setdefault(run["id"].replace("/", "-"), []).append(run["id"])
+    canonical_ids = {run["id"] for run in runs}
+    occupied = {item["run_id"] for item in data["reviews"]}
+    reviews = []
+    for item in data["reviews"]:
+        run_id = item["run_id"]
+        matches = aliases.get(run_id, [])
+        if data.get("run_id_format") != "relative_path" and run_id in canonical_ids and len(matches) > 1:
+            raise FeedbackConflictError(f"Ambiguous legacy feedback ID '{run_id}'; reconcile it before review")
+        if data.get("run_id_format") != "relative_path" and run_id not in canonical_ids and len(matches) == 1 and matches[0] not in occupied:
+            item = {**item, "run_id": matches[0]}
+        reviews.append(item)
+    return {**data, "reviews": reviews}
+
+
 def load_previous_iteration(workspace: Path) -> dict[str, dict]:
     """Load previous iteration's feedback and outputs.
 
     Returns a map of run_id -> {"feedback": str, "outputs": list[dict]}.
     """
     result: dict[str, dict] = {}
+    prev_runs = find_runs(workspace)
 
     # Load feedback
     feedback_map: dict[str, str] = {}
@@ -223,16 +267,19 @@ def load_previous_iteration(workspace: Path) -> dict[str, dict]:
     if feedback_path.exists():
         try:
             data = json.loads(feedback_path.read_text())
+            validate_feedback(data)
+            data = migrate_feedback(data, prev_runs)
             feedback_map = {
                 r["run_id"]: r["feedback"]
                 for r in data.get("reviews", [])
                 if r.get("feedback", "").strip()
             }
-        except (json.JSONDecodeError, OSError, KeyError):
+        except FeedbackConflictError:
+            raise
+        except (ValueError, OSError, KeyError):
             pass
 
     # Load runs (to get outputs)
-    prev_runs = find_runs(workspace)
     for run in prev_runs:
         result[run["id"]] = {
             "feedback": feedback_map.get(run["id"], ""),
@@ -348,9 +395,16 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self.wfile.write(content)
         elif self.path == "/api/feedback":
             data = b"{}"
-            if self.feedback_path.exists():
-                data = self.feedback_path.read_bytes()
-            self.send_response(200)
+            status = 200
+            try:
+                if self.feedback_path.exists():
+                    feedback = json.loads(self.feedback_path.read_text())
+                    validate_feedback(feedback)
+                    data = json.dumps(migrate_feedback(feedback, find_runs(self.workspace))).encode("utf-8")
+            except (ValueError, OSError) as e:
+                status = 409
+                data = json.dumps({"error": str(e)}).encode("utf-8")
+            self.send_response(status)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(data)))
             self.end_headers()
@@ -364,14 +418,29 @@ class ReviewHandler(BaseHTTPRequestHandler):
             body = self.rfile.read(length)
             try:
                 data = json.loads(body)
-                if not isinstance(data, dict) or "reviews" not in data:
-                    raise ValueError("Expected JSON object with 'reviews' key")
+                validate_feedback(data)
+                runs = find_runs(self.workspace)
+                if self.feedback_path.exists():
+                    existing = json.loads(self.feedback_path.read_text())
+                    validate_feedback(existing)
+                    existing = migrate_feedback(existing, runs)
+                    known_ids = {run["id"] for run in runs}
+                    incoming = {item["run_id"]: item["feedback"] for item in data["reviews"]}
+                    for item in existing["reviews"]:
+                        if item["run_id"] not in known_ids and incoming.get(item["run_id"]) != item["feedback"]:
+                            raise FileExistsError(
+                                f"Unresolved feedback for '{item['run_id']}' must be preserved; reconcile legacy IDs first"
+                            )
+                data["run_id_format"] = "relative_path"
                 self.feedback_path.write_text(json.dumps(data, indent=2) + "\n")
                 resp = b'{"ok":true}'
                 self.send_response(200)
-            except (json.JSONDecodeError, OSError, ValueError) as e:
+            except (FileExistsError, FeedbackConflictError) as e:
                 resp = json.dumps({"error": str(e)}).encode()
-                self.send_response(500)
+                self.send_response(409)
+            except (ValueError, OSError) as e:
+                resp = json.dumps({"error": str(e)}).encode()
+                self.send_response(400 if isinstance(e, ValueError) else 500)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(resp)))
             self.end_headers()
