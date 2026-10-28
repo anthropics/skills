@@ -250,7 +250,30 @@ def add_comment(
     if not word.exists():
         raise FileNotFoundError(f"{word} not found (not an unpacked .docx?)")
 
+       rels_path = word / "_rels" / "document.xml.rels"
     comments = word / "comments.xml"
+
+    if rels_path.exists():
+        rels_dom = defusedxml.minidom.parseString(
+            rels_path.read_text(encoding="utf-8")
+        )
+        comments_type = _COMMENT_RELS[0][0]
+        comment_rels = [
+            rel for rel in rels_dom.getElementsByTagName("Relationship")
+            if rel.getAttribute("Type") == comments_type
+        ]
+        if len(comment_rels) > 1:
+            raise ValueError("multiple comments relationships found")
+        if comment_rels:
+            part = opc_target(
+                comment_rels[0].getAttribute("Target"),
+                "word/document.xml",
+                comment_rels[0].getAttribute("TargetMode"),
+            )
+            if part is None:
+                raise ValueError("invalid comments relationship target")
+            comments = unpacked_dir / part
+
     if comment_id is None:
         comment_id = _next_comment_id(comments)
 
