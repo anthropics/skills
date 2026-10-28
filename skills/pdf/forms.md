@@ -1,4 +1,4 @@
-**CRITICAL: You MUST complete these steps in order. Do not skip ahead to writing code.**
+Follow these steps in order: the first step decides which branch applies (fillable fields or non-fillable), so skipping ahead to writing code will use the wrong workflow.
 
 If you need to fill out a PDF form, first check to see if the PDF has fillable form fields. Run this script from this file's directory:
  `python scripts/check_fillable_fields <file.pdf>`, and depending on the result go to either the "Fillable fields" or "Non-fillable fields" and follow those instructions.
@@ -186,9 +186,9 @@ Examine each page image to identify form sections and get **rough estimates** of
 
 For each field, note approximate pixel coordinates (they don't need to be precise yet).
 
-### B.3: Zoom Refinement (CRITICAL for accuracy)
+### B.3: Zoom Refinement
 
-For each field, crop a region around the estimated position to refine coordinates precisely.
+Only zoom in when a field position is uncertain from the full-page estimate (typically small, dense, or overlapping fields). Fields whose location is already clear from B.2 can use their rough coordinates directly and skip this step. When you do zoom, crop a region around the estimated position to refine coordinates precisely.
 
 **Create a zoomed crop using ImageMagick:**
 ```bash
