@@ -69,3 +69,12 @@ Use active voice as default. A CTA says exactly what happens when it is used: "S
 Treat failure and emptiness as moments for direction, not mood. Explain what went wrong and how to fix it, in the interface's voice rather than a person's. Errors don't apologize, and they are never vague about what happened. An empty screen is an invitation to act.
 
 Keep the tone conversational: plain verbs, sentence case, no filler, with tone matched to the brand and the audience. Let each written element do exactly one job.
+
+# Dashboard overrides (these beat frontend-design where they conflict)
+- This is a product UI, not a marketing page. No hero, no bold brand experiments.
+- Consistency over novelty. Reuse shadcn components, one radius, one spacing scale.
+- Cards and tables are fine. Use them for structure, not decoration.
+- Numbers use tabular-nums. Right-align numeric columns.
+- Spend the "one bold moment" on the primary data view, not on chrome.
+- Don't stop to ask about audience. Use the brief in the prompt.
+- Every screen: loading, empty, error states.
