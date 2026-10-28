@@ -79,7 +79,7 @@ When filling in a template:
 
 ## Design Ideas
 
-**Don't create boring slides.** Plain bullets on a white background won't impress anyone. Consider ideas from this list for each slide.
+**Don't create boring slides.** Plain bullets on a white background won't impress anyone. Draw from the design ideas below for each slide, and check **Avoid (Common Mistakes)** for the specific defaults — cream backgrounds, accent stripes, centered body text — that make slides read as AI-generated.
 
 ### Before Starting
 
