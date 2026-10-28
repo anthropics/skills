@@ -250,6 +250,55 @@ def update_content_types(unpacked_dir: Path, removed_files: list[str]) -> None:
             f.write(dom.toxml(encoding="utf-8"))
 
 
+def clean_sections(unpacked_dir: Path) -> None:
+    pres_path = unpacked_dir / "ppt" / "presentation.xml"
+    if not pres_path.exists():
+        return
+    xml = pres_path.read_text(encoding="utf-8")
+    if "p14:sectionLst" not in xml:
+        return
+
+    sld_ids = set(re.findall(r'<p:sldId[^>]*\bid="(\d+)"', xml))
+
+    def clean_section_list(match):
+        attrs = match.group(1)
+        sec_lst_content = match.group(2)
+
+        def clean_section(sec_match):
+            sec_attrs = sec_match.group(1)
+            sec_content = sec_match.group(2)
+
+            def filter_sld_id(id_match):
+                sid = id_match.group(1)
+                return id_match.group(0) if sid in sld_ids else ""
+
+            cleaned_content = re.sub(
+                r'<p14:sldId\b[^>]*\bid="(\d+)"[^>]*/>\s*', filter_sld_id, sec_content
+            )
+            if not re.search(r'<p14:sldId\b', cleaned_content):
+                return ""
+            return f"<p14:section{sec_attrs}>{cleaned_content}</p14:section>"
+
+        cleaned_sections = re.sub(
+            r'<p14:section\b([^>]*)>(.*?)</p14:section>',
+            clean_section,
+            sec_lst_content,
+            flags=re.DOTALL,
+        )
+        if not re.search(r'<p14:section\b', cleaned_sections):
+            return ""
+        return f"<p14:sectionLst{attrs}>{cleaned_sections}</p14:sectionLst>"
+
+    new_xml = re.sub(
+        r'<p14:sectionLst\b([^>]*)>(.*?)</p14:sectionLst>',
+        clean_section_list,
+        xml,
+        flags=re.DOTALL,
+    )
+    if new_xml != xml:
+        pres_path.write_text(new_xml, encoding="utf-8")
+
+
 def clean_unused_files(unpacked_dir: Path) -> list[str]:
     all_removed = []
 
@@ -261,6 +310,8 @@ def clean_unused_files(unpacked_dir: Path) -> list[str]:
 
     slides_removed = remove_orphaned_slides(unpacked_dir)
     all_removed.extend(slides_removed)
+
+    clean_sections(unpacked_dir)
 
     trash_removed = remove_trash_directory(unpacked_dir)
     all_removed.extend(trash_removed)
