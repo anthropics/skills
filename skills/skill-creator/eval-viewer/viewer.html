@@ -8,6 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <!-- Render Markdown outputs (.md): marked converts to HTML, DOMPurify sanitizes it before insertion -->
+  <script src="https://cdn.jsdelivr.net/npm/marked@18.0.11/lib/marked.umd.js" integrity="sha384-N2BlPYJH0HRuJRIZOGNTL/ymqHb++FCViUqW4rdB5/7fH+KvFTqyCvPPQ8X4nElj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.4.14/dist/purify.min.js" integrity="sha384-46dPGH1XlTmj7bc50bqLjTdORXs/3EP2QpA/6EWbelYWOY9VGp+87RT61S3Mcslb" crossorigin="anonymous"></script>
   <style>
     :root {
       --bg: #faf9f5;
@@ -162,6 +165,10 @@
       padding: 0.75rem;
       overflow-x: auto;
     }
+    .output-file-content .md { padding: 0.25rem 1.25rem 1rem; line-height: 1.7; overflow-x: auto; }
+    .output-file-content .md table { border-collapse: collapse; margin: 0.75rem 0; font-size: 0.9em; }
+    .output-file-content .md th, .output-file-content .md td { border: 1px solid var(--border); padding: 0.3rem 0.6rem; text-align: left; vertical-align: top; }
+    .output-file-content .md-note { padding: 0.5rem 1.25rem; font-size: 0.85em; }
     .output-file-content pre {
       font-size: 0.8125rem;
       line-height: 1.5;
@@ -645,6 +652,27 @@
   <div class="toast" id="toast"></div>
 
   <script>
+    // Render .md files as Markdown; other text files stay as <pre>.
+    // If the libraries failed to load (offline, CSP), say so and fall back to the raw text.
+    function renderTextFile(file, container) {
+      const isMd = /\.(md|markdown)$/i.test(file.name);
+      if (isMd && window.marked && window.DOMPurify) {
+        const div = document.createElement("div");
+        div.className = "md";
+        div.innerHTML = DOMPurify.sanitize(marked.parse(file.content));
+        container.appendChild(div);
+        return;
+      }
+      if (isMd) {
+        const note = document.createElement("div");
+        note.className = "md-note";
+        note.textContent = "Could not load the Markdown renderer (marked / DOMPurify); showing raw text.";
+        container.appendChild(note);
+      }
+      const pre = document.createElement("pre");
+      pre.textContent = file.content;
+      container.appendChild(pre);
+    }
     // ---- Embedded data (injected by generate_review.py) ----
     /*__EMBEDDED_DATA__*/
 
@@ -793,9 +821,7 @@
         content.className = "output-file-content";
 
         if (file.type === "text") {
-          const pre = document.createElement("pre");
-          pre.textContent = file.content;
-          content.appendChild(pre);
+          renderTextFile(file, content);
         } else if (file.type === "image") {
           const img = document.createElement("img");
           img.src = file.data_uri;
@@ -953,9 +979,7 @@
         fc.className = "output-file-content";
 
         if (file.type === "text") {
-          const pre = document.createElement("pre");
-          pre.textContent = file.content;
-          fc.appendChild(pre);
+          renderTextFile(file, fc);
         } else if (file.type === "image") {
           const img = document.createElement("img");
           img.src = file.data_uri;
