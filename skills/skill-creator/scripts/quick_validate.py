@@ -84,10 +84,12 @@ def validate_skill(skill_path):
             return False, f"Description is too long ({len(description)} characters). Maximum is 1024 characters."
 
     # Validate compatibility field if present (optional)
-    compatibility = frontmatter.get('compatibility', '')
-    if compatibility:
+    if 'compatibility' in frontmatter:
+        compatibility = frontmatter['compatibility']
         if not isinstance(compatibility, str):
             return False, f"Compatibility must be a string, got {type(compatibility).__name__}"
+        if not compatibility:
+            return False, "Compatibility cannot be empty"
         if len(compatibility) > 500:
             return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
 
