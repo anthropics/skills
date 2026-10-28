@@ -28,6 +28,15 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
 
+# Before/after example
+
+See what the [`frontend-design`](./skills/frontend-design) skill does to a plain page: the same ops dashboard content, before and after the skill is applied.
+
+- Before: https://skill-fixture-before.theroost.dev?vr_gallery=1
+- After (frontend-design): https://frontend-design-after.theroost.dev?vr_gallery=1
+
+Illustrative, community-contributed example; not an official demo or benchmark.
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
