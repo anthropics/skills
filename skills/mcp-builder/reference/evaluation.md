@@ -422,6 +422,8 @@ The evaluation script (`scripts/evaluation.py`) supports three transport types:
 **Important:**
 - **stdio transport**: The evaluation script automatically launches and manages the MCP server process for you. Do not run the server manually.
 - **sse/http transports**: You must start the MCP server separately before running the evaluation. The script connects to the already-running server at the specified URL.
+- Put the evaluation XML path before `-a`, `-e`, or `-H`. These options accept multiple values, so they consume a trailing path if it appears after them.
+- Supply multiple environment variables after one `-e`, and multiple headers after one `-H`.
 
 ### 1. Local STDIO Server
 
@@ -429,21 +431,20 @@ For locally-run MCP servers (script launches the server automatically):
 
 ```bash
 python scripts/evaluation.py \
+  evaluation.xml \
   -t stdio \
   -c python \
-  -a my_mcp_server.py \
-  evaluation.xml
+  -a my_mcp_server.py
 ```
 
 With environment variables:
 ```bash
 python scripts/evaluation.py \
+  evaluation.xml \
   -t stdio \
   -c python \
   -a my_mcp_server.py \
-  -e API_KEY=abc123 \
-  -e DEBUG=true \
-  evaluation.xml
+  -e API_KEY=abc123 DEBUG=true
 ```
 
 ### 2. Server-Sent Events (SSE)
@@ -452,11 +453,10 @@ For SSE-based MCP servers (you must start the server first):
 
 ```bash
 python scripts/evaluation.py \
+  evaluation.xml \
   -t sse \
   -u https://example.com/mcp \
-  -H "Authorization: Bearer token123" \
-  -H "X-Custom-Header: value" \
-  evaluation.xml
+  -H "Authorization: Bearer token123" "X-Custom-Header: value"
 ```
 
 ### 3. HTTP (Streamable HTTP)
@@ -465,10 +465,10 @@ For HTTP-based MCP servers (you must start the server first):
 
 ```bash
 python scripts/evaluation.py \
+  evaluation.xml \
   -t http \
   -u https://example.com/mcp \
-  -H "Authorization: Bearer token123" \
-  evaluation.xml
+  -H "Authorization: Bearer token123"
 ```
 
 ## Command-Line Options
@@ -520,11 +520,11 @@ The evaluation script generates a detailed report including:
 
 ```bash
 python scripts/evaluation.py \
+  evaluation.xml \
   -t stdio \
   -c python \
   -a my_server.py \
-  -o evaluation_report.md \
-  evaluation.xml
+  -o evaluation_report.md
 ```
 
 ## Complete Example Workflow
@@ -561,12 +561,12 @@ export ANTHROPIC_API_KEY=your_api_key
 
 ```bash
 python scripts/evaluation.py \
+  my_evaluation.xml \
   -t stdio \
   -c python \
   -a github_mcp_server.py \
   -e GITHUB_TOKEN=ghp_xxx \
-  -o github_eval_report.md \
-  my_evaluation.xml
+  -o github_eval_report.md
 ```
 
 4. **Review the report** in `github_eval_report.md` to:
