@@ -75,6 +75,8 @@ class MCPConnectionStdio(MCPConnection):
 
     def __init__(self, command: str, args: list[str] = None, env: dict[str, str] = None):
         super().__init__()
+        if not command or not isinstance(command, str):
+            raise ValueError("Command must be a non-empty string")
         self.command = command
         self.args = args or []
         self.env = env
@@ -90,6 +92,8 @@ class MCPConnectionSSE(MCPConnection):
 
     def __init__(self, url: str, headers: dict[str, str] = None):
         super().__init__()
+        if not url or not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+            raise ValueError("URL must start with http:// or https://")
         self.url = url
         self.headers = headers or {}
 
@@ -102,6 +106,8 @@ class MCPConnectionHTTP(MCPConnection):
 
     def __init__(self, url: str, headers: dict[str, str] = None):
         super().__init__()
+        if not url or not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+            raise ValueError("URL must start with http:// or https://")
         self.url = url
         self.headers = headers or {}
 
