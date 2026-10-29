@@ -17,7 +17,7 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
       "prompt": "User's example prompt",
       "expected_output": "Description of expected result",
       "files": ["evals/files/sample1.pdf"],
-      "expectations": [
+      "assertions": [
         "The output includes X",
         "The skill used script Y"
       ]
@@ -32,7 +32,7 @@ Defines the evals for a skill. Located at `evals/evals.json` within the skill di
 - `evals[].prompt`: The task to execute
 - `evals[].expected_output`: Human-readable description of success
 - `evals[].files`: Optional list of input file paths (relative to skill root)
-- `evals[].expectations`: List of verifiable statements
+- `evals[].assertions`: List of verifiable statements
 
 ---
 
