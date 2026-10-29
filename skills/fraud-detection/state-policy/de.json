@@ -1,0 +1,98 @@
+{
+  "name": "de-medicaid-policy",
+  "kind": "state-policy",
+  "state": "DE",
+  "index": "https://medicaidpublications.dhss.delaware.gov/docs/search/EntryId/36",
+  "fetchVia": "curl",
+  "out": "policy/de",
+  "note": "DMAP (Delaware Medical Assistance Program) Provider Policy Manuals — DNN/Bring2mind DMX repo (Gainwell). 31 per-provider-type PDFs in folder EntryId=36. Download URL pattern: ...?Command=Core_Download&EntryId=<id> (302→API endpoint, GET only — HEAD 405). DE is mostly managed care; no FFS NEMT manual (brokered via ModivCare).",
+  "docs": [
+    {
+      "title": "General Policy Manual",
+      "detector": "D3,D4",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=897",
+      "pp": null
+    },
+    {
+      "title": "Practitioner Provider Specific Policy Manual",
+      "detector": "D4",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=887",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Provider Specific Policy Manual",
+      "detector": "D19",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=913",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Provider Specific Policy Manual",
+      "detector": "D15",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=909",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Provider Specific Policy Manual",
+      "detector": "D16,D23",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=885",
+      "pp": null
+    },
+    {
+      "title": "Prescribing Provider Policy Cheat Sheet",
+      "detector": "D16",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=891",
+      "pp": null
+    },
+    {
+      "title": "Independent Lab Provider Specific Policy Manual",
+      "detector": "D4",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=904",
+      "pp": null
+    },
+    {
+      "title": "Home Health Provider Specific Policy Manual",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=902",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing Provider Specific Policy Manual",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=892",
+      "pp": null
+    },
+    {
+      "title": "Developmental Disabilities Lifespan HCBS Waiver Provider Specific",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=910",
+      "pp": null
+    },
+    {
+      "title": "Long Term Care Community Services Provider Specific Policy Manual",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=898",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Specific Policy Manual",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=903",
+      "pp": null
+    },
+    {
+      "title": "Adult Behavioral Health Service Certification and Reimbursement Provider Specific",
+      "detector": "D4",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=907",
+      "pp": null
+    },
+    {
+      "title": "Outpatient Hospital Provider Specific Policy Manual",
+      "detector": "D20",
+      "url": "https://medicaidpublications.dhss.delaware.gov/docs/search?Command=Core_Download&EntryId=890",
+      "pp": null
+    }
+  ],
+  "_comment": "DMAP Document Repository (medicaidpublications.dhss.delaware.gov) — DNN portal w/ ComponentArt grid; folder EntryId=36 = Provider Policy Manuals (31 PDFs + Archive subfolder). EntryIds are stable per doc; short URL ?Command=Core_Download&EntryId=<n> 302s to /DesktopModules/Bring2mind/DMX/API/Entries/Download (GET only). curl works, no login. No standalone NEMT/Transportation manual — DE NEMT is managed-care brokered. Practitioner manual (887) covers physician E&M; web-search alias EntryId=1361 may be a newer version of same.",
+  "siteArchitecture": "aspnet-postback",
+  "lastVerified": "2026-06-22"
+}

@@ -1,0 +1,104 @@
+{
+  "name": "la-medicaid-policy",
+  "kind": "state-policy",
+  "state": "LA",
+  "index": "https://www.lamedicaid.com/provweb1/Providermanuals/ProviderManuals.htm",
+  "fetchVia": "curl",
+  "out": "policy/la",
+  "note": "Louisiana Medicaid Provider Services Manual (lamedicaid.com / Gainwell). ~40 program-specific chapters, each a single full-chapter PDF at manuals/<CODE>/<CODE>.pdf. No login. LDH also mirrors the index at ldh.la.gov/medicaid/medicaid-provider-manuals-pc.",
+  "docs": [
+    {
+      "title": "Ch.1 — General Information and Administration",
+      "detector": "D3,D4",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/GIA/GIA.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Transportation (Emergency & Non-Emergency Ambulance, NEMT)",
+      "detector": "D19",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/MED_TRANS/MED_TRANS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/HH/HH.pdf",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Services (LT-PCS and EPSDT-PCS)",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/PCS/pcs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Community Choices Waiver (HCBS)",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/CCW2/CCW.pdf",
+      "pp": null
+    },
+    {
+      "title": "Adult Day Health Care Waiver (HCBS)",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/ADHC/ADHC.pdf",
+      "pp": null
+    },
+    {
+      "title": "New Opportunities Waiver (HCBS)",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/NOW/NOW.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/HOSPICE/HOSPICE.pdf",
+      "pp": null
+    },
+    {
+      "title": "Professional Services (Physician/Practitioner)",
+      "detector": "D4",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/PS/PS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment",
+      "detector": "D15",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/DME/DME.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Benefits Management Services",
+      "detector": "D16,D23",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/PHARMACY/PHARMACY.pdf",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratories",
+      "detector": "D4",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/IND_LAB/IND_LAB.pdf",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health Services",
+      "detector": "D4",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/BHS/BHS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospital Services",
+      "detector": "D20",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/HOSP/HOSP.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulatory Surgical Centers",
+      "detector": "D4",
+      "url": "https://www.lamedicaid.com/provweb1/providermanuals/manuals/ASC/ASC.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "lamedicaid.com (Gainwell) FFS Provider Services Manual — ~40 chapters total on the index, captured 15 detector-relevant ones. Each chapter sub-page (<CODE>_main.htm) links a single full-chapter PDF at ./manuals/<CODE>/<CODE>.pdf (PCS file is lowercase pcs.pdf; CCW2 file is CCW.pdf). curl 200 on both index and PDFs, no login. MCO-specific manuals (Aetna/Humana/etc) live separately under ldh.la.gov/assets/medicaid/MCPP/ — not captured (plan-specific, not state policy).",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

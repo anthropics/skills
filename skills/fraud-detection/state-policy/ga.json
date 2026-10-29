@@ -1,0 +1,116 @@
+{
+  "name": "ga-medicaid-policy",
+  "kind": "state-policy",
+  "state": "GA",
+  "index": "https://www.mmis.georgia.gov/portal/PubAccess.Provider%20Information/Provider%20Manuals/tabId/17/Default.aspx",
+  "fetchVia": "browser",
+  "out": "policy/ga",
+  "note": "Georgia DCH GAMMIS portal — Part II per-program Policy & Procedure manuals (~70 current, quarterly 04/01/2026 release). ASP.NET DotNetNuke: select category 'Current Policy Manuals' (value=2) → 50/page paginated grid; PDF download is a per-row __doPostBack('…$Datalist$ctlNN$Select') — no static URLs. Part I (general billing) is a separate row in the same list.",
+  "docs": [
+    {
+      "title": "Part I — Policies and Procedures for Medicaid / PeachCare for Kids",
+      "detector": "D3,D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Non-Emergency Medical Transportation",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Emergency Ambulance",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Exceptional Transportation Services (ETS)",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Physician Services",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Durable Medical Equipment",
+      "detector": "D15",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Orthotic and Prosthetic Services",
+      "detector": "D15",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Provider Administered Drug List Manual",
+      "detector": "D16",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Home Health Services",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — EDWP (CCSP and SOURCE) Personal Support Services",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — EDWP (CCSP and SOURCE) General Services",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Independent Care Waiver Services",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — HCBS Settings Rule — Provider Guidance Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Hospice Services",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Independent Lab Services",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Part II — Telehealth Guidance",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    }
+  ],
+  "_comment": "GAMMIS Provider Manuals tabId/17. ~70 'Current Policy Manuals' (Part II per-program) + Part I general, refreshed quarterly. List requires category-select postback then paginates 50/row; each download is a row-select postback that streams the PDF (no /StaticContent/ path exposed). fetch-reference will need a browser handler: set Selection=2 → iterate Datalist ctl03..ctlNN Select postbacks across 2 pages. Captured 17 detector-relevant of ~70.",
+  "siteArchitecture": "aspnet-postback",
+  "lastVerified": "2026-06-22"
+}

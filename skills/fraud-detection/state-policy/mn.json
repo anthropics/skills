@@ -1,0 +1,104 @@
+{
+  "name": "mn-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MN",
+  "index": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=ID_000094",
+  "fetchVia": "browser",
+  "out": "policy/mn",
+  "note": "MN DHS MHCP Provider Manual — single online HTML manual (Oracle Stellent CMS, ?dDocName=<id>), no PDFs. ~55 service sections + sub-pages. Radware bot-manager 302s curl on section pages; index sometimes passes.",
+  "docs": [
+    {
+      "title": "Nonemergency Medical Transportation (NEMT) Services — Overview",
+      "detector": "D19",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=ID_008991",
+      "pp": null
+    },
+    {
+      "title": "State-Administered NEMT",
+      "detector": "D19",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=DHS16_141021",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Transportation Services",
+      "detector": "D19",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=DHS16_141022",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Assistance (PCA) Services",
+      "detector": "D20",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=dhs16_137828",
+      "pp": null
+    },
+    {
+      "title": "Community First Services and Supports (CFSS)",
+      "detector": "D20",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=MNDHS-067912",
+      "pp": null
+    },
+    {
+      "title": "Home Care Services (HCN / Home Health Aide / SNV)",
+      "detector": "D20",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008994",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waiver Services",
+      "detector": "D20",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=ID_008995",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services",
+      "detector": "D20",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008997",
+      "pp": null
+    },
+    {
+      "title": "Physician and Professional Services",
+      "detector": "D4",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008926",
+      "pp": null
+    },
+    {
+      "title": "Telehealth Services",
+      "detector": "D4",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=DHS-335178",
+      "pp": null
+    },
+    {
+      "title": "Laboratory and Pathology Services",
+      "detector": "D4",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=dhs16_144353",
+      "pp": null
+    },
+    {
+      "title": "Billing Policy Overview",
+      "detector": "D4",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008924",
+      "pp": null
+    },
+    {
+      "title": "Equipment and Supplies (DME)",
+      "detector": "D15",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008993",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=id_008992",
+      "pp": null
+    },
+    {
+      "title": "Excluded Provider Lists",
+      "detector": "D3",
+      "url": "https://www.dhs.state.mn.us/main/idcplg?IdcService=GET_DYNAMIC_CONVERSION&RevisionSelectionMethod=LatestReleased&dDocName=DHS-295094",
+      "pp": null
+    }
+  ],
+  "_comment": "MHCP Provider Manual is HTML-only (Oracle WebCenter/Stellent dynamic conversion). All policy lives at ?IdcService=GET_DYNAMIC_CONVERSION&...&dDocName=<id> (also reachable via short alias /id_<n>/). ~55 top-level service sections, each with 1–10 sub-pages. No per-section PDFs. fetch-reference state-policy handler should treat these as HTML→text. curl: index returned 200 once but section pages 302 to validate.perfdrive.com (Radware bot manager) — use browser. CFSS is replacing PCA as of 2024–25; both captured.",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

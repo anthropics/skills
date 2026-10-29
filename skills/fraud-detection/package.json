@@ -1,0 +1,8 @@
+{
+  "name": "@anthropic-ai/healthcare-fraud-detection-skill",
+  "private": true,
+  "type": "module",
+  "optionalDependencies": {
+    "exceljs": "^4.4.0"
+  }
+}

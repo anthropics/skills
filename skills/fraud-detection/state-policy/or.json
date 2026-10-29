@@ -1,0 +1,98 @@
+{
+  "name": "or-medicaid-policy",
+  "kind": "state-policy",
+  "state": "OR",
+  "index": "https://www.oregon.gov/oha/HSD/OHP/Pages/Policies.aspx",
+  "fetchVia": "curl",
+  "out": "policy/or",
+  "note": "Oregon Health Plan (OHA HSD): no provider manual — coverage policy is codified in OAR Chapter 410, one Division per service type, on secure.sos.state.or.us (HTML per-rule). OHA Policies hub links each program → SOS division. No standalone Lab division (lab is inside Div 130 Medical-Surgical). curl works on both hosts (UA header needed).",
+  "docs": [
+    {
+      "title": "OAR 410-136 — Medical Transportation Services (NEMT + ambulance)",
+      "detector": "D19",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1723",
+      "pp": null
+    },
+    {
+      "title": "OHA Non-Emergent Medical Transportation (NEMT) program page",
+      "detector": "D19",
+      "url": "https://www.oregon.gov/oha/HSD/OHP/Pages/NEMT.aspx",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-173 — 1915(i) Home and Community-Based Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=5379",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-127 — Home Health Care Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1715",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-132 — Private Duty Nursing Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1720",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-142 — Hospice Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1729",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-130 — Medical-Surgical Services (physician, lab, radiology)",
+      "detector": "D4",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1718",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-120 — Medical Assistance Programs General Rules (enrollment, billing, sanctions)",
+      "detector": "D3,D4",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1708",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-122 — Durable Medical Equipment, Prosthetics, Orthotics & Supplies (DMEPOS)",
+      "detector": "D15",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1710",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-148 — Home Enteral/Parenteral Nutrition and IV Services",
+      "detector": "D15",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1734",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-121 — Pharmaceutical Services",
+      "detector": "D16,D23",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1709",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-125 — Hospital Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1713",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-131 — Physical and Occupational Therapy Services",
+      "detector": "D20",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1719",
+      "pp": null
+    },
+    {
+      "title": "OAR 410-172 — Medicaid Payment for Behavioral Health Services",
+      "detector": "D4",
+      "url": "https://secure.sos.state.or.us/oard/displayDivisionRules.action?selectedDivision=1740",
+      "pp": null
+    }
+  ],
+  "_comment": "OAR Chapter 410 = OHA Health Systems Division Medical Assistance Programs (~40 divisions). Division pages list every rule with viewSingleRule links — state-policy handler should treat these as HTML→text and optionally crawl per-rule sub-pages. ODHS-side HCBS waiver rules (APD, in-home personal care) live separately in OAR Chapter 411 (selectedChapter=185), not captured here. Fee schedule is EULA-gated at /oha/HSD/OHP/Pages/EULA.aspx. Per-program OHA pages (Policy-*.aspx) mostly carry rule-change PDFs, not consolidated guides.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}

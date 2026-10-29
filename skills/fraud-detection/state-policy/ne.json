@@ -1,0 +1,98 @@
+{
+  "name": "ne-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NE",
+  "index": "https://rules.nebraska.gov/rules?agencyId=37&titleId=226",
+  "fetchVia": "curl",
+  "out": "policy/ne",
+  "note": "Nebraska Medicaid policy = Title 471 NAC (Nebraska Medical Assistance Program Services) on the Secretary of State rules portal. ~43 per-service chapter PDFs. Index is a React SPA (no static hrefs); chapter list via /api/chapter/GetByTitleId/226 → pdfBlobName → /api/fileStorage/GetAsByteArray/chapter-pdfs/<blob>. curl 200, no login.",
+  "docs": [
+    {
+      "title": "471 NAC Ch.27 — Non-Emergency Transportation (NET) Services",
+      "detector": "D19",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2027%20(11-12-2024).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.4 — Ambulance Services",
+      "detector": "D19",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%204%20(05-08-2022).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.9 — Home Health Agencies and Skilled Nursing Services",
+      "detector": "D20",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%209%20(05-05-2024).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.15 — Personal Assistance Services",
+      "detector": "D20",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2015%20(06-06-2022).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.14 — Occupational and Physical Therapy Services",
+      "detector": "D20",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2014%20(06-10-2020).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.36 — Hospice Services",
+      "detector": "D20",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2036%20(06-02-2024).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.18 — Physicians' Services",
+      "detector": "D4",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2018%20(09-17-2024).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.3 — Payment for Medicaid Services",
+      "detector": "D4",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%203%20(06-06-2022).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.47 — Telehealth",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.7 — Durable Medical Equipment, Prosthetics, Orthotics, and Medical Supplies (DMEPOS)",
+      "detector": "D15",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%207%20(02-20-2024).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.16 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2016%20(12-26-2021).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.10 — Hospital Services",
+      "detector": "D20",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%2010%20(06-06-2022).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.2 — Provider Participation",
+      "detector": "D3",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%202%20(09-21-2020).pdf",
+      "pp": null
+    },
+    {
+      "title": "471 NAC Ch.1 — Administration",
+      "detector": "D3,D4",
+      "url": "https://rules.nebraska.gov/api/fileStorage/GetAsByteArray/chapter-pdfs/471%20NAC%201%20(01-20-2025).pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "DHHS Title-471 page (dhhs.ne.gov/Pages/Title-471.aspx) just redirects to SoS rules.nebraska.gov SPA. 43 chapters total; captured 14 detector-relevant. No standalone Laboratory chapter — lab/radiology coverage rolled into Ch.18 Physicians' Services. Ch.47 Telehealth (eff. 01/2025) has no pdfBlobName yet (HTML-only in API). HCBS waiver regs live under sibling Title 480 (titleId differs) — not captured here. Blob filenames embed effective date; refresh via /api/chapter/GetByTitleId/226 JSON. HEAD returns 405 (GET-only).",
+  "siteArchitecture": "spa-api",
+  "lastVerified": "2026-06-22"
+}

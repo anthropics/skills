@@ -1,0 +1,92 @@
+{
+  "name": "wi-medicaid-policy",
+  "kind": "state-policy",
+  "state": "WI",
+  "index": "https://www.forwardhealth.wi.gov/WIPortal/Subsystem/KW/Display.aspx",
+  "fetchVia": "curl",
+  "out": "policy/wi",
+  "note": "Wisconsin ForwardHealth Online Handbook. Live handbook is a portal app (Display.aspx, AMA/ADA license click-through, no static index). Per-service handbook section PDFs are published at /kw/pdf/<slug>.pdf — curl 200, no login. PDFs are stamped 'Archival Use Only' but are the official published snapshot of the Online Handbook sections.",
+  "docs": [
+    {
+      "title": "Specialized Medical Vehicle (SMV) Transportation Handbook",
+      "detector": "D19",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/smv.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services Handbook",
+      "detector": "D19",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/ambulance.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Handbook",
+      "detector": "D20",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/home_health.pdf",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Handbook — Billing (all sections)",
+      "detector": "D20",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/billing_all.pdf",
+      "pp": null
+    },
+    {
+      "title": "Family Care Guide (HCBS waiver, MCO-certified providers)",
+      "detector": "D20",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/familycare.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services Handbook — Medicine and Surgery",
+      "detector": "D4",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/phy_medicine_surgery.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment & Disposable Medical Supplies (DMS) Handbook",
+      "detector": "D15",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/dms.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Handbook — Covered Services & Reimbursement",
+      "detector": "D16,D23",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/pharmacy_covered.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Handbook — Claims Submission",
+      "detector": "D16,D23",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/pharmacy_claims.pdf",
+      "pp": null
+    },
+    {
+      "title": "All-Provider Handbook — Covered and Noncovered Services",
+      "detector": "D3,D4",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/all_covered.pdf",
+      "pp": null
+    },
+    {
+      "title": "All-Provider Handbook — Claims Submission",
+      "detector": "D4",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/all_claims.pdf",
+      "pp": null
+    },
+    {
+      "title": "All-Provider Handbook — Prior Authorization",
+      "detector": "D4,D15",
+      "url": "https://www.forwardhealth.wi.gov/kw/pdf/all_pa.pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services (Online Handbook section — portal only)",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    }
+  ],
+  "_comment": "ForwardHealth has no static handbook index page — the Online Handbook (Display.aspx) is a 3-dropdown portal (User Type / Program / Service Area) gated by an AMA CPT license agreement. The /kw/pdf/ path hosts per-section archival PDFs with stable slug names (smv, ambulance, home_health, dms, pharmacy_*, phy_*, all_*); curl returns 200 application/pdf with no cookies. NEMT is brokered (Veyo/MTM) — SMV handbook covers FFS specialized-vehicle providers. No standalone Laboratory PDF slug found (lab policy is inside the Physician service area in the portal). ForwardHealth Updates (numbered YYYY-NN.pdf) also live under /kw/pdf/ but are point-in-time bulletins, not the handbook.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

@@ -1,0 +1,98 @@
+{
+  "name": "wa-medicaid-policy",
+  "kind": "state-policy",
+  "state": "WA",
+  "index": "https://www.hca.wa.gov/billers-providers-partners/prior-authorization-claims-and-billing/provider-billing-guides-and-fee-schedules",
+  "fetchVia": "curl",
+  "out": "policy/wa",
+  "note": "WA HCA Apple Health provider billing guides — single Drupal accordion index, ~60 programs, 176 dated *-bg-YYYYMMDD.pdf links inline (no sub-page hop). Direct /assets/billers-and-providers/*.pdf, curl 200, no login. NEMT is brokered (no FFS billing guide); Personal Care/HCBS lives under DSHS/ALTSA, not HCA. Lab covered inside Physician-Related guide.",
+  "docs": [
+    {
+      "title": "Ambulance Transportation Billing Guide",
+      "detector": "D19",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Ambulance-Trans-bg-20251001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ground Emergency Medical Transportation (GEMT) Billing Guide",
+      "detector": "D19",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/gemt-bg-20260101.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health (Acute Care Services) Billing Guide",
+      "detector": "D20",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Home-Health-Services-bg-20251001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing for Children Billing Guide",
+      "detector": "D20",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Private-duty-nursing-bg-20251001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Infusion Therapy Billing Guide",
+      "detector": "D20,D16",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Home-Infuion-therapy-bg-20260101.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services Billing Guide",
+      "detector": "D20",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Hospice-bg-20260519.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician-Related Services / Health Care Professional Billing Guide",
+      "detector": "D4",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/physician-related-services-bg-20260401.pdf",
+      "pp": null
+    },
+    {
+      "title": "Telemedicine Policy and Billing Guide",
+      "detector": "D4",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/telemedicine-policy-and-billing-bg-20260101.pdf",
+      "pp": null
+    },
+    {
+      "title": "Outpatient Rehabilitation (PT/OT/ST) Billing Guide",
+      "detector": "D20,D4",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/op-rehabilitation-bg-20260101.pdf",
+      "pp": null
+    },
+    {
+      "title": "Acute Physical Medicine and Rehabilitation Billing Guide",
+      "detector": "D4",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/acute-pmr-bg-20251001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Equipment and Supplies (DME) Billing Guide",
+      "detector": "D15",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/Med-Equip-Supplies-bg-20260401.pdf",
+      "pp": null
+    },
+    {
+      "title": "Complex Rehabilitation Technology (CRT) Products Billing Guide",
+      "detector": "D15",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/complex-rehab-tech-bg-20260401.pdf",
+      "pp": null
+    },
+    {
+      "title": "Prescription Drug Program Billing Guide",
+      "detector": "D16,D23",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/prescription-drug-program-bg-20260401.pdf",
+      "pp": null
+    },
+    {
+      "title": "ProviderOne Billing and Resource Guide (general claims/enrollment)",
+      "detector": "D3,D4",
+      "url": "https://www.hca.wa.gov/assets/billers-and-providers/providerone-billing-and-resource-guide.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "All PDF hrefs are inline on the single index page (Drupal accordion). Filename pattern: <slug>-bg-<YYYYMMDD>.pdf — pick the 'to present' edition. Fee schedules (xlsx) sit alongside each guide. No standalone Laboratory billing guide (lab/path covered in Physician-Related guide). NEMT: HCA contracts regional brokers — no provider billing guide; see /billers-providers-partners/program-information-providers/transportation-services-nonemergency. Personal Care / HCBS waivers administered by DSHS ALTSA (separate agency), not on this HCA index.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

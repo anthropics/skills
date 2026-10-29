@@ -1,0 +1,122 @@
+{
+  "name": "ak-medicaid-policy",
+  "kind": "state-policy",
+  "state": "AK",
+  "index": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Sites/BillingManuals.html",
+  "fetchVia": "curl",
+  "out": "policy/ak",
+  "note": "Alaska Medical Assistance Provider Billing Manuals — ~45 per-service PDFs at /Provider/Manuals/<Name>.pdf on the DHSS extranet SharePoint. The legacy manuals.medicaidalaska.com host is NXDOMAIN; portal redirects here. curl 200, no login. HCBS/Personal Care waivers are under DSDS (health.alaska.gov/dsds), not on this index — Home Health + PDN cover D20. Pharmacy PBM = Prime Therapeutics (ak.primetherapeutics.com).",
+  "docs": [
+    {
+      "title": "Non-Emergent Transportation and Accommodation Services",
+      "detector": "D19",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Non-Emergent_Transp_and_Accomm.pdf",
+      "pp": null
+    },
+    {
+      "title": "Arranging Patient Travel",
+      "detector": "D19",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Arranging_Patient_Travel_.pdf",
+      "pp": null
+    },
+    {
+      "title": "Transportation and Accommodation Claims Management",
+      "detector": "D19",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Transportation_and_Accommodation_Claims_Management.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services",
+      "detector": "D19",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Ambulance.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services",
+      "detector": "D20",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Home_Health.pdf",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Private_Duty_Nursing.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services",
+      "detector": "D20",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Hospice.pdf",
+      "pp": null
+    },
+    {
+      "title": "Long Term Care",
+      "detector": "D20",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Long_Term_Care.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services",
+      "detector": "D4",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Physician.pdf",
+      "pp": null
+    },
+    {
+      "title": "Professional Claims Management",
+      "detector": "D4",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Professional_Claims_Management.pdf",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratory",
+      "detector": "D4",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Independent_Laboratory.pdf",
+      "pp": null
+    },
+    {
+      "title": "Imaging Services",
+      "detector": "D4",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Imaging.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment",
+      "detector": "D15",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Durable_Medical_Equipment.pdf",
+      "pp": null
+    },
+    {
+      "title": "Prosthetics and Orthotics",
+      "detector": "D15",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Prosthetics_Orthotics.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Pharmacy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Claims Management",
+      "detector": "D16,D23",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Pharmacy_Claims_Management.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Program Information (Section I)",
+      "detector": "D3,D4",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/General_Program_Information.pdf",
+      "pp": null
+    },
+    {
+      "title": "Therapies (PT/OT/ST)",
+      "detector": "D20",
+      "url": "https://extranet-sp.dhss.alaska.gov/hcs/medicaidalaska/Provider/Manuals/Therapies.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Index page lists ~45 per-service billing-manual PDFs (Conduent/Xerox-authored, Section I shared + Section II per type). Legacy host manuals.medicaidalaska.com no longer resolves (NXDOMAIN, public DNS); the medicaidalaska.com WebSphere portal still links to it but content has moved to extranet-sp.dhss.alaska.gov. Personal Care / HCBS waiver (PCS, CFC, ALI/APDD) policy lives under DSDS at health.alaska.gov/dsds/ — not captured here. Fee schedules at sibling /Sites/FeeSchedule.html.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}
