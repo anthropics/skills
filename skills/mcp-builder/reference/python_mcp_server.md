@@ -529,6 +529,10 @@ async def interactive_tool(resource_id: str, ctx: Context) -> str:
 Expose data as resources for efficient, template-based access:
 
 ```python
+import os
+
+DOCS_ROOT = os.path.realpath("./docs")
+
 @mcp.resource("file://documents/{name}")
 async def get_document(name: str) -> str:
     '''Expose documents as MCP resources.
@@ -536,7 +540,12 @@ async def get_document(name: str) -> str:
     Resources are useful for static or semi-static data that doesn't
     require complex parameters. They use URI templates for flexible access.
     '''
-    document_path = f"./docs/{name}"
+    # Resolve against DOCS_ROOT and verify the result stays inside it.
+    # Without this check a caller-supplied name like "../../etc/passwd"
+    # would escape the intended directory.
+    document_path = os.path.realpath(os.path.join(DOCS_ROOT, os.path.basename(name)))
+    if not document_path.startswith(DOCS_ROOT + os.sep):
+        raise ValueError(f"invalid document name: {name!r}")
     with open(document_path, "r") as f:
         return f.read()
 
