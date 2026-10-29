@@ -1,0 +1,28 @@
+name: skillmd-lint
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install skillmd-lint
+        run: pip install "https://github.com/Mine-FNL/skillmd-lint/releases/download/v1.4.0/skillmd_lint-1.4.0-py3-none-any.whl"
+
+      - name: Lint changed SKILL.md files
+        run: |
+          files=$(git diff --name-only --diff-filter=ACMR "origin/${{ github.base_ref }}...HEAD" -- 'skills/**/SKILL.md')
+          if [ -z "$files" ]; then
+            echo "No SKILL.md changes; nothing to lint."
+            exit 0
+          fi
+          echo "$files" | xargs skillmd-lint --schema --format github
