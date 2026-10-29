@@ -133,24 +133,42 @@ def load_run_results(benchmark_dir: Path) -> dict:
                     "total": grading.get("summary", {}).get("total", 0),
                 }
 
-                # Extract timing — check grading.json first, then sibling timing.json
+                # Extract timing — read BOTH fields from grading.json, then fall back
+                # to the sibling timing.json for whichever one is still missing.
+                # grader.md tells the grader to copy the timing block into
+                # grading.json, so time_seconds is normally present; gating the
+                # timing.json read on it meant tokens was never read from either
+                # source and always fell through to the output_chars proxy below.
                 timing = grading.get("timing", {})
                 result["time_seconds"] = timing.get("total_duration_seconds", 0.0)
+                result["tokens"] = timing.get("total_tokens", 0)
+                result["tokens_source"] = "grading.timing" if result["tokens"] else ""
                 timing_file = run_dir / "timing.json"
-                if result["time_seconds"] == 0.0 and timing_file.exists():
+                if (not result["time_seconds"] or not result["tokens"]) and timing_file.exists():
                     try:
                         with open(timing_file) as tf:
                             timing_data = json.load(tf)
-                        result["time_seconds"] = timing_data.get("total_duration_seconds", 0.0)
-                        result["tokens"] = timing_data.get("total_tokens", 0)
+                        if not result["time_seconds"]:
+                            result["time_seconds"] = timing_data.get("total_duration_seconds", 0.0)
+                        if not result["tokens"]:
+                            result["tokens"] = timing_data.get("total_tokens", 0)
+                            result["tokens_source"] = "timing.json" if result["tokens"] else ""
                     except json.JSONDecodeError:
                         pass
 
                 # Extract metrics if available
                 metrics = grading.get("execution_metrics", {})
                 result["tool_calls"] = metrics.get("total_tool_calls", 0)
-                if not result.get("tokens"):
-                    result["tokens"] = metrics.get("output_chars", 0)
+                result["output_chars"] = metrics.get("output_chars", 0)
+                if not result["tokens"]:
+                    # Some graders record the real count here instead of in timing.
+                    result["tokens"] = metrics.get("total_tokens", 0)
+                    result["tokens_source"] = "execution_metrics" if result["tokens"] else ""
+                if not result["tokens"]:
+                    # Documented proxy (grader.md): character count, NOT tokens.
+                    # Labelled so a reader can tell the two apart in the report.
+                    result["tokens"] = result["output_chars"]
+                    result["tokens_source"] = "output_chars_proxy" if result["tokens"] else ""
                 result["errors"] = metrics.get("errors_encountered", 0)
 
                 # Extract expectations — viewer requires fields: text, passed, evidence
@@ -246,6 +264,8 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
                     "total": result["total"],
                     "time_seconds": result["time_seconds"],
                     "tokens": result.get("tokens", 0),
+                    "tokens_source": result.get("tokens_source", ""),
+                    "output_chars": result.get("output_chars", 0),
                     "tool_calls": result.get("tool_calls", 0),
                     "errors": result.get("errors", 0)
                 },
