@@ -16,7 +16,6 @@ This script removes:
 """
 
 import posixpath
-import re
 import sys
 from pathlib import Path
 
@@ -41,6 +40,29 @@ def _slide_rids(pres_rels_path: Path, unpacked_dir: Path) -> dict[str, str]:
     return rids
 
 
+def _sldid_rids(dom: "defusedxml.minidom.Document") -> list[str]:
+    """Collect the r:id values of every <sldId> element, prefix-agnostically.
+
+    minidom is not namespace-aware: ``getElementsByTagName("sldId")`` only
+    matches unprefixed tags, while OOXML permits any prefix for the
+    presentationml namespace (``<p:sldId>`` is the common one). Matching on
+    the local name via ``nodeName`` covers all prefixes.
+    """
+    rids = []
+    for elem in dom.getElementsByTagName("*"):
+        if (elem.nodeName or "").rsplit(":", 1)[-1] != "sldId":
+            continue
+        rid = elem.getAttribute("r:id")
+        if not rid:
+            rid = elem.getAttributeNS(
+                "http://schemas.openxmlformats.org/officeDocument/2006/relationships",
+                "id",
+            )
+        if rid:
+            rids.append(rid)
+    return rids
+
+
 def get_slides_in_sldidlst(unpacked_dir: Path) -> set[str]:
     pres_path = unpacked_dir / "ppt" / "presentation.xml"
     pres_rels_path = unpacked_dir / "ppt" / "_rels" / "presentation.xml.rels"
@@ -50,8 +72,7 @@ def get_slides_in_sldidlst(unpacked_dir: Path) -> set[str]:
 
     rid_to_slide = _slide_rids(pres_rels_path, unpacked_dir)
 
-    pres_content = pres_path.read_text(encoding="utf-8")
-    referenced_rids = set(re.findall(r'<p:sldId[^>]*r:id="([^"]+)"', pres_content))
+    referenced_rids = set(_sldid_rids(defusedxml.minidom.parse(str(pres_path))))
 
     return {
         posixpath.basename(rid_to_slide[rid])
@@ -76,12 +97,11 @@ def remove_orphaned_slides(unpacked_dir: Path) -> list[str]:
     on_disk = sorted(slides_dir.glob("slide*.xml"))
 
     if on_disk and not any(s.name in referenced_slides for s in on_disk):
-        listed = re.findall(
-            r'<p:sldId[^>]*r:id="([^"]+)"',
-            (unpacked_dir / "ppt" / "presentation.xml").read_text(encoding="utf-8")
-            if (unpacked_dir / "ppt" / "presentation.xml").exists()
-            else "",
-        )
+        # Prefix-agnostic guard: a regex hard-coded to ``<p:sldId>`` would
+        # miss decks whose presentationml prefix is not ``p`` and refuse
+        # (or, without this guard, wrongly delete) every slide.
+        pres_path_ = unpacked_dir / "ppt" / "presentation.xml"
+        listed = _sldid_rids(defusedxml.minidom.parse(str(pres_path_))) if pres_path_.exists() else []
         if listed:
             raise RefusedToClean(
                 f"<p:sldIdLst> lists {len(listed)} slide(s) and none of the "
