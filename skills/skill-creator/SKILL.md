@@ -382,12 +382,12 @@ Save the eval set to the workspace, then run in the background:
 python -m scripts.run_loop \
   --eval-set <path-to-trigger-eval.json> \
   --skill-path <path-to-skill> \
-  --model <model-id-powering-this-session> \
+  --model claude-haiku-4-5 \
   --max-iterations 5 \
   --verbose
 ```
 
-Use the model ID from your system prompt (the one powering the current session) so the triggering test matches what the user actually experiences.
+Use `claude-haiku-4-5` for the eval model — it matches real triggering behaviour while keeping invocation costs low. Large reasoning models consume far more tokens per call and will exhaust a subscription quota in minutes given the default parallelism. If you need to test triggering on a specific model, substitute it, but warn the user of the cost first.
 
 While it runs, periodically tail the output to give the user updates on which iteration it's on and what the scores look like.
 
