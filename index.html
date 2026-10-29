@@ -1,0 +1,103 @@
+<!doctype html>
+<!--
+THESIS: King'ori Consulting helps organisations understand how they operate and improve how they work.
+OWN-WORLD: Ink-blue fields, chartreuse signals, crisp rules and a connected operating-map motif.
+STORY: Visitors grasp the offer, see the breadth of the practice and choose to explore services or the engagement process.
+FIRST VIEWPORT: A compact wordmark and navigation frame a left-aligned offer and a connected organisation map, with clear page links below.
+FORM: A service-led, multi-page editorial website; all pages share one responsive design system.
+-->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102a36">
+  <meta name="description" content="King'ori Consulting helps organisations strengthen controls, improve performance and make better-informed decisions.">
+  <title>King'ori Consulting | Better ways to work</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="index.html" aria-label="King'ori Consulting home">
+        <span class="brand-mark" aria-hidden="true">K'</span>
+        <span><span class="brand-name">King'ori</span><span class="brand-type">Consulting</span></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav" aria-label="Open navigation">
+        <span></span><span></span>
+      </button>
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="index.html" aria-current="page">Home</a>
+        <a href="services.html">Services</a>
+        <a href="approach.html">How we work</a>
+        <a class="nav-cta" href="approach.html#start">Start with your priorities <span aria-hidden="true">↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <div class="hero-copy">
+          <h1>Make the way you work <span>work better.</span></h1>
+          <p class="hero-intro">King'ori Consulting helps organisations understand how they operate, strengthen what matters and turn insight into practical improvement.</p>
+          <div class="hero-actions">
+            <a class="button" href="services.html">Explore our services <span class="arrow" aria-hidden="true">↗</span></a>
+            <a class="text-link" href="approach.html">How an engagement works <span class="arrow" aria-hidden="true">→</span></a>
+          </div>
+        </div>
+        <div class="operating-map">
+          <svg viewBox="0 0 500 390" role="img" aria-labelledby="map-title map-description">
+            <title id="map-title">A connected view of organisational performance</title>
+            <desc id="map-description">Direction, controls, operations and insight come together around a central organisational review.</desc>
+            <defs><pattern id="map-grid" width="24" height="24" patternUnits="userSpaceOnUse"><path d="M24 0H0V24" fill="none" stroke="#fff" stroke-opacity=".07"/></pattern></defs>
+            <rect x="20" y="18" width="460" height="350" fill="url(#map-grid)"/>
+            <path d="M250 99V145M250 245V291M126 195H176M324 195H374" fill="none" stroke="#d8f36a" stroke-opacity=".72" stroke-width="2"/>
+            <path d="M250 99V145M250 245V291M126 195H176M324 195H374" fill="none" stroke="#d8f36a" stroke-width="5" stroke-dasharray="2 15" stroke-linecap="round"/>
+            <circle cx="250" cy="195" r="75" fill="#163b45" stroke="#d8f36a" stroke-width="1.5"/>
+            <circle cx="250" cy="195" r="61" fill="none" stroke="#fff" stroke-opacity=".16"/>
+            <text x="250" y="188" fill="#d8f36a" font-family="Arial, sans-serif" font-size="11" font-weight="700" letter-spacing="2" text-anchor="middle">ORGANISATION</text>
+            <text x="250" y="212" fill="#fff" font-family="Arial, sans-serif" font-size="17" font-weight="700" text-anchor="middle">The whole picture</text>
+            <g font-family="Arial, sans-serif">
+              <rect x="172" y="32" width="156" height="68" fill="#25434c" stroke="#527078"/><circle cx="194" cy="56" r="5" fill="#d8f36a"/><text x="208" y="60" fill="#fff" font-size="13" font-weight="700">Direction</text><text x="194" y="81" fill="#c4d3d0" font-size="10">Governance · performance</text>
+              <rect x="20" y="161" width="138" height="68" fill="#25434c" stroke="#527078"/><circle cx="42" cy="185" r="5" fill="#d8f36a"/><text x="56" y="189" fill="#fff" font-size="13" font-weight="700">Controls</text><text x="42" y="210" fill="#c4d3d0" font-size="10">Risk · accounting</text>
+              <rect x="342" y="161" width="138" height="68" fill="#25434c" stroke="#527078"/><circle cx="364" cy="185" r="5" fill="#d8f36a"/><text x="378" y="189" fill="#fff" font-size="13" font-weight="700">Operations</text><text x="364" y="210" fill="#c4d3d0" font-size="10">Systems · supply · people</text>
+              <rect x="172" y="290" width="156" height="68" fill="#25434c" stroke="#527078"/><circle cx="194" cy="314" r="5" fill="#d8f36a"/><text x="208" y="318" fill="#fff" font-size="13" font-weight="700">Insight</text><text x="194" y="339" fill="#c4d3d0" font-size="10">Reporting · decisions</text>
+            </g>
+          </svg>
+          <p class="map-note">A connected view of how an organisation works.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section home-intro">
+      <div class="wrap intro-grid">
+        <div class="section-heading">
+          <h2>A clearer view of the whole organisation.</h2>
+          <p>Strong organisations depend on connected decisions. We review the systems, controls and day-to-day practices behind performance, then help management identify practical ways forward.</p>
+        </div>
+        <div class="area-list" aria-label="Areas of consulting">
+          <a href="services.html#governance"><span>Governance &amp; assurance</span><span aria-hidden="true">↗</span></a>
+          <a href="services.html#financial"><span>Financial &amp; management insight</span><span aria-hidden="true">↗</span></a>
+          <a href="services.html#operations"><span>Supply &amp; operations</span><span aria-hidden="true">↗</span></a>
+          <a href="services.html#people"><span>People &amp; growth</span><span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-process">
+      <div class="wrap process-preview">
+        <div>
+          <h2>Begin with your priorities.</h2>
+          <p>Every engagement starts with an understanding of what matters to your organisation. Together, we agree the scope, deliverables and reporting schedule.</p>
+        </div>
+        <a class="button button-dark" href="approach.html">See how we work <span class="arrow" aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="wrap footer-inner"><a class="footer-brand" href="index.html">King'ori Consulting</a><p>Practical insight. Better ways of working.</p><div class="footer-links"><a href="services.html">Services</a><a href="approach.html">How we work</a></div></div>
+  </footer>
+  <script src="site.js" defer></script>
+</body>
+</html>
