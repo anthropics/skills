@@ -62,7 +62,7 @@ pnpm create vite "$PROJECT_NAME" --template react-ts
 cd "$PROJECT_NAME"
 
 echo "🧹 Cleaning up Vite template..."
-$SED_INPLACE '/<link rel="icon".*vite\.svg/d' index.html
+$SED_INPLACE '/<link rel="icon"/d' index.html
 $SED_INPLACE 's/<title>.*<\/title>/<title>'"$PROJECT_NAME"'<\/title>/' index.html
 
 echo "📦 Installing base dependencies..."
@@ -239,15 +239,17 @@ echo "🔧 Adding path aliases to tsconfig.app.json..."
 node -e "
 const fs = require('fs');
 const path = 'tsconfig.app.json';
-const content = fs.readFileSync(path, 'utf8');
-// Remove comments manually
-const lines = content.split('\n').filter(line => !line.trim().startsWith('//'));
-const jsonContent = lines.join('\n');
-const config = JSON.parse(jsonContent.replace(/\/\*[\s\S]*?\*\//g, '').replace(/,(\s*[}\]])/g, '\$1'));
-config.compilerOptions = config.compilerOptions || {};
-config.compilerOptions.baseUrl = '.';
-config.compilerOptions.paths = { '@/*': ['./src/*'] };
-fs.writeFileSync(path, JSON.stringify(config, null, 2));
+if (fs.existsSync(path)) {
+  const content = fs.readFileSync(path, 'utf8');
+  // Remove comments manually
+  const lines = content.split('\n').filter(line => !line.trim().startsWith('//'));
+  const jsonContent = lines.join('\n');
+  const config = JSON.parse(jsonContent.replace(/\/\*[\s\S]*?\*\//g, '').replace(/,(\s*[}\]])/g, '\$1'));
+  config.compilerOptions = config.compilerOptions || {};
+  config.compilerOptions.baseUrl = '.';
+  config.compilerOptions.paths = { '@/*': ['./src/*'] };
+  fs.writeFileSync(path, JSON.stringify(config, null, 2));
+}
 "
 
 # Update vite.config.ts
