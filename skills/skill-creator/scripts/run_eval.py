@@ -193,6 +193,17 @@ def run_eval(
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
+    # Results are grouped by query text below. A duplicate would combine its
+    # trials with another eval item and may put a holdout item into training.
+    seen_queries = set()
+    for item in eval_set:
+        query = item["query"]
+        if query in seen_queries:
+            raise ValueError(
+                f"Duplicate eval query {query!r}; use runs_per_query for repeated trials"
+            )
+        seen_queries.add(query)
+
     results = []
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
@@ -283,17 +294,21 @@ def main():
     if args.verbose:
         print(f"Evaluating: {description}", file=sys.stderr)
 
-    output = run_eval(
-        eval_set=eval_set,
-        skill_name=name,
-        description=description,
-        num_workers=args.num_workers,
-        timeout=args.timeout,
-        project_root=project_root,
-        runs_per_query=args.runs_per_query,
-        trigger_threshold=args.trigger_threshold,
-        model=args.model,
-    )
+    try:
+        output = run_eval(
+            eval_set=eval_set,
+            skill_name=name,
+            description=description,
+            num_workers=args.num_workers,
+            timeout=args.timeout,
+            project_root=project_root,
+            runs_per_query=args.runs_per_query,
+            trigger_threshold=args.trigger_threshold,
+            model=args.model,
+        )
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(1)
 
     if args.verbose:
         summary = output["summary"]
