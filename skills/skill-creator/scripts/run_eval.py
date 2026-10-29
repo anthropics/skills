@@ -9,6 +9,7 @@ import argparse
 import json
 import os
 import select
+import shutil
 import subprocess
 import sys
 import time
@@ -42,19 +43,41 @@ def run_single_query(
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
-    Creates a command file in .claude/commands/ so it appears in Claude's
-    available_skills list, then runs `claude -p` with the raw query.
-    Uses --include-partial-messages to detect triggering early from
-    stream events (content_block_start) rather than waiting for the
-    full assistant message, which only arrives after tool execution.
+    Creates a command file in a per-run .claude/commands/ directory so it
+    appears in Claude's available_skills list, then runs `claude -p` with
+    the raw query. Uses --include-partial-messages to detect triggering
+    early from stream events (content_block_start) rather than waiting
+    for the full assistant message, which only arrives after tool
+    execution.
+
+    Each run gets its own project root under .eval-runs/<id>/ (see
+    issues #1552 and #1559): with a shared .claude/commands/, N parallel
+    workers would each see their own copy plus the N-1 copies belonging
+    to other in-flight runs — N near-identical descriptions competing for
+    the same query, so a run has only a ~1/N chance of being credited.
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
-    project_commands_dir = Path(project_root) / ".claude" / "commands"
+    run_root = Path(project_root) / ".eval-runs" / unique_id
+    project_commands_dir = run_root / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
     try:
         project_commands_dir.mkdir(parents=True, exist_ok=True)
+        # Mirror the project's top-level entries so the run's working
+        # directory still looks like a real project (an empty scratch dir
+        # makes the model explore with Bash and invoke nothing — issue
+        # #1559). Skip .claude and .eval-runs themselves.
+        for entry in Path(project_root).iterdir():
+            if entry.name in (".claude", ".eval-runs"):
+                continue
+            link = run_root / entry.name
+            if not link.exists():
+                try:
+                    link.symlink_to(entry, target_is_directory=entry.is_dir())
+                except OSError:
+                    pass  # e.g. Windows without Developer Mode; isolation holds
+
         # Use YAML block scalar to avoid breaking on quotes in description
         indented_desc = "\n  ".join(skill_description.split("\n"))
         command_content = (
@@ -86,7 +109,7 @@ def run_single_query(
             cmd,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
-            cwd=project_root,
+            cwd=str(run_root),
             env=env,
         )
 
@@ -97,12 +120,103 @@ def run_single_query(
         pending_tool_name = None
         accumulated_json = ""
 
+        def parse_line(line: str) -> bool | None:
+            """Parse one stream-json line.
+
+            Returns True once the skill is confirmed triggered, or None to
+            keep reading. Never returns False mid-stream: a non-skill tool
+            call (Bash orientation, etc.) or a completed non-matching block
+            is not a verdict — the skill may still fire in a later turn
+            (issue #1559). Only the final `result` event (or the drained
+            tail) is conclusive.
+            """
+            nonlocal triggered, pending_tool_name, accumulated_json
+            line = line.strip()
+            if not line:
+                return None
+
+            try:
+                event = json.loads(line)
+            except json.JSONDecodeError:
+                return None
+
+            # Early detection via stream events
+            if event.get("type") == "stream_event":
+                se = event.get("event", {})
+                se_type = se.get("type", "")
+
+                if se_type == "content_block_start":
+                    cb = se.get("content_block", {})
+                    if cb.get("type") == "tool_use":
+                        tool_name = cb.get("name", "")
+                        if tool_name in ("Skill", "Read"):
+                            pending_tool_name = tool_name
+                            accumulated_json = ""
+                        else:
+                            # Not the skill — keep watching (issue #1559).
+                            pending_tool_name = None
+                            accumulated_json = ""
+
+                elif se_type == "content_block_delta" and pending_tool_name:
+                    delta = se.get("delta", {})
+                    if delta.get("type") == "input_json_delta":
+                        accumulated_json += delta.get("partial_json", "")
+                        if clean_name in accumulated_json:
+                            return True
+
+                elif se_type in ("content_block_stop", "message_stop"):
+                    if pending_tool_name and clean_name in accumulated_json:
+                        return True
+                    # A completed non-matching block isn't conclusive —
+                    # reset and keep reading (issue #1559).
+                    pending_tool_name = None
+                    accumulated_json = ""
+
+            # Fallback: full assistant message
+            elif event.get("type") == "assistant":
+                message = event.get("message", {})
+                for content_item in message.get("content", []):
+                    if content_item.get("type") != "tool_use":
+                        continue
+                    tool_name = content_item.get("name", "")
+                    tool_input = content_item.get("input", {})
+                    if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                        triggered = True
+                        return True
+                    if tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                        triggered = True
+                        return True
+                # No matching tool use in this message — keep reading.
+
+            elif event.get("type") == "result":
+                return triggered
+
+            return None
+
+        def consume_buffer() -> bool | None:
+            """Parse all complete lines currently buffered; returns a
+            verdict (True/False) or None if no verdict found yet."""
+            nonlocal buffer
+            while "\n" in buffer:
+                line, buffer = buffer.split("\n", 1)
+                verdict = parse_line(line)
+                if verdict is not None:
+                    return verdict
+            return None
+
         try:
             while time.time() - start_time < timeout:
                 if process.poll() is not None:
                     remaining = process.stdout.read()
                     if remaining:
                         buffer += remaining.decode("utf-8", errors="replace")
+                    # The drained tail must be parsed too (issue #1552):
+                    # when the child's output lands in one go — the common
+                    # case for a single-turn answer — the verdict is only
+                    # in this final read.
+                    verdict = consume_buffer()
+                    if verdict is not None:
+                        return verdict
                     break
 
                 ready, _, _ = select.select([process.stdout], [], [], 1.0)
@@ -114,61 +228,9 @@ def run_single_query(
                     break
                 buffer += chunk.decode("utf-8", errors="replace")
 
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
-
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
-
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
-                        return triggered
+                verdict = consume_buffer()
+                if verdict is not None:
+                    return verdict
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
@@ -177,8 +239,12 @@ def run_single_query(
 
         return triggered
     finally:
-        if command_file.exists():
-            command_file.unlink()
+        # Remove the per-run root (and .eval-runs itself once empty).
+        shutil.rmtree(run_root, ignore_errors=True)
+        try:
+            run_root.parent.rmdir()
+        except OSError:
+            pass
 
 
 def run_eval(
