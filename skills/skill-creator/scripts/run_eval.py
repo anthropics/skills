@@ -84,6 +84,7 @@ def run_single_query(
 
         process = subprocess.Popen(
             cmd,
+            stdin=subprocess.DEVNULL,  # nested claude -p must not wait on/inherit our stdin
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             cwd=project_root,
