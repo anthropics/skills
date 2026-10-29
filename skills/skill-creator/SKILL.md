@@ -389,6 +389,10 @@ python -m scripts.run_loop \
 
 Use the model ID from your system prompt (the one powering the current session) so the triggering test matches what the user actually experiences.
 
+Each probe runs in its own throwaway directory, so the probe never competes with a real installed copy of the skill and parallel probes can't see each other's commands. For a skill whose queries only make sense somewhere specific (a git repo, a project tree), a bare directory makes Claude answer "there's nothing here" instead of reaching for the skill, and every positive looks like a miss. Pass `--fixture <dir>` to copy a prepared fixture in as each probe's sandbox; probes mutate their copies, never the original, except through symlinks inside the fixture, which are copied as links. Build the smallest fixture that makes the queries plausible (for a git skill, a `git init` with a few branches is enough).
+
+Probes also load no user settings, so a copy of the skill installed at user scope (`~/.claude/skills/`) or in a user-enabled plugin never competes with the decoy, and your permission mode and allow rules don't apply. Each probe gets only the Skill, Read, Glob, and Grep tools and no MCP servers, so a query is never acted on. If the skill's name is still registered without user settings (a built-in skill or command, or a managed-policy install), the run aborts with an error instead of reporting a fake 0%; rename the skill to evaluate it.
+
 While it runs, periodically tail the output to give the user updates on which iteration it's on and what the scores look like.
 
 This handles the full optimization loop automatically. It splits the eval set into 60% train and 40% held-out test, evaluates the current description (running each query 3 times to get a reliable trigger rate), then calls Claude to propose improvements based on what failed. It re-evaluates each new description on both train and test, iterating up to 5 times. When it's done, it opens an HTML report in the browser showing the results per iteration and returns JSON with `best_description` — selected by test score rather than train score to avoid overfitting.
