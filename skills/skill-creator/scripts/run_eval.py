@@ -6,6 +6,7 @@ for a set of queries. Outputs results as JSON.
 """
 
 import argparse
+import contextlib
 import json
 import os
 import select
@@ -17,6 +18,38 @@ from concurrent.futures import ProcessPoolExecutor, as_completed
 from pathlib import Path
 
 from scripts.utils import parse_skill_md
+
+
+@contextlib.contextmanager
+def shadow_installed_skill(skill_name: str, project_root: Path):
+    """Temporarily hide installed copies of the skill under test.
+
+    If the skill is installed, claude -p sees both the real skill and the temp
+    eval command and invokes the real one by its canonical name. Detection only
+    matches the temp copy's unique name, so every genuine trigger scores as a
+    miss and recall collapses to 0%. Moving the installed copy outside the
+    skills dir for the duration of the eval leaves the temp copy as the only
+    triggerable target.
+    """
+    candidates = [
+        Path.home() / ".claude" / "skills" / skill_name,
+        Path(project_root) / ".claude" / "skills" / skill_name,
+    ]
+    renamed = []
+    try:
+        for d in candidates:
+            if d.is_dir():
+                # Move OUT of the skills dir: a renamed dir still inside
+                # skills/ is discovered and registered under its new name.
+                target = d.parent.parent / (d.name + ".eval-shadow")
+                if not target.exists():
+                    d.rename(target)
+                    renamed.append((d, target))
+        yield
+    finally:
+        for orig, target in renamed:
+            if target.exists() and not orig.exists():
+                target.rename(orig)
 
 
 def find_project_root() -> Path:
@@ -50,6 +83,9 @@ def run_single_query(
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
+    # Parallel workers all use the same candidate description but different
+    # hashes; a trigger on any of them is a valid trigger for this description.
+    match_token = f"{skill_name}-skill-"
     project_commands_dir = Path(project_root) / ".claude" / "commands"
     command_file = project_commands_dir / f"{clean_name}.md"
 
@@ -144,12 +180,12 @@ def run_single_query(
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
+                                if match_token in accumulated_json:
                                     return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                return match_token in accumulated_json
                             if se_type == "message_stop":
                                 return False
 
@@ -161,9 +197,9 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                            if tool_name == "Skill" and match_token in tool_input.get("skill", ""):
                                 triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            elif tool_name == "Read" and match_token in tool_input.get("file_path", ""):
                                 triggered = True
                             return triggered
 
@@ -195,7 +231,8 @@ def run_eval(
     """Run the full eval set and return results."""
     results = []
 
-    with ProcessPoolExecutor(max_workers=num_workers) as executor:
+    with shadow_installed_skill(skill_name, project_root), \
+         ProcessPoolExecutor(max_workers=num_workers) as executor:
         future_to_info = {}
         for item in eval_set:
             for run_idx in range(runs_per_query):
