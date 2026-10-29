@@ -75,6 +75,8 @@ class MCPConnectionStdio(MCPConnection):
 
     def __init__(self, command: str, args: list[str] = None, env: dict[str, str] = None):
         super().__init__()
+        if not isinstance(command, str) or not command.strip():
+            raise ValueError("Command must be a non-empty string")
         self.command = command
         self.args = args or []
         self.env = env
