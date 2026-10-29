@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -97,20 +98,26 @@ def run_single_query(
         pending_tool_name = None
         accumulated_json = ""
 
+        # Pump stdout on a reader thread: select() only works on sockets on
+        # Windows, so a queue-fed thread is the portable way to poll the pipe.
+        out_queue: queue.Queue = queue.Queue()
+
+        def _pump():
+            for chunk in iter(process.stdout.readline, b""):
+                out_queue.put(chunk)
+            out_queue.put(None)  # EOF sentinel
+
+        pump = threading.Thread(target=_pump, daemon=True)
+        pump.start()
+
         try:
             while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
+                try:
+                    chunk = out_queue.get(timeout=1.0)
+                except queue.Empty:
                     continue
 
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
+                if chunk is None:
                     break
                 buffer += chunk.decode("utf-8", errors="replace")
 
