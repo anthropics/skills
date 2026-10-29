@@ -71,9 +71,24 @@ def rendered_text(text: str, preserve: bool) -> str:
     return text if preserve else text.strip(XML_SPACE)
 
 
-def safe_extract(zf: zipfile.ZipFile, dest: Path) -> None:
+#: Default maximum total uncompressed size (bytes) of an archive extracted
+#: with :func:`safe_extract`. A malicious or corrupt OOXML package can list
+#: members with a very large ``file_size`` to fill a temp directory during
+#: extraction; summing the declared sizes up front refuses it before any bytes
+#: are written. 500 MB is generous for documents and presentations, even with
+#: embedded media; callers that need more can pass ``max_bytes`` explicitly.
+MAX_UNPACKED_BYTES = 500 * 1024 * 1024
+
+
+def safe_extract(zf: zipfile.ZipFile, dest: Path, max_bytes: int = MAX_UNPACKED_BYTES) -> None:
     dest = dest.resolve()
-    for m in zf.infolist():
+    members = zf.infolist()
+    total = sum(m.file_size for m in members)
+    if total > max_bytes:
+        raise ValueError(
+            f"archive expands to {total} bytes, over the {max_bytes} byte limit"
+        )
+    for m in members:
         if stat.S_ISLNK(m.external_attr >> 16):
             raise ValueError(f"symlink archive entry not allowed: {m.filename!r}")
         target = (dest / m.filename).resolve()
