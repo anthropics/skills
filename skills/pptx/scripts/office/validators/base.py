@@ -10,7 +10,7 @@ from functools import lru_cache
 
 import lxml.etree
 
-from helpers import safe_extract
+from helpers import opc_target, rels_source_part, safe_extract
 
 
 @lru_cache(maxsize=None)
@@ -324,7 +324,14 @@ class BaseSchemaValidator:
                 and file_path.name != "[Content_Types].xml"
                 and not file_path.name.endswith(".rels")
             ):  
-                all_files.append(file_path.resolve())
+                resolved_path = file_path.resolve()
+                if not resolved_path.is_relative_to(self.unpacked_dir):
+                    errors.append(
+                        f"  File resolves outside package: "
+                        f"{file_path.relative_to(self.unpacked_dir)}"
+                    )
+                    continue
+                all_files.append(resolved_path)
 
         all_referenced_files = set()
 
@@ -337,38 +344,31 @@ class BaseSchemaValidator:
             try:
                 rels_root = lxml.etree.parse(str(rels_file)).getroot()
 
-                rels_dir = rels_file.parent
-
                 referenced_files = set()
                 broken_refs = []
+                source_part = rels_source_part(rels_file, self.unpacked_dir)
 
                 for rel in rels_root.findall(
                     ".//ns:Relationship",
                     namespaces={"ns": self.PACKAGE_RELATIONSHIPS_NAMESPACE},
                 ):
                     target = rel.get("Target")
-                    if rel.get("TargetMode") == "External":
+                    if not target:
                         continue
-                    if target and not target.startswith(
-                        ("http", "mailto:")
-                    ):  
-                        if target.startswith("/"):
-                            target_path = self.unpacked_dir / target.lstrip("/")
-                        elif rels_file.name == ".rels":
-                            target_path = self.unpacked_dir / target
-                        else:
-                            base_dir = rels_dir.parent
-                            target_path = base_dir / target
-
-                        try:
-                            target_path = target_path.resolve()
-                            if target_path.exists() and target_path.is_file():
-                                referenced_files.add(target_path)
-                                all_referenced_files.add(target_path)
-                            else:
-                                broken_refs.append((target, rel.sourceline))
-                        except (OSError, ValueError):
+                    try:
+                        part = opc_target(target, source_part, rel.get("TargetMode", ""))
+                        if part is None:
+                            continue
+                        target_path = (self.unpacked_dir / part).resolve()
+                        if not target_path.is_relative_to(self.unpacked_dir):
                             broken_refs.append((target, rel.sourceline))
+                        elif target_path.exists() and target_path.is_file():
+                            referenced_files.add(target_path)
+                            all_referenced_files.add(target_path)
+                        else:
+                            broken_refs.append((target, rel.sourceline))
+                    except (OSError, ValueError):
+                        broken_refs.append((target, rel.sourceline))
 
                 if broken_refs:
                     rel_path = rels_file.relative_to(self.unpacked_dir)
