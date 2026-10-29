@@ -44,6 +44,20 @@ For calibration, AI-generated design right now clusters around some traits:
 
 All traits are legitimate for some briefs, but they are defaults rather than choices, and they appear regardless of subject. Where the brief pins down a visual direction, follow it exactly — the brief's own words always win, including when it asks for one of these looks. Where it leaves an axis free, don't spend that freedom on one of these defaults. As with a hired human designer, there's often a careful balance between doing what you're good at and taking each project as a chance to experiment and learn.
 
+The traits above describe whole looks. At the level of single elements, a few defaults show up so often that naming them works better than a general warning: an instruction like "avoid a generic look" tends to swap one default for another. Unless the brief asks for one of these by name, don't use:
+- a cream or off-white page background
+- italic, bold, or colored accent words in headlines
+- numbered "01 / 02 / 03" section labels on content that is not a sequence
+- monospace labels
+- pill-shaped buttons
+- tracked-out ALL-CAPS eyebrow labels above headings
+- a '→' appended to link and button text
+- a hero built from a big number, a small label, and a gradient accent
+- Inter, Roboto, Arial, or system fonts as the page's typeface
+- a purple gradient on a white background
+
+Before handing off, check the result against this list and fix any hit.
+
 Work in two passes. First, brainstorm a short design plan based on the client's design brief: create a compact token system with color, type, layout, and principles.
 - Color: describe the core base palette as 4–6 named hex values.
 - Type: the typefaces and their roles.
