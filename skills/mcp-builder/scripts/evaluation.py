@@ -114,7 +114,15 @@ async def agent_loop(
         tool_start_ts = time.time()
         try:
             tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            if isinstance(tool_result, list):
+                # MCP returns list[TextContent]; json.dumps fails on pydantic objects
+                tool_response = "\n".join(
+                    b.text for b in tool_result if hasattr(b, "text")
+                ) or str(tool_result)
+            elif isinstance(tool_result, dict):
+                tool_response = json.dumps(tool_result)
+            else:
+                tool_response = str(tool_result)
         except Exception as e:
             tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
             tool_response += traceback.format_exc()
@@ -220,7 +228,7 @@ TASK_TEMPLATE = """
 async def run_evaluation(
     eval_path: Path,
     connection: Any,
-    model: str = "claude-3-7-sonnet-20250219",
+    model: str = "claude-haiku-4-5",
 ) -> str:
     """Run evaluation with MCP server tools."""
     print("🚀 Starting Evaluation")
@@ -321,7 +329,7 @@ Examples:
 
     parser.add_argument("eval_file", type=Path, help="Path to evaluation XML file")
     parser.add_argument("-t", "--transport", choices=["stdio", "sse", "http"], default="stdio", help="Transport type (default: stdio)")
-    parser.add_argument("-m", "--model", default="claude-3-7-sonnet-20250219", help="Claude model to use (default: claude-3-7-sonnet-20250219)")
+    parser.add_argument("-m", "--model", default="claude-haiku-4-5", help="Claude model to use (default: claude-haiku-4-5)")
 
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
