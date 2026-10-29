@@ -19,6 +19,8 @@ import socket
 import time
 import sys
 import argparse
+import shlex
+import os
 
 def is_server_ready(port, timeout=30):
     """Wait for server to be ready by polling the port."""
@@ -31,6 +33,25 @@ def is_server_ready(port, timeout=30):
             time.sleep(0.5)
     return False
 
+
+
+def resolve_server_command(cmd):
+    """Convert a shell-style command string to a safe argv list.
+
+    Supports "cd <dir> && <command>" by returning (argv, cwd).
+    Rejects other shell metacharacters to prevent command injection.
+    """
+    tokens = shlex.split(cmd)
+    if len(tokens) >= 3 and tokens[0] == 'cd' and tokens[2] == '&&':
+        directory = os.path.expanduser(tokens[1])
+        return (tokens[3:], directory)
+    for token in tokens:
+        if any(op in token for op in ('&&', '||', ';', '|', '`', '$(')):
+            raise ValueError(
+                f"Shell metacharacters are not allowed in --server commands: {cmd!r}. "
+                "Use 'cd <dir> && <command>' or pass a simple command."
+            )
+    return (tokens, None)
 
 def main():
     parser = argparse.ArgumentParser(description='Run command with one or more servers')
@@ -65,10 +86,10 @@ def main():
         for i, server in enumerate(servers):
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
-            # Use shell=True to support commands with cd and &&
+            argv, cwd = resolve_server_command(server['cmd'])
             process = subprocess.Popen(
-                server['cmd'],
-                shell=True,
+                argv,
+                cwd=cwd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
             )
