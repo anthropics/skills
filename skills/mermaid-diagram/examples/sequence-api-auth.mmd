@@ -1,0 +1,18 @@
+sequenceDiagram
+    participant U as User
+    participant W as Web App
+    participant A as Auth Service
+    participant D as Database
+
+    U->>W: Submit login form
+    W->>A: POST /authenticate
+    A->>D: SELECT user WHERE email = ?
+    D-->>A: user record
+    alt password matches
+        A->>A: Issue JWT
+        A-->>W: 200 OK + token
+        W-->>U: Redirect to dashboard
+    else password invalid
+        A-->>W: 401 Unauthorized
+        W-->>U: Show error message
+    end
