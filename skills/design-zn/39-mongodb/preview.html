@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MongoDB (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@300;400;500;600;700&family=Source+Code+Pro:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #001e2b; --green: #00ed64; --dark-green: #00684a; --blue: #006cfa;
+    --hover-blue: #3860be; --teal: #1c2d38; --teal-gray: #3d4f58; --cool-gray: #5c6c75;
+    --silver: #b8c4c2; --white: #ffffff; --black: #000000;
+    --shadow-forest: rgba(0,30,43,0.12) 0px 26px 44px, rgba(0,0,0,0.13) 0px 7px 13px;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-mono: 'Source Code Pro', ui-monospace, monospace;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--black); font-family:var(--font-sans); font-size:16px; font-weight:300; line-height:1.50; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:12px 32px; background:var(--forest); }
+  .nav-brand { font-size:14px; font-weight:500; color:var(--white); text-decoration:none; }
+  .nav-links { display:flex; gap:24px; list-style:none; }
+  .nav-links a { font-size:14px; font-weight:500; color:rgba(255,255,255,0.7); text-decoration:none; transition:color 0.15s; }
+  .nav-links a:hover { color:var(--white); }
+  .nav-cta { display:inline-block; background:var(--dark-green); color:var(--white); padding:8px 18px; border-radius:100px; font-size:14px; font-weight:600; text-decoration:none; }
+
+  .hero { padding:80px 32px; background:var(--forest); text-align:center; color:var(--white); }
+  .hero h1 { font-family:var(--font-serif); font-size:72px; font-weight:400; line-height:1.10; margin-bottom:16px; }
+  .hero h1 span { color:var(--green); }
+  .hero p { font-size:18px; font-weight:300; line-height:1.50; color:rgba(255,255,255,0.7); max-width:550px; margin:0 auto 32px; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; }
+  .btn-green { display:inline-block; background:var(--dark-green); color:var(--white); padding:10px 24px; border-radius:100px; border:1px solid var(--dark-green); font-family:var(--font-sans); font-size:14px; font-weight:600; text-decoration:none; }
+  .btn-outline-light { display:inline-block; background:transparent; color:var(--white); padding:10px 24px; border-radius:100px; border:1px solid var(--teal-gray); font-family:var(--font-sans); font-size:14px; font-weight:500; text-decoration:none; }
+
+  .section { padding:64px 32px; max-width:1100px; margin:0 auto; }
+  .section-dark { padding:64px 32px; background:var(--forest); color:var(--white); }
+  .section-dark .section-inner { max-width:1100px; margin:0 auto; }
+  .section-label { font-family:var(--font-mono); font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:2px; color:var(--green); margin-bottom:8px; }
+  .section-label-light { font-family:var(--font-mono); font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:2px; color:var(--dark-green); margin-bottom:8px; }
+  .section-title { font-size:36px; font-weight:500; line-height:1.33; margin-bottom:32px; }
+  .section-divider { border:none; border-top:1px solid var(--silver); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(150px,1fr)); gap:12px; margin-bottom:24px; }
+  .color-swatch { border-radius:16px; overflow:hidden; border:1px solid var(--silver); }
+  .color-swatch-block { height:72px; width:100%; }
+  .color-swatch-info { padding:10px 12px; }
+  .color-swatch-name { font-size:13px; font-weight:500; margin-bottom:2px; }
+  .color-swatch-hex { font-size:11px; color:var(--cool-gray); font-family:var(--font-mono); }
+  .color-swatch-role { font-size:10px; color:var(--cool-gray); margin-top:3px; }
+  .color-group-label { font-size:14px; font-weight:500; color:var(--cool-gray); margin:24px 0 10px; }
+
+  .type-sample { margin-bottom:28px; padding-bottom:24px; border-bottom:1px solid rgba(184,196,194,0.5); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-family:var(--font-mono); font-size:11px; color:var(--cool-gray); margin-top:6px; }
+
+  .button-row { display:flex; gap:16px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:11px; font-weight:500; color:var(--cool-gray); margin-top:8px; }
+  .btn-teal { display:inline-block; background:var(--teal); color:var(--cool-gray); padding:10px 20px; border-radius:100px; border:1px solid var(--teal-gray); font-family:var(--font-sans); font-size:14px; font-weight:500; text-decoration:none; }
+  .btn-outline-dark { display:inline-block; background:transparent; color:var(--forest); padding:10px 20px; border-radius:8px; border:1px solid var(--silver); font-family:var(--font-sans); font-size:14px; font-weight:500; text-decoration:none; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(300px,1fr)); gap:16px; }
+  .card { background:var(--white); border:1px solid var(--silver); border-radius:16px; padding:24px; }
+  .card h3 { font-size:24px; font-weight:500; margin-bottom:8px; }
+  .card p { font-size:16px; font-weight:300; color:var(--cool-gray); line-height:1.50; }
+  .card-accent { border-bottom:2px solid var(--green); display:inline-block; padding-bottom:2px; margin-bottom:12px; font-family:var(--font-mono); font-size:12px; font-weight:500; text-transform:uppercase; letter-spacing:2px; color:var(--dark-green); }
+
+  .form-group { margin-bottom:16px; max-width:400px; }
+  .form-label { display:block; font-size:14px; font-weight:500; margin-bottom:6px; }
+  .form-input { width:100%; background:var(--white); color:var(--black); border:1px solid var(--silver); padding:10px 12px; border-radius:4px; font-family:var(--font-sans); font-size:16px; font-weight:300; outline:none; }
+  .form-input:focus { border-color:var(--blue); box-shadow:0 0 0 2px rgba(0,108,250,0.2); }
+  .form-input--focus { border-color:var(--blue); box-shadow:0 0 0 2px rgba(0,108,250,0.2); }
+  .form-input--error { border-color:#e53e3e; box-shadow:0 0 0 2px rgba(229,62,62,0.2); }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--black); border:1px solid var(--silver); padding:10px 12px; border-radius:4px; font-family:var(--font-sans); font-size:16px; font-weight:300; resize:vertical; outline:none; }
+  .form-state-label { font-size:10px; color:var(--cool-gray); margin-top:4px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:10px; flex-wrap:wrap; margin-bottom:20px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--green); border-radius:4px; margin-bottom:6px; height:28px; }
+  .spacing-value { font-family:var(--font-mono); font-size:10px; color:var(--cool-gray); }
+
+  .radius-row { display:flex; gap:14px; flex-wrap:wrap; align-items:center; }
+  .radius-item { text-align:center; }
+  .radius-box { width:60px; height:60px; background:var(--dark-green); margin-bottom:6px; }
+  .radius-label { font-family:var(--font-mono); font-size:10px; color:var(--cool-gray); }
+  .radius-context { font-size:9px; color:var(--cool-gray); }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:16px; }
+  .elevation-card { background:var(--white); border:1px solid var(--silver); border-radius:16px; padding:20px; text-align:center; }
+  .elevation-label { font-size:14px; font-weight:500; margin-bottom:4px; }
+  .elevation-desc { font-family:var(--font-mono); font-size:10px; color:var(--cool-gray); }
+
+  .footer { padding:40px 32px; text-align:center; background:var(--forest); color:rgba(255,255,255,0.5); font-size:13px; }
+  .footer a { color:var(--green); text-decoration:underline; }
+
+  @media (max-width:768px) {
+    .hero h1 { font-size:48px; }
+    .nav-links { display:none; }
+    .section { padding:48px 20px; }
+    .card-grid { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Try Free</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by <span>MongoDB</span></h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-green" href="#">Try Free</a>
+    <a class="btn-outline-light" href="#">Contact Sales</a>
+  </div>
+</section>
+
+<section class="section" id="colors">
+  <div class="section-label-light">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Brand</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#001e2b"></div><div class="color-swatch-info"><div class="color-swatch-name">Forest Black</div><div class="color-swatch-hex">#001e2b</div><div class="color-swatch-role">Dark background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00ed64"></div><div class="color-swatch-info"><div class="color-swatch-name">MongoDB Green</div><div class="color-swatch-hex">#00ed64</div><div class="color-swatch-role">Brand accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#00684a"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Green</div><div class="color-swatch-hex">#00684a</div><div class="color-swatch-role">Buttons, links</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#006cfa"></div><div class="color-swatch-info"><div class="color-swatch-name">Action Blue</div><div class="color-swatch-hex">#006cfa</div><div class="color-swatch-role">Links, interactive</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1c2d38"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Teal</div><div class="color-swatch-hex">#1c2d38</div><div class="color-swatch-role">Dark buttons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3d4f58"></div><div class="color-swatch-info"><div class="color-swatch-name">Teal Gray</div><div class="color-swatch-hex">#3d4f58</div><div class="color-swatch-role">Dark borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5c6c75"></div><div class="color-swatch-info"><div class="color-swatch-name">Cool Gray</div><div class="color-swatch-hex">#5c6c75</div><div class="color-swatch-role">Muted text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#b8c4c2"></div><div class="color-swatch-info"><div class="color-swatch-name">Silver Teal</div><div class="color-swatch-hex">#b8c4c2</div><div class="color-swatch-role">Light borders</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label-light">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+  <div class="type-sample"><div style="font-family:var(--font-serif); font-size:72px; font-weight:400; line-height:1.10;">Display Hero</div><div class="type-meta">Display — 96px / 400 / 1.20 / MongoDB Value Serif</div></div>
+  <div class="type-sample"><div style="font-size:36px; font-weight:500; line-height:1.33;">Section Heading</div><div class="type-meta">Section — 36px / 500 / 1.33 / Euclid Circular A</div></div>
+  <div class="type-sample"><div style="font-size:24px; font-weight:500; line-height:1.33;">Sub-heading</div><div class="type-meta">Sub — 24px / 500 / 1.33 / Euclid Circular A</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:300; line-height:1.50;">Body Light — Build faster with MongoDB. The developer data platform for modern applications.</div><div class="type-meta">Body — 16px / 300 / 1.50 / Euclid Circular A</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:14px; text-transform:uppercase; letter-spacing:2px; color:var(--dark-green);">DATABASE COLLECTION</div><div class="type-meta">Code Label — 14px / uppercase / +2px / Source Code Pro</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:16px; color:var(--cool-gray);">db.collection.find({ status: "active" })</div><div class="type-meta">Code Body — 16px / 400 / Source Code Pro</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:9px; font-weight:600; text-transform:uppercase; letter-spacing:2.5px; color:var(--green);">AGGREGATION PIPELINE</div><div class="type-meta">Code Micro — 9px / 600 / uppercase / +2.5px / Source Code Pro</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label-light">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-green" href="#">Try Free</a><div class="button-label">Green Pill</div></div>
+    <div class="button-item"><a class="btn-teal" href="#">Explore</a><div class="button-label">Dark Teal</div></div>
+    <div class="button-item"><a class="btn-outline-dark" href="#">Learn More</a><div class="button-label">Outlined</div></div>
+    <div class="button-item"><a class="btn-outline-light" style="color:var(--cool-gray); border-color:var(--teal-gray);" href="#">Dark Context</a><div class="button-label">Dark Outlined</div></div>
+  </div>
+</section>
+
+<div class="section-dark">
+  <div class="section-inner" id="cards">
+    <div class="section-label">04 / Cards</div>
+    <h2 class="section-title">Card Examples</h2>
+    <div class="card-grid">
+      <div class="card" style="background:var(--teal); border-color:var(--teal-gray); color:var(--white);">
+        <div class="card-accent" style="color:var(--green); border-color:var(--green);">Atlas</div>
+        <h3 style="color:var(--white);">Document Model</h3>
+        <p style="color:rgba(255,255,255,0.6);">Map your data naturally with flexible documents. No rigid schemas, no complex joins.</p>
+      </div>
+      <div class="card">
+        <div class="card-accent">Search</div>
+        <h3>Full-text Search</h3>
+        <p>Build rich search experiences using the same data you already have in Atlas.</p>
+      </div>
+      <div class="card" style="box-shadow: rgba(0,30,43,0.12) 0px 26px 44px, rgba(0,0,0,0.13) 0px 7px 13px;">
+        <div class="card-accent" style="border-color:var(--blue); color:var(--blue);">Elevated</div>
+        <h3>Vector Search</h3>
+        <p>Build AI-powered applications with native vector search. Forest-tinted shadow elevation.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section class="section" id="forms">
+  <div class="section-label-light">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Cluster Name</label><input class="form-input" type="text" placeholder="my-cluster-0"><div class="form-state-label">Default</div></div>
+  <div class="form-group"><label class="form-label">Connection String</label><input class="form-input form-input--focus" type="text" value="mongodb+srv://..."><div class="form-state-label">Focus (blue ring)</div></div>
+  <div class="form-group"><label class="form-label">Database</label><input class="form-input form-input--error" type="text" value="invalid name"><div class="form-state-label">Error</div></div>
+  <div class="form-group"><label class="form-label">Query</label><textarea class="form-textarea" placeholder='{ "status": "active" }'></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label-light">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label-light">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Inputs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Links</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div><div class="radius-context">Panels</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:48px"></div><div class="radius-label">48px</div><div class="radius-context">Hero cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:999px; width:60px; height:60px;"></div><div class="radius-label">pill</div><div class="radius-context">Buttons</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section">
+  <div class="section-label-light">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card"><div class="elevation-label">Level 0</div><div class="elevation-desc">Flat — no shadow</div></div>
+    <div class="elevation-card" style="box-shadow:rgba(0,0,0,0.1) 0px 2px 4px;"><div class="elevation-label">Subtle</div><div class="elevation-desc">Light lift</div></div>
+    <div class="elevation-card" style="box-shadow:rgba(0,0,0,0.15) 0px 3px 20px;"><div class="elevation-label">Standard</div><div class="elevation-desc">General elevation</div></div>
+    <div class="elevation-card" style="box-shadow:rgba(0,30,43,0.12) 0px 26px 44px, rgba(0,0,0,0.13) 0px 7px 13px;"><div class="elevation-label">Forest</div><div class="elevation-desc">Teal-tinted primary</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://www.mongodb.com/">mongodb.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Airtable (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;900&display=swap" rel="stylesheet">
+<style>
+  :root { --white:#fff; --navy:#181d26; --blue:#1b61c9; --gray:#333; --border:#e0e2e6; --weak:rgba(4,14,32,0.69); --light:#f8fafc; --font:'Inter',-apple-system,system-ui,Segoe UI,Roboto,sans-serif; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--white); color:var(--navy); font-family:var(--font); font-size:16px; line-height:1.35; letter-spacing:0.08px; -webkit-font-smoothing:antialiased; }
+
+  .nav { position:sticky; top:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:12px 24px; background:var(--white); border-bottom:1px solid var(--border); }
+  .nav-brand { font-size:14px; font-weight:500; color:var(--navy); text-decoration:none; }
+  .nav-links { display:flex; gap:20px; list-style:none; }
+  .nav-links a { font-size:14px; font-weight:500; color:var(--navy); text-decoration:none; letter-spacing:0.14px; }
+  .nav-links a:hover { color:var(--blue); }
+  .nav-cta { display:inline-block; background:var(--blue); color:var(--white); padding:10px 20px; border-radius:12px; font-size:16px; font-weight:500; text-decoration:none; letter-spacing:0.08px; }
+
+  .hero { padding:80px 24px 64px; text-align:center; }
+  .hero h1 { font-size:48px; font-weight:400; line-height:1.15; margin-bottom:16px; }
+  .hero h1 span { color:var(--blue); }
+  .hero p { font-size:18px; color:var(--weak); max-width:520px; margin:0 auto 32px; letter-spacing:0.18px; line-height:1.35; }
+  .hero-buttons { display:flex; gap:12px; justify-content:center; }
+  .btn-blue { display:inline-block; background:var(--blue); color:var(--white); padding:16px 24px; border-radius:12px; font-size:16px; font-weight:500; text-decoration:none; border:none; }
+  .btn-outline { display:inline-block; background:var(--white); color:var(--navy); padding:16px 24px; border-radius:12px; border:1px solid var(--navy); font-size:16px; font-weight:500; text-decoration:none; }
+
+  .section { padding:48px 24px; max-width:1100px; margin:0 auto; }
+  .section-label { font-size:14px; font-weight:500; color:var(--weak); letter-spacing:0.28px; margin-bottom:8px; }
+  .section-title { font-size:40px; font-weight:400; line-height:1.25; margin-bottom:24px; }
+  .section-divider { border:none; border-top:1px solid var(--border); margin:0; }
+
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; margin-bottom:16px; }
+  .color-swatch { border-radius:12px; overflow:hidden; border:1px solid var(--border); }
+  .color-swatch-block { height:56px; }
+  .color-swatch-info { padding:8px; }
+  .color-swatch-name { font-size:11px; font-weight:500; letter-spacing:0.11px; margin-bottom:1px; }
+  .color-swatch-hex { font-size:9px; color:var(--weak); font-family:monospace; }
+  .color-group-label { font-size:11px; font-weight:500; color:var(--weak); margin:16px 0 6px; letter-spacing:0.16px; }
+
+  .type-sample { margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid rgba(224,226,230,0.5); }
+  .type-sample:last-child { border-bottom:none; }
+  .type-meta { font-size:9px; color:var(--weak); margin-top:4px; font-family:monospace; }
+
+  .button-row { display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .button-item { text-align:center; }
+  .button-label { font-size:9px; color:var(--weak); margin-top:4px; }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:12px; }
+  .card { background:var(--white); border:1px solid var(--border); border-radius:16px; padding:20px; }
+  .card h3 { font-size:24px; font-weight:400; letter-spacing:0.12px; line-height:1.30; margin-bottom:8px; }
+  .card p { font-size:14px; color:var(--weak); letter-spacing:0.07px; }
+
+  .form-group { margin-bottom:12px; max-width:380px; }
+  .form-label { display:block; font-size:14px; font-weight:500; margin-bottom:4px; letter-spacing:0.14px; }
+  .form-input { width:100%; background:var(--white); color:var(--navy); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-family:var(--font); font-size:16px; outline:none; letter-spacing:0.08px; }
+  .form-input:focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue); }
+  .form-input--focus { border-color:var(--blue); box-shadow:0 0 0 1px var(--blue); }
+  .form-input--error { border-color:#c00; }
+  .form-textarea { width:100%; min-height:80px; background:var(--white); color:var(--navy); border:1px solid var(--border); padding:12px 16px; border-radius:12px; font-family:var(--font); font-size:16px; resize:vertical; outline:none; }
+  .form-state-label { font-size:9px; color:var(--weak); margin-top:3px; }
+
+  .spacing-row { display:flex; align-items:flex-end; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .spacing-item { text-align:center; }
+  .spacing-block { background:var(--blue); border-radius:3px; margin-bottom:3px; height:20px; opacity:0.6; }
+  .spacing-value { font-size:8px; color:var(--weak); font-family:monospace; }
+
+  .radius-row { display:flex; gap:10px; flex-wrap:wrap; }
+  .radius-item { text-align:center; }
+  .radius-box { width:48px; height:48px; background:var(--light); border:1px solid var(--border); margin-bottom:3px; }
+  .radius-label { font-size:8px; color:var(--weak); font-family:monospace; }
+
+  .elevation-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr)); gap:10px; }
+  .elevation-card { background:var(--white); border-radius:16px; padding:14px; text-align:center; }
+  .elevation-label { font-size:12px; font-weight:500; margin-bottom:3px; }
+  .elevation-desc { font-size:8px; color:var(--weak); font-family:monospace; }
+
+  .footer { padding:24px; text-align:center; background:var(--navy); color:rgba(255,255,255,0.5); font-size:11px; }
+  .footer a { color:var(--white); text-decoration:underline; }
+
+  @media (max-width:768px) { .hero h1 { font-size:32px; } .nav-links { display:none; } .section { padding:32px 16px; } .card-grid { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+
+<nav class="nav"><a class="nav-brand" href="#">awesome-design-md</a><ul class="nav-links"><li><a href="#colors">Colors</a></li><li><a href="#typography">Typography</a></li><li><a href="#buttons">Buttons</a></li><li><a href="#cards">Cards</a></li><li><a href="#forms">Forms</a></li></ul><a class="nav-cta" href="#">Sign up for free</a></nav>
+
+<section class="hero"><h1>Design System<br>Inspired by <span>Airtable</span></h1><p>Every color, font, and component — connected in one workspace.</p><div class="hero-buttons"><a class="btn-blue" href="#">Sign up for free</a><a class="btn-outline" href="#">Contact sales</a></div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors"><div class="section-label">01 / Colors</div><h2 class="section-title">Color Palette</h2>
+<div class="color-group-label">Primary</div>
+<div class="color-grid">
+<div class="color-swatch"><div class="color-swatch-block" style="background:#181d26"></div><div class="color-swatch-info"><div class="color-swatch-name">Deep Navy</div><div class="color-swatch-hex">#181d26</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#1b61c9"></div><div class="color-swatch-info"><div class="color-swatch-name">Airtable Blue</div><div class="color-swatch-hex">#1b61c9</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e0e2e6"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#254fad"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Blue</div><div class="color-swatch-hex">#254fad</div></div></div>
+</div>
+<div class="color-group-label">Neutral</div>
+<div class="color-grid">
+<div class="color-swatch"><div class="color-swatch-block" style="background:#333333"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Gray</div><div class="color-swatch-hex">#333333</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#e0e2e6"></div><div class="color-swatch-info"><div class="color-swatch-name">Border</div><div class="color-swatch-hex">#e0e2e6</div></div></div>
+<div class="color-swatch"><div class="color-swatch-block" style="background:#f8fafc"></div><div class="color-swatch-info"><div class="color-swatch-name">Light</div><div class="color-swatch-hex">#f8fafc</div></div></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography"><div class="section-label">02 / Typography</div><h2 class="section-title">Typography Scale</h2>
+<div class="type-sample"><div style="font-size:48px; font-weight:400; line-height:1.15;">Display Hero</div><div class="type-meta">Haas — 48px / 400 / 1.15</div></div>
+<div class="type-sample"><div style="font-size:48px; font-weight:900; line-height:1.50;">Display Bold</div><div class="type-meta">Haas Groot Disp — 48px / 900 / 1.50</div></div>
+<div class="type-sample"><div style="font-size:32px; font-weight:400; line-height:1.15;">Sub-heading</div><div class="type-meta">Haas — 32px / 400 / 1.15</div></div>
+<div class="type-sample"><div style="font-size:18px; font-weight:400; line-height:1.35; letter-spacing:0.18px; color:var(--weak);">Body — All your teams, all their workflows — connected in one workspace.</div><div class="type-meta">Haas — 18px / 400 / 1.35 / +0.18px</div></div>
+<div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.30; letter-spacing:0.16px;">Button Label</div><div class="type-meta">Haas — 16px / 500 / 1.30 / +0.16px</div></div>
+<div class="type-sample"><div style="font-size:14px; font-weight:500; line-height:1.35; letter-spacing:0.28px; color:var(--weak);">Caption — Updated 3 min ago</div><div class="type-meta">Haas — 14px / 500 / 1.35 / +0.28px</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons"><div class="section-label">03 / Buttons</div><h2 class="section-title">Buttons</h2>
+<div class="button-row">
+<div class="button-item"><a class="btn-blue" href="#">Sign up</a><div class="button-label">Primary Blue</div></div>
+<div class="button-item"><a class="btn-outline" href="#">Contact</a><div class="button-label">Outlined</div></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards"><div class="section-label">04 / Cards</div><h2 class="section-title">Cards</h2>
+<div class="card-grid">
+<div class="card"><h3>Product Development</h3><p>Build products faster with connected workflows and real-time collaboration.</p></div>
+<div class="card"><h3>Marketing Campaigns</h3><p>Plan, execute, and track campaigns from ideation to launch.</p></div>
+<div class="card"><h3>Operations</h3><p>Streamline business processes with automated workflows.</p></div>
+</div></section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms"><div class="section-label">05 / Forms</div><h2 class="section-title">Forms</h2>
+<div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@company.com"><div class="form-state-label">Default</div></div>
+<div class="form-group"><label class="form-label">Workspace</label><input class="form-input form-input--focus" type="text" value="My Team"><div class="form-state-label">Focus (blue ring)</div></div>
+<div class="form-group"><label class="form-label">Base Name</label><input class="form-input form-input--error" type="text" value=""><div class="form-state-label">Error</div></div>
+<div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Describe your base..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">06 / Spacing</div><h2 class="section-title">Spacing</h2>
+<div class="spacing-row"><div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div><div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div><div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div><div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div><div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div><div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div><div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div></div></section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">07 / Radius</div><h2 class="section-title">Radius</h2>
+<div class="radius-row"><div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:32px"></div><div class="radius-label">32px</div></div><div class="radius-item"><div class="radius-box" style="border-radius:50%; width:48px; height:48px;"></div><div class="radius-label">50%</div></div></div></section>
+
+<hr class="section-divider">
+
+<section class="section"><div class="section-label">08 / Elevation</div><h2 class="section-title">Depth</h2>
+<div class="elevation-grid"><div class="elevation-card" style="border:1px solid var(--border);"><div class="elevation-label">Flat</div><div class="elevation-desc">Border only</div></div><div class="elevation-card" style="box-shadow:rgba(0,0,0,0.32) 0px 0px 1px, rgba(45,127,249,0.28) 0px 1px 3px;"><div class="elevation-label">Blue Shadow</div><div class="elevation-desc">Blue-tinted multi-layer</div></div><div class="elevation-card" style="box-shadow:rgba(15,48,106,0.05) 0px 0px 20px;"><div class="elevation-label">Soft</div><div class="elevation-desc">Ambient navy glow</div></div></div></section>
+
+<footer class="footer">Generated from <a href="https://airtable.com/">airtable.com</a> DESIGN.md — awesome-design-md</footer>
+
+</body>
+</html>

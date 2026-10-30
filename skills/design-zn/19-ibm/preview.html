@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: IBM (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --white: #ffffff;
+    --gray-10: #f4f4f4;
+    --gray-10-hover: #e8e8e8;
+    --gray-20: #e0e0e0;
+    --gray-30: #c6c6c6;
+    --gray-50: #8d8d8d;
+    --gray-60: #6f6f6f;
+    --gray-70: #525252;
+    --gray-80: #393939;
+    --gray-90: #262626;
+    --gray-100: #161616;
+    --blue-10: #edf5ff;
+    --blue-60: #0f62fe;
+    --blue-70: #0043ce;
+    --blue-80: #002d9c;
+    --red-60: #da1e28;
+    --green-50: #24a148;
+    --yellow-30: #f1c21b;
+    --font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', Menlo, Courier, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--gray-100);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 32px;
+    height: 48px;
+    background: var(--gray-100);
+    color: var(--white);
+  }
+  .nav-brand { font-size: 14px; font-weight: 600; color: var(--white); text-decoration: none; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 400; color: var(--gray-30); text-decoration: none; letter-spacing: 0.16px; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--white); }
+  .nav-cta {
+    display: inline-flex; align-items: center; background: var(--blue-60); color: var(--white);
+    padding: 0 16px; height: 32px; border-radius: 0; font-size: 14px; font-weight: 400;
+    text-decoration: none; letter-spacing: 0.16px; transition: background 0.15s;
+  }
+  .nav-cta:hover { background: #0353e9; }
+
+  /* HERO */
+  .hero { padding: 80px 32px 64px; background: var(--white); }
+  .hero-inner { max-width: 1200px; margin: 0 auto; }
+  .hero h1 {
+    font-size: 60px; font-weight: 300; line-height: 1.17;
+    color: var(--gray-100); margin-bottom: 16px; max-width: 800px;
+  }
+  .hero p { font-size: 16px; font-weight: 400; line-height: 1.50; color: var(--gray-70); max-width: 640px; margin-bottom: 32px; }
+  .hero-buttons { display: flex; gap: 1px; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-flex; align-items: center; justify-content: space-between;
+    background: var(--blue-60); color: var(--white);
+    padding: 14px 63px 14px 16px; height: 48px;
+    border-radius: 0; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-primary:hover { background: #0353e9; }
+  .btn-secondary {
+    display: inline-flex; align-items: center; justify-content: space-between;
+    background: var(--gray-80); color: var(--white);
+    padding: 14px 63px 14px 16px; height: 48px;
+    border-radius: 0; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: #4c4c4c; }
+  .btn-tertiary {
+    display: inline-flex; align-items: center;
+    background: transparent; color: var(--blue-60);
+    padding: 14px 16px; height: 48px;
+    border-radius: 0; border: 1px solid var(--blue-60);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-tertiary:hover { background: #0353e9; color: var(--white); border-color: #0353e9; }
+  .btn-ghost {
+    display: inline-flex; align-items: center;
+    background: transparent; color: var(--blue-60);
+    padding: 14px 16px; height: 48px;
+    border-radius: 0; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-ghost:hover { background: var(--gray-10-hover); }
+  .btn-danger {
+    display: inline-flex; align-items: center;
+    background: var(--red-60); color: var(--white);
+    padding: 14px 63px 14px 16px; height: 48px;
+    border-radius: 0; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 400;
+    letter-spacing: 0.16px;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-danger:hover { background: #b81921; }
+
+  /* SECTIONS */
+  .section { padding: 48px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-alt { background: var(--gray-10); }
+  .section-alt .section { max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--gray-60); letter-spacing: 0.32px; margin-bottom: 8px; }
+  .section-title { font-size: 32px; font-weight: 400; line-height: 1.25; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--gray-20); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 1px; margin-bottom: 24px; background: var(--gray-20); }
+  .color-swatch { background: var(--white); overflow: hidden; }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 12px; color: var(--gray-60); font-family: var(--font-mono); letter-spacing: 0.32px; }
+  .color-swatch-role { font-size: 11px; color: var(--gray-50); margin-top: 3px; letter-spacing: 0.16px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--gray-70); margin: 24px 0 10px; letter-spacing: 0.16px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--gray-20); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 400; color: var(--gray-50); margin-top: 8px; letter-spacing: 0.32px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-start; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 400; color: var(--gray-50); margin-top: 8px; letter-spacing: 0.32px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 1px; background: var(--gray-20); }
+  .card { background: var(--gray-10); padding: 16px; transition: background 0.15s; cursor: pointer; }
+  .card:hover { background: var(--gray-10-hover); }
+  .card h3 { font-size: 20px; font-weight: 600; line-height: 1.40; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--gray-70); line-height: 1.29; letter-spacing: 0.16px; }
+  .card-tag { display: inline-block; font-size: 12px; font-weight: 400; padding: 4px 8px; border-radius: 24px; margin-bottom: 12px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 24px; max-width: 400px; }
+  .form-label { display: block; font-size: 12px; font-weight: 400; color: var(--gray-70); margin-bottom: 8px; letter-spacing: 0.32px; }
+  .form-input {
+    width: 100%; background: var(--gray-10); color: var(--gray-100);
+    border: none; border-bottom: 2px solid transparent;
+    padding: 0 16px; height: 40px;
+    font-family: var(--font-sans); font-size: 14px; letter-spacing: 0.16px;
+    outline: none; border-radius: 0;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-bottom-color: var(--blue-60); }
+  .form-input--active { border-bottom-color: var(--gray-100); }
+  .form-input--focus { border-bottom-color: var(--blue-60); }
+  .form-input--error { border-bottom-color: var(--red-60); }
+  .form-helper { font-size: 12px; color: var(--gray-60); margin-top: 4px; letter-spacing: 0.32px; }
+  .form-helper--error { color: var(--red-60); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--gray-10); color: var(--gray-100);
+    border: none; border-bottom: 2px solid transparent;
+    padding: 11px 16px; border-radius: 0;
+    font-family: var(--font-sans); font-size: 14px; letter-spacing: 0.16px;
+    resize: vertical; outline: none;
+  }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--blue-60); margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--gray-50); letter-spacing: 0.32px; }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--blue-60); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; font-weight: 400; color: var(--gray-50); letter-spacing: 0.32px; }
+  .radius-context { font-size: 10px; color: var(--gray-50); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: var(--white); padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--gray-50); letter-spacing: 0.32px; }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; background: var(--gray-100); color: var(--gray-30); font-size: 12px; letter-spacing: 0.32px; }
+  .footer a { color: var(--blue-60); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 42px; }
+    .nav-links { display: none; }
+    .section { padding: 32px 16px; }
+    .card-grid { grid-template-columns: 1fr; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get started</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-inner">
+    <h1>Design System Inspired by IBM</h1>
+    <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value from the Carbon Design System — visualized.</p>
+    <div class="hero-buttons">
+      <a class="btn-primary" href="#">Explore tokens</a>
+      <a class="btn-secondary" href="#">View documentation</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f62fe"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 60</div><div class="color-swatch-hex">#0f62fe</div><div class="color-swatch-role">Primary interactive</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid #e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#161616"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 100</div><div class="color-swatch-hex">#161616</div><div class="color-swatch-role">Primary text, nav</div></div></div>
+  </div>
+
+  <div class="color-group-label">Blue Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#edf5ff"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 10</div><div class="color-swatch-hex">#edf5ff</div><div class="color-swatch-role">Tint surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f62fe"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 60</div><div class="color-swatch-hex">#0f62fe</div><div class="color-swatch-role">Primary action</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0043ce"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 70</div><div class="color-swatch-hex">#0043ce</div><div class="color-swatch-role">Link hover</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#002d9c"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 80</div><div class="color-swatch-hex">#002d9c</div><div class="color-swatch-role">Active/pressed</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f4f4f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 10</div><div class="color-swatch-hex">#f4f4f4</div><div class="color-swatch-role">Layer 01 surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e0e0e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 20</div><div class="color-swatch-hex">#e0e0e0</div><div class="color-swatch-role">Subtle borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c6c6c6"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 30</div><div class="color-swatch-hex">#c6c6c6</div><div class="color-swatch-role">Borders, dividers</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#8d8d8d"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 50</div><div class="color-swatch-hex">#8d8d8d</div><div class="color-swatch-role">Disabled icons</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#6f6f6f"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 60</div><div class="color-swatch-hex">#6f6f6f</div><div class="color-swatch-role">Placeholder text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#525252"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 70</div><div class="color-swatch-hex">#525252</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#393939"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 80</div><div class="color-swatch-hex">#393939</div><div class="color-swatch-role">Secondary button</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#262626"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 90</div><div class="color-swatch-hex">#262626</div><div class="color-swatch-role">Dark surfaces</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#161616"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 100</div><div class="color-swatch-hex">#161616</div><div class="color-swatch-role">Primary text</div></div></div>
+  </div>
+
+  <div class="color-group-label">Support &amp; Status</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#da1e28"></div><div class="color-swatch-info"><div class="color-swatch-name">Red 60</div><div class="color-swatch-hex">#da1e28</div><div class="color-swatch-role">Error / Danger</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#24a148"></div><div class="color-swatch-info"><div class="color-swatch-name">Green 50</div><div class="color-swatch-hex">#24a148</div><div class="color-swatch-role">Success</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f1c21b"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow 30</div><div class="color-swatch-hex">#f1c21b</div><div class="color-swatch-role">Warning</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0f62fe"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 60</div><div class="color-swatch-hex">#0f62fe</div><div class="color-swatch-role">Informational</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section-alt">
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:60px; font-weight:300; line-height:1.17;">Display 01</div><div class="type-meta">Display 01 — 60px / 300 / 1.17 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:48px; font-weight:300; line-height:1.17;">Display 02</div><div class="type-meta">Display 02 — 48px / 300 / 1.17 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:42px; font-weight:300; line-height:1.19;">Heading 01</div><div class="type-meta">Heading 01 — 42px / 300 / 1.19 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:32px; font-weight:400; line-height:1.25;">Heading 02</div><div class="type-meta">Heading 02 — 32px / 400 / 1.25 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:24px; font-weight:400; line-height:1.33;">Heading 03</div><div class="type-meta">Heading 03 — 24px / 400 / 1.33 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:600; line-height:1.40;">Heading 04 — Semibold</div><div class="type-meta">Heading 04 — 20px / 600 / 1.40 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body Long 01 — Build smarter business workflows with AI and hybrid cloud solutions that scale.</div><div class="type-meta">Body Long 01 — 16px / 400 / 1.50 / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:1.29; letter-spacing:0.16px;">Body Short 01 — Compact text for UI elements and captions with micro-tracking.</div><div class="type-meta">Body Short 01 — 14px / 400 / 1.29 / 0.16px / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-size:12px; font-weight:400; line-height:1.33; letter-spacing:0.32px;">Caption 01 — Metadata, timestamps, helper text</div><div class="type-meta">Caption 01 — 12px / 400 / 1.33 / 0.32px / IBM Plex Sans</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:14px; font-weight:400; line-height:1.43; letter-spacing:0.16px;">const config = { theme: 'g100', prefix: 'cds' };</div><div class="type-meta">Code 01 — 14px / 400 / 1.43 / 0.16px / IBM Plex Mono</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:42px; font-weight:400; line-height:1.19;">Mono Display</div><div class="type-meta">Mono Display — 42px / 400 / 1.19 / IBM Plex Mono</div></div>
+</section>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row" style="margin-bottom: 24px;">
+    <div class="button-item"><a class="btn-primary" href="#">Primary button</a><div class="button-label">Primary (Blue 60)</div></div>
+    <div class="button-item"><a class="btn-secondary" href="#">Secondary button</a><div class="button-label">Secondary (Gray 80)</div></div>
+    <div class="button-item"><a class="btn-tertiary" href="#">Tertiary button</a><div class="button-label">Tertiary (Ghost Blue)</div></div>
+  </div>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-ghost" href="#">Ghost button</a><div class="button-label">Ghost</div></div>
+    <div class="button-item"><a class="btn-danger" href="#">Delete resource</a><div class="button-label">Danger (Red 60)</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--blue-10); color:var(--blue-60); font-size:12px; font-weight:400; padding:4px 8px; border-radius:24px;">AI Ready</span><div class="button-label">Tag / Label</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section-alt">
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card &amp; Tile Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-tag" style="background:var(--blue-10); color:var(--blue-60);">Hybrid Cloud</div>
+      <h3>IBM Cloud Pak</h3>
+      <p>Modernize and build cloud-native applications anywhere with an open, faster, and more secure foundation.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:#fff1f1; color:var(--red-60);">AI Platform</div>
+      <h3>watsonx</h3>
+      <p>Scale and accelerate the impact of AI across your business with a next-generation enterprise studio.</p>
+    </div>
+    <div class="card">
+      <div class="card-tag" style="background:#defbe6; color:var(--green-50);">Automation</div>
+      <h3>Business Automation</h3>
+      <p>Automate business and IT operations with AI-powered decision-making and intelligent workflows.</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group">
+    <label class="form-label">Project name</label>
+    <input class="form-input" type="text" placeholder="e.g. my-cloud-project">
+    <div class="form-helper">Default state (bottom-border)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">API endpoint</label>
+    <input class="form-input form-input--focus" type="text" value="https://api.ibm.com/v1">
+    <div class="form-helper">Focus state (Blue 60 bottom-border)</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Region</label>
+    <input class="form-input form-input--error" type="text" value="invalid-region">
+    <div class="form-helper form-helper--error">Error: Region not found</div>
+  </div>
+  <div class="form-group">
+    <label class="form-label">Description</label>
+    <textarea class="form-textarea" placeholder="Describe your workload..."></textarea>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section-alt">
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+  </div>
+  <p style="font-size:14px; color:var(--gray-60); letter-spacing:0.16px; line-height:1.29;">Layout spacing: 16, 24, 32, 48, 64, 80, 96, 160px. Base unit: 8px (Carbon 2x grid).</p>
+</section>
+</div>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:0px"></div><div class="radius-label">0px</div><div class="radius-context">Buttons, inputs, cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px</div><div class="radius-context">Small elements</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div><div class="radius-context">Tags / Labels</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:50%"></div><div class="radius-label">50%</div><div class="radius-context">Avatars, icons</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<div class="section-alt">
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="background:var(--white); border:1px solid var(--gray-20);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">White surface, no shadow</div></div>
+    <div class="elevation-card" style="background:var(--gray-10);"><div class="elevation-label">Layer 01</div><div class="elevation-desc">Gray 10 (#f4f4f4)</div></div>
+    <div class="elevation-card" style="background:var(--gray-20);"><div class="elevation-label">Layer 02</div><div class="elevation-desc">Gray 20 (#e0e0e0)</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 6px rgba(0,0,0,0.3);"><div class="elevation-label">Raised</div><div class="elevation-desc">Dropdowns, tooltips</div></div>
+    <div class="elevation-card" style="box-shadow: 0 2px 6px rgba(0,0,0,0.3); border:2px solid var(--blue-60);"><div class="elevation-label">Focus</div><div class="elevation-desc">2px inset Blue 60</div></div>
+    <div class="elevation-card" style="border-bottom: 2px solid var(--gray-100);"><div class="elevation-label">Bottom-border</div><div class="elevation-desc">Active input / tab</div></div>
+  </div>
+</section>
+</div>
+
+<footer class="footer">
+  Generated from <a href="https://ibm.com/">ibm.com</a> DESIGN.md &mdash; awesome-design-md
+</footer>
+
+</body>
+</html>
