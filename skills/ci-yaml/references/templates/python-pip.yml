@@ -1,0 +1,56 @@
+# Python project using pip + requirements.txt (or pip + pyproject without uv/poetry).
+# Substitute {PYTHON_VERSIONS}, {LOCK_FILE} (requirements.txt or requirements-dev.txt),
+# {LINT_CMD}, {TEST_CMD}.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: {PYTHON_VERSIONS}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: {LOCK_FILE}
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r {LOCK_FILE}
+
+      - name: Run tests
+        run: {TEST_CMD}
+
+      - name: Run linter
+        run: {LINT_CMD}
