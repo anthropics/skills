@@ -1,0 +1,66 @@
+[
+  {
+    "query": "our backend is a monolith with 12 modules all tightly coupled, the team wants to migrate to microservices but i'm not sure if the boundaries are right \u2014 can you review the design?",
+    "should_trigger": true
+  },
+  {
+    "query": "just built a langgraph agent with 4 nodes but the loops never terminate properly and i have no idea if the state management is correct \u2014 can someone review this?",
+    "should_trigger": true
+  },
+  {
+    "query": "my rag pipeline chunks at 512 tokens, retrieves top-5, feeds into claude \u2014 getting hallucinations in prod. is there something architecturally wrong here?",
+    "should_trigger": true
+  },
+  {
+    "query": "is it bad that all my microservices share one postgres db? deployment has been a nightmare lately",
+    "should_trigger": true
+  },
+  {
+    "query": "need an ADR for choosing between REST and GraphQL for our new internal API, team is split 50/50",
+    "should_trigger": true
+  },
+  {
+    "query": "here's a c4 diagram of our event-driven system \u2014 can you score it against scalability and resilience attributes?",
+    "should_trigger": true
+  },
+  {
+    "query": "reviewing tech stack for new project: kafka for events, redis for cache, postgres for storage, kubernetes on gcp. good choices? any red flags?",
+    "should_trigger": true
+  },
+  {
+    "query": "our AI pipeline sends raw user input directly into the system prompt with no sanitization \u2014 someone said this is dangerous but i don't understand why",
+    "should_trigger": true
+  },
+  {
+    "query": "write me a python script that reads a csv and outputs a bar chart using matplotlib",
+    "should_trigger": false
+  },
+  {
+    "query": "how do i install kafka on ubuntu 22.04 step by step",
+    "should_trigger": false
+  },
+  {
+    "query": "can you review my pull request? i changed the auth middleware to use jwt instead of sessions",
+    "should_trigger": false
+  },
+  {
+    "query": "what's the difference between sql and nosql databases?",
+    "should_trigger": false
+  },
+  {
+    "query": "create a mcp server that connects to my postgres database and exposes a query tool",
+    "should_trigger": false
+  },
+  {
+    "query": "my react frontend is slow \u2014 can you look at the component re-rendering and suggest optimizations?",
+    "should_trigger": false
+  },
+  {
+    "query": "write unit tests for this user service class in python",
+    "should_trigger": false
+  },
+  {
+    "query": "i need to pick between openai and anthropic apis for my chatbot \u2014 which one is cheaper?",
+    "should_trigger": false
+  }
+]
