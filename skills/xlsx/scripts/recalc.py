@@ -99,7 +99,10 @@ def external_links_at_risk(filename):
             if isinstance(getattr(dn, "value", None), str) and EXTERNAL_REF_RE.search(dn.value)
         ]
         name_re = (
-            re.compile(r"\b(" + "|".join(re.escape(n) for n in external_names) + r")\b")
+            re.compile(
+                r"\b(" + "|".join(re.escape(n) for n in external_names) + r")\b",
+                re.IGNORECASE,
+            )
             if external_names
             else None
         )
