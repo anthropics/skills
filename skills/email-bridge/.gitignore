@@ -1,0 +1,5 @@
+*.json
+!email-config.example.json
+.email-seen.json
+__pycache__/
+.ipynb_checkpoints/
