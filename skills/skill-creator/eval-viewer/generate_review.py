@@ -276,7 +276,7 @@ def generate_html(
     if benchmark:
         embedded["benchmark"] = benchmark
 
-    data_json = json.dumps(embedded)
+    data_json = json.dumps(embedded, ensure_ascii=False)
 
     return template.replace("/*__EMBEDDED_DATA__*/", f"const EMBEDDED_DATA = {data_json};")
 
@@ -469,3 +469,4 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
