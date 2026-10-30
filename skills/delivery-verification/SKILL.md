@@ -28,9 +28,12 @@ on a simple turn rather than being skipped.
 
 The Stop payload supplies `transcript_path`, `session_id`, and
 `stop_hook_active`. Count Edit/Write tool-use entries and scan the transcript
-tail from `transcript_path`. An unreadable or missing `transcript_path` is an
-evaluation error, not an empty transcript: it exits 2 instead of recording
-`allow` for the transcript-based checks.
+tail from `transcript_path`. On a non-forced Stop, an unreadable or missing
+`transcript_path` is an evaluation error: each transcript-dependent gate raises,
+is caught at step 1, leaves no record, and step 7 exits 2. The disk gate is
+independent and still runs and writes. `learning-capture` must not record
+`allow` when complexity cannot be computed, and `rationalization` must not
+record `allow` when the tail cannot be read.
 
 ```
 Turn end (Stop hook):
