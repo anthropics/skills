@@ -32,6 +32,10 @@ The script supports two directory layouts:
             │   └── run-1/grading.json
             └── without_skill/
                 └── run-1/grading.json
+
+    Eval directories are discovered by their contents (a config subdirectory
+    holding run-* results, an eval_metadata.json, or a grading.json), not by
+    an eval-* name prefix, so descriptive eval names work.
 """
 
 import argparse
@@ -64,6 +68,43 @@ def calculate_stats(values: list[float]) -> dict:
     }
 
 
+def _config_has_runs(config_dir: Path) -> bool:
+    """True if a config directory holds run-* subdirectories or a direct grading.json."""
+    if not config_dir.is_dir():
+        return False
+    if any(d.is_dir() for d in config_dir.glob("run-*")):
+        return True
+    return (config_dir / "grading.json").exists()
+
+
+def _is_eval_dir(path: Path) -> bool:
+    """True if a directory looks like an eval directory by its contents.
+
+    A directory counts when it holds at least one config subdirectory with
+    results, an eval_metadata.json, or a grading.json at its root (the last
+    case is warned about, not read, by load_run_results).
+    """
+    if not path.is_dir():
+        return False
+    if (path / "eval_metadata.json").exists():
+        return True
+    if (path / "grading.json").exists():
+        return True
+    return any(_config_has_runs(child) for child in path.iterdir() if child.is_dir())
+
+
+def _discover_eval_dirs(search_dir: Path) -> list[Path]:
+    """All eval directories under search_dir, sorted by name.
+
+    Discovery is by contained layout, not by an eval-* name prefix, so
+    descriptive eval names (e.g. group-membership-check) are found.
+    Non-directory entries are skipped (never iterated).
+    """
+    if not search_dir.is_dir():
+        return []
+    return sorted(p for p in search_dir.iterdir() if _is_eval_dir(p))
+
+
 def load_run_results(benchmark_dir: Path) -> dict:
     """
     Load all run results from a benchmark directory.
@@ -73,9 +114,9 @@ def load_run_results(benchmark_dir: Path) -> dict:
     """
     # Support both layouts: eval dirs directly under benchmark_dir, or under runs/
     runs_dir = benchmark_dir / "runs"
-    if runs_dir.exists():
+    if runs_dir.is_dir():
         search_dir = runs_dir
-    elif list(benchmark_dir.glob("eval-*")):
+    elif _discover_eval_dirs(benchmark_dir):
         search_dir = benchmark_dir
     else:
         print(f"No eval directories found in {benchmark_dir} or {benchmark_dir / 'runs'}")
@@ -83,7 +124,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     results: dict[str, list] = {}
 
-    for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
+    for eval_idx, eval_dir in enumerate(_discover_eval_dirs(search_dir)):
         metadata_path = eval_dir / "eval_metadata.json"
         if metadata_path.exists():
             try:
@@ -97,19 +138,46 @@ def load_run_results(benchmark_dir: Path) -> dict:
             except ValueError:
                 eval_id = eval_idx
 
+        # Warn about a grading file saved at the eval root: neither the
+        # viewer nor this script reads it (issue #518 item 1).
+        if (eval_dir / "grading.json").exists():
+            print(
+                f"Warning: grading.json at eval directory root {eval_dir} "
+                "is ignored; save grading files under a config run directory "
+                "(e.g. with_skill/run-1/grading.json)"
+            )
+
         # Discover config directories dynamically rather than hardcoding names
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
             # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+            run_dirs = sorted(d for d in config_dir.glob("run-*") if d.is_dir())
+            if not run_dirs:
+                # A direct grading.json here is a layout other tools read;
+                # this script only reads run-* grading files, so say so
+                # instead of dropping it silently.
+                if (config_dir / "grading.json").exists():
+                    print(
+                        f"Warning: {config_dir} has a grading.json but no "
+                        "run-* subdirectories; this script only reads run-* "
+                        "grading files, so it was skipped"
+                    )
                 continue
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            run_targets = []
+            for run_dir in run_dirs:
+                try:
+                    run_number = int(run_dir.name.split("-")[1])
+                except (IndexError, ValueError):
+                    print(f"Warning: skipping non-numeric run directory {run_dir}")
+                    continue
+                run_targets.append((run_dir, run_number))
+
+            for run_dir, run_number in run_targets:
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -155,10 +223,29 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
                 # Extract expectations — viewer requires fields: text, passed, evidence
                 raw_expectations = grading.get("expectations", [])
+                normalized_expectations = []
                 for exp in raw_expectations:
+                    if isinstance(exp, dict):
+                        # Map known variant field names to the standard ones
+                        # (issue #518 item 5) so the viewer shows values
+                        # instead of empty cells; the warning stays visible.
+                        filled = {}
+                        if "text" not in exp and "name" in exp:
+                            filled["text"] = exp["name"]
+                        if "passed" not in exp and isinstance(exp.get("met"), bool):
+                            filled["passed"] = exp["met"]
+                        if "evidence" not in exp and "details" in exp:
+                            filled["evidence"] = exp["details"]
+                        if filled:
+                            print(
+                                f"Warning: expectation in {grading_file} uses variant "
+                                f"field names; mapped {sorted(filled)} to standard fields"
+                            )
+                            exp = {**exp, **filled}
                     if "text" not in exp or "passed" not in exp:
                         print(f"Warning: expectation in {grading_file} missing required fields (text, passed, evidence): {exp}")
-                result["expectations"] = raw_expectations
+                    normalized_expectations.append(exp)
+                result["expectations"] = normalized_expectations
 
                 # Extract notes from user_notes_summary
                 notes_summary = grading.get("user_notes_summary", {})
