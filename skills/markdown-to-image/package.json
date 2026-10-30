@@ -1,0 +1,28 @@
+{
+  "name": "markdown-to-image-cards",
+  "version": "1.0.0",
+  "description": "Convert Markdown files into beautiful image cards with full formatting support",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node src/index.js --title '测试标题' --content '这是一段测试内容，用来验证卡片生成功能是否正常工作。' --theme white"
+  },
+  "keywords": [
+    "markdown",
+    "markdown-to-image",
+    "image-cards",
+    "card-generator",
+    "puppeteer",
+    "claude-code-skill"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+"marked": "^17.0.3",
+    "mermaid": "^11.14.0",
+    "puppeteer": "^23.0.0"
+  }
+}
