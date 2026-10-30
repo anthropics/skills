@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "go: build",
+      "type": "shell",
+      "command": "go",
+      "args": ["build", "./..."],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "go: test",
+      "type": "shell",
+      "command": "go",
+      "args": ["test", "./..."],
+      "group": "test",
+      "problemMatcher": ["$go"]
+    },
+    {
+      "label": "go: run current file",
+      "type": "shell",
+      "command": "go",
+      "args": ["run", "${file}"],
+      "problemMatcher": ["$go"]
+    }
+  ]
+}

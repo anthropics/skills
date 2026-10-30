@@ -1,0 +1,32 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "npm: install",
+      "type": "shell",
+      "command": "npm",
+      "args": ["install"],
+      "group": "build",
+      "problemMatcher": []
+    },
+    {
+      "label": "npm: run script",
+      "type": "shell",
+      "command": "npm",
+      "args": ["run", "${input:script}"],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": ["$tsc"],
+      "inputs": [
+        {
+          "id": "script",
+          "type": "pickString",
+          "description": "Pick an npm script from package.json",
+          "options": ["dev", "build", "test", "lint", "start"]
+        }
+      ]
+    }
+  ]
+}

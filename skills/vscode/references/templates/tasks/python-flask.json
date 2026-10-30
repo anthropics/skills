@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "flask: run",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["-m", "flask", "--app", "${input:flaskApp}", "run", "--debug"],
+      "options": {
+        "env": {
+          "FLASK_ENV": "${input:flaskEnv}",
+          "FLASK_DEBUG": "1"
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [],
+      "inputs": [
+        {
+          "id": "flaskApp",
+          "type": "promptString",
+          "description": "Flask app entry point",
+          "default": "app.py"
+        },
+        {
+          "id": "flaskEnv",
+          "type": "pickString",
+          "description": "FLASK_ENV value",
+          "options": ["development", "production"]
+        }
+      ]
+    }
+  ]
+}
