@@ -37,6 +37,7 @@
         "./skills/skill-creator",
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
+        "./skills/vscode-extension-builder",
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
