@@ -31,17 +31,18 @@ A blocked turn is re-run before it can end. That re-run has
 `stop_hook_active: true`, is a forced pass, not an evaluation, and writes no
 record.
 
-A caught crash or per-gate timeout is a partial evaluation of the Stop: only that
-gate has no record, and the other gates still write theirs. A hook timeout kills
-the whole process, so no further record is written and any decided block is lost;
-it is not a partial evaluation. The absence verdicts below are the only signal in the
-log a *persistently* failing gate leaves, because absence is per gate over a
-window, not per Stop; a single skipped Stop leaves no signal in the window. Report a
-failed gate's stderr separately. A per-record logging failure leaves only that
-record missing on disk, the remaining writes are still attempted, and the exit
-code does not change: if any completed gate decided `block`, or any gate crashed
-or timed out, exit 2 even when a record could not be written, and print the
-failure to stderr.
+A caught crash or per-gate timeout is an incomplete gate evaluation: that gate
+writes no record, and the other gates still write theirs. A hook timeout kills
+the whole process, so no further record is written and any decided block is
+lost; it is a process-level loss rather than a per-gate result. The absence
+verdicts below are the only signal in the log a *persistently* failing gate
+leaves, because absence is per gate over a window, not per Stop; a single
+skipped Stop leaves no signal in the window. Report a failed gate's stderr
+separately. A per-record logging failure leaves only that record missing on
+disk, the remaining writes are still attempted, and the exit code does not
+change: if any completed gate decided `block`, or any gate crashed or timed
+out, exit 2 even when a record could not be written, and print the failure to
+stderr.
 
 Because a gate whose condition does not apply still records `allow`,
 `block_rate` is a per non-forced Stop that produced a record for this gate:
@@ -160,8 +161,9 @@ counts as a sibling.
 `block_rate` is `blocks / (allows + warns + blocks)` for one gate over the same
 window, warns kept in the denominator because they did not block. A report must
 print the window, the evaluation count, the allow count, the warn count, the
-last block time in the window, the last block time in the whole log (`none` when
-no block exists), the skipped line count, and the rate beside them, for example:
+last block time in the window, the last block time in the whole log, the skipped
+line count, and the rate beside them. Both block-time fields print `none` when
+no matching block exists. For example:
 
 ```
 gate=learning-capture window=2026-10-24..2026-10-31 n=41 allows=38 warns=2 last_block_window=2026-10-29T08:11:02Z last_block_ever=2026-10-29T08:11:02Z skipped=0 block_rate=0.024
