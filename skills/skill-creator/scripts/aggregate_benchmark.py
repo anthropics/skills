@@ -135,7 +135,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
         else:
             try:
                 eval_id = int(eval_dir.name.split("-")[1])
-            except ValueError:
+            except (IndexError, ValueError):
                 eval_id = eval_idx
 
         # Warn about a grading file saved at the eval root: neither the

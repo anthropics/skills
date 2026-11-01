@@ -208,6 +208,15 @@ class AggregateBenchmarkTest(unittest.TestCase):
         # Sorted first, so the single descriptive eval gets index 0.
         self.assertEqual(results["with_skill"][0]["eval_id"], 0)
 
+    def test_hyphen_free_descriptive_name_does_not_crash(self):
+        """Review follow-up: a hyphen-free descriptive name must fall back
+        to its index instead of raising IndexError on split("-")[1]."""
+        bench = self.bench()
+        self.std_runs(bench, "screenshots")
+        results, _ = self.load(bench)
+        self.assertEqual(sorted(results), ["with_skill", "without_skill"])
+        self.assertEqual(results["with_skill"][0]["eval_id"], 0)
+
     def test_end_to_end_benchmark_on_descriptive_fixture(self):
         bench = self.bench()
         self.std_runs(bench, "group-membership-check")
