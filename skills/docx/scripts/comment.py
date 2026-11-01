@@ -250,7 +250,7 @@ def add_comment(
     if not word.exists():
         raise FileNotFoundError(f"{word} not found (not an unpacked .docx?)")
 
-       rels_path = word / "_rels" / "document.xml.rels"
+    rels_path = word / "_rels" / "document.xml.rels"
     comments = word / "comments.xml"
 
     if rels_path.exists():
