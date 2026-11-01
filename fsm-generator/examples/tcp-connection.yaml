@@ -1,0 +1,172 @@
+# TCP Connection FSM Example
+# Implementation of TCP connection state machine following RFC 793
+
+name: TCPConnection
+type: mealy  # Outputs depend on both state and input
+initial: closed
+description: TCP connection lifecycle with three-way handshake and graceful shutdown
+
+states:
+  closed:
+    description: No connection exists
+    transitions:
+      - event: active_open
+        next: syn_sent
+        action: send_syn()
+      - event: passive_open
+        next: listen
+        action: bind_socket()
+
+  listen:
+    description: Waiting for connection request
+    transitions:
+      - event: syn_received
+        next: syn_rcvd
+        action: send_syn_ack()
+      - event: close
+        next: closed
+        action: cleanup()
+
+  syn_sent:
+    description: SYN packet sent, waiting for response
+    transitions:
+      - event: syn_ack_received
+        next: established
+        action: send_ack()
+      - event: syn_received
+        next: syn_rcvd
+        action: send_syn_ack()
+      - event: timeout
+        next: closed
+        action: cleanup()
+        guard: retry_count > MAX_RETRIES
+
+  syn_rcvd:
+    description: SYN received and SYN-ACK sent
+    transitions:
+      - event: ack_received
+        next: established
+        action: complete_handshake()
+      - event: close
+        next: fin_wait_1
+        action: send_fin()
+      - event: timeout
+        next: closed
+        action: cleanup()
+
+  established:
+    description: Connection is active and data can be transferred
+    transitions:
+      - event: close
+        next: fin_wait_1
+        action: send_fin()
+      - event: fin_received
+        next: close_wait
+        action: send_ack()
+      - event: data_received
+        next: established  # Self-transition
+        action: process_data()
+      - event: send_data
+        next: established  # Self-transition
+        action: transmit_data()
+
+  fin_wait_1:
+    description: FIN sent, waiting for ACK or FIN
+    transitions:
+      - event: ack_received
+        next: fin_wait_2
+        action: null
+      - event: fin_received
+        next: closing
+        action: send_ack()
+      - event: fin_ack_received
+        next: time_wait
+        action: send_ack()
+
+  fin_wait_2:
+    description: FIN acknowledged, waiting for FIN from remote
+    transitions:
+      - event: fin_received
+        next: time_wait
+        action: send_ack()
+      - event: timeout
+        next: closed
+        action: force_close()
+
+  close_wait:
+    description: FIN received, waiting for local close
+    transitions:
+      - event: close
+        next: last_ack
+        action: send_fin()
+
+  last_ack:
+    description: FIN sent after receiving FIN, waiting for ACK
+    transitions:
+      - event: ack_received
+        next: closed
+        action: cleanup()
+      - event: timeout
+        next: closed
+        action: force_close()
+
+  closing:
+    description: Both sides initiated close simultaneously
+    transitions:
+      - event: ack_received
+        next: time_wait
+        action: null
+      - event: timeout
+        next: closed
+        action: force_close()
+
+  time_wait:
+    description: Waiting to ensure remote received ACK
+    transitions:
+      - event: timeout_2msl  # 2 * Maximum Segment Lifetime
+        next: closed
+        action: cleanup()
+
+# Configuration parameters
+parameters:
+  max_retries: 3
+  syn_timeout: 75  # seconds
+  fin_timeout: 60  # seconds
+  time_wait_duration: 240  # 2MSL = 4 minutes
+  keepalive_interval: 7200  # 2 hours
+
+# Guard conditions
+guards:
+  retry_limit: "retry_count <= MAX_RETRIES"
+  valid_sequence: "seq_num == expected_seq"
+  window_available: "send_window > 0"
+
+# Actions (for code generation)
+actions:
+  send_syn:
+    description: Send SYN packet with initial sequence number
+    parameters: [seq_num]
+
+  send_syn_ack:
+    description: Send SYN-ACK packet
+    parameters: [seq_num, ack_num]
+
+  send_ack:
+    description: Send ACK packet
+    parameters: [ack_num]
+
+  send_fin:
+    description: Send FIN packet to initiate close
+    parameters: [seq_num]
+
+  process_data:
+    description: Process received data and update buffers
+    parameters: [data, seq_num]
+
+  transmit_data:
+    description: Send data to remote host
+    parameters: [data, seq_num]
+
+  cleanup:
+    description: Release resources and clean up connection state
+    parameters: []
