@@ -19,6 +19,10 @@ Each skill is self-contained in its own folder with a `SKILL.md` file containing
 
 Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
 
+> [!NOTE]
+> **Reference Copies & Upstream Sync Cadence:**
+> The document skills in this repository serve as reference copies of production skills. Claude.ai paid accounts and Claude Code receive continuously updated skills via account sync (`~/.claude/skills/synced/`). This repository receives periodic snapshot exports, so the repository copies may temporarily differ or lag behind the latest version delivered through active account sync.
+
 ## Disclaimer
 
 **These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
@@ -49,6 +53,9 @@ Alternatively, directly install either Plugin via:
 ```
 
 After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
+
+> [!TIP]
+> If you already use Claude Code with an active Claude.ai paid account, document skills are automatically provisioned and kept up to date via account synchronization. Installing the `document-skills` plugin from the repository marketplace installs the reference snapshot, which is useful when account sync is disabled or when pinning skill versions.
 
 ## Claude.ai
 
