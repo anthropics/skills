@@ -3,6 +3,7 @@
 Quick validation script for skills - minimal version
 """
 
+from __future__ import annotations
 import sys
 import re
 import yaml
