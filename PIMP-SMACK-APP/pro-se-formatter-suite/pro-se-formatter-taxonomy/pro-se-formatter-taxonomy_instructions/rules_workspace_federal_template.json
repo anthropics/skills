@@ -1,0 +1,105 @@
+{
+  "$schema": "(informal)",
+  "version": "0.1.0",
+  "scope": "rules_workspace_template",
+  "intent": "This file is the mutable workspace copy. Keep filing_types_federal_baseline.json unchanged; populate THIS file with source-backed extracts and citations.",
+  "jurisdiction": {
+    "jurisdiction_key": "FEDERAL__UNKNOWN",
+    "court": "unknown",
+    "district_or_circuit": "unknown",
+    "notes": "Fill once per matter/run. Record requirements with citations and extracted text."
+  },
+  "sources": [],
+  "filing_type_rules": {
+    "motion": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "opposition": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "reply": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "brief": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "pleading": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "complaint": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "answer": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "declaration": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "notice": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "request_or_application": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "exhibits_or_appendix": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "proposed_order": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "stipulation": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "judgment": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    },
+    "certificate": {
+      "requirements": {},
+      "certificates_required": [],
+      "checklist_items": [],
+      "citations": []
+    }
+  }
+}

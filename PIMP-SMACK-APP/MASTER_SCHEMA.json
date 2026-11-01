@@ -1,0 +1,299 @@
+{
+  "_schema": "PIMP_MASTER_SCHEMA/1.0",
+  "_purpose": "SINGLE SOURCE OF TRUTH - Everything flows from this. User's model fills this out, we format.",
+  "_philosophy": "Work backwards: Story → Claims → Elements → Evidence → Filing",
+  
+  "INTAKE_FLOW": {
+    "1_STORY": "Collect narrative in their words",
+    "2_EVENTS": "Extract chronological events with dates",
+    "3_CLAIMS": "Model suggests claims that fit the facts",
+    "4_ELEMENTS": "Map elements for each claim",
+    "5_DEFENDANTS": "Who did what",
+    "6_EVIDENCE": "Link evidence to elements via UID",
+    "7_TIMELINE": "Build provable timeline",
+    "8_FILING": "Generate formatted documents"
+  },
+
+  "PARTY_INFO": {
+    "_note": "User fills this ONCE. Model can help.",
+    "name": "",
+    "name_caps": "",
+    "address_line_1": "",
+    "address_line_2": "",
+    "city": "",
+    "state": "",
+    "zip": "",
+    "city_state_zip": "",
+    "email": "",
+    "phone": "",
+    "role": "Plaintiff|Defendant|Appellant|Appellee",
+    "pro_se": true
+  },
+
+  "CASE_INFO": {
+    "_note": "Case identifiers. One per case.",
+    "case_number": "",
+    "court_name": "",
+    "court_type": "district|appeals|state|bankruptcy",
+    "jurisdiction": "ninth|first|dc|etc",
+    "judge_name": "",
+    "magistrate_name": "",
+    "lower_court_case": "",
+    "lower_court_name": "",
+    "filing_date": "",
+    "appellees": [],
+    "appellants": []
+  },
+
+  "STORY_INTAKE": {
+    "_note": "Raw narrative collection. Model parses later.",
+    "what_happened": "",
+    "who_did_it": [],
+    "when_did_it_happen": "",
+    "where_did_it_happen": "",
+    "what_did_you_lose": "",
+    "what_evidence_do_you_have": "",
+    "what_do_you_want": ""
+  },
+
+  "TIMELINE": {
+    "_note": "Chronological events extracted from story. Each event gets a UID.",
+    "events": [
+      {
+        "event_id": "E001",
+        "date": "YYYY-MM-DD",
+        "date_display": "January 1, 2025",
+        "description": "",
+        "actors": [],
+        "location": "",
+        "evidence_uids": [],
+        "claim_uids": [],
+        "source": "document|testimony|admission|other"
+      }
+    ]
+  },
+
+  "UID_SYSTEM": {
+    "_note": "3-digit UID: [Claim][Element][Defendant]. Claim=100s, Element=10s, Defendant=1s.",
+    "_example": "UID-123 = Claim 1, Element 2, Defendant 3",
+    "_unity": "0 in defendant place = group action (all defendants)",
+    
+    "claims": [
+      {
+        "claim_number": 1,
+        "uid_block": "100-199",
+        "claim_name": "42 USC 1983 - Deprivation of Rights",
+        "statute": "42 USC 1983",
+        "elements": [
+          {
+            "element_number": 1,
+            "uid_block": "110-119",
+            "element_name": "Acting under color of state law",
+            "satisfied": false,
+            "evidence_uids": []
+          },
+          {
+            "element_number": 2,
+            "uid_block": "120-129",
+            "element_name": "Deprivation of constitutional right",
+            "satisfied": false,
+            "evidence_uids": []
+          }
+        ]
+      }
+    ],
+    
+    "defendants": [
+      {
+        "defendant_number": 0,
+        "name": "ALL DEFENDANTS",
+        "role": "unity",
+        "uid_suffix": "0"
+      },
+      {
+        "defendant_number": 1,
+        "name": "",
+        "role": "",
+        "uid_suffix": "1"
+      }
+    ]
+  },
+
+  "EVIDENCE": {
+    "_note": "Evidence linked to UIDs. Gemini fills this from documents.",
+    "items": [
+      {
+        "evidence_id": "EV001",
+        "type": "document|email|photo|video|testimony|admission",
+        "description": "",
+        "source": "",
+        "date": "",
+        "file_path": "",
+        "screenshot_path": "",
+        "uids_satisfied": ["111", "112", "121"],
+        "gemini_analysis": "",
+        "page_reference": "",
+        "quote": ""
+      }
+    ]
+  },
+
+  "DISCOVERY_TRACKER": {
+    "_note": "PIMP CLAP CARDS - Track deadlines and missing evidence",
+    
+    "rfa_status": {
+      "sent_date": "",
+      "response_due": "",
+      "response_received": "",
+      "deemed_admitted": [],
+      "denied": [],
+      "objected": []
+    },
+    
+    "rog_status": {
+      "sent_date": "",
+      "response_due": "",
+      "items": []
+    },
+    
+    "rfp_status": {
+      "sent_date": "",
+      "response_due": "",
+      "items": []
+    },
+    
+    "missing_evidence": {
+      "_note": "Elements without evidence - focus RFA here",
+      "uids_missing": [],
+      "strategy": ""
+    },
+    
+    "deadlines": [
+      {
+        "name": "",
+        "date": "",
+        "rule": "",
+        "consequence_if_missed": ""
+      }
+    ]
+  },
+
+  "FILING_QUEUE": {
+    "_note": "What needs to be filed and when",
+    "pending": [
+      {
+        "filing_type": "MOTION|BRIEF|DECLARATION|etc",
+        "title": "",
+        "deadline": "",
+        "status": "drafting|review|ready|filed",
+        "dependencies": []
+      }
+    ]
+  },
+
+  "LEGAL_XML_TAGS": {
+    "_source": "OASIS LegalDocML (Akoma Ntoso) + OOXML",
+    "_note": "Standard tags for semantic markup",
+    
+    "document_structure": {
+      "akomaNtoso": "Root element for legal XML",
+      "doc": "Generic document (brief, motion, pleading)",
+      "meta": "Metadata block (FRBR identification)",
+      "coverPage": "Cover page content",
+      "preface": "Preface/intro",
+      "mainBody": "Main document body",
+      "conclusions": "Conclusion/signature"
+    },
+    
+    "hierarchical": {
+      "part": "Major division",
+      "chapter": "Chapter",
+      "section": "Section (with eId for linking)",
+      "subsection": "Subsection",
+      "paragraph": "Paragraph",
+      "subparagraph": "Sub-paragraph",
+      "heading": "Section heading",
+      "num": "Numbering"
+    },
+    
+    "block_elements": {
+      "p": "Paragraph",
+      "blockList": "Bulleted/numbered list",
+      "toc": "Table of contents",
+      "citation": "Legal citation"
+    },
+    
+    "inline_markup": {
+      "ref": "Cross-reference (href to target)",
+      "term": "Defined term",
+      "date": "Date element",
+      "person": "Person reference",
+      "organization": "Organization reference"
+    },
+    
+    "citation_types": {
+      "case": "Case citation (Twombly, 550 U.S. 544)",
+      "statute": "Statutory citation (42 USC 1983)",
+      "rule": "Rule citation (FRCP 12(b)(6))",
+      "record": "Record citation (2-ER-345)",
+      "regulation": "Regulatory citation (28 CFR 50.1)"
+    },
+    
+    "ninth_circuit_specific": {
+      "er_citation": "Excerpts of Record (2-ER-345)",
+      "ser_citation": "Supplemental ER",
+      "fer_citation": "Further ER"
+    }
+  },
+
+  "CUSTOM_STYLE_TAGS": {
+    "_note": "Our custom XML tags - won't conflict with Word",
+    "LEGAL_H1": "Major section heading",
+    "LEGAL_H2": "Subsection (I., II.)",
+    "LEGAL_H3": "Sub-subsection (A., B.)",
+    "LEGAL_BODY": "Body text",
+    "LEGAL_CITE": "Citation inline",
+    "LEGAL_QUOTE": "Block quote",
+    "LEGAL_LIST": "Numbered/lettered list",
+    "LEGAL_SIG": "Signature block"
+  },
+
+  "FORMATTING_RULES": {
+    "district_court": {
+      "font": "Times New Roman",
+      "size": "12pt",
+      "spacing": "double",
+      "margins": "1 inch"
+    },
+    "court_of_appeals": {
+      "font": "Century Schoolbook",
+      "size": "14pt",
+      "spacing": "double",
+      "margins": "1 inch"
+    }
+  },
+
+  "MODEL_INSTRUCTIONS": {
+    "_note": "Instructions for user's model to fill this out",
+    
+    "step_1_party_info": "Fill out PARTY_INFO with user's name, address, contact. This only needs to be done once.",
+    
+    "step_2_case_info": "Fill out CASE_INFO with case number, court, judge. Pull from any court document.",
+    
+    "step_3_story": "Ask user to describe what happened in plain language. Fill STORY_INTAKE.",
+    
+    "step_4_timeline": "Extract dates and events from story. Create TIMELINE.events entries.",
+    
+    "step_5_claims": "Based on facts, suggest applicable claims. User confirms. Add to UID_SYSTEM.claims.",
+    
+    "step_6_elements": "For each claim, list required elements. Add to claim.elements.",
+    
+    "step_7_defendants": "List each defendant. Assign defendant_number 1-9. Add to UID_SYSTEM.defendants.",
+    
+    "step_8_evidence": "For each piece of evidence, create EVIDENCE.items entry. Assign UIDs it satisfies.",
+    
+    "step_9_gaps": "Identify elements without evidence. Add to DISCOVERY_TRACKER.missing_evidence.",
+    
+    "step_10_rfa": "Draft RFAs targeting missing evidence. If admitted, element satisfied without trial."
+  }
+}

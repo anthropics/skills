@@ -1,0 +1,94 @@
+{
+    "$schema": "./filing_config.schema.json",
+    "metadata": {
+        "tool_name": "NinthCircuitDecl",
+        "output_filename": "Lofall_Declaration_Advanced.docx"
+    },
+    "styles": {
+        "Default": {
+            "font": "California FB",
+            "size": 14,
+            "align": "LEFT"
+        },
+        "Caption": {
+            "font": "California FB",
+            "size": 14,
+            "align": "CENTER",
+            "bold": true,
+            "space_after": 12
+        },
+        "Heading 1": {
+            "font": "California FB",
+            "size": 14,
+            "align": "CENTER",
+            "bold": true,
+            "all_caps": true,
+            "space_after": 12
+        },
+        "Body Text": {
+            "font": "California FB",
+            "size": 14,
+            "align": "JUSTIFY",
+            "line_spacing": 2.0,
+            "first_line_indent": 0.5
+        },
+        "Signature": {
+            "font": "California FB",
+            "size": 14,
+            "align": "RIGHT",
+            "space_before": 24
+        }
+    },
+    "placeholders": {
+        "standard": {
+            "COURT_NAME": "UNITED STATES COURT OF APPEALS\nFOR THE NINTH CIRCUIT",
+            "VERIFICATION_TEXT": "I declare under penalty of perjury that the foregoing is true and correct."
+        },
+        "runtime": {
+            "CASE_NUMBER": "25-6461",
+            "FILING_TITLE": "DECLARATION OF TYLER LOFALL",
+            "JUDGE_NAME": "Hon. Stacy Beckerman",
+            "DECLARANT_NAME": "Tyler A. Lofall",
+            "DATE": "December 22, 2025",
+            "LOCATION": "Seattle, Washington",
+            "DECLARATION_BODY": "I am the appellant in this matter. I make this declaration in support of my motion for stay pending appeal. The facts stated herein are true and correct to the best of my knowledge."
+        }
+    },
+    "layout": [
+        {
+            "type": "paragraph",
+            "style": "Heading 1",
+            "text": "DECLARATION OF {{DECLARANT_NAME}}"
+        },
+        {
+            "type": "paragraph",
+            "style": "Body Text",
+            "text": "I, {{DECLARANT_NAME}}, declare as follows:"
+        },
+        {
+            "type": "paragraph",
+            "style": "Body Text",
+            "text": "1.\t{{DECLARATION_BODY}}"
+        },
+        {
+            "type": "paragraph",
+            "style": "Body Text",
+            "text": "{{VERIFICATION_TEXT}}"
+        },
+        {
+            "type": "paragraph",
+            "style": "Body Text",
+            "text": "Executed on {{DATE}} at {{LOCATION}}."
+        },
+        {
+            "type": "paragraph",
+            "style": "Signature",
+            "text": "__________________________"
+        },
+        {
+            "type": "paragraph",
+            "style": "Signature",
+            "text": "{{DECLARANT_NAME}}"
+        }
+    ]
+}

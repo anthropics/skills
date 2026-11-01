@@ -1,0 +1,363 @@
+{
+  "_file": "build_manifest",
+  "_version": "2.1.0",
+  "_notes": [
+    "Defines filing types, required build order, and Heading-1 section order.",
+    "This is about structure and formatting, not drafting content."
+  ],
+  "filing_types": {
+    "MOTION": {
+      "display_name": "Motion (with memorandum)",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature",
+        "certificate_of_service",
+        "certificate_of_compliance",
+        "proposed_order",
+        "exhibits"
+      ],
+      "heading1_order": [
+        "INTRODUCTION",
+        "FACTUAL_BACKGROUND",
+        "LEGAL_STANDARD",
+        "ARGUMENT",
+        "CONCLUSION"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service",
+        "certificate_of_compliance",
+        "proposed_order",
+        "exhibits"
+      ]
+    },
+    "BRIEF": {
+      "display_name": "District Court Brief / Memorandum",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature",
+        "certificate_of_service",
+        "certificate_of_compliance",
+        "exhibits"
+      ],
+      "heading1_order": [
+        "INTRODUCTION",
+        "FACTUAL_BACKGROUND",
+        "LEGAL_STANDARD",
+        "ARGUMENT",
+        "CONCLUSION"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service",
+        "certificate_of_compliance",
+        "exhibits"
+      ]
+    },
+    "APPELLATE_BRIEF": {
+      "display_name": "Appellate Brief (Opening/Answering/Reply)",
+      "construct_order": [
+        "cover_or_caption",
+        "table_of_contents",
+        "table_of_authorities",
+        "body",
+        "conclusion",
+        "statement_of_related_cases",
+        "certificate_of_compliance",
+        "certificate_of_service",
+        "addendum"
+      ],
+      "heading1_order": [
+        "DISCLOSURE_STATEMENT",
+        "INTRODUCTION",
+        "JURISDICTIONAL_STATEMENT",
+        "STATUTORY_AND_REGULATORY_AUTHORITIES",
+        "ISSUES_PRESENTED",
+        "STATEMENT_OF_THE_CASE",
+        "SUMMARY_OF_ARGUMENT",
+        "STANDARD_OF_REVIEW",
+        "ARGUMENT",
+        "CONCLUSION"
+      ],
+      "required": [
+        "body",
+        "conclusion"
+      ],
+      "optional": [
+        "statement_of_related_cases",
+        "certificate_of_compliance",
+        "certificate_of_service",
+        "addendum"
+      ]
+    },
+    "COMPLAINT": {
+      "display_name": "Civil Complaint",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "jury_demand",
+        "prayer_for_relief",
+        "signature",
+        "verification",
+        "exhibits"
+      ],
+      "heading1_order": [
+        "INTRODUCTION",
+        "PARTIES",
+        "JURISDICTION_AND_VENUE",
+        "FACTUAL_ALLEGATIONS",
+        "CLAIMS_FOR_RELIEF",
+        "PRAYER_FOR_RELIEF",
+        "JURY_DEMAND"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "jury_demand",
+        "prayer_for_relief",
+        "verification",
+        "exhibits"
+      ]
+    },
+    "ANSWER": {
+      "display_name": "Answer",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "affirmative_defenses",
+        "prayer",
+        "signature",
+        "certificate_of_service"
+      ],
+      "heading1_order": [
+        "RESPONSES_TO_ALLEGATIONS",
+        "AFFIRMATIVE_DEFENSES",
+        "PRAYER_FOR_RELIEF"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service"
+      ]
+    },
+    "DECLARATION": {
+      "display_name": "Declaration / Affidavit",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature",
+        "jury_penalty_clause",
+        "certificate_of_service",
+        "exhibits"
+      ],
+      "heading1_order": [
+        "DECLARATION"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service",
+        "exhibits"
+      ]
+    },
+    "NOTICE": {
+      "display_name": "Notice",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature",
+        "certificate_of_service",
+        "attachments"
+      ],
+      "heading1_order": [
+        "NOTICE_BODY"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service",
+        "attachments"
+      ]
+    },
+    "ORDER": {
+      "display_name": "Proposed Order",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature_line",
+        "date_line"
+      ],
+      "heading1_order": [
+        "ORDER_BODY"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body"
+      ],
+      "optional": []
+    },
+    "STIPULATION": {
+      "display_name": "Stipulation",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature_blocks",
+        "certificate_of_service"
+      ],
+      "heading1_order": [
+        "STIPULATION_BODY"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature_blocks"
+      ],
+      "optional": [
+        "certificate_of_service"
+      ]
+    },
+    "DISCOVERY": {
+      "display_name": "Discovery (Requests/Responses)",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature",
+        "certificate_of_service",
+        "attachments"
+      ],
+      "heading1_order": [
+        "REQUESTS_OR_RESPONSES",
+        "DEFINITIONS",
+        "INSTRUCTIONS",
+        "OBJECTIONS",
+        "RESPONSES"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service",
+        "attachments"
+      ]
+    },
+    "EXHIBIT": {
+      "display_name": "Exhibit (single)",
+      "construct_order": [
+        "exhibit_cover",
+        "exhibit_body"
+      ],
+      "heading1_order": [
+        "EXHIBIT_BODY"
+      ],
+      "required": [
+        "exhibit_cover",
+        "exhibit_body"
+      ],
+      "optional": []
+    },
+    "JUDGMENT": {
+      "display_name": "Judgment",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature_line",
+        "date_line"
+      ],
+      "heading1_order": [
+        "JUDGMENT_BODY"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body"
+      ],
+      "optional": []
+    },
+    "LETTER": {
+      "display_name": "Letter (to court/counsel)",
+      "construct_order": [
+        "letterhead",
+        "date",
+        "recipient",
+        "salutation",
+        "body",
+        "signature",
+        "certificate_of_service"
+      ],
+      "heading1_order": [
+        "LETTER_BODY"
+      ],
+      "required": [
+        "body",
+        "signature"
+      ],
+      "optional": [
+        "certificate_of_service"
+      ]
+    },
+    "SUBPOENA": {
+      "display_name": "Subpoena (placeholder)",
+      "construct_order": [
+        "caption",
+        "title",
+        "body",
+        "signature_line",
+        "proof_of_service"
+      ],
+      "heading1_order": [
+        "SUBPOENA_BODY"
+      ],
+      "required": [
+        "caption",
+        "title",
+        "body"
+      ],
+      "optional": [
+        "proof_of_service"
+      ]
+    }
+  }
+}

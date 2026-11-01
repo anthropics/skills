@@ -1,0 +1,4 @@
+interface:
+  display_name: "C Multimodal Shell"
+  short_description: "Build C-only stateless XML multimodal training shells."
+  default_prompt: "Create or extend a C-only stateless multimodal shell with XML training slots and computer-control console hooks."

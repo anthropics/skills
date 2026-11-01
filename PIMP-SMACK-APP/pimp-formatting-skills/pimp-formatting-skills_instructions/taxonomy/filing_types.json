@@ -1,0 +1,48 @@
+{
+  "_file": "filing_types",
+  "_version": "2.1.0",
+  "types": {
+    "MOTION": {
+      "display_name": "Motion (with memorandum)"
+    },
+    "BRIEF": {
+      "display_name": "District Court Brief / Memorandum"
+    },
+    "APPELLATE_BRIEF": {
+      "display_name": "Appellate Brief (Opening/Answering/Reply)"
+    },
+    "COMPLAINT": {
+      "display_name": "Civil Complaint"
+    },
+    "ANSWER": {
+      "display_name": "Answer"
+    },
+    "DECLARATION": {
+      "display_name": "Declaration / Affidavit"
+    },
+    "NOTICE": {
+      "display_name": "Notice"
+    },
+    "ORDER": {
+      "display_name": "Proposed Order"
+    },
+    "STIPULATION": {
+      "display_name": "Stipulation"
+    },
+    "DISCOVERY": {
+      "display_name": "Discovery (Requests/Responses)"
+    },
+    "EXHIBIT": {
+      "display_name": "Exhibit (single)"
+    },
+    "JUDGMENT": {
+      "display_name": "Judgment"
+    },
+    "LETTER": {
+      "display_name": "Letter (to court/counsel)"
+    },
+    "SUBPOENA": {
+      "display_name": "Subpoena (placeholder)"
+    }
+  }
+}

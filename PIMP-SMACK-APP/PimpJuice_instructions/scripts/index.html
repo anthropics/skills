@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Evidence Management System v3.0 - Cyberpunk Edition</title>
+    
+    <!-- External Libraries -->
+    <script src="https://unpkg.com/tesseract.js@2.1.0/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.11.338/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Ephemeral notifications */
+        .ephemeral-stack { position: fixed; right: 24px; bottom: 24px; display: flex; flex-direction: column-reverse; gap: 8px; z-index: 9999; pointer-events: none; }
+        .ephemeral-item { pointer-events: auto; background: rgba(0,255,204,0.10); border: 1px solid #00ffcc; border-radius: 12px; padding: 10px 12px; box-shadow: 0 0 18px rgba(0,255,204,0.5); color: #eafff7; font-family: 'Rajdhani', sans-serif; max-width: 360px; backdrop-filter: blur(6px); }
+        .ephemeral-item.warn { border-color: #ffd166; box-shadow: 0 0 18px rgba(255,209,102,0.5); }
+        .ephemeral-item.error { border-color: #ff6b6b; box-shadow: 0 0 18px rgba(255,107,107,0.5); }
+        .ephemeral-title { font-family: 'Orbitron', monospace; font-size: 12px; letter-spacing: 0.06em; color: #00ffcc; margin-bottom: 4px; opacity: 0.9; }
+        .ephemeral-body { font-size: 14px; line-height: 1.3; white-space: pre-wrap; }
+        .ephemeral-fade { animation: ephemFade 12s linear forwards; }
+        @keyframes ephemFade { 0% { opacity: 1; } 85% { opacity: 1; } 100% { opacity: 0; } }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: #000;
+            color: #f0f0f0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(128, 0, 128, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(128, 0, 128, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.8) 0%, transparent 100%);
+            animation: pulse 10s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
+        }
+
+        /* Timeline Header */
+        #timelineContainer {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.9);
+            border-bottom: 3px solid #800080;
+            box-shadow: 0 5px 20px rgba(128, 0, 128, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            scrollbar-width: thin;
+            scrollbar-color: #800080 #000;
+        }
+
+        #timelineContainer::-webkit-scrollbar {
+            height: 8px;
+        }
+
+        #timelineContainer::-webkit-scrollbar-track {
+            background: #000;
+        }
+
+        #timelineContainer::-webkit-scrollbar-thumb {
+            background: #800080;
+            border-radius: 4px;
+        }
+
+        .timeline-event {
+            min-width: 180px;
+            margin-right: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.7);
+            border-left: 4px solid #0080ff;
+            border-right: 4px solid #0080ff;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 128, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .timeline-event:hover::before {
+            left: 100%;
+        }
+
+        .timeline-event:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 128, 255, 0.5);
+            border-color: #00ffff;
+        }
+
+        .timeline-date {
+            color: #00ffff;
+            font-weight: bold;
+            font-size: 14px;
+            font-family: 'Orbitron', monospace;
+        }
+
+        .timeline-title {
+            color: #fff;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        /* Main Layout */
+        .main-container {
+            display: grid;
+            grid-template-columns: 250px 1fr 250px;
+            min-height: calc(100vh - 80px);
+            gap: 0;
+        }
+
+        /* Side Panels */
+        .side-panel {
+            background: rgba(0, 0, 0, 0.85);
+            border: 2px solid #800080;
+            padding: 20px;
+            position: relative;
+            overflow-y: auto;
+            max-height: calc(100vh - 80px);
+        }
+
+        .side-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #00ffff, transparent);
+            animation: scan 3s linear infinite;
+        }
+
+        @keyframes scan {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .panel-title {
+            color: #00ffff;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            font-size: 18px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 255, 255, 0.8);
+        }
+
+        /* VIP Evidence Cards */
+        .vip-card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid #800080;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(128, 0, 128, 0.5);
+        }
+
+        .vip-card:hover {
+            transform: translateX(10px);
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Video Cards */
+        .video-card {
+            background: rgba(20, 20, 20, 0.9);
+            border: 2px solid #800080;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(128, 0, 128, 0.5);
+        }
+
+        .video-card:hover {
+            transform: translateX(-10px);
+            border-color: #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Circular Menu */
+        #circularMenu {
+            position: relative;
+            width: 1000px;
+            height: 1000px;
+            margin: 50px auto;
+        }
+
+        .clock-button {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+            font-weight: 600;
+            text-align: center;
+            font-family: 'Orbitron', monospace;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .clock-button:hover {
+            transform: scale(1.15);
+            z-index: 10;
+        }
+
+        .outer-button {
+            border-color: #0080ff;
+            background: radial-gradient(circle, rgba(0, 128, 255, 0.3), rgba(0, 128, 255, 0.1));
+            color: #00ffff;
+            box-shadow: 
+                0 0 30px rgba(0, 128, 255, 0.5),
+                inset 0 0 20px rgba(0, 128, 255, 0.2);
+        }
+
+        .outer-button:hover {
+            border-color: #00ffff;
+            background: radial-gradient(circle, rgba(0, 255, 255, 0.4), rgba(0, 128, 255, 0.2));
+            box-shadow: 
+                0 0 50px rgba(0, 255, 255, 0.8),
+                inset 0 0 30px rgba(0, 255, 255, 0.3);
+        }
+
+        .inner-button {
+            border-color: #ff0040;
+            background: radial-gradient(circle, rgba(255, 0, 64, 0.3), rgba(255, 0, 64, 0.1));
+            color: #ff0040;
+            box-shadow: 
+                0 0 30px rgba(255, 0, 64, 0.5),
+                inset 0 0 20px rgba(255, 0, 64, 0.2);
+        }
+
+        .inner-button:hover {
+            border-color: #ff0080;
+            background: radial-gradient(circle, rgba(255, 0, 128, 0.4), rgba(255, 0, 64, 0.2));
+            box-shadow: 
+                0 0 50px rgba(255, 0, 128, 0.8),
+                inset 0 0 30px rgba(255, 0, 128, 0.3);
+        }
+
+        /* Center Circle Decoration */
+        #circularMenu::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1000px;
+            height: 1000px;
+            border: 2px dashed rgba(128, 0, 128, 0.3);
+            border-radius: 50%;
+            animation: rotate 60s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: translate(-50%, -50%) rotate(0deg); }
+            to { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Evidence Card Modal */
+        .evidence-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .evidence-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: rgba(20, 20, 20, 0.98);
+            border: 3px solid #800080;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 90%;
+            max-height: 90%;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 
+                0 0 50px rgba(128, 0, 128, 0.8),
+                inset 0 0 30px rgba(128, 0, 128, 0.2);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 32px;
+            cursor: pointer;
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            transform: rotate(90deg);
+            color: #ff0080;
+        }
+
+        /* Evidence Form Table */
+        .evidence-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-top: 20px;
+            border: 2px solid #800080;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .evidence-table th {
+            background: linear-gradient(135deg, #800080, #400040);
+            color: #00ffff;
+            padding: 12px;
+            text-align: left;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.5);
+        }
+
+        .evidence-table td {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid #800080;
+            padding: 10px;
+            color: #fff;
+        }
+
+        .evidence-table tr:hover td {
+            background: rgba(128, 0, 128, 0.1);
+        }
+
+        /* Buttons */
+        .cyber-btn {
+            background: linear-gradient(135deg, #800080, #400040);
+            border: 2px solid #00ffff;
+            color: #00ffff;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.3s ease;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                inset 0 0 10px rgba(0, 255, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cyber-btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(0, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.5s, height 0.5s;
+        }
+
+        .cyber-btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .cyber-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 5px 30px rgba(0, 255, 255, 0.8),
+                inset 0 0 20px rgba(0, 255, 255, 0.3);
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        .cyber-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Form Inputs */
+        .cyber-input, .cyber-select, .cyber-textarea {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #800080;
+            color: #00ffff;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .cyber-input:focus, .cyber-select:focus, .cyber-textarea:focus {
+            outline: none;
+            border-color: #00ffff;
+            box-shadow: 
+                0 0 20px rgba(0, 255, 255, 0.5),
+                inset 0 0 10px rgba(0, 255, 255, 0.1);
+            background: rgba(0, 20, 40, 0.8);
+        }
+
+        .cyber-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group.full-width {
+            grid-column: span 2;
+        }
+
+        .form-label {
+            color: #00ffff;
+            margin-bottom: 5px;
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Parties Checkboxes */
+        .parties-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #800080;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .party-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .party-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #00ffff;
+            cursor: pointer;
+        }
+
+        .party-checkbox label {
+            color: #00ffff;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .party-checkbox:hover label {
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.8);
+        }
+
+        /* Loading Animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .loading-overlay.active {
+            display: flex;
+        }
+
+        .cyber-spinner {
+            width: 100px;
+            height: 100px;
+            position: relative;
+        }
+
+        .cyber-spinner::before,
+        .cyber-spinner::after {
+            content: '';
+            position: absolute;
+            border: 3px solid transparent;
+            border-top-color: #00ffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .cyber-spinner::before {
+            width: 100px;
+            height: 100px;
+            animation-direction: normal;
+        }
+
+        .cyber-spinner::after {
+            width: 70px;
+            height: 70px;
+            top: 15px;
+            left: 15px;
+            animation-direction: reverse;
+            border-top-color: #800080;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Status Messages */
+        .status-message {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 600;
+            z-index: 10000;
+            animation: slideIn 0.5s ease;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .status-success {
+            background: linear-gradient(135deg, #00ff00, #008000);
+            color: #000;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 30px rgba(0, 255, 0, 0.8);
+        }
+
+        .status-error {
+            background: linear-gradient(135deg, #ff0040, #800020);
+            color: #fff;
+            border: 2px solid #ff0040;
+            box-shadow: 0 0 30px rgba(255, 0, 64, 0.8);
+        }
+
+        .status-info {
+            background: linear-gradient(135deg, #00ffff, #0080ff);
+            color: #000;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.8);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%) scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0) scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* YouTube Embed */
+        .youtube-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border: 2px solid #800080;
+            border-radius: 10px;
+            margin: 20px 0;
+            box-shadow: 0 0 30px rgba(128, 0, 128, 0.5);
+        }
+
+        .youtube-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.95);
+            border: 2px solid #800080;
+            border-radius: 50px;
+            box-shadow: 0 0 30px rgba(128, 0, 128, 0.8);
+            z-index: 500;
+        }
+
+        /* PDF Viewer */
+        #pdfViewerContainer {
+            background: rgba(20, 20, 20, 0.95);
+            border: 3px solid #800080;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 
+                0 0 50px rgba(128, 0, 128, 0.8),
+                inset 0 0 30px rgba(128, 0, 128, 0.2);
+        }
+
+        #pdfCanvas {
+            width: 100%;
+            border: 2px solid #00ffff;
+            background: #000;
+            border-radius: 10px;
+        }
+
+        .pdf-controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .side-controller {
+            position: fixed;
+            right: 24px;
+            top: 20vh;
+            width: 320px;
+            max-height: 70vh;
+            z-index: 10050;
+            background: rgba(0, 40, 20, 0.55);
+            border: 2px solid #00ffcc;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0, 255, 170, 0.35), inset 0 0 20px rgba(0, 255, 170, 0.12);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 12px;
+        }
+
+        .side-controller.fullscreen {
+            right: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            max-height: 100vh;
+            border-radius: 0;
+        }
+
+        .side-controller.ghost { pointer-events: none; }
+        .side-controller.ghost .ctrl-grip { pointer-events: auto; }
+
+        .ctrl-grip {
+            position: absolute;
+            left: -12px;
+            top: 0;
+            width: 12px;
+            height: 100%;
+            border-radius: 12px 0 0 12px;
+            background: linear-gradient(180deg, rgba(0,255,170,0.9), rgba(0,255,170,0.35));
+            box-shadow: 0 0 20px rgba(0,255,170,0.6);
+            cursor: grab;
+        }
+
+        .ctrl-row { display: flex; gap: 8px; align-items: center; }
+        .ctrl-row + .ctrl-row { margin-top: 10px; }
+
+        .cyber-btn.small { padding: 6px 10px; font-size: 12px; border-radius: 12px; }
+
+        .seg { display: inline-flex; border: 1px solid #00ffcc; border-radius: 12px; overflow: hidden; }
+        .seg-btn { background: rgba(0,0,0,0.4); color: #00ffcc; border: none; padding: 6px 10px; cursor: pointer; font-family: 'Orbitron', monospace; font-size: 12px; }
+        .seg-btn.active { background: rgba(0,255,170,0.15); color: #00ffea; }
+
+        .overlay-card {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 40, 20, 0.75);
+            border: 2px solid #00ffcc;
+            border-radius: 16px;
+            padding: 16px;
+            z-index: 10060;
+            width: min(680px, 92vw);
+            box-shadow: 0 0 40px rgba(0,255,170,0.4), inset 0 0 24px rgba(0,255,170,0.14);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .overlay-hidden { display: none; }
+        .composer-text { width: 100%; min-height: 120px; }
+        .list-scroll { max-height: 60vh; overflow: auto; border: 1px solid #00ffcc; border-radius: 8px; padding: 8px; }
+    </style>
+</head>
+<body>
+    <!-- Loading Overlay -->
+    <div id="loadingOverlay" class="loading-overlay">
+        <div class="cyber-spinner"></div>
+    </div>
+
+    <!-- Ephemeral Notifications -->
+    <div id="ephemeralStack" class="ephemeral-stack" aria-live="polite"></div>
+
+    <div id="logsModal" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Hub Logs</h3>
+        <div class="ctrl-row" style="justify-content:space-between; margin-bottom:8px;">
+            <div style="color:#eafff7; font-family:'Rajdhani',sans-serif;">Last 200 lines</div>
+            <div style="display:flex; gap:8px;">
+                <button id="btnRefreshLogs" class="cyber-btn small">Refresh</button>
+                <button id="btnCloseLogs" class="cyber-btn small">Close</button>
+            </div>
+        </div>
+        <pre id="logsList" class="list-scroll" style="color:#eafff7; background:rgba(0,0,0,0.35); white-space:pre-wrap;"></pre>
+    </div>
+
+    <div id="stopModal" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Stop Model</h3>
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+            <div class="form-group">
+                <label class="form-label">Model name</label>
+                <input id="stopModelName" class="cyber-input" placeholder="e.g., qwen3:latest" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Running Models</label>
+                <div id="psList" class="list-scroll" style="color:#eafff7; font-family:'Rajdhani',sans-serif;"></div>
+            </div>
+        </div>
+        <div class="ctrl-row" style="justify-content:flex-end; margin-top:10px;">
+            <button id="btnFetchPS" class="cyber-btn">Refresh</button>
+            <button id="btnDoStop" class="cyber-btn" style="margin-left:8px;">Stop</button>
+            <button id="btnCloseStop" class="cyber-btn" style="margin-left:8px;">Close</button>
+        </div>
+    </div>
+
+    <!-- Timeline Header -->
+    <div id="timelineContainer">
+        <!-- Timeline events will be rendered dynamically -->
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Left Panel - VIP Evidence -->
+        <div class="side-panel" id="leftPanel">
+            <h2 class="panel-title">VIP Evidence</h2>
+            <div class="vip-card" data-id="vip1">VIP Evidence 1 (Click to Edit)</div>
+            <div class="vip-card" data-id="vip2">VIP Evidence 2 (Click to Edit)</div>
+            <div class="vip-card" data-id="vip3">VIP Evidence 3 (Click to Edit)</div>
+            <div class="vip-card" data-id="vip4">VIP Evidence 4 (Click to Edit)</div>
+            <div class="vip-card" data-id="vip5">VIP Evidence 5 (Click to Edit)</div>
+        </div>
+
+        <!-- Center - Circular Menu -->
+        <div style="padding: 20px;">
+            <div id="circularMenu"></div>
+
+            <!-- PDF Viewer -->
+            <div id="pdfViewerContainer">
+                <h2 style="color: #00ffff; text-align: center; font-family: 'Orbitron', monospace;">Complaint PDF Viewer</h2>
+                <input type="file" id="pdfFileInput" accept="application/pdf" class="cyber-input" style="margin: 10px 0;" />
+                <canvas id="pdfCanvas"></canvas>
+                <div class="pdf-controls">
+                    <button id="prevPage" class="cyber-btn">← Prev</button>
+                    <span style="color: #00ffff; font-family: 'Orbitron', monospace;">
+                        Page: <span id="pageNum">1</span> / <span id="pageCount">?</span>
+                    </span>
+                    <button id="nextPage" class="cyber-btn">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Video Evidence -->
+        <div class="side-panel" id="rightPanel">
+            <h2 class="panel-title">Video Evidence</h2>
+            <div class="video-card" data-video="zbX3hQm0R3o">First Movie</div>
+            <div class="video-card" data-video="z78bLoqhpV0">Second Movie</div>
+            <div class="video-card" data-video="PUYYsE4oy0Q">Third Movie</div>
+            <div class="video-card" data-video="FFnYdYcKMXc">Fourth Movie</div>
+            <div class="video-card" data-video="5CGXNcy0MMU">Fifth Movie</div>
+        </div>
+    </div>
+
+    <!-- Control Panel -->
+    <div class="control-panel">
+        <button class="cyber-btn" onclick="connectGoogleDrive()">📁 Drive</button>
+        <button class="cyber-btn" onclick="createNewEvidence()">➕ New Evidence</button>
+        <button class="cyber-btn" onclick="exportToCSV()">📊 Export CSV</button>
+        <button class="cyber-btn" onclick="performRAGSearch()">🔎 RAG Search</button>
+        <button class="cyber-btn" onclick="backupDatabase()">💾 Backup</button>
+    </div>
+
+    <!-- Evidence Modal -->
+    <div id="evidenceModal" class="evidence-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal()">&times;</span>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="evidence-modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeVideoModal()">&times;</span>
+            <div class="youtube-container">
+                <iframe id="youtubePlayer" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+
+    <div id="sideController" class="side-controller">
+        <div id="controllerGrip" class="ctrl-grip"></div>
+        <div class="ctrl-row">
+            <button id="btnCourt" class="cyber-btn small">Court</button>
+            <button id="btnAgent" class="cyber-btn small">Agent</button>
+            <button id="btnTimeline" class="cyber-btn small">Timeline</button>
+            <button id="btnPresent" class="cyber-btn small">Present</button>
+        </div>
+        <div class="ctrl-row">
+            <div id="chatTarget" class="seg" data-target="tyler">
+                <button class="seg-btn active" data-v="tyler">Tyler</button>
+                <button class="seg-btn" data-v="board">Board</button>
+            </div>
+            <button id="btnCompose" class="cyber-btn small">Compose</button>
+            <button id="btnMic" class="cyber-btn small">Mic</button>
+            <button id="btnNote" class="cyber-btn small">Note</button>
+            <button id="btnHB" class="cyber-btn small">HB</button>
+            <button id="btnLogs" class="cyber-btn small">Logs</button>
+            <button id="btnStop" class="cyber-btn small">Stop</button>
+            <button id="btnRecent" class="cyber-btn small">Recent</button>
+            <button id="btnGhost" class="cyber-btn small">Ghost</button>
+            <button id="btnFull" class="cyber-btn small">Full</button>
+        </div>
+    </div>
+
+    <div id="miniComposer" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Compose</h3>
+        <textarea id="composeText" class="cyber-textarea composer-text" placeholder="Type message..."></textarea>
+        <div class="ctrl-row" style="justify-content:flex-end; margin-top:10px;">
+            <button id="btnSendCompose" class="cyber-btn">Send</button>
+            <button id="btnCancelCompose" class="cyber-btn" style="margin-left:8px;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="recentModal" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Recent Processes</h3>
+        <div id="recentList" class="list-scroll" style="color:#eafff7; font-family:'Rajdhani',sans-serif;"></div>
+        <div class="ctrl-row" style="justify-content:flex-end; margin-top:10px;">
+            <button id="btnCloseRecent" class="cyber-btn">Close</button>
+        </div>
+    </div>
+
+    <div id="noteModal" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Save Note</h3>
+        <div class="form-grid" style="grid-template-columns: 1fr;">
+            <div class="form-group">
+                <label class="form-label">Text</label>
+                <textarea id="noteText" class="cyber-textarea" rows="6" placeholder="Write a quick note..."></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Prefix (optional)</label>
+                <input id="notePrefix" class="cyber-input" type="text" placeholder="e.g., tyler" />
+            </div>
+            <div class="form-group" style="display:flex; align-items:center; gap:8px;">
+                <input id="noteOpen" type="checkbox" style="width:18px; height:18px; accent-color:#00ffcc;" />
+                <label for="noteOpen" class="form-label" style="margin:0;">Open in Notepad after saving</label>
+            </div>
+        </div>
+        <div class="ctrl-row" style="justify-content:flex-end; margin-top:10px;">
+            <button id="btnSaveNote" class="cyber-btn">Save</button>
+            <button id="btnCancelNote" class="cyber-btn" style="margin-left:8px;">Cancel</button>
+        </div>
+    </div>
+
+    <div id="hbModal" class="overlay-card overlay-hidden">
+        <h3 style="color:#00ffcc; font-family:'Orbitron', monospace; margin-bottom:8px;">Heartbeat</h3>
+        <div class="form-grid" style="grid-template-columns: 1fr 1fr;">
+            <div class="form-group" style="grid-column: span 2; display:flex; align-items:center; gap:8px;">
+                <input id="hbEnable" type="checkbox" style="width:18px; height:18px; accent-color:#00ffcc;" />
+                <label for="hbEnable" class="form-label" style="margin:0;">Enable Heartbeat</label>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Interval (minutes)</label>
+                <input id="hbMinutes" type="number" class="cyber-input" min="1" max="120" step="1" value="5" />
+            </div>
+            <div class="form-group">
+                <label class="form-label">Status</label>
+                <input id="hbStatus" class="cyber-input" type="text" disabled value="idle" />
+            </div>
+        </div>
+        <div class="ctrl-row" style="justify-content:flex-end; margin-top:10px;">
+            <button id="btnSaveHB" class="cyber-btn">Apply</button>
+            <button id="btnCancelHB" class="cyber-btn" style="margin-left:8px;">Close</button>
+        </div>
+    </div>
+
+    <script>
+        // Hub base URL (use current origin/port so we don't hardcode 9099)
+    const HUB = ((window.location.origin && /^https?:/i.test(window.location.origin)) ? window.location.origin : 'http://127.0.0.1:9199').replace(/\/$/, '');
+        // Global Variables
+        let evidenceDatabase = [];
+        let db = null;
+        let currentClaim = null;
+        let currentEvidence = null;
+        let pdfDoc = null;
+        let pageNum = 1;
+        let pageRendering = false;
+        let agentBusy = false;
+        // Mic/STT state
+        let micRecording = false;
+        let micCtx = null, micStream = null, micSource = null, micProcessor = null;
+        let micBuffers = [];
+        let micSampleRate = 44100;
+
+        // Google Drive OAuth state
+        let googleTokenClient = null;
+        let googleAccessToken = null;
+        let googleClientId = null;
+
+        // Timeline Events
+        const timelineEvents = [
+            { date: "2022-03-03", uid: 100, title: "Bias Police Reports", color: "#0080ff" },
+            { date: "2022-03-06", uid: 200, title: "Macy Caught with Speed", color: "#0080ff" },
+            { date: "2022-05-23", uid: 300, title: "Car Stolen", color: "#0080ff" },
+            { date: "2022-05-27", uid: 400, title: "COVID Cell Incident", color: "#0080ff" },
+            { date: "2022-06-07", uid: 500, title: "Skipped Trial", color: "#0080ff" },
+            { date: "2022-06-09", uid: 600, title: "Trial Collusion", color: "#0080ff" },
+            { date: "2022-06-19", uid: 700, title: "Files Deleted", color: "#0080ff" },
+            { date: "2022-06-23", uid: 800, title: "Witness Testimony", color: "#0080ff" },
+            { date: "2022-06-30", uid: 900, title: "Jail Delay", color: "#0080ff" }
+        ];
+
+        // Claims Data
+        const claimsData = {
+            100: "UNLAWFUL DETENTION",
+            200: "MALICIOUS PROSECUTION",
+            300: "CONSPIRACY",
+            400: "FAILURE TO TRAIN / PROTECT",
+            500: "CRUEL & UNUSUAL PUNISHMENT",
+            600: "FALSE IMPRISONMENT",
+            700: "DELIBERATE INDIFFERENCE",
+            800: "INTENTIONAL INTERFERENCE",
+            900: "MONELL CLAIM",
+            1000: "DENIAL OF JURY TRIAL",
+            1100: "VIOLATION OF DUE PROCESS",
+            1200: "VIOLATION OF COUNSEL RIGHTS",
+            1300: "PROBABLE CAUSE",
+            1400: "IMMUNITY"
+        };
+
+        // Initialize IndexedDB
+        async function initDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open('EvidenceDB', 3);
+                
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    db = request.result;
+                    resolve(db);
+                };
+                
+                request.onupgradeneeded = (event) => {
+                    db = event.target.result;
+                    
+                    if (!db.objectStoreNames.contains('evidence_cards')) {
+                        const store = db.createObjectStore('evidence_cards', { keyPath: 'uid' });
+                        store.createIndex('date', 'date_of_event', { unique: false });
+                        store.createIndex('claim', 'claim', { unique: false });
+                    }
+                    
+                    if (!db.objectStoreNames.contains('files')) {
+                        const fileStore = db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+                        fileStore.createIndex('uid', 'uid', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // Render Timeline
+        function renderTimeline() {
+            const container = document.getElementById('timelineContainer');
+            container.innerHTML = '';
+            
+            timelineEvents.forEach(event => {
+                const div = document.createElement('div');
+                div.className = 'timeline-event';
+                div.innerHTML = `
+                    <div class="timeline-date">${event.date.substring(5)}</div>
+                    <div class="timeline-title">${event.uid} - ${event.title}</div>
+                `;
+                div.onclick = () => openEvidenceForClaim(event.uid);
+                container.appendChild(div);
+            });
+        }
+
+        // Generate Circular Menu
+        function generateCircularMenu() {
+            const menu = document.getElementById('circularMenu');
+            menu.innerHTML = '';
+            
+            const centerX = 500, centerY = 500;
+            const outerRadius = 400;
+            const innerRadius = 200;
+            
+            // Outer claims (100-1200)
+            Object.entries(claimsData).slice(0, 12).forEach(([uid, title], index) => {
+                const angle = (2 * Math.PI / 12) * index - Math.PI / 2;
+                const x = centerX + outerRadius * Math.cos(angle) - 75;
+                const y = centerY + outerRadius * Math.sin(angle) - 75;
+                
+                const btn = document.createElement('div');
+                btn.className = 'clock-button outer-button';
+                btn.style.left = `${x}px`;
+                btn.style.top = `${y}px`;
+                btn.innerHTML = `${uid}<br>${title}`;
+                btn.onclick = () => openEvidenceForClaim(uid);
+                menu.appendChild(btn);
+            });
+            
+            // Inner claims (1300-1400)
+            const innerClaims = Object.entries(claimsData).slice(12);
+            innerClaims.forEach(([uid, title], index) => {
+                const angle = Math.PI * index - Math.PI / 4;
+                const x = centerX + innerRadius * Math.cos(angle) - 75;
+                const y = centerY + innerRadius * Math.sin(angle) - 75;
+                
+                const btn = document.createElement('div');
+                btn.className = 'clock-button inner-button';
+                btn.style.left = `${x}px`;
+                btn.style.top = `${y}px`;
+                btn.innerHTML = `${uid}<br>${title}`;
+                btn.onclick = () => openEvidenceForClaim(uid);
+                menu.appendChild(btn);
+            });
+        }
+
+        // Open Evidence for Claim
+        async function openEvidenceForClaim(claimId) {
+            currentClaim = claimId;
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <h2 style="color: #00ffff; font-family: 'Orbitron', monospace;">
+                    Evidence Card for Claim ID ${claimId}
+                </h2>
+                <h3 style="color: #fff; margin-top: 10px;">
+                    [${claimId}] ${claimsData[claimId]}
+                </h3>
+                <table class="evidence-table">
+                    <thead>
+                        <tr>
+                            <th>Element</th>
+                            <th>Upload File</th>
+                            <th>Note to Gemini</th>
+                            <th>Send to Gemini</th>
+                            <th>View Card</th>
+                            <th>Delete Card</th>
+                        </tr>
+                    </thead>
+                    <tbody id="evidenceTableBody">
+                        ${generateEvidenceRows(claimId)}
+                    </tbody>
+                </table>
+                <div style="margin-top: 30px;">
+                    <button class="cyber-btn" onclick="createFullEvidenceCard()">
+                        Create Full Evidence Card
+                    </button>
+                </div>
+            `;
+            
+            document.getElementById('evidenceModal').classList.add('active');
+        }
+
+        // Generate Evidence Rows
+        function generateEvidenceRows(claimId) {
+            const elements = getElementsForClaim(claimId);
+            return elements.map((element, index) => `
+                <tr>
+                    <td>${element}</td>
+                    <td>
+                        <input type="file" id="file_${claimId}_${index}" class="cyber-input" style="width: auto;">
+                    </td>
+                    <td>
+                        <textarea id="note_${claimId}_${index}" class="cyber-input" rows="2" placeholder="Enter note for Gemini..."></textarea>
+                    </td>
+                    <td>
+                        <button class="cyber-btn" onclick="sendToGemini('${claimId}', ${index})">Send</button>
+                    </td>
+                    <td>
+                        <button class="cyber-btn" onclick="viewCard('${claimId}', ${index})">View</button>
+                    </td>
+                    <td>
+                        <button class="cyber-btn" onclick="deleteCard('${claimId}', ${index})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Get Elements for Claim
+        function getElementsForClaim(claimId) {
+            const elements = {
+                100: [
+                    "110: Defendant acted under color of law",
+                    "120: Plaintiff was arrested or detained",
+                    "130: The arrest was without probable cause",
+                    "140: Plaintiff was deprived of rights"
+                ],
+                200: [
+                    "210: Defendant initiated criminal proceeding",
+                    "220: Proceeding terminated in Plaintiff's favor",
+                    "230: No probable cause for proceeding",
+                    "240: Defendant acted with malice",
+                    "250: Plaintiff suffered deprivation of liberty"
+                ],
+                300: [
+                    "310: Agreement existed between two or more persons",
+                    "320: Defendants engaged in overt acts",
+                    "330: Plaintiff was deprived of constitutional rights"
+                ],
+                400: [
+                    "410: Defendant had duty to protect",
+                    "420: Defendant showed deliberate indifference",
+                    "430: Plaintiff suffered harm from inaction"
+                ],
+                500: [
+                    "510: Plaintiff subjected to substantial risk of harm",
+                    "520: Defendant acted with deliberate indifference",
+                    "530: The conduct resulted in harm",
+                    "540: Negative Law: Negligence alone insufficient"
+                ],
+                600: [
+                    "610: Defendant intended to confine",
+                    "620: Plaintiff was conscious of confinement",
+                    "630: Plaintiff did not consent",
+                    "640: Confinement was not legally justified"
+                ],
+                700: [
+                    "710: Plaintiff had serious medical need",
+                    "720: Defendant knew and disregarded risk",
+                    "730: Actions amounted to deliberate indifference"
+                ],
+                800: [
+                    "810: Valid contract existed",
+                    "820: Defendant knew of contract",
+                    "830: Defendant intentionally induced breach",
+                    "840: Contract was breached",
+                    "850: Plaintiff suffered damages"
+                ],
+                900: [
+                    "910: Official policy or custom existed",
+                    "920: Policy was deliberately indifferent",
+                    "930: Policy was moving force behind violation"
+                ],
+                1000: [
+                    "1010: Plaintiff had right to jury trial",
+                    "1020: Defendant denied this right",
+                    "1030: Denial caused harm"
+                ],
+                1100: [
+                    "1110: Plaintiff had protected interest",
+                    "1120: Defendant deprived that interest",
+                    "1130: Deprivation without due process"
+                ],
+                1200: [
+                    "1210: Plaintiff entitled to counsel",
+                    "1220: Defendant interfered with right",
+                    "1230: Plaintiff harmed by violation"
+                ],
+                1300: [
+                    "1310: Facts within Defendant's knowledge",
+                    "1320: Facts sufficient for prudent person"
+                ],
+                1400: [
+                    "1410: Defendant acting within discretionary authority",
+                    "1420: Constitutional right clearly established",
+                    "1430: Reasonable official would know unlawful"
+                ]
+            };
+            
+            return elements[claimId] || [];
+        }
+
+        // Create Full Evidence Card
+        function createFullEvidenceCard() {
+            const modalBody = document.getElementById('modalBody');
+            
+            modalBody.innerHTML = `
+                <h2 style="color: #00ffff; font-family: 'Orbitron', monospace;">
+                    Create Evidence Card - Claim ${currentClaim}
+                </h2>
+                
+                <form id="evidenceForm" class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">UID</label>
+                        <input type="text" id="uid" class="cyber-input" value="${currentClaim}${Math.floor(Math.random() * 10)}" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Location</label>
+                        <input type="text" id="location" class="cyber-input" placeholder="e.g., Clackamas County Court House" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Date of Event</label>
+                        <input type="date" id="dateOfEvent" class="cyber-input" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Time of Event</label>
+                        <input type="time" id="timeOfEvent" class="cyber-input" />
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Parties Involved</label>
+                        <div class="parties-grid">
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d1_gunnarson">
+                                <label for="d1_gunnarson">D1 Gunnarson</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d2_blyth">
+                                <label for="d2_blyth">D2 Blyth</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d3_west_linn">
+                                <label for="d3_west_linn">D3 West Linn</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d4_portlock">
+                                <label for="d4_portlock">D4 Portlock</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d5_jail">
+                                <label for="d5_jail">D5 Jail</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d6_county">
+                                <label for="d6_county">D6 County</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d7_sheriff">
+                                <label for="d7_sheriff">D7 Sheriff</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d8_ccso_doe1">
+                                <label for="d8_ccso_doe1">D8 CCSO Doe1</label>
+                            </div>
+                            <div class="party-checkbox">
+                                <input type="checkbox" id="d9_ccso_doe2">
+                                <label for="d9_ccso_doe2">D9 CCSO Doe2</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Description of Evidence</label>
+                        <textarea id="description" class="cyber-textarea" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Depiction Quote</label>
+                        <textarea id="depictionQuote" class="cyber-textarea" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Significance</label>
+                        <textarea id="significance" class="cyber-textarea" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Case Law 1</label>
+                        <textarea id="caselaw1" class="cyber-textarea" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Case Law 2</label>
+                        <textarea id="caselaw2" class="cyber-textarea" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Upload Evidence Files</label>
+                        <input type="file" id="fileUpload" class="cyber-input" multiple />
+                        <button type="button" class="cyber-btn" onclick="handleUploadToDriveFromForm()" style="margin-top: 10px;">
+                            Upload to Drive
+                        </button>
+                    </div>
+                    
+                    <div class="form-group full-width">
+                        <label class="form-label">Notes</label>
+                        <textarea id="notes" class="cyber-textarea" rows="4"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Citation</label>
+                        <input type="text" id="citation" class="cyber-input" />
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Source</label>
+                        <input type="text" id="source" class="cyber-input" />
+                    </div>
+                    
+                    <div class="form-group full-width" style="margin-top: 20px;">
+                        <button type="button" class="cyber-btn" onclick="saveEvidenceCard()">
+                            💾 Save Evidence Card
+                        </button>
+                        <button type="button" class="cyber-btn" onclick="autoFillWithGemini()" style="margin-left: 10px;">
+                            🤖 Auto-Fill with Gemini
+                        </button>
+                    </div>
+                </form>
+            `;
+        }
+
+        // Auto-fill with Gemini
+        async function autoFillWithGemini() {
+            showLoading(true);
+            
+            const description = document.getElementById('description').value;
+            const quote = document.getElementById('depictionQuote').value;
+            
+            if (!description && !quote) {
+                showStatus('Please provide at least a description or quote', 'error');
+                showLoading(false);
+                return;
+            }
+            
+            try {
+                const response = await fetch('/api/gemini/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        model: 'gemini-2.5-pro',
+                        contents: [{
+                            parts: [{
+                                text: `Based on this evidence for claim ${currentClaim} (${claimsData[currentClaim]}):
+                                
+                                Description: ${description}
+                                Quote: "${quote}"
+                                
+                                Generate legal analysis with:
+                                1. Significance to the claim
+                                2. Two relevant case law citations with explanations
+                                3. Key legal elements this supports
+                                4. Suggested notes for the case
+                                
+                                Format as JSON with fields: significance, caselaw1, caselaw2, notes`
+                            }]
+                        }]
+                    })
+                });
+                
+                const result = await response.json();
+                if (result.candidates && result.candidates[0]) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    try {
+                        const analysis = JSON.parse(text);
+                        
+                        // Auto-fill the form
+                        if (analysis.significance) document.getElementById('significance').value = analysis.significance;
+                        if (analysis.caselaw1) document.getElementById('caselaw1').value = analysis.caselaw1;
+                        if (analysis.caselaw2) document.getElementById('caselaw2').value = analysis.caselaw2;
+                        if (analysis.notes) document.getElementById('notes').value = analysis.notes;
+                        
+                        showStatus('Form auto-filled with Gemini analysis!', 'success');
+                    } catch (e) {
+                        // If not JSON, just put the text in notes
+                        document.getElementById('notes').value = text;
+                        showStatus('Analysis added to notes', 'info');
+                    }
+                }
+            } catch (error) {
+                console.error('Gemini error:', error);
+                showStatus('Error with Gemini analysis', 'error');
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        // Save Evidence Card
+        async function saveEvidenceCard() {
+            const evidenceCard = {
+                uid: document.getElementById('uid').value,
+                Location: [{
+                    location: document.getElementById('location').value,
+                    date_of_event: document.getElementById('dateOfEvent').value,
+                    time_of_event: document.getElementById('timeOfEvent').value
+                }],
+                claim: [{
+                    clause: claimsData[currentClaim],
+                    element: currentClaim
+                }],
+                parties_involved: [{
+                    d1_gunnarson: document.getElementById('d1_gunnarson').checked,
+                    d2_blyth: document.getElementById('d2_blyth').checked,
+                    d3_west_linn: document.getElementById('d3_west_linn').checked,
+                    d4_portlock: document.getElementById('d4_portlock').checked,
+                    d5_jail: document.getElementById('d5_jail').checked,
+                    d6_county: document.getElementById('d6_county').checked,
+                    d7_sheriff: document.getElementById('d7_sheriff').checked,
+                    d8_ccso_doe1: document.getElementById('d8_ccso_doe1').checked,
+                    d9_ccso_doe2: document.getElementById('d9_ccso_doe2').checked
+                }],
+                description_of_evidence: document.getElementById('description').value,
+                depiction_quote: document.getElementById('depictionQuote').value,
+                significance: document.getElementById('significance').value,
+                precedence: [{
+                    caselaw1: document.getElementById('caselaw1').value,
+                    caselaw2: document.getElementById('caselaw2').value
+                }],
+                notes: document.getElementById('notes').value,
+                citation: document.getElementById('citation').value,
+                source: document.getElementById('source').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            // Save to IndexedDB
+            const transaction = db.transaction(['evidence_cards'], 'readwrite');
+            const store = transaction.objectStore('evidence_cards');
+            await store.put(evidenceCard);
+            
+            showStatus('Evidence card saved successfully!', 'success');
+            closeModal();
+        }
+
+        // Send to Gemini
+        async function sendToGemini(claimId, index) {
+            showStatus('Analyzing with Gemini...', 'info');
+            // Implementation for Gemini analysis
+        }
+
+        // View Card
+        function viewCard(claimId, index) {
+            showStatus('Loading evidence card...', 'info');
+            // Implementation for viewing card
+        }
+
+        // Delete Card
+        function deleteCard(claimId, index) {
+            if (confirm('Are you sure you want to delete this evidence?')) {
+                showStatus('Evidence deleted', 'success');
+            }
+        }
+
+        // Video handling
+        document.querySelectorAll('.video-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const videoId = this.getAttribute('data-video');
+                const iframe = document.getElementById('youtubePlayer');
+                // Add mute=1 to satisfy autoplay policies across browsers
+                iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1`;
+                document.getElementById('videoModal').classList.add('active');
+            });
+        });
+
+        function closeVideoModal() {
+            document.getElementById('videoModal').classList.remove('active');
+            document.getElementById('youtubePlayer').src = '';
+        }
+
+        // PDF.js implementation
+        const canvas = document.getElementById('pdfCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function renderPage(num) {
+            pageRendering = true;
+            pdfDoc.getPage(num).then(function(page) {
+                const viewport = page.getViewport({scale: 1.0});
+                canvas.height = viewport.height;
+                canvas.width = viewport.width;
+                
+                const renderContext = {
+                    canvasContext: ctx,
+                    viewport: viewport
+                };
+                
+                page.render(renderContext).promise.then(function() {
+                    pageRendering = false;
+                    document.getElementById('pageNum').textContent = num;
+                });
+            });
+        }
+
+        document.getElementById('pdfFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file && file.type === 'application/pdf') {
+                const fileReader = new FileReader();
+                fileReader.onload = function() {
+                    const typedarray = new Uint8Array(this.result);
+                    pdfjsLib.getDocument(typedarray).promise.then(function(pdf) {
+                        pdfDoc = pdf;
+                        document.getElementById('pageCount').textContent = pdf.numPages;
+                        renderPage(pageNum);
+                    });
+                };
+                fileReader.readAsArrayBuffer(file);
+            }
+        });
+
+        document.getElementById('prevPage').addEventListener('click', () => {
+            if (pageNum <= 1) return;
+            pageNum--;
+            renderPage(pageNum);
+        });
+
+        document.getElementById('nextPage').addEventListener('click', () => {
+            if (pageNum >= pdfDoc.numPages) return;
+            pageNum++;
+            renderPage(pageNum);
+        });
+
+        // Modal functions
+        function closeModal() {
+            document.getElementById('evidenceModal').classList.remove('active');
+        }
+
+        // Loading functions
+        function showLoading(show) {
+            document.getElementById('loadingOverlay').classList.toggle('active', show);
+        }
+
+        // Status messages
+        function showStatus(message, type) {
+            const status = document.createElement('div');
+            status.className = `status-message status-${type}`;
+            status.textContent = message;
+            document.body.appendChild(status);
+            
+            setTimeout(() => {
+                status.remove();
+            }, 4000);
+        }
+
+        // Export to CSV
+        async function exportToCSV() {
+            showStatus('Exporting to CSV...', 'info');
+            // Implementation for CSV export
+        }
+
+        // RAG Search
+        function performRAGSearch() {
+            showStatus('RAG Search coming soon...', 'info');
+        }
+
+        // Backup Database
+        async function backupDatabase() {
+            showStatus('Creating backup...', 'info');
+            // Implementation for backup
+        }
+
+        // Connect Google Drive
+        function connectGoogleDrive() {
+            try {
+                if (location.protocol === 'file:') {
+                    showStatus('Drive auth needs http(s). Please open via http://localhost.', 'error');
+                    return;
+                }
+
+                if (!window.google || !google.accounts || !google.accounts.oauth2) {
+                    showStatus('Google Identity Services not loaded', 'error');
+                    return;
+                }
+
+                // Get or ask for Client ID (stored locally)
+                googleClientId = localStorage.getItem('GOOGLE_CLIENT_ID') || googleClientId;
+                if (!googleClientId) {
+                    const entered = prompt('Enter your Google OAuth 2.0 Client ID');
+                    if (!entered) {
+                        showStatus('Client ID is required to connect Drive', 'error');
+                        return;
+                    }
+                    googleClientId = entered.trim();
+                    localStorage.setItem('GOOGLE_CLIENT_ID', googleClientId);
+                }
+
+                // Initialize token client once
+                if (!googleTokenClient) {
+                    googleTokenClient = google.accounts.oauth2.initTokenClient({
+                        client_id: googleClientId,
+                        scope: 'https://www.googleapis.com/auth/drive.file',
+                        callback: (response) => {
+                            if (response && response.access_token) {
+                                googleAccessToken = response.access_token;
+                                showStatus('Google Drive connected', 'success');
+                                // Optional sanity check
+                                listDriveFiles();
+                            } else {
+                                showStatus('Failed to obtain access token', 'error');
+                            }
+                        }
+                    });
+                }
+
+                showStatus('Connecting to Google Drive...', 'info');
+                // Request user consent the first time
+                googleTokenClient.requestAccessToken({ prompt: 'consent' });
+            } catch (e) {
+                console.error('Drive connect error:', e);
+                showStatus('Google Drive connection error', 'error');
+            }
+        }
+
+        // Ensure we have a valid Drive access token
+        function ensureDriveAccess() {
+            return new Promise((resolve, reject) => {
+                if (googleAccessToken) return resolve(googleAccessToken);
+
+                if (!window.google || !google.accounts || !google.accounts.oauth2) {
+                    return reject(new Error('Google Identity Services not available'));
+                }
+
+                googleClientId = localStorage.getItem('GOOGLE_CLIENT_ID') || googleClientId;
+                if (!googleClientId) {
+                    const entered = prompt('Enter your Google OAuth 2.0 Client ID');
+                    if (!entered) return reject(new Error('Client ID required'));
+                    googleClientId = entered.trim();
+                    localStorage.setItem('GOOGLE_CLIENT_ID', googleClientId);
+                }
+
+                if (!googleTokenClient) {
+                    googleTokenClient = google.accounts.oauth2.initTokenClient({
+                        client_id: googleClientId,
+                        scope: 'https://www.googleapis.com/auth/drive.file',
+                        callback: (response) => {
+                            if (response && response.access_token) {
+                                googleAccessToken = response.access_token;
+                                resolve(googleAccessToken);
+                            } else {
+                                reject(new Error('Failed to obtain access token'));
+                            }
+                        }
+                    });
+                }
+
+                googleTokenClient.requestAccessToken({ prompt: '' });
+            });
+        }
+
+        // Simple check call to list a few files
+        async function listDriveFiles() {
+            try {
+                if (!googleAccessToken) return;
+                const resp = await fetch('https://www.googleapis.com/drive/v3/files?pageSize=5&fields=files(id,name)', {
+                    headers: { Authorization: `Bearer ${googleAccessToken}` }
+                });
+                const data = await resp.json();
+                if (data && Array.isArray(data.files)) {
+                    console.log('Drive files:', data.files);
+                    showStatus(`Drive ready. Files: ${data.files.length}`, 'success');
+                }
+            } catch (err) {
+                console.error('List files error:', err);
+            }
+        }
+
+        // Upload selected files from the Evidence form input
+        async function handleUploadToDriveFromForm() {
+            try {
+                const input = document.getElementById('fileUpload');
+                if (!input || !input.files || input.files.length === 0) {
+                    showStatus('Please select files first', 'error');
+                    return;
+                }
+                showStatus('Preparing to upload to Drive...', 'info');
+                await ensureDriveAccess();
+                await uploadFilesToDrive(Array.from(input.files));
+            } catch (e) {
+                console.error('Upload init error:', e);
+                showStatus('Unable to start upload', 'error');
+            }
+        }
+
+        // Upload files to Google Drive using multipart upload
+        async function uploadFilesToDrive(files) {
+            for (const file of files) {
+                try {
+                    const metadata = { name: file.name, mimeType: file.type || 'application/octet-stream' };
+                    const form = new FormData();
+                    form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
+                    form.append('file', file);
+
+                    const resp = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
+                        method: 'POST',
+                        headers: { Authorization: `Bearer ${googleAccessToken}` },
+                        body: form
+                    });
+
+                    if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                    const info = await resp.json();
+                    console.log('Uploaded to Drive:', info);
+                    showStatus(`Uploaded: ${file.name}`, 'success');
+                } catch (err) {
+                    console.error('Drive upload error:', err);
+                    showStatus(`Upload failed: ${file.name}`, 'error');
+                }
+            }
+        }
+
+        // Create New Evidence
+        function createNewEvidence() {
+            currentClaim = '100'; // Default to first claim
+            createFullEvidenceCard();
+            document.getElementById('evidenceModal').classList.add('active');
+        }
+
+        let controllerDragging = false;
+        let controllerDragOffset = { x: 0, y: 0 };
+
+        function initSideController() {
+            const el = document.getElementById('sideController');
+            const grip = document.getElementById('controllerGrip');
+            const btnCourt = document.getElementById('btnCourt');
+            const btnAgent = document.getElementById('btnAgent');
+            const btnTimeline = document.getElementById('btnTimeline');
+            const btnPresent = document.getElementById('btnPresent');
+            const btnCompose = document.getElementById('btnCompose');
+            const btnMic = document.getElementById('btnMic');
+            const btnNote = document.getElementById('btnNote');
+            const btnGhost = document.getElementById('btnGhost');
+            const btnFull = document.getElementById('btnFull');
+            const btnRecent = document.getElementById('btnRecent');
+            const btnHB = document.getElementById('btnHB');
+            const btnLogs = document.getElementById('btnLogs');
+            const btnStop = document.getElementById('btnStop');
+            const chatSeg = document.getElementById('chatTarget');
+
+            grip.addEventListener('mousedown', (e) => {
+                controllerDragging = true;
+                controllerDragOffset.x = e.clientX - el.getBoundingClientRect().left;
+                controllerDragOffset.y = e.clientY - el.getBoundingClientRect().top;
+                document.body.style.userSelect = 'none';
+            });
+            window.addEventListener('mousemove', (e) => {
+                if (!controllerDragging) return;
+                let nx = e.clientX - controllerDragOffset.x;
+                let ny = e.clientY - controllerDragOffset.y;
+                const maxX = window.innerWidth - el.offsetWidth - 12;
+                const maxY = window.innerHeight - el.offsetHeight - 12;
+                nx = Math.max(12, Math.min(nx, maxX));
+                ny = Math.max(12, Math.min(ny, maxY));
+                el.style.left = nx + 'px';
+                el.style.right = 'auto';
+                el.style.top = ny + 'px';
+            });
+            window.addEventListener('mouseup', () => { controllerDragging = false; document.body.style.userSelect = ''; });
+
+            chatSeg.addEventListener('click', (e) => {
+                const btn = e.target.closest('.seg-btn');
+                if (!btn) return;
+                chatSeg.querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                chatSeg.dataset.target = btn.getAttribute('data-v');
+            });
+
+            btnCourt.addEventListener('click', () => switchChannel(1));
+            btnAgent.addEventListener('click', () => switchChannel(2));
+            btnTimeline.addEventListener('click', () => switchChannel(3));
+            btnPresent.addEventListener('click', () => presentClaim());
+            btnCompose.addEventListener('click', () => openComposer());
+            btnMic.addEventListener('click', () => toggleMic());
+            btnNote.addEventListener('click', () => openNote());
+            btnGhost.addEventListener('click', () => toggleGhost());
+            btnFull.addEventListener('click', () => toggleFull());
+            btnRecent.addEventListener('click', () => openRecent());
+            btnHB.addEventListener('click', () => openHB());
+            btnLogs.addEventListener('click', () => openLogs());
+            btnStop.addEventListener('click', () => openStop());
+        }
+
+        function setupHotkeys() {
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'F10') { e.preventDefault(); toggleFull(); }
+                if (e.key === 'F9') { e.preventDefault(); toggleGhost(); }
+                if (e.key === '1') switchChannel(1);
+                if (e.key === '2') switchChannel(2);
+                if (e.key === '3') switchChannel(3);
+                if (e.ctrlKey && e.key === 'Enter') { if (!document.getElementById('miniComposer').classList.contains('overlay-hidden')) sendCompose(); }
+            });
+        }
+
+        function switchChannel(n) {
+            if (n === 1) { window.scrollTo({ top: document.getElementById('circularMenu').offsetTop - 40, behavior: 'smooth' }); showStatus('Court', 'info'); }
+            if (n === 2) { try { window.open('../AI_Agent_GUI/agent_gui.html', '_blank'); } catch (_) {} }
+            if (n === 3) { document.getElementById('timelineContainer').scrollIntoView({ behavior: 'smooth' }); showStatus('Timeline', 'info'); }
+        }
+
+        function toggleGhost() {
+            const el = document.getElementById('sideController');
+            el.classList.toggle('ghost');
+            showStatus(el.classList.contains('ghost') ? 'Ghost Mode' : 'Solid Mode', 'info');
+        }
+
+        function toggleFull() {
+            const el = document.getElementById('sideController');
+            el.classList.toggle('fullscreen');
+        }
+
+        function openComposer() {
+            const o = document.getElementById('miniComposer');
+            o.classList.remove('overlay-hidden');
+            document.getElementById('composeText').focus();
+        }
+
+        async function pushToHubQueue(text, target){
+            try {
+                const resp = await fetch(HUB + '/queue/push', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text, target, priority: 'normal', release: 'heartbeat' })
+                });
+                const data = await resp.json();
+                if (data && data.ok) { showStatus(`Queued (${target})`, 'success'); }
+                else { showStatus('Queue error', 'error'); }
+            } catch (e) { showStatus('Hub not reachable', 'error'); }
+        }
+
+        async function sendMiniChat(text, target) {
+            try {
+                agentBusy = true;
+                const body = {
+                    model: 'qwen3:latest',
+                    messages: [ { role: 'user', content: text } ]
+                };
+                const resp = await fetch(HUB + '/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+                const data = await resp.json();
+                if (data && data.ok && data.response) {
+                    const msg = target === 'board' ? `Board: ${data.response}` : data.response;
+                    showStatus(msg.substring(0, 200), 'success');
+                } else {
+                    showStatus('Chat error', 'error');
+                }
+            } catch (e) {
+                showStatus('Hub not reachable', 'error');
+            } finally {
+                agentBusy = false;
+            }
+        }
+
+        function sendCompose() {
+            const text = document.getElementById('composeText').value.trim();
+            if (!text) { showStatus('Enter text', 'error'); return; }
+            const target = document.getElementById('chatTarget').dataset.target || 'tyler';
+            document.getElementById('miniComposer').classList.add('overlay-hidden');
+            document.getElementById('composeText').value = '';
+            // Default behavior: queue the message so agent sees it between steps
+            pushToHubQueue(text, target);
+        }
+
+        function attachComposerButtons() {
+            document.getElementById('btnSendCompose').addEventListener('click', sendCompose);
+            document.getElementById('btnCancelCompose').addEventListener('click', () => document.getElementById('miniComposer').classList.add('overlay-hidden'));
+        }
+
+    async function openRecent() {
+            try {
+        const resp = await fetch(HUB + '/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'recent-processes', count: 10 }) });
+                const data = await resp.json();
+                if (data && data.ok && Array.isArray(data.items)) {
+                    const list = data.items.map(x => `${x.started}  ${x.name} (${x.pid})`).join('\n');
+                    document.getElementById('recentList').textContent = list;
+                    document.getElementById('recentModal').classList.remove('overlay-hidden');
+                    return;
+                }
+                showStatus('Runner error', 'error');
+            } catch (e) { showStatus('Hub not reachable', 'error'); }
+        }
+
+        function attachRecentButtons() {
+            document.getElementById('btnCloseRecent').addEventListener('click', () => document.getElementById('recentModal').classList.add('overlay-hidden'));
+        }
+
+        function presentClaim() {
+            if (!currentClaim) { showStatus('Pick a claim', 'info'); return; }
+            const title = claimsData[currentClaim] || '';
+            showStatus(`[${currentClaim}] ${title}`, 'info');
+        }
+
+        // --- Notes ----
+        function openNote() {
+            document.getElementById('noteModal').classList.remove('overlay-hidden');
+            document.getElementById('noteText').focus();
+        }
+
+        function attachNoteButtons() {
+            document.getElementById('btnSaveNote').addEventListener('click', async () => {
+                const text = document.getElementById('noteText').value.trim();
+                const prefix = document.getElementById('notePrefix').value.trim();
+                const open = document.getElementById('noteOpen').checked;
+                if (!text) { showStatus('Note is empty', 'error'); return; }
+                try {
+                    const resp = await fetch(HUB + '/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'save-note', text, prefix, open }) });
+                    const data = await resp.json();
+                    if (data && data.ok) { showStatus(`Saved: ${data.path}`, 'success'); document.getElementById('noteModal').classList.add('overlay-hidden'); document.getElementById('noteText').value=''; document.getElementById('notePrefix').value=''; document.getElementById('noteOpen').checked=false; }
+                    else { showStatus('Save failed', 'error'); }
+                } catch (e) { showStatus('Hub not reachable', 'error'); }
+            });
+            document.getElementById('btnCancelNote').addEventListener('click', () => document.getElementById('noteModal').classList.add('overlay-hidden'));
+        }
+
+        // --- Mic / STT ----
+        function toggleMic(){ if (!micRecording) { startMicRecording(); } else { stopMicRecording(); } }
+
+        async function startMicRecording(){
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micCtx = new (window.AudioContext || window.webkitAudioContext)();
+                micSampleRate = micCtx.sampleRate || 44100;
+                // Ensure AudioContext is resumed due to browser gesture policies
+                try { if (micCtx.state === 'suspended') { await micCtx.resume(); } } catch(_) {}
+                micStream = stream;
+                micSource = micCtx.createMediaStreamSource(stream);
+                micProcessor = micCtx.createScriptProcessor(4096, 1, 1);
+                micBuffers = [];
+                micProcessor.onaudioprocess = (e) => {
+                    if (!micRecording) return;
+                    const input = e.inputBuffer.getChannelData(0);
+                    micBuffers.push(new Float32Array(input));
+                };
+                micSource.connect(micProcessor);
+                micProcessor.connect(micCtx.destination);
+                micRecording = true;
+                document.getElementById('btnMic').textContent = 'Stop';
+                showStatus('Recording...', 'info');
+            } catch (e) {
+                showStatus('Microphone access denied', 'error');
+            }
+        }
+
+        async function stopMicRecording(){
+            micRecording = false;
+            try { if (micProcessor) micProcessor.disconnect(); if (micSource) micSource.disconnect(); } catch(_) {}
+            try { if (micStream) micStream.getTracks().forEach(t => t.stop()); } catch(_) {}
+            const btn = document.getElementById('btnMic'); if (btn) btn.textContent = 'Mic';
+            let blob = null;
+            try {
+                blob = encodeWAV(micBuffers, micSampleRate);
+            } catch (e) {
+                showStatus('Audio encode failed', 'error');
+            }
+            micBuffers = [];
+            try { if (micCtx) await micCtx.close(); } catch(_) {}
+            micCtx = micStream = micSource = micProcessor = null;
+
+            if (!blob) return;
+            try {
+                const base64 = await blobToBase64(blob);
+                const resp = await fetch(HUB + '/stt', {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ audioBase64: base64, extension: 'wav' })
+                });
+                const data = await resp.json();
+                if (data && data.ok && data.text) {
+                    const t = data.text.trim();
+                    document.getElementById('composeText').value = t;
+                    openComposer();
+                    showStatus('Transcribed', 'success');
+                } else {
+                    showStatus('STT failed', 'error');
+                }
+            } catch (e) {
+                showStatus('STT error', 'error');
+            }
+        }
+
+        function mergeFloat32(buffers){
+            let length = 0; buffers.forEach(b => length += b.length);
+            const result = new Float32Array(length);
+            let offset = 0; for (const b of buffers) { result.set(b, offset); offset += b.length; }
+            return result;
+        }
+
+        function floatTo16BitPCM(float32){
+            const len = float32.length;
+            const out = new Int16Array(len);
+            for (let i=0;i<len;i++){
+                let s = Math.max(-1, Math.min(1, float32[i]));
+                out[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+            }
+            return out;
+        }
+
+        function buildWavBuffer(samplesInt16, sampleRate){
+            const buffer = new ArrayBuffer(44 + samplesInt16.length * 2);
+            const view = new DataView(buffer);
+            function writeString(offset, str){ for (let i=0;i<str.length;i++){ view.setUint8(offset+i, str.charCodeAt(i)); } }
+            writeString(0, 'RIFF');
+            view.setUint32(4, 36 + samplesInt16.length*2, true);
+            writeString(8, 'WAVE');
+            writeString(12, 'fmt ');
+            view.setUint32(16, 16, true); // PCM
+            view.setUint16(20, 1, true);  // PCM format
+            view.setUint16(22, 1, true);  // mono
+            view.setUint32(24, sampleRate, true);
+            view.setUint32(28, sampleRate * 2, true); // byte rate
+            view.setUint16(32, 2, true); // block align
+            view.setUint16(34, 16, true); // bits per sample
+            writeString(36, 'data');
+            view.setUint32(40, samplesInt16.length*2, true);
+            let offset = 44;
+            for (let i=0;i<samplesInt16.length;i++, offset+=2){ view.setInt16(offset, samplesInt16[i], true); }
+            return buffer;
+        }
+
+        function encodeWAV(buffers, sampleRate){
+            const merged = mergeFloat32(buffers || []);
+            const int16 = floatTo16BitPCM(merged);
+            const wav = buildWavBuffer(int16, sampleRate || 44100);
+            return new Blob([wav], { type: 'audio/wav' });
+        }
+
+        function blobToBase64(blob){
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    const res = reader.result || '';
+                    const idx = res.indexOf(',');
+                    resolve(idx >= 0 ? res.slice(idx+1) : res);
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(blob);
+            });
+        }
+
+        // --- Heartbeat ----
+        let hbTimerId = null;
+        let hbBusy = false;
+
+        function loadHeartbeatSettings() {
+            const enabled = localStorage.getItem('HB_ENABLED');
+            const secs = localStorage.getItem('HB_INTERVAL_SEC');
+            return { enabled: enabled === '1', intervalSec: secs ? parseInt(secs) : 300 };
+        }
+
+        function saveHeartbeatSettings(enabled, intervalSec) {
+            localStorage.setItem('HB_ENABLED', enabled ? '1' : '0');
+            localStorage.setItem('HB_INTERVAL_SEC', String(intervalSec));
+        }
+
+        function openHB() {
+            const s = loadHeartbeatSettings();
+            document.getElementById('hbEnable').checked = !!s.enabled;
+            document.getElementById('hbMinutes').value = Math.max(1, Math.round((s.intervalSec||300)/60));
+            document.getElementById('hbStatus').value = hbTimerId ? 'running' : 'idle';
+            document.getElementById('hbModal').classList.remove('overlay-hidden');
+        }
+
+        async function doHeartbeat() {
+            if (hbBusy || agentBusy) { return; }
+            hbBusy = true;
+            try {
+                await fetch(HUB + '/heartbeat/tick', { method: 'POST' }).then(r=>r.json()).catch(()=>null);
+                const now = new Date().toISOString();
+                localStorage.setItem('HB_LAST', now);
+            } finally {
+                hbBusy = false;
+            }
+        }
+
+        function scheduleHeartbeat() {
+            const s = loadHeartbeatSettings();
+            if (hbTimerId) { clearInterval(hbTimerId); hbTimerId = null; }
+            if (s.enabled) {
+                const ms = Math.max(60000, (s.intervalSec||300)*1000); // min 1 minute
+                hbTimerId = setInterval(doHeartbeat, ms);
+            }
+        }
+
+        function attachHeartbeatButtons() {
+            document.getElementById('btnSaveHB').addEventListener('click', () => {
+                const enabled = document.getElementById('hbEnable').checked;
+                const minutes = Math.max(1, parseInt(document.getElementById('hbMinutes').value||'5'));
+                const secs = minutes * 60;
+                saveHeartbeatSettings(enabled, secs);
+                // Inform HubStation of heartbeat setting
+                fetch(HUB + '/heartbeat/enable', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ enabled }) }).catch(()=>{});
+                scheduleHeartbeat();
+                document.getElementById('hbStatus').value = enabled ? 'running' : 'idle';
+                document.getElementById('hbModal').classList.add('overlay-hidden');
+                showStatus(`Heartbeat ${enabled ? 'on' : 'off'} @ ${minutes}m`, 'info');
+            });
+            document.getElementById('btnCancelHB').addEventListener('click', () => document.getElementById('hbModal').classList.add('overlay-hidden'));
+        }
+
+        // --- Logs ----
+        function openLogs() {
+            fetchLogs();
+            document.getElementById('logsModal').classList.remove('overlay-hidden');
+        }
+
+        async function fetchLogs() {
+            try {
+                const resp = await fetch(HUB + '/logs?n=200');
+                const data = await resp.json();
+                if (data && data.ok && Array.isArray(data.lines)) {
+                    document.getElementById('logsList').textContent = data.lines.join('\n');
+                } else {
+                    document.getElementById('logsList').textContent = 'No logs available';
+                }
+            } catch (e) {
+                document.getElementById('logsList').textContent = 'Hub not reachable';
+            }
+        }
+
+        function attachLogsButtons() {
+            document.getElementById('btnRefreshLogs').addEventListener('click', fetchLogs);
+            document.getElementById('btnCloseLogs').addEventListener('click', () => document.getElementById('logsModal').classList.add('overlay-hidden'));
+        }
+
+        // --- Stop Model ----
+        function openStop() {
+            fetchPS();
+            document.getElementById('stopModal').classList.remove('overlay-hidden');
+        }
+
+        async function fetchPS() {
+            try {
+                const resp = await fetch(HUB + '/ollama/ps');
+                const data = await resp.json();
+                if (data && data.ok && data.processes) {
+                    const list = data.processes.map(p => `${p.name} - ${p.size || 'unknown'}`).join('\n');
+                    document.getElementById('psList').textContent = list || 'No models running';
+                } else {
+                    document.getElementById('psList').textContent = 'No models running';
+                }
+            } catch (e) {
+                document.getElementById('psList').textContent = 'Hub not reachable';
+            }
+        }
+
+        async function doStop() {
+            const model = document.getElementById('stopModelName').value.trim();
+            if (!model) {
+                showStatus('Enter model name', 'error');
+                return;
+            }
+            try {
+                const resp = await fetch(HUB + '/ollama/stop', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ model })
+                });
+                const data = await resp.json();
+                if (data && data.ok) {
+                    showStatus(`Stopped: ${model}`, 'success');
+                    document.getElementById('stopModelName').value = '';
+                    fetchPS();
+                } else {
+                    showStatus('Stop failed', 'error');
+                }
+            } catch (e) {
+                showStatus('Hub not reachable', 'error');
+            }
+        }
+
+        function attachStopButtons() {
+            document.getElementById('btnFetchPS').addEventListener('click', fetchPS);
+            document.getElementById('btnDoStop').addEventListener('click', doStop);
+            document.getElementById('btnCloseStop').addEventListener('click', () => document.getElementById('stopModal').classList.add('overlay-hidden'));
+        }
+
+        // --- Notifications ----
+        let notifyPollTimer = null;
+
+        function startNotificationPolling() {
+            if (notifyPollTimer) return;
+            notifyPollTimer = setInterval(async () => {
+                try {
+                    const resp = await fetch(HUB + '/notify/pop', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ max: 10 })
+                    });
+                    const data = await resp.json();
+                    if (data && data.ok && Array.isArray(data.items)) {
+                        data.items.forEach(item => {
+                            showEphemeralNotification(item.text, item.severity);
+                        });
+                    }
+                } catch (e) {
+                    // Hub not reachable, silently continue
+                }
+            }, 3000);
+        }
+
+        function showEphemeralNotification(text, severity) {
+            const stack = document.getElementById('ephemeralStack');
+            const div = document.createElement('div');
+            div.className = 'ephemeral-item ephemeral-fade';
+            if (severity === 'warn') div.classList.add('warn');
+            if (severity === 'error') div.classList.add('error');
+            
+            const title = document.createElement('div');
+            title.className = 'ephemeral-title';
+            title.textContent = severity ? severity.toUpperCase() : 'INFO';
+            
+            const body = document.createElement('div');
+            body.className = 'ephemeral-body';
+            body.textContent = text;
+            
+            div.appendChild(title);
+            div.appendChild(body);
+            stack.appendChild(div);
+            
+            setTimeout(() => div.remove(), 12000);
+        }
+
+        function attachNotifications() {
+            startNotificationPolling();
+        }
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initDatabase();
+            renderTimeline();
+            generateCircularMenu();
+            initSideController();
+            setupHotkeys();
+            attachComposerButtons();
+            attachRecentButtons();
+            attachNoteButtons();
+            attachHeartbeatButtons();
+            attachLogsButtons();
+            attachStopButtons();
+            attachNotifications();
+            scheduleHeartbeat();
+            showStatus('System Initialized - Welcome Tyler!', 'success');
+        });
+    </script>
+</body>
+</html>
