@@ -123,6 +123,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
         return {}
 
     results: dict[str, list] = {}
+    used_ids: set[int] = set()
 
     for eval_idx, eval_dir in enumerate(_discover_eval_dirs(search_dir)):
         metadata_path = eval_dir / "eval_metadata.json"
@@ -137,6 +138,16 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 eval_id = int(eval_dir.name.split("-")[1])
             except (IndexError, ValueError):
                 eval_id = eval_idx
+
+        # Keep eval IDs distinct: a descriptive name falling back to its
+        # index can otherwise collide with an old-style eval-N name
+        # (review P2: eval-1 and screenshots both became 1, collapsing
+        # metadata evals_run to [1]). Bump to the next free ID.
+        if isinstance(eval_id, int):
+            while eval_id in used_ids:
+                eval_id += 1
+            used_ids.add(eval_id)
+
 
         # Warn about a grading file saved at the eval root: neither the
         # viewer nor this script reads it (issue #518 item 1).

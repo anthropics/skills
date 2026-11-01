@@ -217,6 +217,22 @@ class AggregateBenchmarkTest(unittest.TestCase):
         self.assertEqual(sorted(results), ["with_skill", "without_skill"])
         self.assertEqual(results["with_skill"][0]["eval_id"], 0)
 
+    def test_mixed_old_and_descriptive_names_get_distinct_eval_ids(self):
+        """Review P2: eval-1 (parsed 1) plus screenshots (fallback index 1)
+        must not collapse to a single eval_id."""
+        bench = self.bench()
+        self.std_runs(bench, "eval-1")
+        self.std_runs(bench, "screenshots")
+        results, _ = self.load(bench)
+        self.assertEqual(
+            sorted(r["eval_id"] for r in results["with_skill"]), [1, 2]
+        )
+        out = io.StringIO()
+        with redirect_stdout(out):
+            benchmark = agg.generate_benchmark(bench, "demo-skill", "/tmp/demo")
+        self.assertEqual(benchmark["metadata"]["evals_run"], [1, 2])
+        self.assertEqual(len(benchmark["runs"]), 4)
+
     def test_end_to_end_benchmark_on_descriptive_fixture(self):
         bench = self.bench()
         self.std_runs(bench, "group-membership-check")
