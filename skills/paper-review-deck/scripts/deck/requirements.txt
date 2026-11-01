@@ -1,0 +1,4 @@
+markdown
+playwright
+pillow
+pymupdf

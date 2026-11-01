@@ -1,0 +1,9 @@
+{
+  "name": "paper-review-deck-tools",
+  "private": true,
+  "dependencies": {
+    "@fontsource/noto-serif": "^5.3.0",
+    "katex": "^0.16.47",
+    "pptxgenjs": "^3.12.0"
+  }
+}
