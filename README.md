@@ -19,9 +19,9 @@ Each skill is self-contained in its own folder with a `SKILL.md` file containing
 
 Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
 
-### Document Skills Versioning & Sync
+## Document Skills Versioning & Sync
 
-The document skills in this repository serve as reference snapshots (recent exports landed in #1447 on 2026-07-16 and #330 on 2026-02-03). In Claude Code, users with Claude.ai skill sync enabled receive copies under `~/.claude/skills/synced/`, which are currently newer than the reference snapshot in this repository.
+The document skills in this repository serve as reference snapshots (recent exports landed in #1447 on 2026-07-17 and #330 on 2026-02-04 UTC). In Claude Code, users with Claude.ai skill sync enabled receive copies under `~/.claude/skills/synced/`, which may contain newer changes than the reference snapshot in this repository.
 
 ## Disclaimer
 
