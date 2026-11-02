@@ -19,9 +19,11 @@ Each skill is self-contained in its own folder with a `SKILL.md` file containing
 
 Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
 
-## Disclaimer
+## Disclaimer & Versioning Relationship
 
 **These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
+
+> **Note on Document Skills & Sync Channel:** The document skills in this repository (`docx`, `pdf`, `pptx`, `xlsx`) serve as periodic reference snapshots. Production environments such as Claude Code's account sync (`~/.claude/skills/synced/`) receive continuous updates directly from Claude.ai as the primary release channel. Consequently, the reference implementations in this repository may lag the latest production features and bugfixes between scheduled snapshot exports.
 
 # Skill Sets
 - [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
@@ -49,6 +51,8 @@ Alternatively, directly install either Plugin via:
 ```
 
 After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
+
+> **Note:** Installing `document-skills@anthropic-agent-skills` installs the reference snapshot provided in this repository. If your Claude Code setup uses active account sync with Claude.ai, skills are maintained automatically via the primary sync channel.
 
 ## Claude.ai
 
