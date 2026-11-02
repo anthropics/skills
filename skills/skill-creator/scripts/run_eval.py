@@ -233,7 +233,7 @@ def run_eval(
         if should_trigger:
             did_pass = trigger_rate >= trigger_threshold
         else:
-            did_pass = trigger_rate <= neg_threshold
+            did_pass = trigger_rate < neg_threshold
         results.append({
             "query": query,
             "should_trigger": should_trigger,
@@ -267,7 +267,7 @@ def main():
     parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold for positive queries")
-    parser.add_argument("--non-trigger-threshold", type=float, default=None, help="Trigger rate threshold for negative queries (default: 1.0 - trigger_threshold)")
+    parser.add_argument("--non-trigger-threshold", type=float, default=None, help="Trigger rate threshold for negative queries (queries pass if rate < threshold, default: 1.0 - trigger_threshold)")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()

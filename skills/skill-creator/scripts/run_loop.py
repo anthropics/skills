@@ -253,7 +253,7 @@ def main():
     parser.add_argument("--max-iterations", type=int, default=5, help="Max improvement iterations")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold for positive queries")
-    parser.add_argument("--non-trigger-threshold", type=float, default=None, help="Trigger rate threshold for negative queries (default: 1.0 - trigger_threshold)")
+    parser.add_argument("--non-trigger-threshold", type=float, default=None, help="Trigger rate threshold for negative queries (queries pass if rate < threshold, default: 1.0 - trigger_threshold)")
     parser.add_argument("--holdout", type=float, default=0.4, help="Fraction of eval set to hold out for testing (0 to disable)")
     parser.add_argument("--model", required=True, help="Model for improvement")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
