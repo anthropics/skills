@@ -40,6 +40,8 @@ class GIFBuilder:
         """
         if isinstance(frame, Image.Image):
             frame = np.array(frame.convert("RGB"))
+        else:
+            frame = frame.copy()
 
         # Ensure frame is correct size
         if frame.shape[:2] != (self.height, self.width):
