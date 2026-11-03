@@ -4,6 +4,7 @@ Recalculates all formulas in an Excel file using LibreOffice
 """
 
 import contextlib
+from collections import deque
 import json
 import os
 import platform
@@ -160,80 +161,69 @@ def external_links_at_risk(filename):
                     if isinstance(val, str):
                         scoped_names.setdefault(sheet.lower(), {})[name.lower()] = val
 
-        memo = {}
+        def resolve_ref(context_scope, target_sheet, ref_name):
+            ref_lower = ref_name.lower()
+            if target_sheet is not None:
+                s_lower = target_sheet.lower()
+                if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
+                    return (s_lower, ref_lower)
+                elif ref_lower in global_names:
+                    return (s_lower if s_lower in scoped_names else None, ref_lower)
+                return None
+            else:
+                if context_scope is not None and ref_lower in scoped_names.get(context_scope, {}):
+                    return (context_scope, ref_lower)
+                elif ref_lower in global_names:
+                    return (context_scope, ref_lower)
+                return None
 
-        def reaches_external(scope, name_lower, visited):
-            key = (scope, name_lower)
-            if key in visited:
-                return False
-            if key in memo:
-                return memo[key]
+        # Build reachability over the defined-name dependency graph to eliminate
+        # traversal-order dependence and stale false memoization across cyclic alias branches.
+        all_scopes = [None] + [s.lower() for s in formulas.sheetnames]
+        rev_graph = {}
+        external_seeds = set()
 
-            val = None
+        for scope in all_scopes:
+            names_in_scope = set(global_names.keys())
             if scope is not None:
-                val = scoped_names.get(scope, {}).get(name_lower)
-            if val is None:
-                val = global_names.get(name_lower)
+                names_in_scope.update(scoped_names.get(scope, {}).keys())
 
-            if not val or not isinstance(val, str):
-                memo[key] = False
-                return False
+            for name_lower in names_in_scope:
+                val = None
+                if scope is not None:
+                    val = scoped_names.get(scope, {}).get(name_lower)
+                if val is None:
+                    val = global_names.get(name_lower)
 
-            if EXTERNAL_REF_RE.search(val):
-                memo[key] = True
-                return True
+                if not val or not isinstance(val, str):
+                    continue
 
-            new_visited = visited | {key}
-            for target_sheet, ref_name in _find_formula_references(val):
-                ref_lower = ref_name.lower()
-                target_scope = None
-                if target_sheet is not None:
-                    s_lower = target_sheet.lower()
-                    if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
-                        target_scope = s_lower
-                    elif ref_lower in global_names:
-                        target_scope = s_lower if s_lower in scoped_names else None
-                    else:
-                        continue
-                else:
-                    if scope is not None and ref_lower in scoped_names.get(scope, {}):
-                        target_scope = scope
-                    elif ref_lower in global_names:
-                        target_scope = scope
-                    else:
-                        continue
+                node = (scope, name_lower)
+                if EXTERNAL_REF_RE.search(val):
+                    external_seeds.add(node)
 
-                if reaches_external(target_scope, ref_lower, new_visited):
-                    memo[key] = True
-                    return True
+                for target_sheet, ref_name in _find_formula_references(val):
+                    dep = resolve_ref(scope, target_sheet, ref_name)
+                    if dep is not None:
+                        rev_graph.setdefault(dep, set()).add(node)
 
-            memo[key] = False
-            return False
+        # Backward BFS from external seeds identifies all defined names reaching an external link
+        reaches_ext = set(external_seeds)
+        queue = deque(external_seeds)
+        while queue:
+            curr = queue.popleft()
+            for pred in rev_graph.get(curr, ()):
+                if pred not in reaches_ext:
+                    reaches_ext.add(pred)
+                    queue.append(pred)
 
         def cell_reaches_external(current_sheet_lower, formula_str):
             if EXTERNAL_REF_RE.search(formula_str):
                 return True
 
             for target_sheet, ref_name in _find_formula_references(formula_str):
-                ref_lower = ref_name.lower()
-                target_scope = None
-                if target_sheet is not None:
-                    s_lower = target_sheet.lower()
-                    if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
-                        target_scope = s_lower
-                    elif ref_lower in global_names:
-                        target_scope = s_lower if s_lower in scoped_names else None
-                    else:
-                        continue
-                else:
-                    if ref_lower in scoped_names.get(current_sheet_lower, {}):
-                        target_scope = current_sheet_lower
-                    elif ref_lower in global_names:
-                        target_scope = current_sheet_lower
-                    else:
-                        continue
-
-                if reaches_external(target_scope, ref_lower, set()):
+                dep = resolve_ref(current_sheet_lower, target_sheet, ref_name)
+                if dep is not None and dep in reaches_ext:
                     return True
             return False
 

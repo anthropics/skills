@@ -331,6 +331,37 @@ class TestExternalLinksAtRisk(unittest.TestCase):
         self.assertIn("SheetA!A1", result)
         self.assertNotIn("SheetB!A1", result)
 
+    def test_cyclic_alias_reachability_order_independent_a_then_b(self):
+        """Cyclic alias branch A = B + Ext, B = A evaluates without stale false caching (cell A then B)."""
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Main"
+        attach_external_link(wb)
+        wb.defined_names.add(DefinedName("Ext", attr_text="'[1]Sheet1'!$A$1"))
+        wb.defined_names.add(DefinedName("A", attr_text="B + Ext"))
+        wb.defined_names.add(DefinedName("B", attr_text="A"))
+        ws["A1"] = "=A"
+        ws["A2"] = "=B"
+        result = self._save_and_check(wb, "cyclic_order_ab.xlsx")
+        self.assertIn("Main!A1", result)
+        self.assertIn("Main!A2", result)
+
+    def test_cyclic_alias_reachability_order_independent_b_then_a(self):
+        """Cyclic alias branch A = B + Ext, B = A evaluates without stale false caching (cell B then A)."""
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "Main"
+        attach_external_link(wb)
+        wb.defined_names.add(DefinedName("Ext", attr_text="'[1]Sheet1'!$A$1"))
+        wb.defined_names.add(DefinedName("A", attr_text="B + Ext"))
+        wb.defined_names.add(DefinedName("B", attr_text="A"))
+        ws["A1"] = "=B"
+        ws["A2"] = "=A"
+        result = self._save_and_check(wb, "cyclic_order_ba.xlsx")
+        self.assertIn("Main!A1", result)
+        self.assertIn("Main!A2", result)
+
+
 
 if __name__ == "__main__":
     unittest.main()
