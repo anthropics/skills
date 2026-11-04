@@ -78,6 +78,10 @@ def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
 
 def extract_xml_content(text: str, tag: str) -> str | None:
     """Extract content from XML tags."""
+    # agent_loop can return None when the final assistant message has no text
+    # block; without this guard re.findall raises TypeError on None input.
+    if not text:
+        return None
     pattern = rf"<{tag}>(.*?)</{tag}>"
     matches = re.findall(pattern, text, re.DOTALL)
     return matches[-1].strip() if matches else None
