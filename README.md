@@ -1,96 +1,53 @@
-> **Note:** This repository contains Anthropic's implementation of skills for Claude. For information about the Agent Skills standard, see [agentskills.io](http://agentskills.io).
+# frontend-design
 
-[![skills.sh](https://skills.sh/b/anthropics/skills)](https://skills.sh/anthropics/skills)
+Claude Code용 `frontend-design` 스킬 하나만 관리하는 저장소입니다.
 
-# Skills
-Skills are folders of instructions, scripts, and resources that Claude loads dynamically to improve performance on specialized tasks. Skills teach Claude how to complete specific tasks in a repeatable way, whether that's creating documents with your company's brand guidelines, analyzing data using your organization's specific workflows, or automating personal tasks.
+## 용도
 
-For more information, check out:
-- [What are skills?](https://support.claude.com/en/articles/12512176-what-are-skills)
-- [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)
-- [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills)
-- [Equipping agents for the real world with Agent Skills](https://anthropic.com/engineering/equipping-agents-for-the-real-world-with-agent-skills)
+새 UI를 만들거나 기존 UI를 다시 디자인할 때, 어디서나 볼 수 있는 템플릿 같은 결과 대신 주제에 맞는 뚜렷한 디자인을 만들도록 Claude를 안내합니다. 스킬이 다루는 내용은 다음과 같습니다.
 
-# About This Repository
+- 주제와 대상 사용자에 맞춘 방향 잡기
+- 서체, 색, 레이아웃, 모션을 의도적으로 고르기
+- 자주 보이는 AI 생성 디자인 패턴 피하기
+- 디자인 계획을 세우고 브리프와 대조한 뒤 구현하고 스스로 점검하는 순서
+- 카피와 UI 문구 작성 원칙
 
-This repository contains skills that demonstrate what's possible with Claude's skills system. These skills range from creative applications (art, music, design) to technical tasks (testing web apps, MCP server generation) to enterprise workflows (communications, branding, etc.).
+## 구성
 
-Each skill is self-contained in its own folder with a `SKILL.md` file containing the instructions and metadata that Claude uses. Browse through these skills to get inspiration for your own skills or to understand different patterns and approaches.
-
-Many skills in this repo are open source (Apache 2.0). We've also included the document creation & editing skills that power [Claude's document capabilities](https://www.anthropic.com/news/create-files) under the hood in the [`skills/docx`](./skills/docx), [`skills/pdf`](./skills/pdf), [`skills/pptx`](./skills/pptx), and [`skills/xlsx`](./skills/xlsx) subfolders. These are source-available, not open source, but we wanted to share these with developers as a reference for more complex skills that are actively used in a production AI application.
-
-## Disclaimer
-
-**These skills are provided for demonstration and educational purposes only.** While some of these capabilities may be available in Claude, the implementations and behaviors you receive from Claude may differ from what is shown in these skills. These skills are meant to illustrate patterns and possibilities. Always test skills thoroughly in your own environment before relying on them for critical tasks.
-
-# Skill Sets
-- [./skills](./skills): Skill examples for Creative & Design, Development & Technical, Enterprise & Communication, and Document Skills
-- [./spec](./spec): The Agent Skills specification
-- [./template](./template): Skill template
-
-# Try in Claude Code, Claude.ai, and the API
-
-## Claude Code
-You can register this repository as a Claude Code Plugin marketplace by running the following command in Claude Code:
 ```
-/plugin marketplace add anthropics/skills
+.claude/skills/frontend-design/
+├── SKILL.md      # 스킬 지침과 메타데이터
+└── LICENSE.txt   # Apache License 2.0
 ```
 
-Then, to install a specific set of skills:
-1. Select `Browse and install plugins`
-2. Select `anthropic-agent-skills`
-3. Select `document-skills` or `example-skills`
-4. Select `Install now`
+`SKILL.md`는 다른 파일이나 외부 의존성 없이 단독으로 동작합니다.
 
-Alternatively, directly install either Plugin via:
+## 사용법
+
+### 이 저장소에서 사용
+
+저장소를 클론해 Claude Code를 실행하면 `.claude/skills/` 아래의 스킬이 자동으로 로드됩니다. UI 제작이나 디자인 작업을 요청하면 Claude가 필요할 때 스킬을 적용합니다. `/frontend-design`으로 직접 호출할 수도 있습니다.
+
 ```
-/plugin install document-skills@anthropic-agent-skills
-/plugin install example-skills@anthropic-agent-skills
-```
-
-After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
-
-## Claude.ai
-
-These example skills are all already available to paid plans in Claude.ai. 
-
-To use any skill from this repository or upload custom skills, follow the instructions in [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude#h_a4222fa77b).
-
-## Claude API
-
-You can use Anthropic's pre-built skills, and upload custom skills, via the Claude API. See the [Skills API Quickstart](https://docs.claude.com/en/api/skills-guide#creating-a-skill) for more.
-
-# Creating a Basic Skill
-
-Skills are simple to create - just a folder with a `SKILL.md` file containing YAML frontmatter and instructions. You can use the **template-skill** in this repository as a starting point:
-
-```markdown
----
-name: my-skill-name
-description: A clear description of what this skill does and when to use it
----
-
-# My Skill Name
-
-[Add your instructions here that Claude will follow when this skill is active]
-
-## Examples
-- Example usage 1
-- Example usage 2
-
-## Guidelines
-- Guideline 1
-- Guideline 2
+랜딩 페이지를 만들어줘. frontend-design 스킬을 사용해줘.
 ```
 
-The frontmatter requires only two fields:
-- `name` - A unique identifier for your skill (lowercase, hyphens for spaces)
-- `description` - A complete description of what the skill does and when to use it
+### 다른 프로젝트나 모든 프로젝트에서 사용
 
-The markdown content below contains the instructions, examples, and guidelines that Claude will follow. For more details, see [How to create custom skills](https://support.claude.com/en/articles/12512198-creating-custom-skills).
+폴더를 통째로 복사합니다. `LICENSE.txt`도 함께 복사하세요.
 
-# Partner Skills
+```bash
+# 특정 프로젝트
+cp -r .claude/skills/frontend-design /path/to/project/.claude/skills/
 
-Skills are a great way to teach Claude how to get better at using specific pieces of software. As we see awesome example skills from partners, we may highlight some of them here:
+# 내 모든 프로젝트
+cp -r .claude/skills/frontend-design ~/.claude/skills/
+```
 
-- **Notion** - [Notion Skills for Claude](https://www.notion.so/notiondevs/Notion-Skills-for-Claude-28da4445d27180c7af1df7d8615723d0)
+### Claude.ai
+
+`frontend-design` 폴더를 zip으로 묶어 [Using skills in Claude](https://support.claude.com/en/articles/12512180-using-skills-in-claude)의 안내대로 업로드합니다.
+
+## 라이선스
+
+Apache License 2.0이며 전문은 [`LICENSE.txt`](./.claude/skills/frontend-design/LICENSE.txt)에 있습니다. 스킬을 복사하거나 배포할 때 이 파일을 함께 유지하세요. 이 스킬은 [anthropics/skills](https://github.com/anthropics/skills)의 `frontend-design` 스킬에서 가져왔습니다.
