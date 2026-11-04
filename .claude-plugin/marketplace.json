@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -49,6 +48,31 @@
       "strict": false,
       "skills": [
         "./skills/claude-api"
+      ]
+    },
+    {
+      "name": "emil-design-skills",
+      "description": "Emil Kowalski's design engineering skills for building better user interfaces: animation, motion review, choreography, performance, mobile polish, UI stress-testing and more (MIT, from emilkowalski/skills)",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/animate",
+        "./skills/animate-expo",
+        "./skills/animation-performance",
+        "./skills/animation-vocabulary",
+        "./skills/apple-design",
+        "./skills/ask-sonner",
+        "./skills/break-ui",
+        "./skills/choreograph",
+        "./skills/emil-design-eng",
+        "./skills/find-animation-opportunities",
+        "./skills/improve-animations",
+        "./skills/mobile-native",
+        "./skills/pick-ui-library",
+        "./skills/prototype",
+        "./skills/remove-animations",
+        "./skills/review-animations",
+        "./skills/write-swift"
       ]
     }
   ]
