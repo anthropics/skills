@@ -1,4 +1,4 @@
-# Message Batches API — TypeScript
+# Message Batches API - TypeScript
 
 The Batches API (`POST /v1/messages/batches`) processes Messages API requests asynchronously at 50% of standard prices.
 
@@ -24,8 +24,8 @@ const messageBatch = await client.messages.batches.create({
     {
       custom_id: "request-1",
       params: {
-        model: "claude-opus-4-6",
-        max_tokens: 1024,
+        model: "claude-opus-5-5",
+        max_tokens: 16000,
         messages: [
           { role: "user", content: "Summarize climate change impacts" },
         ],
@@ -34,8 +34,8 @@ const messageBatch = await client.messages.batches.create({
     {
       custom_id: "request-2",
       params: {
-        model: "claude-opus-4-6",
-        max_tokens: 1024,
+        model: "claude-opus-5-5",
+        max_tokens: 16000,
         messages: [
           { role: "user", content: "Explain quantum computing basics" },
         ],
