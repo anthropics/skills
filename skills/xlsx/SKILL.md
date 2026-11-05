@@ -34,16 +34,31 @@ formula cell reads back as `None` to anything reading cached values — `pandas`
 `load_workbook(data_only=True)`, and most previewers.
 
 ```bash
-python scripts/recalc.py output.xlsx [timeout_seconds]   # default 30
+python scripts/recalc.py output.xlsx [timeout_seconds] [--backend auto|libreoffice|xlcalc]
 ```
 
-LibreOffice computes every formula, the file is **rewritten in place**, and you get JSON:
+`recalc.py` picks the engine for you: **LibreOffice** when `soffice` is on PATH, otherwise
+**xlcalc** (MIT, no dependencies; `npm install xlcalc`, Node 20.19+) through
+`scripts/recalc_xlcalc.mjs`. Both **rewrite the file in place**, and both leave charts, shapes,
+styles, tables and macros alone. Force one with `--backend libreoffice|xlcalc` or the
+`XLSX_RECALC_BACKEND` environment variable; every result names the `backend` that actually ran.
+In `auto` mode a LibreOffice failure falls back to xlcalc and keeps the original complaint in
+`libreoffice_error` — read it, because it normally means LibreOffice is broken, not the workbook.
+Node resolves the package from the file's own folder, this skill's folder, the working folder, or
+`XLSX_XLCALC_PATH`; it never installs anything by itself.
+
+LibreOffice or xlcalc computes every formula, and you get JSON:
 `status` (`success` | `errors_found`), `total_formulas`, `total_errors`, and an
 `error_summary` naming up to 100 cells per error type (`locations_truncated` says how many it
 withheld — trust `total_errors`, not the length of the list). Fix what it names and run it
 again. **JSON with an `error` key instead of a `status` means nothing was recalculated**, and
 only that case exits non-zero — `errors_found` exits 0, so never treat a clean exit as a clean
 workbook.
+
+**xlcalc also reports what it could not answer.** `values_missing` above 0, with
+`missing_locations`, means those formula cells got no value from the engine and read back blank:
+xlcalc knows Excel's functions only as far as its own whitelist. Rewrite them, or run the
+LibreOffice backend.
 
 **A green recalc proves your formulas *evaluate*, not that they are *right*.** An off-by-one
 range or a reference to the wrong row yields a clean, error-free file with wrong numbers.
@@ -53,19 +68,23 @@ Write 2–3 formulas first and check they pull the values you expect, before bui
 then recalculate. Such a formula reads `='[1]Returns Analysis'!$B$2` — the `[1]` is an index
 into the workbook's external-reference list, naming a *separate file on disk*, not a sheet.
 That file is rarely present here, so the cell's cached value is the only thing holding its
-data. openpyxl strips that value on save; LibreOffice then has to resolve the reference for
-real, fails, writes `#NAME?`, and deletes every link. `recalc.py` refuses to run in that state
+data. openpyxl strips that value on save; the recalc engine then has to resolve the
+reference for real, fails, writes `#NAME?` (xlcalc writes `#REF!`), and deletes every link. `recalc.py` refuses to run in that state
 — copy those cells' values out of the original before you save over them (`--force` overrides,
 and accepts the loss).
 
 ## Choosing formulas that survive verification
 
 LibreOffice implements fewer functions than Excel, and one it cannot evaluate becomes a
-literal `#NAME?` baked into the file you deliver.
+literal `#NAME?` baked into the file you deliver. xlcalc is checked against Excel and knows
+more, but it is a whitelist too: a function it does not recognize also comes back `#NAME?`.
 
 - **Prefer Excel-2007-era functions** — `SUMIFS`, `INDEX`, `MATCH`, `IFERROR`, `SUMPRODUCT` — which need no prefix.
 - **Six post-2007 functions work, but only with an `_xlfn.` prefix**, because openpyxl writes your formula into the XML verbatim and Excel stores post-2007 names prefixed (its UI hides the prefix): `_xlfn.TEXTJOIN`, `_xlfn.CONCAT`, `_xlfn.IFS`, `_xlfn.SWITCH`, `_xlfn.MAXIFS`, `_xlfn.MINIFS`. Written bare, each yields `#NAME?`.
-- **Never use `XLOOKUP`, `XMATCH`, `SORT`, `FILTER`, `UNIQUE`, or `SEQUENCE`.** The runtime's LibreOffice cannot evaluate them under *any* prefix. Newer builds do evaluate them, but they are spilling array functions and an openpyxl-written file has no spill metadata, so only the top-left cell of the range gets a value — and `recalc.py` reports `total_errors: 0` on the truncated result. Use `INDEX`/`MATCH` for lookups, and sort, filter, and de-duplicate in Python before writing the cells.
+- **Never use `XLOOKUP`, `XMATCH`, `SORT`, `FILTER`, `UNIQUE`, or `SEQUENCE`.** (The xlcalc
+  backend evaluates them, but a file openpyxl wrote carries no spill metadata, so it reads a
+  spilling formula as implicit intersection and stores only its first value — the same truncated
+  result you would ship anyway.) The runtime's LibreOffice cannot evaluate them under *any* prefix. Newer builds do evaluate them, but they are spilling array functions and an openpyxl-written file has no spill metadata, so only the top-left cell of the range gets a value — and `recalc.py` reports `total_errors: 0` on the truncated result. Use `INDEX`/`MATCH` for lookups, and sort, filter, and de-duplicate in Python before writing the cells.
 - A formula LibreOffice could not parse is written back **lowercased** — a quick tell beside a `#NAME?`.
 
 ## openpyxl gotchas
@@ -96,4 +115,4 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 
 ## Dependencies
 
-`openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
+`openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`) · xlcalc fallback for recalculation (npm, MIT, zero dependencies: `xlcalc`, needs Node 20.19+; used only when `soffice` is absent or you ask for `--backend xlcalc`)
