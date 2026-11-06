@@ -1,0 +1,3 @@
+defusedxml>=0.0.1
+lxml>=4.9.0
+pillow>=10.0.0
