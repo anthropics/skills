@@ -35,10 +35,19 @@ def make_field_dict(field, field_id):
     elif ft == "/Ch":
         field_dict["type"] = "choice"
         states = field.get("/_States_", [])
-        field_dict["choice_options"] = [{
-            "value": state[0],
-            "text": state[1],
-        } for state in states]
+        choice_options = []
+        for state in states:
+            if isinstance(state, (list, tuple)):
+                choice_options.append({
+                    "value": state[0],
+                    "text": state[1] if len(state) > 1 else state[0],
+                })
+            else:
+                choice_options.append({
+                    "value": state,
+                    "text": state,
+                })
+        field_dict["choice_options"] = choice_options
     else:
         field_dict["type"] = f"unknown ({ft})"
     return field_dict
