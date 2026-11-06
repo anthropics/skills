@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import shutil
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -67,8 +68,9 @@ def run_single_query(
         )
         command_file.write_text(command_content)
 
+        claude_path = shutil.which("claude") or "claude"
         cmd = [
-            "claude",
+            claude_path,
             "-p", query,
             "--output-format", "stream-json",
             "--verbose",
@@ -76,6 +78,10 @@ def run_single_query(
         ]
         if model:
             cmd.extend(["--model", model])
+        # On Windows the CLI resolves to claude.cmd, which CreateProcess cannot
+        # launch directly — route it through the command interpreter.
+        if os.name == "nt":
+            cmd = [os.environ.get("COMSPEC", "cmd.exe"), "/c", *cmd]
 
         # Remove CLAUDECODE env var to allow nesting claude -p inside a
         # Claude Code session. The guard is for interactive terminal conflicts;
@@ -91,35 +97,24 @@ def run_single_query(
         )
 
         triggered = False
-        start_time = time.time()
-        buffer = ""
         # Track state for stream event detection
         pending_tool_name = None
         accumulated_json = ""
 
+        # Watchdog kills the process after `timeout` seconds. This replaces the
+        # select()-based timeout, which doesn't work on Windows pipes; iterating
+        # process.stdout line by line is portable across platforms.
+        def _kill_on_timeout():
+            if process.poll() is None:
+                process.kill()
+        watchdog = threading.Timer(timeout, _kill_on_timeout)
+        watchdog.daemon = True
+        watchdog.start()
+
         try:
-            while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
-                    continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
-                if not chunk:
-                    break
-                buffer += chunk.decode("utf-8", errors="replace")
-
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
-
+            for raw_line in process.stdout:
+                line = raw_line.decode("utf-8", errors="replace").strip()
+                if line:
                     try:
                         event = json.loads(line)
                     except json.JSONDecodeError:
@@ -171,6 +166,7 @@ def run_single_query(
                         return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
+            watchdog.cancel()
             if process.poll() is None:
                 process.kill()
                 process.wait()
