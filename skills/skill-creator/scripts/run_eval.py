@@ -190,6 +190,7 @@ def run_eval(
     project_root: Path,
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
+    non_trigger_threshold: float | None = None,
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
@@ -224,6 +225,7 @@ def run_eval(
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
 
+    neg_threshold = non_trigger_threshold if non_trigger_threshold is not None else (1.0 - trigger_threshold)
     for query, triggers in query_triggers.items():
         item = query_items[query]
         trigger_rate = sum(triggers) / len(triggers)
@@ -231,7 +233,7 @@ def run_eval(
         if should_trigger:
             did_pass = trigger_rate >= trigger_threshold
         else:
-            did_pass = trigger_rate < trigger_threshold
+            did_pass = trigger_rate < neg_threshold
         results.append({
             "query": query,
             "should_trigger": should_trigger,
@@ -264,7 +266,8 @@ def main():
     parser.add_argument("--num-workers", type=int, default=10, help="Number of parallel workers")
     parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
-    parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
+    parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold for positive queries")
+    parser.add_argument("--non-trigger-threshold", type=float, default=None, help="Trigger rate threshold for negative queries (queries pass if rate < threshold, default: 1.0 - trigger_threshold)")
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
@@ -292,6 +295,7 @@ def main():
         project_root=project_root,
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
+        non_trigger_threshold=args.non_trigger_threshold,
         model=args.model,
     )
 
