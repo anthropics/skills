@@ -66,11 +66,15 @@ def main():
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
             # Use shell=True to support commands with cd and &&
+            # stdout/stderr go to DEVNULL rather than PIPE: the captured
+            # output is never read, and leaving it on PIPE risks a deadlock
+            # once the OS pipe buffer fills (the Python docs warn that
+            # Popen with PIPE requires communicate() or manual reads).
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL
             )
             server_processes.append(process)
 
