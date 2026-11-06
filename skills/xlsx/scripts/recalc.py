@@ -1,6 +1,7 @@
 """
 Excel Formula Recalculation Script
-Recalculates all formulas in an Excel file using LibreOffice
+Recalculates all formulas in an Excel file with LibreOffice, or with the xlcalc
+engine (Node) on machines that have no LibreOffice.
 """
 
 import contextlib
@@ -21,9 +22,36 @@ from office.soffice import get_soffice_env, run_soffice
 from openpyxl import load_workbook
 
 MACRO_FILENAME = "Module1.xba"
-SOFFICE_MISSING = "soffice not found on PATH; LibreOffice is required to recalculate"
+SOFFICE_MISSING = (
+    "soffice not found on PATH; the LibreOffice backend needs it (run with "
+    "--backend xlcalc instead, or install LibreOffice)"
+)
 
 MAX_LOCATIONS = 100
+
+LIBREOFFICE = "libreoffice"
+XLCALC = "xlcalc"
+BACKENDS = ("auto", LIBREOFFICE, XLCALC)
+XLCALC_HELPER = Path(__file__).resolve().parent / "recalc_xlcalc.mjs"
+
+BACKEND_REPORT_KEYS = (
+    "values_written",
+    "values_missing",
+    "missing_locations",
+    "missing_locations_truncated",
+    "unchanged",
+    "compute_ms",
+)
+
+EXCEL_ERRORS = (
+    "#VALUE!",
+    "#DIV/0!",
+    "#REF!",
+    "#NAME?",
+    "#NULL!",
+    "#NUM!",
+    "#N/A",
+)
 
 EXTERNAL_REF_RE = re.compile(r"""(?<![\w"\[])'?\[\d+\][^!"\[\]]*'?!""")
 
@@ -107,7 +135,7 @@ def external_links_at_risk(filename):
         at_risk = []
         for sheet in formulas.sheetnames:
             ws = formulas[sheet]
-            if not hasattr(ws, "iter_rows"):  
+            if not hasattr(ws, "iter_rows"):
                 continue
             cached = values[sheet]
             for row in ws.iter_rows():
@@ -121,24 +149,139 @@ def external_links_at_risk(filename):
         return at_risk
 
 
-def recalc(filename, timeout=30, force=False):
+def scan_workbook(filename):
+    """Report the error cells and the formula count of a file that was just recalculated."""
+    error_details = {err: [] for err in EXCEL_ERRORS}
+    formula_count = 0
+
+    with contextlib.ExitStack() as stack:
+        values = load_workbook(filename, data_only=True)
+        stack.callback(values.close)
+        for sheet_name in values.sheetnames:
+            ws = values[sheet_name]
+            if not hasattr(ws, "iter_rows"):
+                continue
+            for row in ws.iter_rows():
+                for cell in row:
+                    if cell.value is not None and isinstance(cell.value, str):
+                        for err in EXCEL_ERRORS:
+                            if err in cell.value:
+                                error_details[err].append(f"{sheet_name}!{cell.coordinate}")
+                                break
+
+        wb_formulas = load_workbook(filename, data_only=False)
+        stack.callback(wb_formulas.close)
+        for sheet_name in wb_formulas.sheetnames:
+            ws = wb_formulas[sheet_name]
+            if not hasattr(ws, "iter_rows"):
+                continue
+            for row in ws.iter_rows():
+                for cell in row:
+                    if (
+                        cell.value
+                        and isinstance(cell.value, str)
+                        and cell.value.startswith("=")
+                    ):
+                        formula_count += 1
+
+    total_errors = sum(len(locations) for locations in error_details.values())
+    result = {
+        "status": "success" if total_errors == 0 else "errors_found",
+        "total_errors": total_errors,
+        "error_summary": {},
+        "total_formulas": formula_count,
+    }
+
+    for err_type, locations in error_details.items():
+        if locations:
+            entry = {"count": len(locations), "locations": locations[:MAX_LOCATIONS]}
+            if len(locations) > MAX_LOCATIONS:
+                entry["locations_truncated"] = len(locations) - MAX_LOCATIONS
+            result["error_summary"][err_type] = entry
+
+    return result
+
+
+def run_xlcalc(filename, timeout=30):
+    """Recalculate the file in place with the xlcalc engine and return its JSON report."""
+    node = shutil.which("node")
+    if not node:
+        return {
+            "error": "node not found on PATH; the xlcalc recalc backend needs Node 20.19 "
+            "or newer. Install Node, or install LibreOffice and use --backend libreoffice."
+        }
+    if not XLCALC_HELPER.exists():
+        return {"error": f"recalc helper is missing: {XLCALC_HELPER}"}
+
+    try:
+        completed = subprocess.run(
+            [node, str(XLCALC_HELPER), str(Path(filename).resolve())],
+            capture_output=True,
+            text=True,
+            timeout=timeout,
+        )
+    except subprocess.TimeoutExpired:
+        return {
+            "error": f"xlcalc timed out after {timeout}s; formulas were NOT recalculated. "
+            "Re-run with a longer timeout."
+        }
+
+    stdout = (completed.stdout or "").strip()
+    if not stdout:
+        detail = (completed.stderr or "").strip() or f"node exited {completed.returncode}"
+        return {"error": f"xlcalc produced no report: {detail}"}
+
+    try:
+        report = json.loads(stdout.splitlines()[-1])
+    except json.JSONDecodeError:
+        return {"error": f"xlcalc produced unreadable output: {stdout[:400]}"}
+
+    if "error" in report:
+        return report
+    report["backend"] = XLCALC
+    return report
+
+
+def choose_backend(requested):
+    if requested in (LIBREOFFICE, XLCALC):
+        return requested
+    return LIBREOFFICE if shutil.which("soffice") else XLCALC
+
+
+def scan_or_error(filename):
+    """scan_workbook, but a file it cannot read becomes a JSON-able error, never a traceback."""
+    try:
+        return scan_workbook(filename)
+    except Exception as e:
+        return {"error": f"Could not read {filename} after recalculating it: {e}"}
+
+
+def merge_backend_report(scanned, report):
+    if "error" in scanned:
+        return scanned
+    for key in BACKEND_REPORT_KEYS:
+        scanned[key] = report.get(key)
+    return scanned
+
+
+def recalc(filename, timeout=30, force=False, backend="auto"):
     if not Path(filename).exists():
         return {"error": f"File {filename} does not exist"}
+
+    if backend not in BACKENDS:
+        return {"error": f"Unknown backend {backend!r}; choose from {', '.join(BACKENDS)}"}
 
     abs_path = str(Path(filename).absolute())
 
     if not os.access(abs_path, os.W_OK):
         return {"error": f"{filename} is not writable; recalculation rewrites the file in place"}
 
-    try:
-        get_soffice_env()
-    except Exception as e:  
-        return {"error": f"Could not prepare the LibreOffice environment: {e}"}
+    chosen = choose_backend(backend)
 
     if not force:
         try:
             at_risk = external_links_at_risk(filename)
-        except Exception as e:  
+        except Exception as e:
             return {"error": f"Could not inspect {filename} for external links: {e}"}
         if at_risk:
             shown = at_risk[:MAX_LOCATIONS]
@@ -155,14 +298,50 @@ def recalc(filename, timeout=30, force=False):
                 "external_link_cells_truncated": max(0, len(at_risk) - len(shown)),
             }
 
+    if chosen == XLCALC:
+        report = run_xlcalc(filename, timeout)
+        if "error" in report:
+            return report
+        scanned = merge_backend_report(scan_or_error(abs_path), report)
+        scanned["backend"] = XLCALC
+        if report.get("values_missing"):
+            scanned["warning"] = (
+                f"{report['values_missing']} formula cell(s) got no value from the engine and "
+                "read back as blank; see missing_locations. Rewrite them with functions the "
+                "engine evaluates, or recalculate with --backend libreoffice."
+            )
+        return scanned
+
     with tempfile.TemporaryDirectory(
         prefix="recalc-lo-profile-", ignore_cleanup_errors=True
     ) as profile_dir:
-        return _recalc_with_profile(filename, abs_path, timeout, Path(profile_dir))
+        result = _recalc_with_profile(filename, abs_path, timeout, Path(profile_dir))
+
+    if backend == "auto" and "error" in result:
+        fallback = run_xlcalc(filename, timeout)
+        if "error" not in fallback:
+            scanned = merge_backend_report(scan_or_error(abs_path), fallback)
+            scanned["backend"] = XLCALC
+            scanned["libreoffice_error"] = result["error"]
+            return scanned
+        return {
+            "error": (
+                f"Neither recalc backend worked. LibreOffice: {result['error']} "
+                f"xlcalc: {fallback['error']}"
+            )
+        }
+    return result
 
 
 def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
     started = time.monotonic()
+    if not shutil.which("soffice"):
+        return {"error": SOFFICE_MISSING}
+    try:
+        get_soffice_env()
+    except Exception as e:
+        return {"error": f"Could not prepare the LibreOffice environment: {e}"}
+
     profile_url, err = setup_libreoffice_macro(profile_dir, timeout=timeout)
     if err:
         return {"error": err}
@@ -212,94 +391,77 @@ def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
         }
 
     try:
-        wb = load_workbook(filename, data_only=True)
-
-        excel_errors = [
-            "#VALUE!",
-            "#DIV/0!",
-            "#REF!",
-            "#NAME?",
-            "#NULL!",
-            "#NUM!",
-            "#N/A",
-        ]
-        error_details = {err: [] for err in excel_errors}
-        total_errors = 0
-
-        for sheet_name in wb.sheetnames:
-            ws = wb[sheet_name]
-            if not hasattr(ws, "iter_rows"):  
-                continue
-            for row in ws.iter_rows():
-                for cell in row:
-                    if cell.value is not None and isinstance(cell.value, str):
-                        for err in excel_errors:
-                            if err in cell.value:
-                                location = f"{sheet_name}!{cell.coordinate}"
-                                error_details[err].append(location)
-                                total_errors += 1
-                                break
-
-        result = {
-            "status": "success" if total_errors == 0 else "errors_found",
-            "total_errors": total_errors,
-            "error_summary": {},
-        }
-
-        for err_type, locations in error_details.items():
-            if locations:
-                entry = {"count": len(locations), "locations": locations[:MAX_LOCATIONS]}
-                if len(locations) > MAX_LOCATIONS:
-                    entry["locations_truncated"] = len(locations) - MAX_LOCATIONS
-                result["error_summary"][err_type] = entry
-
-        wb.close()
-
-        wb_formulas = load_workbook(filename, data_only=False)
-        formula_count = 0
-        for sheet_name in wb_formulas.sheetnames:
-            ws = wb_formulas[sheet_name]
-            if not hasattr(ws, "iter_rows"):  
-                continue
-            for row in ws.iter_rows():
-                for cell in row:
-                    if (
-                        cell.value
-                        and isinstance(cell.value, str)
-                        and cell.value.startswith("=")
-                    ):
-                        formula_count += 1
-        wb_formulas.close()
-
-        result["total_formulas"] = formula_count
-
-        return result
-
+        scanned = scan_workbook(abs_path)
     except Exception as e:
         return {"error": str(e)}
 
+    scanned["backend"] = LIBREOFFICE
+    return scanned
+
+
+def parse_args(argv):
+    force = "--force" in argv
+    rest = [a for a in argv if a != "--force"]
+    backend = os.environ.get("XLSX_RECALC_BACKEND", "").strip().lower() or "auto"
+    positional = []
+    index = 0
+    while index < len(rest):
+        arg = rest[index]
+        if arg == "--backend" and index + 1 < len(rest):
+            backend = rest[index + 1].strip().lower()
+            index += 2
+            continue
+        if arg.startswith("--backend="):
+            backend = arg.split("=", 1)[1].strip().lower()
+            index += 1
+            continue
+        positional.append(arg)
+        index += 1
+    return positional, backend, force
+
+
+USAGE_LINES = [
+    "Usage: python recalc.py <excel_file> [timeout_seconds] [--force]"
+    " [--backend auto|libreoffice|xlcalc]",
+    "",
+    "Recalculates all formulas in an Excel file, rewriting the file in place.",
+    "  auto (default): LibreOffice when soffice is on PATH, otherwise xlcalc through node.",
+    "  XLSX_RECALC_BACKEND sets the backend for every run, the same as --backend.",
+    "  The xlcalc backend needs `npm install xlcalc` (Node 20.19 or newer). The package is",
+    "  looked up from the file's own directory, this skill's directory, the working",
+    "  directory, and any path in XLSX_XLCALC_PATH.",
+    "",
+    "Returns JSON with error details:",
+    "  - status: 'success' or 'errors_found'",
+    "  - backend: 'libreoffice' or 'xlcalc'",
+    "  - total_errors: Total number of Excel errors found",
+    "  - total_formulas: Number of formulas in the file",
+    "  - error_summary: Breakdown by error type with locations",
+    "    - #VALUE!, #DIV/0!, #REF!, #NAME?, #NULL!, #NUM!, #N/A",
+    "  - with xlcalc: values_missing and missing_locations name the formula cells the engine",
+    "    could not answer, which stay blank",
+    "",
+    "On any failure the JSON has an 'error' key and no 'status'.",
+    "--force recalculates even when it would destroy external links.",
+]
+
 
 def main():
-    args = [a for a in sys.argv[1:] if a != "--force"]
-    force = "--force" in sys.argv[1:]
+    positional, backend, force = parse_args(sys.argv[1:])
 
-    if not args:
-        print("Usage: python recalc.py <excel_file> [timeout_seconds] [--force]")
-        print("\nRecalculates all formulas in an Excel file using LibreOffice")
-        print("\nReturns JSON with error details:")
-        print("  - status: 'success' or 'errors_found'")
-        print("  - total_errors: Total number of Excel errors found")
-        print("  - total_formulas: Number of formulas in the file")
-        print("  - error_summary: Breakdown by error type with locations")
-        print("    - #VALUE!, #DIV/0!, #REF!, #NAME?, #NULL!, #NUM!, #N/A")
-        print("\nOn any failure the JSON has an 'error' key and no 'status'.")
-        print("--force recalculates even when it would destroy external links.")
+    if not positional:
+        for line in USAGE_LINES:
+            print(line)
         sys.exit(1)
 
-    filename = args[0]
-    timeout = int(args[1]) if len(args) > 1 else 30
+    if backend not in BACKENDS:
+        print(json.dumps({"error": f"Unknown backend {backend!r}; choose from {', '.join(BACKENDS)}"}))
+        sys.exit(1)
 
-    result = recalc(filename, timeout, force=force)
+    filename = positional[0]
+    timeout = int(positional[1]) if len(positional) > 1 else 30
+
+    result = recalc(filename, timeout, force=force, backend=backend)
     print(json.dumps(result, indent=2))
     sys.exit(1 if "error" in result else 0)
 

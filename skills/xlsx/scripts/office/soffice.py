@@ -55,6 +55,8 @@ def _needs_shim() -> bool:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
         return False
+    except AttributeError:
+        return False  # Windows has no AF_UNIX at all, and no need for the shim
     except OSError:
         return True
 
