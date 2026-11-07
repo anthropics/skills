@@ -1,0 +1,12 @@
+Requirements:
+- Use design tokens and visual rules from DESIGN.md.
+- Build a responsive layout.
+- Give every top-level section a stable `data-od-id`.
+- Include Hero, social proof or credibility strip, feature grid, workflow/how-it-works, use cases, pricing teaser or CTA, FAQ, and final CTA.
+- Do not introduce unrelated visual styles such as random gradients, heavy glassmorphism, neon colors, or exaggerated shadows unless DESIGN.md explicitly supports them.
+- Prefer reusable components and the existing project stack.
+- Use Tailwind CSS if the project already uses Tailwind; otherwise follow the local CSS convention.
+- Keep copy concise and product-like.
+- Avoid copying real brand names, logos, or trademarks from the inspiration source.
+- Do not use default LLM indigo accents, emoji-as-icon decoration, invented metrics, lorem ipsum, or placeholder claims.
+- P0 self-check before finishing: all sections are present, all colors/radii/shadows trace to DESIGN.md, mobile text does not overlap, CTAs are accessible, and brand-safety language is clean.
