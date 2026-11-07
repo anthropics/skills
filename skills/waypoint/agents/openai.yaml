@@ -1,0 +1,4 @@
+interface:
+  display_name: "Waypoint — File & Folder Management"
+  short_description: "Rename and move files while preserving identity"
+  default_prompt: "Use $waypoint to rename or move these files and folders, preserving Google Drive IDs and checking affected local references."
