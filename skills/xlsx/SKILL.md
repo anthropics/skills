@@ -58,6 +58,13 @@ real, fails, writes `#NAME?`, and deletes every link. `recalc.py` refuses to run
 — copy those cells' values out of the original before you save over them (`--force` overrides,
 and accepts the loss).
 
+**A workbook with Excel data tables (What-If Analysis > Data Table) must be
+recalculated in Excel itself, not with `recalc.py`.** LibreOffice rewrites each
+table as per-cell `TABLE()` formulas: the numbers come out right, but the cells
+are no longer a data table, and `recalc.py` reports `success` anyway.
+`recalc.py` refuses to run on a workbook with data tables — `--force` overrides,
+and accepts the rewrite.
+
 ## Choosing formulas that survive verification
 
 LibreOffice implements fewer functions than Excel, and one it cannot evaluate becomes a
