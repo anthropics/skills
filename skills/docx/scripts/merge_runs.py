@@ -50,8 +50,10 @@ def merge_runs(input_dir: str) -> tuple[int, str]:
 
         _remove_elements(root, "proofErr")
 
-        runs = _find_runs(root, run_names)
-        _strip_rsid_attrs(runs)
+     
+runs = _find_runs(root, run_names)
+_strip_rsid_attrs(root)
+
 
         merge_count = 0
         for container in {run.parentNode for run in runs}:
@@ -133,11 +135,25 @@ def _remove_elements(root, tag: str):
             elem.parentNode.removeChild(elem)
 
 
-def _strip_rsid_attrs(runs: list):
-    for run in runs:
-        for attr in list(run.attributes.values()):
-            if "rsid" in attr.name.lower():
-                run.removeAttribute(attr.name)
+def _strip_rsid_attrs(root):
+    """Remove rsid attributes from every element in the document."""
+    removed = 0
+
+    def traverse(node):
+        nonlocal removed
+
+        if node.nodeType == node.ELEMENT_NODE:
+            for attr in list(node.attributes.values()):
+                if "rsid" in attr.name.lower():
+                    node.removeAttribute(attr.name)
+                    removed += 1
+
+        for child in node.childNodes:
+            traverse(child)
+
+    traverse(root)
+    return removed
+
 
 
 
