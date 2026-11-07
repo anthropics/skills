@@ -7,7 +7,15 @@ from typing import Any
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.sse import sse_client
 from mcp.client.stdio import stdio_client
-from mcp.client.streamable_http import streamablehttp_client
+
+# The streamable HTTP client was renamed from `streamablehttp_client` to
+# `streamable_http_client` in newer versions of the `mcp` package. Support
+# both names so the HTTP transport works regardless of which version is
+# installed.
+try:
+    from mcp.client.streamable_http import streamablehttp_client
+except ImportError:  # pragma: no cover - depends on installed mcp version
+    from mcp.client.streamable_http import streamable_http_client as streamablehttp_client
 
 
 class MCPConnection(ABC):
