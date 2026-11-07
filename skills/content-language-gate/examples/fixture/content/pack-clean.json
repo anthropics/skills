@@ -1,0 +1,14 @@
+{
+  "questions": [
+    {"id": "Q1", "text": "Where is your attention these days?",
+     "options": [
+       {"id": "Q1-A", "text": "On someone close"},
+       {"id": "Q1-B", "text": "On a decision I keep postponing"},
+       {"id": "Q1-N", "text": "I cannot tell right now"}
+     ]}
+  ],
+  "rules": [
+    {"id": "R1", "text": "You are weighing closeness against the room you need.", "short": "Closeness and space are pulling apart."},
+    {"id": "R2", "text": "The decision is waiting on information you do not have yet.", "short": "You are waiting on one missing piece."}
+  ]
+}
