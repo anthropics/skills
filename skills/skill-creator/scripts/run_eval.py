@@ -32,6 +32,88 @@ def find_project_root() -> Path:
     return current
 
 
+class TriggerDetector:
+    """Incrementally consumes parsed `claude -p --output-format stream-json`
+    events for a single query and determines whether the target skill was
+    triggered.
+
+    Feed events one at a time via `process_event`. It returns True/False once
+    the outcome is certain (skill tool_use seen, or the turn/stream completed
+    without one), or None while the outcome is still undetermined. Any tool
+    use that is not the skill (e.g. Bash, Glob, Grep used to inspect files
+    first) must NOT short-circuit detection to False -- the model may still
+    invoke the skill later in the same turn.
+    """
+
+    def __init__(self, clean_name: str):
+        self.clean_name = clean_name
+        self.triggered = False
+        self._pending_tool_name = None
+        self._accumulated_json = ""
+
+    def _check_tool_use(self, tool_name: str, tool_input: dict) -> bool:
+        if tool_name == "Skill" and self.clean_name in tool_input.get("skill", ""):
+            return True
+        if tool_name == "Read" and self.clean_name in tool_input.get("file_path", ""):
+            return True
+        return False
+
+    def process_event(self, event: dict) -> bool | None:
+        event_type = event.get("type")
+
+        if event_type == "stream_event":
+            se = event.get("event", {})
+            se_type = se.get("type", "")
+
+            if se_type == "content_block_start":
+                cb = se.get("content_block", {})
+                if cb.get("type") == "tool_use":
+                    tool_name = cb.get("name", "")
+                    if tool_name in ("Skill", "Read"):
+                        self._pending_tool_name = tool_name
+                        self._accumulated_json = ""
+                    else:
+                        # Some other tool (Bash, Glob, Grep, ...) -- keep
+                        # scanning the rest of the turn instead of bailing.
+                        self._pending_tool_name = None
+                        self._accumulated_json = ""
+
+            elif se_type == "content_block_delta" and self._pending_tool_name:
+                delta = se.get("delta", {})
+                if delta.get("type") == "input_json_delta":
+                    self._accumulated_json += delta.get("partial_json", "")
+                    if self.clean_name in self._accumulated_json:
+                        self.triggered = True
+                        return True
+
+            elif se_type == "content_block_stop":
+                if self._pending_tool_name and self.clean_name in self._accumulated_json:
+                    self.triggered = True
+                    return True
+                self._pending_tool_name = None
+                self._accumulated_json = ""
+
+            # Note: message_stop does not finalize the result -- a turn can
+            # contain multiple content blocks/messages before the skill is
+            # invoked. Only a "result" event (or stream end) is conclusive.
+
+        elif event_type == "assistant":
+            message = event.get("message", {})
+            for content_item in message.get("content", []):
+                if content_item.get("type") != "tool_use":
+                    continue
+                tool_name = content_item.get("name", "")
+                tool_input = content_item.get("input", {})
+                if self._check_tool_use(tool_name, tool_input):
+                    self.triggered = True
+                    return True
+
+        elif event_type == "result":
+            return self.triggered
+
+        return None
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -90,12 +172,9 @@ def run_single_query(
             env=env,
         )
 
-        triggered = False
         start_time = time.time()
         buffer = ""
-        # Track state for stream event detection
-        pending_tool_name = None
-        accumulated_json = ""
+        detector = TriggerDetector(clean_name)
 
         try:
             while time.time() - start_time < timeout:
@@ -125,57 +204,16 @@ def run_single_query(
                     except json.JSONDecodeError:
                         continue
 
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
-                        return triggered
+                    outcome = detector.process_event(event)
+                    if outcome is not None:
+                        return outcome
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
                 process.kill()
                 process.wait()
 
-        return triggered
+        return detector.triggered
     finally:
         if command_file.exists():
             command_file.unlink()
