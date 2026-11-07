@@ -29,7 +29,7 @@ def make_field_dict(field, field_id):
                 field_dict["checked_value"] = states[0] if states[0] != "/Off" else states[1]
                 field_dict["unchecked_value"] = "/Off"
             else:
-                print(f"Unexpected state values for checkbox `${field_id}`. Its checked and unchecked values may not be correct; if you're trying to check it, visually verify the results.")
+                print(f"Unexpected state values for checkbox `{field_id}`. Its checked and unchecked values may not be correct; if you're trying to check it, visually verify the results.")
                 field_dict["checked_value"] = states[0]
                 field_dict["unchecked_value"] = states[1]
     elif ft == "/Ch":
@@ -46,6 +46,8 @@ def make_field_dict(field, field_id):
 
 def get_field_info(reader: PdfReader):
     fields = reader.get_fields()
+    if not fields:
+        return []
 
     field_info_by_id = {}
     possible_radio_names = set()
@@ -110,6 +112,9 @@ def get_field_info(reader: PdfReader):
 def write_field_info(pdf_path: str, json_output_path: str):
     reader = PdfReader(pdf_path)
     field_info = get_field_info(reader)
+    if not field_info:
+        print(f"{pdf_path} has no fillable form fields; you will need to visually determine where to enter data")
+        sys.exit(1)
     with open(json_output_path, "w") as f:
         json.dump(field_info, f, indent=2)
     print(f"Wrote {len(field_info)} fields to {json_output_path}")
