@@ -44,6 +44,26 @@ def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tupl
     return train_set, test_set
 
 
+def select_best_iteration(
+    history: list[dict], has_test_set: bool
+) -> tuple[dict | None, str]:
+    """Pick the highest-scoring iteration from ``history``.
+
+    Returns ``(best_entry, score_str)``. When ``history`` is empty (e.g.
+    ``max_iterations`` was 0) returns ``(None, "")`` so callers can fall back
+    to the original description instead of crashing on ``max([])``.
+    """
+    if not history:
+        return None, ""
+    if has_test_set:
+        best = max(history, key=lambda h: h.get("test_passed") or 0)
+        score = f"{best.get('test_passed')}/{best.get('test_total')}"
+    else:
+        best = max(history, key=lambda h: h.get("train_passed", 0))
+        score = f"{best.get('train_passed')}/{best.get('train_total')}"
+    return best, score
+
+
 def run_loop(
     eval_set: list[dict],
     skill_path: Path,
@@ -214,12 +234,25 @@ def run_loop(
         current_description = new_description
 
     # Find the best iteration by TEST score (or train if no test set)
-    if test_set:
-        best = max(history, key=lambda h: h["test_passed"] or 0)
-        best_score = f"{best['test_passed']}/{best['test_total']}"
-    else:
-        best = max(history, key=lambda h: h["train_passed"])
-        best_score = f"{best['train_passed']}/{best['train_total']}"
+    best, best_score = select_best_iteration(history, bool(test_set))
+
+    if best is None:
+        # No iterations ran (e.g. max_iterations == 0); fall back to the
+        # original/current description with an empty score.
+        return {
+            "exit_reason": exit_reason,
+            "original_description": original_description,
+            "best_description": current_description,
+            "best_score": best_score,
+            "best_train_score": "0/0",
+            "best_test_score": None,
+            "final_description": current_description,
+            "iterations_run": len(history),
+            "holdout": holdout,
+            "train_size": len(train_set),
+            "test_size": len(test_set),
+            "history": history,
+        }
 
     if verbose:
         print(f"\nExit reason: {exit_reason}", file=sys.stderr)
