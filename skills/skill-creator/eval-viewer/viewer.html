@@ -1012,7 +1012,7 @@
       fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reviews, status: "in_progress" }),
+        body: JSON.stringify({ reviews, status: "in_progress", run_id_format: "relative_path" }),
       }).then(() => {
         document.getElementById("feedback-status").textContent = "Saved";
       }).catch(() => {
@@ -1040,7 +1040,7 @@
       for (const r of EMBEDDED_DATA.runs) {
         reviews.push({ run_id: r.id, feedback: feedbackMap[r.id] || "", timestamp: ts });
       }
-      const payload = JSON.stringify({ reviews, status: "complete" }, null, 2);
+      const payload = JSON.stringify({ reviews, status: "complete", run_id_format: "relative_path" }, null, 2);
       fetch("/api/feedback", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

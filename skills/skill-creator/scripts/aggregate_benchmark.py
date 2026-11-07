@@ -186,12 +186,7 @@ def aggregate_results(results: dict) -> dict:
         runs = results.get(config, [])
 
         if not runs:
-            run_summary[config] = {
-                "pass_rate": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0},
-                "time_seconds": {"mean": 0.0, "stddev": 0.0, "min": 0.0, "max": 0.0},
-                "tokens": {"mean": 0, "stddev": 0, "min": 0, "max": 0}
-            }
-            continue
+            raise ValueError(f"No graded runs for configuration '{config}'; cannot compare missing evidence")
 
         pass_rates = [r["pass_rate"] for r in runs]
         times = [r["time_seconds"] for r in runs]
@@ -259,6 +254,12 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for config in results.values()
         for r in config
     ))
+    counts = {
+        sum(r["eval_id"] == eval_id for r in config_runs)
+        for config_runs in results.values()
+        for eval_id in eval_ids
+    }
+    repetitions = next(iter(counts)) if len(counts) == 1 else None
 
     benchmark = {
         "metadata": {
@@ -268,7 +269,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             "analyzer_model": "<model-name>",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": eval_ids,
-            "runs_per_configuration": 3
+            "runs_per_configuration": repetitions
         },
         "runs": runs,
         "run_summary": run_summary,
@@ -289,13 +290,18 @@ def generate_markdown(benchmark: dict) -> str:
     config_b = configs[1] if len(configs) >= 2 else "config_b"
     label_a = config_a.replace("_", " ").title()
     label_b = config_b.replace("_", " ").title()
+    repetitions = metadata['runs_per_configuration']
+    repetition_label = (
+        f"{repetitions} runs each per configuration" if repetitions is not None
+        else "variable runs per eval/configuration; see individual runs"
+    )
 
     lines = [
         f"# Skill Benchmark: {metadata['skill_name']}",
         "",
         f"**Model**: {metadata['executor_model']}",
         f"**Date**: {metadata['timestamp']}",
-        f"**Evals**: {', '.join(map(str, metadata['evals_run']))} ({metadata['runs_per_configuration']} runs each per configuration)",
+        f"**Evals**: {', '.join(map(str, metadata['evals_run']))} ({repetition_label})",
         "",
         "## Summary",
         "",
