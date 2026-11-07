@@ -60,9 +60,35 @@ python scripts/office/validate.py out.docx --original doc.docx   # XSD checks; -
 
 Word splits text across many `<w:r>` runs (revision ids, spell-check markers), so a phrase you can see in the document often doesn't exist as a contiguous string in the XML. `merge_runs.py` merges adjacent identically-formatted runs in `word/document.xml` without changing content or rendering; it also accepts a `.docx` directly (`python scripts/merge_runs.py doc.docx -o merged.docx`).
 
-**Tracked changes:** when redlining, validate with `--author "<the name you redlined under>"` (needs `--original`) — it reports any text you changed without a `<w:ins>`/`<w:del>` around it, which is easy to do by accident and invisible in the accepted view. Wrap runs in `<w:ins>`/`<w:del>` with `w:id`, `w:author`, `w:date` attributes. Inside `<w:del>`, the text element is `<w:delText>`, not `<w:t>`. A deleted paragraph mark (`<w:pPr><w:rPr><w:del w:id=".." w:author=".." w:date=".."/></w:rPr></w:pPr>`) means "merge this paragraph into the next" — so deleting a paragraph outright is that plus a `<w:del>` around every run. The `<w:del/>` must come before the rPr's other children; their order is schema-enforced.
+**Tracked changes:** when redlining, validate with `--author "<the name you redlined under>"` (needs `--original`) — it reports any text you changed without a `<w:ins>`/`<w:del>` around it, which is easy to do by accident and invisible in the accepted view. Wrap runs in `<w:ins>`/`<w:del>` with `w:id`, `w:author`, `w:date` attributes:
 
-To produce a clean copy with all tracked changes accepted: `python scripts/accept_changes.py in.docx out.docx`.
+```xml
+<!-- Insertion -->
+<w:ins w:id="1" w:author="Author Name" w:date="2026-10-14T12:00:00Z">
+  <w:r>
+    <w:t>inserted text</w:t>
+  </w:r>
+</w:ins>
+
+<!-- Deletion -->
+<w:del w:id="2" w:author="Author Name" w:date="2026-10-14T12:00:00Z">
+  <w:r>
+    <w:delText>deleted text</w:delText>
+  </w:r>
+</w:del>
+
+<!-- Deleted paragraph mark (merges this paragraph into the next) -->
+<w:pPr>
+  <w:rPr>
+    <w:del w:id="3" w:author="Author Name" w:date="2026-10-14T12:00:00Z"/>
+    <!-- Note: <w:del/> must come before the rPr's other children; order is schema-enforced -->
+  </w:rPr>
+</w:pPr>
+```
+
+Deleting a paragraph outright requires the deleted paragraph mark above plus `<w:del>` around every run in that paragraph.
+
+To produce a clean copy with all tracked changes accepted: `python scripts/accept_changes.py in.docx out.docx` (also supports `.dotx` templates).
 
 Accepting a deleted paragraph mark should join that paragraph to the one below it, so a paragraph whose runs are *all* deleted vanishes. Word does this; `accept_changes.py` and `pandoc --track-changes=accept` don't always. Both fail the same way — they strip the deleted text but leave the emptied paragraph behind, which reads as a stray empty bullet when it was auto-numbered:
 

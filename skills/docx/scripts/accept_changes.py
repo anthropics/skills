@@ -43,8 +43,8 @@ def accept_changes(
     if not input_path.exists():
         return None, f"Error: Input file not found: {input_file}"
 
-    if not input_path.suffix.lower() == ".docx":
-        return None, f"Error: Input file is not a DOCX file: {input_file}"
+    if input_path.suffix.lower() not in (".docx", ".dotx"):
+        return None, f"Error: Input file must be a .docx or .dotx file: {input_file}"
 
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -120,11 +120,11 @@ def _setup_libreoffice_macro() -> bool:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Accept all tracked changes in a DOCX file"
+        description="Accept all tracked changes in a DOCX or DOTX file"
     )
-    parser.add_argument("input_file", help="Input DOCX file with tracked changes")
+    parser.add_argument("input_file", help="Input DOCX/DOTX file with tracked changes")
     parser.add_argument(
-        "output_file", help="Output DOCX file (clean, no tracked changes)"
+        "output_file", help="Output DOCX/DOTX file (clean, no tracked changes)"
     )
     args = parser.parse_args()
 
