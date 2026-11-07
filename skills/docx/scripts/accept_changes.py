@@ -7,14 +7,15 @@ import argparse
 import logging
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
 from office.soffice import get_soffice_env
 
 logger = logging.getLogger(__name__)
 
-LIBREOFFICE_PROFILE = "/tmp/libreoffice_docx_profile"
-MACRO_DIR = f"{LIBREOFFICE_PROFILE}/user/basic/Standard"
+LIBREOFFICE_PROFILE = Path(tempfile.gettempdir()) / "libreoffice_docx_profile"
+MACRO_DIR = LIBREOFFICE_PROFILE / "user" / "basic" / "Standard"
 
 ACCEPT_CHANGES_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
@@ -46,19 +47,19 @@ def accept_changes(
     if not input_path.suffix.lower() == ".docx":
         return None, f"Error: Input file is not a DOCX file: {input_file}"
 
+    if not _setup_libreoffice_macro():
+        return None, "Error: Failed to setup LibreOffice macro"
+
     try:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         shutil.copy2(input_path, output_path)
     except Exception as e:
         return None, f"Error: Failed to copy input file to output location: {e}"
 
-    if not _setup_libreoffice_macro():
-        return None, "Error: Failed to setup LibreOffice macro"
-
     cmd = [
         "soffice",
         "--headless",
-        f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
+        f"-env:UserInstallation={LIBREOFFICE_PROFILE.as_uri()}",
         "--norestore",
         "vnd.sun.star.script:Standard.Module1.AcceptAllTrackedChanges?language=Basic&location=application",
         str(output_path.absolute()),
@@ -96,18 +97,22 @@ def _setup_libreoffice_macro() -> bool:
         return True
 
     if not macro_dir.exists():
-        subprocess.run(
-            [
-                "soffice",
-                "--headless",
-                f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
-                "--terminate_after_init",
-            ],
-            capture_output=True,
-            timeout=10,
-            check=False,
-            env=get_soffice_env(),
-        )
+        try:
+            subprocess.run(
+                [
+                    "soffice",
+                    "--headless",
+                    f"-env:UserInstallation={LIBREOFFICE_PROFILE.as_uri()}",
+                    "--terminate_after_init",
+                ],
+                capture_output=True,
+                timeout=10,
+                check=False,
+                env=get_soffice_env(),
+            )
+        except subprocess.TimeoutExpired:
+            logger.warning("Timed out while initializing the LibreOffice profile")
+            return False
         macro_dir.mkdir(parents=True, exist_ok=True)
 
     try:
