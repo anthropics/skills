@@ -28,6 +28,9 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
 
+## Third-party skills
+- **emil-design-skills**: 17 design-engineering skills by [Emil Kowalski](https://github.com/emilkowalski/skills) (MIT): `emil-design-eng`, `animate`, `animate-expo`, `review-animations`, `improve-animations`, `find-animation-opportunities`, `remove-animations`, `choreograph`, `animation-performance`, `animation-vocabulary`, `apple-design`, `write-swift`, `pick-ui-library`, `prototype`, `mobile-native`, `break-ui`, `ask-sonner`. Install with `/plugin install emil-design-skills@anthropic-agent-skills`.
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
