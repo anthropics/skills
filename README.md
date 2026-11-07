@@ -28,6 +28,8 @@ Many skills in this repo are open source (Apache 2.0). We've also included the d
 - [./spec](./spec): The Agent Skills specification
 - [./template](./template): Skill template
 
+Korean reference: [Frontend design skill](skills/frontend-design/SKILL.ko.md).
+
 # Try in Claude Code, Claude.ai, and the API
 
 ## Claude Code
