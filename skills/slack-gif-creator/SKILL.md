@@ -159,6 +159,8 @@ from core.frame_composer import (
 )
 ```
 
+Use `draw_text(frame, "Hello\nSlack", (64, 64), centered=True)` to center a caption's text bounding box at a position. Single-line and multiline captions account for the font's bounding-box offsets; without `centered=True`, the position remains Pillow's normal text origin.
+
 ## Animation Concepts
 
 ### Shake/Vibrate
