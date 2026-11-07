@@ -93,6 +93,11 @@ class RedliningValidator:
         return [elem for elem in root.iter() if elem.tag in (ins_tag, del_tag)]
 
     def _rendered_text(self, elem):
+        w = self.namespaces["w"]
+        if elem.tag == f"{{{w}}}tab":
+            return "\t"
+        if elem.tag in (f"{{{w}}}br", f"{{{w}}}cr"):
+            return "\n"
         preserve = elem.get("{http://www.w3.org/XML/1998/namespace}space") == "preserve"
         return rendered_text(elem.text or "", preserve)
 
@@ -101,7 +106,14 @@ class RedliningValidator:
         return [
             node
             for node in elem.iter()
-            if node.tag in (f"{{{w}}}t", f"{{{w}}}delText")
+            if node.tag
+            in (
+                f"{{{w}}}t",
+                f"{{{w}}}delText",
+                f"{{{w}}}tab",
+                f"{{{w}}}br",
+                f"{{{w}}}cr",
+            )
         ]
 
     def _tracked_change_key(self, elem):
@@ -281,13 +293,20 @@ class RedliningValidator:
 
     def _extract_text_content(self, root):
         p_tag = f"{{{self.namespaces['w']}}}p"
-        t_tag = f"{{{self.namespaces['w']}}}t"
+        w = self.namespaces["w"]
+        content_tags = (
+            f"{{{w}}}t",
+            f"{{{w}}}tab",
+            f"{{{w}}}br",
+            f"{{{w}}}cr",
+        )
 
         paragraphs = []
         for p_elem in root.findall(f".//{p_tag}"):
             text_parts = []
-            for t_elem in p_elem.findall(f".//{t_tag}"):
-                text_parts.append(self._rendered_text(t_elem))
+            for node in p_elem.iter():
+                if node.tag in content_tags:
+                    text_parts.append(self._rendered_text(node))
             paragraph_text = "".join(text_parts)
             if paragraph_text:
                 paragraphs.append(paragraph_text)
