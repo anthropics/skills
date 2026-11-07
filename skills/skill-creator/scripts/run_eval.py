@@ -181,6 +181,49 @@ def run_single_query(
             command_file.unlink()
 
 
+def aggregate_results(
+    query_triggers: dict[str, list[bool]],
+    query_items: dict[str, dict],
+    query_errors: dict[str, int],
+    trigger_threshold: float,
+) -> tuple[list[dict], dict]:
+    """Aggregate completed outcomes without treating errors as non-triggers."""
+    results = []
+
+    for query, item in query_items.items():
+        triggers = query_triggers.get(query, [])
+        errored = query_errors.get(query, 0)
+        trigger_rate = sum(triggers) / len(triggers) if triggers else None
+        should_trigger = item["should_trigger"]
+
+        if trigger_rate is None or errored:
+            did_pass = False
+        elif should_trigger:
+            did_pass = trigger_rate >= trigger_threshold
+        else:
+            did_pass = trigger_rate < trigger_threshold
+
+        results.append({
+            "query": query,
+            "should_trigger": should_trigger,
+            "trigger_rate": trigger_rate,
+            "triggers": sum(triggers),
+            "runs": len(triggers),
+            "errored": errored,
+            "pass": did_pass,
+        })
+
+    passed = sum(1 for result in results if result["pass"])
+    total = len(results)
+    summary = {
+        "total": total,
+        "passed": passed,
+        "failed": total - passed,
+        "errored": sum(query_errors.values()),
+    }
+    return results, summary
+
+
 def run_eval(
     eval_set: list[dict],
     skill_name: str,
@@ -193,8 +236,6 @@ def run_eval(
     model: str | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
-    results = []
-
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         future_to_info = {}
         for item in eval_set:
@@ -211,48 +252,31 @@ def run_eval(
                 future_to_info[future] = (item, run_idx)
 
         query_triggers: dict[str, list[bool]] = {}
-        query_items: dict[str, dict] = {}
+        query_errors: dict[str, int] = {}
+        query_items = {item["query"]: item for item in eval_set}
         for future in as_completed(future_to_info):
             item, _ = future_to_info[future]
             query = item["query"]
-            query_items[query] = item
             if query not in query_triggers:
                 query_triggers[query] = []
             try:
                 query_triggers[query].append(future.result())
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
-                query_triggers[query].append(False)
+                query_errors[query] = query_errors.get(query, 0) + 1
 
-    for query, triggers in query_triggers.items():
-        item = query_items[query]
-        trigger_rate = sum(triggers) / len(triggers)
-        should_trigger = item["should_trigger"]
-        if should_trigger:
-            did_pass = trigger_rate >= trigger_threshold
-        else:
-            did_pass = trigger_rate < trigger_threshold
-        results.append({
-            "query": query,
-            "should_trigger": should_trigger,
-            "trigger_rate": trigger_rate,
-            "triggers": sum(triggers),
-            "runs": len(triggers),
-            "pass": did_pass,
-        })
-
-    passed = sum(1 for r in results if r["pass"])
-    total = len(results)
+    results, summary = aggregate_results(
+        query_triggers=query_triggers,
+        query_items=query_items,
+        query_errors=query_errors,
+        trigger_threshold=trigger_threshold,
+    )
 
     return {
         "skill_name": skill_name,
         "description": description,
         "results": results,
-        "summary": {
-            "total": total,
-            "passed": passed,
-            "failed": total - passed,
-        },
+        "summary": summary,
     }
 
 
@@ -297,10 +321,14 @@ def main():
 
     if args.verbose:
         summary = output["summary"]
-        print(f"Results: {summary['passed']}/{summary['total']} passed", file=sys.stderr)
+        print(
+            f"Results: {summary['passed']}/{summary['total']} passed "
+            f"({summary['errored']} run errors)",
+            file=sys.stderr,
+        )
         for r in output["results"]:
             status = "PASS" if r["pass"] else "FAIL"
-            rate_str = f"{r['triggers']}/{r['runs']}"
+            rate_str = f"{r['triggers']}/{r['runs']} ({r['errored']} errors)"
             print(f"  [{status}] rate={rate_str} expected={r['should_trigger']}: {r['query'][:70]}", file=sys.stderr)
 
     print(json.dumps(output, indent=2))
