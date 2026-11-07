@@ -4,6 +4,7 @@ Recalculates all formulas in an Excel file using LibreOffice
 """
 
 import contextlib
+from collections import deque
 import json
 import os
 import platform
@@ -26,6 +27,48 @@ SOFFICE_MISSING = "soffice not found on PATH; LibreOffice is required to recalcu
 MAX_LOCATIONS = 100
 
 EXTERNAL_REF_RE = re.compile(r"""(?<![\w"\[])'?\[\d+\][^!"\[\]]*'?!""")
+
+FORMULA_REF_RE = re.compile(
+    r"""
+    (?P<string>"(?:[^"]|"")*")
+    |
+    '(?P<qsheet>(?:[^']|'')*)'!\s*(?P<qtarget>[\w.\$]+(?::[\w.\$]+)?)?
+    |
+    (?P<uqsheet>[^\W\d][\w.]*)!\s*(?P<uqtarget>[\w.\$]+(?::[\w.\$]+)?)?
+    |
+    (?P<ident>[^\W\d][\w.]*)
+    """,
+    re.VERBOSE | re.UNICODE,
+)
+
+
+def _find_formula_references(text):
+    """
+    Extracts all (sheet_qualifier, name) references from an Excel formula or defined name value.
+    - sheet_qualifier is None for unqualified references (e.g. 'Rate' -> (None, 'Rate'))
+    - sheet_qualifier is the unquoted sheet name string for qualified references (e.g. "'Source Data'!Amt" -> ('Source Data', 'Amt'))
+    Cell coordinates and ranges containing '$' or ':' are ignored as defined-name targets.
+    """
+    if not isinstance(text, str):
+        return []
+    refs = []
+    for m in FORMULA_REF_RE.finditer(text):
+        if m.group("string"):
+            continue
+        elif m.group("qsheet") is not None:
+            target = m.group("qtarget")
+            if target and "$" not in target and ":" not in target:
+                sheet = m.group("qsheet").replace("''", "'")
+                refs.append((sheet, target))
+        elif m.group("uqsheet") is not None:
+            target = m.group("uqtarget")
+            if target and "$" not in target and ":" not in target:
+                sheet = m.group("uqsheet")
+                refs.append((sheet, target))
+        elif m.group("ident") is not None:
+            refs.append((None, m.group("ident")))
+    return refs
+
 
 RECALCULATE_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
@@ -93,30 +136,110 @@ def external_links_at_risk(filename):
         values = load_workbook(filename, data_only=True)
         stack.callback(values.close)
 
-        external_names = [
-            name
-            for name, dn in formulas.defined_names.items()
-            if isinstance(getattr(dn, "value", None), str) and EXTERNAL_REF_RE.search(dn.value)
-        ]
-        name_re = (
-            re.compile(r"\b(" + "|".join(re.escape(n) for n in external_names) + r")\b")
-            if external_names
-            else None
-        )
+        global_names = {}
+        scoped_names = {s.lower(): {} for s in formulas.sheetnames}
+
+        if hasattr(formulas, "defined_names") and formulas.defined_names:
+            for name, dn in formulas.defined_names.items():
+                val = getattr(dn, "value", None) or getattr(dn, "attr_text", None)
+                if isinstance(val, str):
+                    local_id = getattr(dn, "localSheetId", None)
+                    if local_id is not None:
+                        try:
+                            sheet_title = formulas.worksheets[int(local_id)].title.lower()
+                            scoped_names.setdefault(sheet_title, {})[name.lower()] = val
+                            continue
+                        except (IndexError, ValueError, TypeError):
+                            pass
+                    global_names[name.lower()] = val
+
+        for sheet in formulas.sheetnames:
+            ws = formulas[sheet]
+            if hasattr(ws, "defined_names") and ws.defined_names:
+                for name, dn in ws.defined_names.items():
+                    val = getattr(dn, "value", None) or getattr(dn, "attr_text", None)
+                    if isinstance(val, str):
+                        scoped_names.setdefault(sheet.lower(), {})[name.lower()] = val
+
+        def resolve_ref(context_scope, target_sheet, ref_name):
+            ref_lower = ref_name.lower()
+            if target_sheet is not None:
+                s_lower = target_sheet.lower()
+                if s_lower in scoped_names and ref_lower in scoped_names[s_lower]:
+                    return (s_lower, ref_lower)
+                elif ref_lower in global_names:
+                    return (s_lower if s_lower in scoped_names else None, ref_lower)
+                return None
+            else:
+                if context_scope is not None and ref_lower in scoped_names.get(context_scope, {}):
+                    return (context_scope, ref_lower)
+                elif ref_lower in global_names:
+                    return (context_scope, ref_lower)
+                return None
+
+        # Build reachability over the defined-name dependency graph to eliminate
+        # traversal-order dependence and stale false memoization across cyclic alias branches.
+        all_scopes = [None] + [s.lower() for s in formulas.sheetnames]
+        rev_graph = {}
+        external_seeds = set()
+
+        for scope in all_scopes:
+            names_in_scope = set(global_names.keys())
+            if scope is not None:
+                names_in_scope.update(scoped_names.get(scope, {}).keys())
+
+            for name_lower in names_in_scope:
+                val = None
+                if scope is not None:
+                    val = scoped_names.get(scope, {}).get(name_lower)
+                if val is None:
+                    val = global_names.get(name_lower)
+
+                if not val or not isinstance(val, str):
+                    continue
+
+                node = (scope, name_lower)
+                if EXTERNAL_REF_RE.search(val):
+                    external_seeds.add(node)
+
+                for target_sheet, ref_name in _find_formula_references(val):
+                    dep = resolve_ref(scope, target_sheet, ref_name)
+                    if dep is not None:
+                        rev_graph.setdefault(dep, set()).add(node)
+
+        # Backward BFS from external seeds identifies all defined names reaching an external link
+        reaches_ext = set(external_seeds)
+        queue = deque(external_seeds)
+        while queue:
+            curr = queue.popleft()
+            for pred in rev_graph.get(curr, ()):
+                if pred not in reaches_ext:
+                    reaches_ext.add(pred)
+                    queue.append(pred)
+
+        def cell_reaches_external(current_sheet_lower, formula_str):
+            if EXTERNAL_REF_RE.search(formula_str):
+                return True
+
+            for target_sheet, ref_name in _find_formula_references(formula_str):
+                dep = resolve_ref(current_sheet_lower, target_sheet, ref_name)
+                if dep is not None and dep in reaches_ext:
+                    return True
+            return False
 
         at_risk = []
         for sheet in formulas.sheetnames:
             ws = formulas[sheet]
-            if not hasattr(ws, "iter_rows"):  
+            if not hasattr(ws, "iter_rows"):
                 continue
             cached = values[sheet]
+            s_lower = sheet.lower()
             for row in ws.iter_rows():
                 for cell in row:
                     v = cell.value
                     if not (isinstance(v, str) and v.startswith("=")):
                         continue
-                    reaches_out = EXTERNAL_REF_RE.search(v) or (name_re and name_re.search(v))
-                    if reaches_out and cached[cell.coordinate].value is None:
+                    if cell_reaches_external(s_lower, v) and cached[cell.coordinate].value is None:
                         at_risk.append(f"{sheet}!{cell.coordinate}")
         return at_risk
 
