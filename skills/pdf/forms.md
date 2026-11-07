@@ -204,7 +204,13 @@ Where:
 magick images_dir/page_1.png -crop 300x80+50+120 +repage crops/name_field.png
 ```
 
-(Note: if the `magick` command isn't available, try `convert` with the same arguments).
+If the `magick` command isn't available, use Pillow, which is already used by this skill's scripts:
+
+```python
+from PIL import Image
+
+Image.open("images_dir/page_1.png").crop((50, 120, 350, 200)).save("crops/name_field.png")
+```
 
 **Examine the cropped image** to determine precise coordinates:
 1. Identify the exact pixel where the entry area begins (after the label)

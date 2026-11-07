@@ -303,10 +303,10 @@ pdfimages -all document.pdf images/img
 #### Complex Page Manipulation
 ```bash
 # Split PDF into groups of pages
-qpdf --split-pages=3 input.pdf output_group_%02d.pdf
+qpdf --split-pages=3 input.pdf output_group_%d.pdf
 
 # Extract specific pages with complex ranges
-qpdf input.pdf --pages input.pdf 1,3-5,8,10-end -- extracted.pdf
+qpdf input.pdf --pages input.pdf 1,3-5,8,10-z -- extracted.pdf
 
 # Merge specific pages from multiple PDFs
 qpdf --empty --pages doc1.pdf 1-3 doc2.pdf 5-7 doc3.pdf 2,4 -- combined.pdf
@@ -317,15 +317,15 @@ qpdf --empty --pages doc1.pdf 1-3 doc2.pdf 5-7 doc3.pdf 2,4 -- combined.pdf
 # Optimize PDF for web (linearize for streaming)
 qpdf --linearize input.pdf optimized.pdf
 
-# Remove unused objects and compress
-qpdf --optimize-level=all input.pdf compressed.pdf
+# Remove unused objects and recompress streams
+qpdf --compression-level=9 --recompress-flate --object-streams=generate input.pdf compressed.pdf
 
-# Attempt to repair corrupted PDF structure
+# Check and rewrite a PDF whose structure can be recovered
 qpdf --check input.pdf
-qpdf --fix-qdf damaged.pdf repaired.pdf
+qpdf damaged.pdf repaired.pdf
 
 # Show detailed PDF structure for debugging
-qpdf --show-all-pages input.pdf > structure.txt
+qpdf --show-pages input.pdf > structure.txt
 ```
 
 #### Advanced Encryption
