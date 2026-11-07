@@ -7,6 +7,8 @@ import argparse
 import logging
 import shutil
 import subprocess
+import xml.etree.ElementTree as ET
+import zipfile
 from pathlib import Path
 
 from office.soffice import get_soffice_env
@@ -31,6 +33,35 @@ ACCEPT_CHANGES_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
         ThisComponent.close(True)
     End Sub
 </script:module>"""
+
+_WORD_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
+_TRACKED_CHANGE_LOCAL_NAMES = frozenset({"ins", "del", "moveFrom", "moveTo"})
+
+
+def _docx_still_has_tracked_changes(path: Path) -> bool:
+    """Return True if the DOCX at ``path`` still carries revision marks.
+
+    Revision marks are matched by namespace URI + local name (``ins``,
+    ``del``, ``moveFrom``, ``moveTo`` in the WordprocessingML namespace), so a
+    document that binds that namespace to a non-``w:`` prefix is still
+    detected.
+    """
+    try:
+        with zipfile.ZipFile(path) as zf:
+            for name in zf.namelist():
+                if name.startswith("word/") and name.endswith(".xml"):
+                    try:
+                        root = ET.fromstring(zf.read(name))
+                    except ET.ParseError:
+                        return True
+                    ns_tag = "{" + _WORD_NS + "}"
+                    for elem in root.iter():
+                        tag = elem.tag
+                        if tag.startswith(ns_tag) and tag[len(ns_tag) :] in _TRACKED_CHANGE_LOCAL_NAMES:
+                            return True
+    except Exception:
+        return True
+    return False
 
 
 def accept_changes(
@@ -76,11 +107,17 @@ def accept_changes(
     except subprocess.TimeoutExpired:
         return (
             None,
-            f"Successfully accepted all tracked changes: {input_file} -> {output_file}",
+            f"Error: LibreOffice timed out while accepting tracked changes; output may be incomplete: {output_file}",
         )
 
     if result.returncode != 0:
         return None, f"Error: LibreOffice failed: {result.stderr}"
+
+    if _docx_still_has_tracked_changes(output_path):
+        return (
+            None,
+            f"Error: tracked changes remain in output document: {output_file}",
+        )
 
     return (
         None,
