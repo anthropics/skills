@@ -3,17 +3,24 @@
 Skill Packager - Creates a distributable .skill file of a skill folder
 
 Usage:
-    python utils/package_skill.py <path/to/skill-folder> [output-directory]
+    python scripts/package_skill.py <path/to/skill-folder> [output-directory]
 
 Example:
-    python utils/package_skill.py skills/public/my-skill
-    python utils/package_skill.py skills/public/my-skill ./dist
+    python scripts/package_skill.py skills/brand-guidelines
+    python scripts/package_skill.py skills/brand-guidelines ./dist
 """
 
 import fnmatch
 import sys
 import zipfile
 from pathlib import Path
+
+# Add the skill-creator root to sys.path so 'scripts' can be imported
+# when this script is run directly from any directory.
+_PARENT_DIR = Path(__file__).resolve().parent.parent
+if str(_PARENT_DIR) not in sys.path:
+    sys.path.insert(0, str(_PARENT_DIR))
+
 from scripts.quick_validate import validate_skill
 
 # Patterns to exclude when packaging skills.
@@ -110,10 +117,10 @@ def package_skill(skill_path, output_dir=None):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: python utils/package_skill.py <path/to/skill-folder> [output-directory]")
+        print("Usage: python scripts/package_skill.py <path/to/skill-folder> [output-directory]")
         print("\nExample:")
-        print("  python utils/package_skill.py skills/public/my-skill")
-        print("  python utils/package_skill.py skills/public/my-skill ./dist")
+        print("  python scripts/package_skill.py skills/brand-guidelines")
+        print("  python scripts/package_skill.py skills/brand-guidelines ./dist")
         sys.exit(1)
 
     skill_path = sys.argv[1]
