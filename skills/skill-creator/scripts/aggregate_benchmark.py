@@ -109,7 +109,11 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 results[config] = []
 
             for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+                try:
+                    run_number = int(run_dir.name.split("-")[1])
+                except (ValueError, IndexError):
+                    print(f"Warning: could not parse run number from {run_dir.name}, skipping")
+                    continue
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
