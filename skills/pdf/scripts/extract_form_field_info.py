@@ -24,6 +24,8 @@ def make_field_dict(field, field_id):
     elif ft == "/Btn":
         field_dict["type"] = "checkbox"  
         states = field.get("/_States_", [])
+        if states:
+            field_dict["states"] = states
         if len(states) == 2:
             if "/Off" in states:
                 field_dict["checked_value"] = states[0] if states[0] != "/Off" else states[1]

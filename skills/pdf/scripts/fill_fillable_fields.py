@@ -56,10 +56,17 @@ def validation_error_for_field_value(field_info, field_value):
     field_type = field_info["type"]
     field_id = field_info["field_id"]
     if field_type == "checkbox":
-        checked_val = field_info["checked_value"]
-        unchecked_val = field_info["unchecked_value"]
-        if field_value != checked_val and field_value != unchecked_val:
-            return f'ERROR: Invalid value "{field_value}" for checkbox field "{field_id}". The checked value is "{checked_val}" and the unchecked value is "{unchecked_val}"'
+        checked_val = field_info.get("checked_value")
+        unchecked_val = field_info.get("unchecked_value")
+        if checked_val is not None and unchecked_val is not None:
+            if field_value != checked_val and field_value != unchecked_val:
+                return f'ERROR: Invalid value "{field_value}" for checkbox field "{field_id}". The checked value is "{checked_val}" and the unchecked value is "{unchecked_val}"'
+        elif "states" in field_info and field_info["states"]:
+            valid_states = field_info["states"]
+            if field_value not in valid_states:
+                return f'ERROR: Invalid value "{field_value}" for checkbox field "{field_id}". Valid states are: {valid_states}'
+        else:
+            return f'ERROR: Cannot validate field "{field_id}": no appearance states'
     elif field_type == "radio_group":
         option_values = [opt["value"] for opt in field_info["radio_options"]]
         if field_value not in option_values:

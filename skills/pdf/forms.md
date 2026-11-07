@@ -14,13 +14,14 @@ If the PDF has fillable form fields:
     "rect": ([left, bottom, right, top] bounding box in PDF coordinates, y=0 is the bottom of the page),
     "type": ("text", "checkbox", "radio_group", or "choice"),
   },
-  // Checkboxes have "checked_value" and "unchecked_value" properties:
+  // Checkboxes have "checked_value" and "unchecked_value" properties (and optional "states" list):
   {
     "field_id": (unique ID for the field),
     "page": (page number, 1-based),
     "type": "checkbox",
     "checked_value": (Set the field to this value to check the checkbox),
     "unchecked_value": (Set the field to this value to uncheck the checkbox),
+    "states": [(Optional list of valid appearance states, e.g. ["/Off", "/Yes"])],
   },
   // Radio groups have a "radio_options" list with the possible choices.
   {
