@@ -1,0 +1,19 @@
+{
+  "default": "provider-neutral",
+  "asset_formats": ["PNG"],
+  "official_sources": {
+    "AWS": ["https://aws.amazon.com/architecture/icons/"],
+    "Azure": ["https://learn.microsoft.com/en-us/azure/architecture/icons/"],
+    "Google Cloud": ["https://cloud.google.com/icons"]
+  },
+  "manifest": {
+    "file": "manifest.json",
+    "required": ["provider", "official_source_url", "assets"],
+    "notice_one_of": ["licence", "license", "trademark_notice"],
+    "asset_required": ["path", "sha256"]
+  },
+  "max_asset_bytes": 2097152,
+  "max_asset_dimension": 4096,
+  "redistribution": "No provider assets are included or licensed by this tooling. Supply locally obtained official PNG assets and the applicable licence or trademark notice. Keep provider notices with exported diagrams; provider trademarks remain their owners' property.",
+  "verification": "Source allowlist and hashes verify the declared local pack, not provider authorship. Obtain assets directly from the official source. Missing, unsupported, corrupt or incompletely documented packs fall back to labelled neutral symbols. No generated proprietary logos."
+}

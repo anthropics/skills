@@ -1,0 +1,7 @@
+# SYNTHETIC POSITIVE CONTROL — these values are invented, never client data.
+project_id=synthetic-control-prod account=123456789012
+subscription_id=12345678-1234-1234-1234-123456789abc
+tenant_id=87654321-4321-4321-4321-cba987654321
+ocid1.tenancy.oc1..syntheticpositivecontrolidentifier
+public_ipv4=8.8.8.8 public_ipv6=2606:4700:4700::1111
+domain=synthetic-control.internal email=operator@synthetic-control.internal

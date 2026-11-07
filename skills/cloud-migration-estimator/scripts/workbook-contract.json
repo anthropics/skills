@@ -1,0 +1,53 @@
+{
+  "sheets": [
+    "00_Lisez-moi",
+    "01_Hypotheses",
+    "02_Inventaire",
+    "03_Architecture",
+    "04_Taches_JH",
+    "05_Couts_cloud",
+    "06_Scenarios",
+    "07_Phasage",
+    "08_Risques",
+    "09_Arbitrages",
+    "10_Sources",
+    "11_Synthese"
+  ],
+  "task_columns": [
+    "ID",
+    "Lot",
+    "Domaine",
+    "Tache",
+    "Livrable",
+    "Environnement",
+    "Role",
+    "Prerequis",
+    "Dependances",
+    "Critere d'acceptation",
+    "Preuve attendue",
+    "JH bas",
+    "JH probable",
+    "JH haut",
+    "Scenario retenu",
+    "Scenario override",
+    "JH retenu",
+    "Nature",
+    "Couverture",
+    "Source",
+    "Confiance",
+    "Notes"
+  ],
+  "scenario_names": [
+    "Economique",
+    "Standard",
+    "Resilient"
+  ],
+  "forbidden_patterns": [
+    "(?i)\\b(?:client|customer)[_-](?:id|name|account)\\s*[:=]\\s*\\S+",
+    "\\b\\d{12}\\b",
+    "(?i)\\b(?:project|subscription|tenant)[_-]?id\\s*[:=]\\s*\\S+",
+    "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b",
+    "(?i)\\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}\\b",
+    "(?i)(?:[A-Z]:[\\\\/](?:Users|projects|repos)[\\\\/]|/(?:home|Users)/)"
+  ]
+}

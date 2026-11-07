@@ -1,0 +1,257 @@
+{
+  "skills": [
+    {
+      "name": "cloud-estimation-orchestrator",
+      "domain": "orchestration",
+      "triggers": [
+        "multi-domain cloud estimate",
+        "consolidate infrastructure estimates",
+        "prevent double counting"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "infra-work-estimator",
+      "domain": "infrastructure",
+      "triggers": [
+        "landing zone and infrastructure workload",
+        "network compute storage provisioning",
+        "infrastructure delivery effort in JH"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "cloud-architecture-advisor",
+      "domain": "cloud-architecture",
+      "triggers": [
+        "compare hosting architectures",
+        "VPS virtual machines serverless or managed platforms",
+        "architecture recommendation and tradeoffs"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "kubernetes-architect",
+      "domain": "kubernetes",
+      "triggers": [
+        "Kubernetes suitability and cluster architecture",
+        "node pools autoscaling ingress and recovery",
+        "platform engineering and recurring operations"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "cicd-devsecops-estimator",
+      "domain": "cicd-devsecops",
+      "triggers": [
+        "CI/CD pipeline delivery effort",
+        "DevSecOps controls and evidence",
+        "build promotion rollback and runner architecture"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "server-hardening-estimator",
+      "domain": "server-hardening",
+      "triggers": [
+        "server security baseline and patching",
+        "privileged access logging and vulnerability management",
+        "hardening effort and restore evidence"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "hosting-capacity-simulator",
+      "domain": "hosting-capacity",
+      "triggers": [
+        "simulate hosting capacity",
+        "CPU memory storage IOPS bandwidth and concurrency",
+        "scaling and failure-domain requirements"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "cloud-provider-selector",
+      "domain": "provider-selection",
+      "triggers": [
+        "compare cloud providers",
+        "weighted provider suitability",
+        "managed services implementation effort and three-year TCO"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "finops-optimizer",
+      "domain": "finops",
+      "triggers": [
+        "cloud billing and usage optimization",
+        "rightsizing scheduling commitments and waste removal",
+        "validate savings with effort risk and reversibility"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "cloud-migration-estimator",
+      "domain": "cloud-migration",
+      "triggers": [
+        "estimate migration effort",
+        "source-to-target service mapping",
+        "rehearsal cutover integrity rollback and hypercare"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    },
+    {
+      "name": "cloud-architecture-diagrammer",
+      "domain": "architecture-diagram",
+      "triggers": [
+        "draw cloud topology",
+        "component and flow diagram",
+        "embed an inventory-consistent architecture diagram"
+      ],
+      "required_workbook_sections": [
+        "00_Lisez-moi",
+        "01_Hypotheses",
+        "02_Inventaire",
+        "03_Architecture",
+        "04_Taches_JH",
+        "05_Couts_cloud",
+        "06_Scenarios",
+        "07_Phasage",
+        "08_Risques",
+        "09_Arbitrages",
+        "10_Sources",
+        "11_Synthese"
+      ]
+    }
+  ]
+}

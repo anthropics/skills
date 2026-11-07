@@ -332,6 +332,8 @@ The following fonts are licensed under SIL Open Font License v1.1 reproduced bel
 
 **Jura**, Copyright 2019 The Jura Project Authors ([https://github.com/ossobuffo/jura](https://github.com/ossobuffo/jura))
 
+**Lato**, Copyright (c) 2010-2014 by tyPoland Lukasz Dziedzic ([team@latofonts.com](mailto:team@latofonts.com)) with Reserved Font Name "Lato"
+
 **Libre Baskerville**, Copyright 2012 The Libre Baskerville Project Authors ([https://github.com/impallari/Libre-Baskerville](https://github.com/impallari/Libre-Baskerville)), with Reserved Font Name "Libre Baskerville"
 
 **Lora**, Copyright 2011 The Lora Project Authors ([https://github.com/cyrealtype/Lora-Cyrillic](https://github.com/cyrealtype/Lora-Cyrillic)), with Reserved Font Name "Lora"
