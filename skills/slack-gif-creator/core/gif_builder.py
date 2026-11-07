@@ -36,7 +36,7 @@ class GIFBuilder:
         Add a frame to the GIF.
 
         Args:
-            frame: Frame as numpy array or PIL Image (will be converted to RGB)
+            frame: Frame as numpy array or PIL Image (will be converted to RGB and snapshotted)
         """
         if isinstance(frame, Image.Image):
             frame = np.array(frame.convert("RGB"))
@@ -48,6 +48,8 @@ class GIFBuilder:
                 (self.width, self.height), Image.Resampling.LANCZOS
             )
             frame = np.array(pil_frame)
+        else:
+            frame = frame.copy()
 
         self.frames.append(frame)
 
