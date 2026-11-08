@@ -103,6 +103,56 @@ Example pagination response:
 }
 ```
 
+### Managing Large Tool Results
+
+MCP clients receive the content returned in a `CallToolResult`; the protocol does
+not compress a large result for them. Treat result size as part of the tool's
+contract, especially for database and search tools:
+
+1. **Enforce a bounded default**: accept a `limit`/`page_size` argument, cap it on
+   the server, and return pagination metadata (`has_more` plus a cursor or offset).
+2. **Return a useful preview**: for exploratory queries, include a count, schema,
+   and a small sample rather than every row. Make the sample limit explicit.
+3. **Offer full data as a resource**: write an export behind the server's normal
+   authorization checks and return a `resource_link` in `content` when the caller
+   needs the complete result. Resource links keep the bulk payload out of the
+   immediate model context; they do not bypass access control.
+4. **Make truncation explicit**: never silently drop rows. Include `truncated: true`
+   and the next cursor (or a resource link) so the caller can continue.
+
+Example bounded response with an optional full export:
+
+```json
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "Showing 20 of 10421 rows. Use next_cursor for the next page."
+    },
+    {
+      "type": "resource_link",
+      "uri": "https://mcp.example.test/resources/exports/8f2d",
+      "name": "full-results.json",
+      "mimeType": "application/json"
+    }
+  ],
+  "structuredContent": {
+    "items": [],
+    "count": 20,
+    "total_count": 10421,
+    "has_more": true,
+    "next_cursor": "eyJvZmZzZXQiOjIwfQ",
+    "truncated": true
+  }
+}
+```
+
+Keep resource URIs opaque and short-lived where possible, and resolve them through
+the same authorization boundary as the original tool call. See the MCP
+[tool result](https://modelcontextprotocol.io/specification/2025-11-25/server/tools)
+and [ResourceLink](https://modelcontextprotocol.io/specification/2025-11-25/schema#resourcelink)
+definitions for the protocol fields.
+
 ---
 
 ## Transport Options
