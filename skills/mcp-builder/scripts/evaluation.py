@@ -53,10 +53,27 @@ Response Requirements:
 - Your response should go last"""
 
 
+def _safe_xml_parse(file_path: Path):
+    """Parse XML with an XXE guard (CWE-611): refuse DOCTYPE/entities.
+
+    Evaluation files may come from untrusted sources; xml.etree resolves
+    external entities. Prefer defusedxml when installed, else reject any
+    document declaring a DOCTYPE before parsing.
+    """
+    try:
+        from defusedxml.ElementTree import parse as _parse
+        return _parse(file_path)
+    except ImportError:
+        data = Path(file_path).read_bytes()
+        if b"<!DOCTYPE" in data.upper() or b"<!ENTITY" in data.upper():
+            raise ValueError("refusing XML with DOCTYPE/entities (XXE guard)")
+        return ET.parse(file_path)
+
+
 def parse_evaluation_file(file_path: Path) -> list[dict[str, Any]]:
     """Parse XML evaluation file with qa_pair elements."""
     try:
-        tree = ET.parse(file_path)
+        tree = _safe_xml_parse(file_path)
         root = tree.getroot()
         evaluations = []
 
