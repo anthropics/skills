@@ -49,8 +49,10 @@ workbook.
 range or a reference to the wrong row yields a clean, error-free file with wrong numbers.
 Write 2–3 formulas first and check they pull the values you expect, before building out a grid.
 
+In the formulas below, a backslash before a dollar sign and digit protects the literal Excel reference from Claude Code skill-argument substitution. Omit that backslash when writing the formula into a workbook.
+
 **A workbook that links to another file loses those links** if you re-save it with openpyxl and
-then recalculate. Such a formula reads `='[1]Returns Analysis'!$B$2` — the `[1]` is an index
+then recalculate. Such a formula reads `='[1]Returns Analysis'!$B\$2` — the `[1]` is an index
 into the workbook's external-reference list, naming a *separate file on disk*, not a sheet.
 That file is rarely present here, so the cell's cached value is the only thing holding its
 data. openpyxl strips that value on save; LibreOffice then has to resolve the reference for
@@ -75,7 +77,7 @@ literal `#NAME?` baked into the file you deliver.
 - **`data_only=True` on a file openpyxl just wrote returns `None` everywhere** — run `recalc.py` first. (A formula whose result is `""` also reads back as `None`.)
 - **Merged cells: write the top-left anchor only.** Every other cell in the range is a `MergedCell` whose `.value` is read-only.
 - **`.xlsm` loses its macros unless you pass `keep_vba=True`** to `load_workbook`.
-- **A sheet name containing a space must be quoted** in a cross-sheet reference: `='Assumptions Inputs'!$B$5`. Unquoted, it evaluates to `#VALUE!`.
+- **A sheet name containing a space must be quoted** in a cross-sheet reference: `='Assumptions Inputs'!$B\$5`. Unquoted, it evaluates to `#VALUE!`.
 
 ## Financial models
 
@@ -91,7 +93,7 @@ percentages `0.0%`, **stored as fractions** (`0.15` renders `15.0%`; storing `15
 `1500.0%`) · valuation multiples `0.0x` · years as text (`"2024"`, never `2,024`).
 
 **Structure:** every assumption in its own labeled cell, referenced by the formulas that use it
-(`=B5*(1+$B$6)`, never `=B5*1.05`) · formulas consistent across every projection period, since a
+(`=B5*(1+$B\$6)`, never `=B5*1.05`) · formulas consistent across every projection period, since a
 lone edited cell mid-row is the commonest silent error · guard denominators that can be zero.
 
 ## Dependencies
