@@ -1,0 +1,110 @@
+{
+  "name": "al-medicaid-policy",
+  "kind": "state-policy",
+  "state": "AL",
+  "index": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals.aspx",
+  "fetchVia": "curl",
+  "out": "policy/al",
+  "note": "Alabama Medicaid Provider Billing Manual, April 2026 quarterly release. Per-chapter PDFs under /content/Gated/. Index .aspx is behind a CPT/CDT license click-through, but chapter PDFs 200 directly via curl (no cookie). No dedicated Ambulance/NET billing chapter — transportation policy lives in Admin Code 560-X-18 + NET Procedures doc.",
+  "docs": [
+    {
+      "title": "Ch.2 — Becoming a Medicaid Provider",
+      "detector": "D3",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_02.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.7 — Understanding Your Rights and Responsibilities as a Provider",
+      "detector": "D3,D4",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_07.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.14 — Durable Medical Equipment (DME), Supplies, Appliances, Prosthetics, Orthotics, Pedorthics",
+      "detector": "D15",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_14.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.17 — Home Health",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_17.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.18 — Hospice",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_18.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.19 — Hospital (Inpatient & Outpatient)",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_19.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.20 — Independent Laboratory",
+      "detector": "D4",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_20.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.22 — Independent Radiology",
+      "detector": "D4",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_22.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.27 — Pharmacy",
+      "detector": "D16,D23",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_27.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.28 — Physician",
+      "detector": "D4",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_28.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.37 — Therapy (Occupational, Physical, Speech, ABA)",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_37.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.40 — ACHN Primary Care Physician & ACHN Entities Billing",
+      "detector": "D4",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_40.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.106 — Targeted Case Management",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_106.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.107 — Waiver Services (HCBS)",
+      "detector": "D20",
+      "url": "https://medicaid.alabama.gov/content/Gated/7.6.1G_Provider_Manuals/7.6.1.2G_Apr_2026/Apr26_107.pdf",
+      "pp": null
+    },
+    {
+      "title": "Administrative Code 560-X-18 — Transportation Services (Ambulance & NET)",
+      "detector": "D19",
+      "url": "https://medicaid.alabama.gov/documents/9.0_Resources/9.2_Administrative_Code/9.2_Adm_Code_Chap_18_Transportation_Services_3-20-24.pdf",
+      "pp": null
+    },
+    {
+      "title": "Non-Emergency Transportation (NET) Program Procedures",
+      "detector": "D19",
+      "url": "https://medicaid.alabama.gov/documents/4.0_Programs/4.5_Transportation/4.5_Non_Emergency_Transportation_Procedures_4-8-25.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Provider Billing Manual is quarterly (Jan/Apr/Jul/Oct); URL pattern: /content/Gated/7.6.1G_Provider_Manuals/7.6.1.<q>G_<Mon>_<YYYY>/<Mon><YY>_<NN>.pdf (chapters 01–08 zero-padded, 09–41 + 100-series not). ~45 chapter PDFs total; captured 14 detector-relevant + 2 transportation policy docs from outside the manual (no dedicated ambulance/NET billing chapter — NET is voucher-based via ACHN). Index .aspx requires CPT/CDT 'I Accept' click-through to list chapters, but chapter PDFs are NOT gated — direct curl 200. Full bookmarked archive: /content/Gated/7.6.1G_Archived_Manuals/7.6.1.G_PM_<Month>_<Year>_Bookmarked.pdf.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

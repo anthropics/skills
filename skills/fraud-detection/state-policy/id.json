@@ -1,0 +1,104 @@
+{
+  "name": "id-medicaid-policy",
+  "kind": "state-policy",
+  "state": "ID",
+  "index": "https://www.idmedicaid.com/Provider%20Guide/Provider%20Handbook.aspx",
+  "fetchVia": "curl",
+  "out": "policy/id",
+  "note": "Idaho Medicaid Provider Handbook (Gainwell/idmedicaid.com SharePoint). 23 per-service Provider Guidelines PDFs + 6 General Information PDFs, stable URLs at /Provider%20Guidelines/<Name>.pdf; curl 200, no login. Pharmacy carved out to PBM (idaho.fhsc.com).",
+  "docs": [
+    {
+      "title": "Transportation Services",
+      "detector": "D19",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Transportation%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home and Community-Based Services (HCBS) and Long-Term Support Services (LTSS)",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Home%20and%20Community-Based%20Services%20(HCBS)%20and%20Long-Term%20Support%20Services%20(LTSS).pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health and Hospice Services",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Home%20Health%20and%20Hospice%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Nursing Services",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Nursing%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Adult Residential Care",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Adult%20Residential%20Care.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Services (Physician & Non-Physician Practitioner)",
+      "detector": "D4",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Medical%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Laboratory%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment, Prosthetics, Orthotics and Supplies (DMEPOS)",
+      "detector": "D15",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Durable%20Medical%20Equipment,%20Prosthetics,%20Orthotics%20and%20Supplies.pdf",
+      "pp": null
+    },
+    {
+      "title": "Therapy Services (PT/OT/ST)",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Therapy%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospital Services",
+      "detector": "D20",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Hospital%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health and Social Services",
+      "detector": "D4",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Behavioral%20Health%20and%20Social%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulatory Surgical Center Services",
+      "detector": "D4",
+      "url": "https://www.idmedicaid.com/Provider%20Guidelines/Ambulatory%20Surgical%20Center%20Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Information and Requirements for Providers",
+      "detector": "D3,D4",
+      "url": "https://www.idmedicaid.com/General%20Information/General%20Information%20and%20Requirements%20for%20Providers.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Billing Instructions",
+      "detector": "D4",
+      "url": "https://www.idmedicaid.com/General%20Information/General%20Billing%20Instructions.pdf",
+      "pp": null
+    },
+    {
+      "title": "Idaho Medicaid Pharmacy Claims Submission Manual (PBM)",
+      "detector": "D16,D23",
+      "url": "https://idaho.fhsc.com/providers/manuals.asp",
+      "pp": null
+    }
+  ],
+  "_comment": "idmedicaid.com (Gainwell SharePoint). Index page lists 23 Provider Guidelines PDFs alphabetically + General Information + Reference sections. Stable space-encoded URLs, undated filenames (revision date in PDF header). Physician services = 'Medical Services.pdf'. No Pharmacy chapter on index — Rx PBM is Magellan/Gainwell at idaho.fhsc.com (HTML manual page). NEMT brokered via MTM but Transportation Services handbook still covers ambulance + NEMT policy. curl -A UA returns 200 application/pdf.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

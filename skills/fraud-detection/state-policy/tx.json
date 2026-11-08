@@ -1,0 +1,104 @@
+{
+  "name": "tx-medicaid-policy",
+  "kind": "state-policy",
+  "state": "TX",
+  "index": "https://www.tmhp.com/resources/provider-manuals/tmppm",
+  "fetchVia": "curl",
+  "out": "policy/tx",
+  "note": "Texas Medicaid Provider Procedures Manual (TMPPM), 2026-06 monthly release. Per-chapter PDFs, no login. Full archive PDF also available.",
+  "docs": [
+    {
+      "title": "Vol.1 Ch.6 — Claims Filing",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/1_06_claims_filing.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.1 Ch.1 — Provider Enrollment",
+      "detector": "D3",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/1_01_provider_enrollment.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.1 Ch.2 — Texas Medicaid Reimbursement",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/1_02_texas_medicaid_reimbursement.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.1 Ch.5 — Prior Authorization",
+      "detector": "D4,D15",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/1_05_prior_authorization.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.1 — Ambulance Services",
+      "detector": "D19",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_01_ambulance_services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.14 — Medical Transportation Program",
+      "detector": "D19",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_14_med_transport_program.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.10 — Home Health Nursing & Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_10_hh_nursing_and_pdn_srvs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.13 — Medical Specialties & Physician Services",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_13_med_specs_and_phys_srvs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.6 — DME and Supplies",
+      "detector": "D15",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_06_dme_and_supplies.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.15 — Outpatient Drug Services",
+      "detector": "D16,D23",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_15_outpatient_drug.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.17 — Radiology & Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_17_radiology_and_lab_srvs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.2 — Behavioral Health",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_02_behavioral_health.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.16 — PT/OT/ST Services",
+      "detector": "D20",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_16_pt_ot_st_srvs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.11 — Inpatient & Outpatient Hospital",
+      "detector": "D20",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_11_inpatient_outpatient_hosp_srvs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Vol.2 Ch.19 — Telecommunication Services",
+      "detector": "D4",
+      "url": "https://www.tmhp.com/sites/default/files/file-library/resources/provider-manuals/tmppm/pdf-chapters/2026/2026-06-june/2_19_telecommunication_srvs.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "TMPPM 2026-06 release. 33 chapter PDFs total on the index; captured 15 detector-relevant ones. Monthly URL pattern: .../pdf-chapters/<YYYY>/<YYYY>-<MM>-<month>/. Full single-PDF archive: .../archives/2026-06-TMPPM.pdf.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

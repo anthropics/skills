@@ -1,0 +1,110 @@
+{
+  "name": "ny-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NY",
+  "index": "https://www.health.ny.gov/guidance/ohip/medicaid/index.htm",
+  "fetchVia": "browser",
+  "out": "policy/ny",
+  "note": "NY Medicaid billing/policy prose for D4/D19/D20/D23 adjudication. ~60 PDFs, ~2,500 pp.",
+  "docs": [
+    {
+      "title": "Transportation Policy Guidelines",
+      "detector": "D19",
+      "url": null,
+      "pp": 37
+    },
+    {
+      "title": "Transportation Billing Guidelines",
+      "detector": "D19",
+      "url": null,
+      "pp": 59
+    },
+    {
+      "title": "Personal Care Policy Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": 10
+    },
+    {
+      "title": "Personal Care Billing Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": 49
+    },
+    {
+      "title": "HCBS Waiver Policy Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": 10
+    },
+    {
+      "title": "Home Health Policy Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": 14
+    },
+    {
+      "title": "Physician Policy Guidelines",
+      "detector": "D4",
+      "url": null,
+      "pp": 71
+    },
+    {
+      "title": "DME Policy Guidelines",
+      "detector": "D4,D15",
+      "url": null,
+      "pp": 28
+    },
+    {
+      "title": "Pharmacy Policy Guidelines",
+      "detector": "D16,D23",
+      "url": null,
+      "pp": 46
+    },
+    {
+      "title": "Laboratory Policy Guidelines",
+      "detector": "D4",
+      "url": null,
+      "pp": 25
+    },
+    {
+      "title": "Clinic Policy Guidelines",
+      "detector": "D4",
+      "url": null,
+      "pp": 43
+    },
+    {
+      "title": "Inpatient Policy Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": 27
+    },
+    {
+      "title": "Hospice Policy Guidelines",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Dental Policy Guidelines",
+      "detector": null,
+      "url": null,
+      "pp": 16
+    },
+    {
+      "title": "Disqualified Provider List",
+      "detector": "D3",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Deceased Provider List",
+      "detector": "D3",
+      "url": null,
+      "pp": null
+    }
+  ],
+  "_comment": "url:null entries need a second browser pass to resolve the actual PDF hrefs from the index page. fetch-reference.js state-policy handler reads this file, fetches each docs[].url to out/<slug>.pdf, runs pdftotext -layout.",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

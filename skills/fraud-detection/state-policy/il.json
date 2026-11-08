@@ -1,0 +1,98 @@
+{
+  "name": "il-medicaid-policy",
+  "kind": "state-policy",
+  "state": "IL",
+  "index": "https://hfs.illinois.gov/medicalproviders/handbooks/chapter200.html",
+  "fetchVia": "curl",
+  "out": "policy/il",
+  "note": "Illinois HFS Provider Handbooks — Chapter 200 series (per-specialty letter-prefixed PDFs A-200..U-200). ~30 specialties on the index incl. archived versions; captured 14 current detector-relevant ones. Chapter 100 (general policy) is sibling page. Direct AEM /content/dam/ links 200 via curl, no login.",
+  "docs": [
+    {
+      "title": "Chapter 100 — General Policy and Procedures",
+      "detector": "D3,D4",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/chapter100.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter T-200 — Transportation Handbook",
+      "detector": "D19",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/transportationhandbook.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter R-200 — Home Health Agencies",
+      "detector": "D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/r200.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter R-200 — Home Health Agencies Appendices",
+      "detector": "D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/r200a.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter K-200 — Hospice Agencies",
+      "detector": "D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/hospicehandbook.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter A-200 — Practitioners Rendering Medical Services (06/2021)",
+      "detector": "D4",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/medicalproviders/handbooks/06162021practitionerhdbkpolicyapnasrenderingchangesfinal.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter M-200 — Durable Medical Equipment and Supplies",
+      "detector": "D15",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/medicalproviders/handbooks/m200.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter M-200 — DME Appendices",
+      "detector": "D15",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/090618dmeappendicesapp1correctionfinal.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter P-200 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/p200.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter P-200 — Pharmacy Appendices",
+      "detector": "D16,D23",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/p200a.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter L-200 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/labpolicytopicl21012rev060118.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter J-200 — Therapy Services (PT/OT/ST)",
+      "detector": "D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/j200.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter H-200 — Hospital Services",
+      "detector": "D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/sitecollectiondocuments/h200.pdf",
+      "pp": null
+    },
+    {
+      "title": "Community Based Behavioral Services Handbook (02/2025)",
+      "detector": "D4,D20",
+      "url": "https://hfs.illinois.gov/content/dam/soi/en/web/hfs/medicalproviders/handbooks/02042025cbbshb.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "HFS Chapter-200 index lists ~60 PDF links (current + archived per specialty). No standalone HCBS waiver handbook on this index — HCBS waivers documented separately under DHS; Home Health R-200 + CBBS used as nearest. Chapter 100 (general policy) URL inferred from sibling chapter100.html page pattern — verify on fetch. Fee schedules at hfs.illinois.gov/medicalproviders/medicaidreimbursement.html.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

@@ -1,0 +1,104 @@
+{
+  "name": "wy-medicaid-policy",
+  "kind": "state-policy",
+  "state": "WY",
+  "index": "https://www.wyomingmedicaid.com/portal/Provider-Manuals-and-Bulletins",
+  "fetchVia": "curl",
+  "out": "policy/wy",
+  "note": "Wyoming Medicaid (Acentra Health fiscal agent, wyomingmedicaid.com). Policy organized by claim type into 3 monolithic quarterly PDFs (CMS-1500 ~440pp, Institutional/UB ~330pp, Dental) + BHC/Title25/School-Based. Per-service coverage = chapters inside those PDFs (index gives #page= anchors). curl 200, no login.",
+  "docs": [
+    {
+      "title": "CMS-1500 Provider Manual (full, v18.0 2026-04-01)",
+      "detector": "D3,D4,D15,D19",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf",
+      "pp": 440
+    },
+    {
+      "title": "Institutional/UB Provider Manual (full, v18.0 2026-04-01)",
+      "detector": "D20",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_Institutional%20Provider%20Manual_N_2026.04.01_v18.0.pdf",
+      "pp": 335
+    },
+    {
+      "title": "CMS-1500 Ch.10 — Ambulance",
+      "detector": "D19",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=201",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.23 — Non-Emergency Medical Transportation",
+      "detector": "D19",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=336",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.24 — Practitioner Services",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=341",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.18 — Durable Medical Equipment Billing",
+      "detector": "D15",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=302",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.22 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=329",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.6 — Common Billing Information",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=86",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.3 — Provider Responsibilities",
+      "detector": "D3",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=45",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Ch.12 — Behavioral Health",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_CMS-1500%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=217",
+      "pp": null
+    },
+    {
+      "title": "Institutional Ch.15 — Home Health",
+      "detector": "D20",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_Institutional%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=260",
+      "pp": null
+    },
+    {
+      "title": "Institutional Ch.16 — Hospice",
+      "detector": "D20",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_Institutional%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=271",
+      "pp": null
+    },
+    {
+      "title": "Institutional Ch.18 — Skilled Nursing Facility & Swing Bed",
+      "detector": "D20",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_Institutional%20Provider%20Manual_N_2026.04.01_v18.0.pdf?#page=293",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health Centers (BHC) Provider Manual",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BHC_Provider_Manual_v1.1.pdf",
+      "pp": null
+    },
+    {
+      "title": "Title 25 (Involuntary Hospitalization) Provider Manual",
+      "detector": "D4",
+      "url": "https://www.wyomingmedicaid.com/portal/References/latestproviderfiles/BMS_Acentra%20Health_Title%2025%20Provider%20Manual_N_2026.04.01_v18.0.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "WY has NO per-service standalone manuals — everything is chapters inside the CMS-1500 or Institutional PDF (quarterly versioned, filename embeds date+version so URLs break each quarter). docs[] lists the 2 full PDFs once + #page= anchors for detector-relevant chapters (fetch handler should de-dup by base URL). Pharmacy is carved out to a PBM (not on this portal) — no D16/D23 doc here. HCBS waivers (Community Choices, Comprehensive/Supports) administered by WDH divisions at health.wyo.gov, not on the Acentra fiscal-agent portal.",
+  "siteArchitecture": "monolithic-pdf",
+  "lastVerified": "2026-06-22"
+}

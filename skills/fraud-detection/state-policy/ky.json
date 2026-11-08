@@ -1,0 +1,122 @@
+{
+  "name": "ky-medicaid-policy",
+  "kind": "state-policy",
+  "state": "KY",
+  "index": "https://www.chfs.ky.gov/agencies/dms/provider/Pages/default.aspx",
+  "fetchVia": "curl",
+  "out": "policy/ky",
+  "note": "KY DMS Provider Information hub — per-provider-type (PT nn) sub-pages each link a Provider Type Summary PDF + the governing 907 KAR regulation. KAR .pdf URLs on apps.legislature.ky.gov 301 → HTML; treat as HTML→text. chfs.ky.gov PDFs 200 via curl, no login.",
+  "docs": [
+    {
+      "title": "Non-Emergency Transportation Provider Type Summary (PT 56)",
+      "detector": "D19",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/Non-EmergencyTransportationPT56.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 3:066 — Non-emergency medical transportation",
+      "detector": "D19",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/003/066/",
+      "pp": null
+    },
+    {
+      "title": "Emergency Transportation / Ambulance Provider Type Summary (PT 55)",
+      "detector": "D19",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/EmergencyTransportationPT55.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 1:060 — Ambulance transportation coverage & reimbursement",
+      "detector": "D19",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/001/060/",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency Provider Type Summary (PT 34)",
+      "detector": "D20",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/HomeHealthAgencyPT34.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Manual (2014)",
+      "detector": "D20",
+      "url": "https://www.chfs.ky.gov/agencies/dms/dca/Documents/HomeHealthManual2014.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home & Community Based Waiver Provider Type Summary (PT 42)",
+      "detector": "D20",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/HCBPT42.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 7:010 — HCBS waiver services & reimbursement",
+      "detector": "D20",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/007/010/",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing Provider Type Summary (PT 18)",
+      "detector": "D20",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/PDNPT18.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services Provider Type Summary (PT 64)",
+      "detector": "D4",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/PhysicianPT64.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 3:010 — Physicians' services coverage",
+      "detector": "D4",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/003/010/",
+      "pp": null
+    },
+    {
+      "title": "Medical Supplies, Equipment & Appliances (DME) Provider Type Summary (PT 90)",
+      "detector": "D15",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/MSEAPT90.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 1:479 — DME coverage, limits & medical necessity",
+      "detector": "D15",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/001/479/",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Auto-Refill Policy Provider Communication",
+      "detector": "D16,D23",
+      "url": "https://www.chfs.ky.gov/agencies/dms/dpo/ppb/Documents/ky_auto_refill_policy_provider_communication_10.21.2024_final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratory Provider Type Summary (PT 37)",
+      "detector": "D4",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/IndependentLabPT37.pdf",
+      "pp": null
+    },
+    {
+      "title": "Urine Drug Testing (UDT) Policy",
+      "detector": "D4,D16",
+      "url": "https://www.chfs.ky.gov/agencies/dms/dpo/bpb/Documents/UDTPolicy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Type Summary (PT 44)",
+      "detector": "D20",
+      "url": "https://www.chfs.ky.gov/agencies/dms/DMSProviderSummaries/HospicePT44.pdf",
+      "pp": null
+    },
+    {
+      "title": "907 KAR 3:130 — Medical necessity & clinically appropriate determination basis",
+      "detector": "D3,D4",
+      "url": "https://apps.legislature.ky.gov/law/kar/titles/907/003/130/",
+      "pp": null
+    }
+  ],
+  "_comment": "CHFS DMS SharePoint hub: ~50 provider-type sub-pages (Pages/<slug>.aspx), each links a DMSProviderSummaries/<Name>PT<nn>.pdf (the billing/policy summary) + governing 907 KAR regs. KAR site serves HTML at /law/kar/titles/907/<ch>/<sec>/ (the .pdf paths linked from CHFS 301 there). Pharmacy (PT 54) policy lives under dpo/ppb/ with many provider notices but no single manual; MedImpact PBM portal separate. Full per-PT billing-instruction PDFs also exist under /agencies/dms/BHI/PT<nn>%20BILLING%20MANUAL_*.pdf (versioned filenames, not enumerable from index).",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

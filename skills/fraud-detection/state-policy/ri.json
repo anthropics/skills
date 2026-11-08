@@ -1,0 +1,98 @@
+{
+  "name": "ri-medicaid-policy",
+  "kind": "state-policy",
+  "state": "RI",
+  "index": "https://eohhs.ri.gov/providers-partners/provider-manuals-guidelines/medicaid-provider-manual",
+  "fetchVia": "curl",
+  "out": "policy/ri",
+  "note": "RI EOHHS Medicaid Provider Reference Manual — Drupal hub with ~28 per-type sub-pages. Some types ship a versioned PDF (General/HCBS/DME/Lab/Ambulance/Hospice); Physician/Pharmacy/Home Health are HTML-only on the sub-page. NEMT fully brokered (MTM) under managed-care, separate manual page. curl 200, no login.",
+  "docs": [
+    {
+      "title": "General Guidelines v1.6.2 (provider enrollment, claims, sanctions)",
+      "detector": "D3,D4",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2026-02/General%20Guidelines%201.6.2.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Provider Reference Manual v1.2",
+      "detector": "D19",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2024-10/Ambulance%20V1.2.pdf",
+      "pp": null
+    },
+    {
+      "title": "Non-Emergency Medical Transportation (NEMT) Manual — brokered (MTM)",
+      "detector": "D19",
+      "url": "https://eohhs.ri.gov/providers-partners/medicaid-managed-care/non-emergency-medical-transportation-nemt-manual",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waiver Provider Reference Manual v1.11",
+      "detector": "D20",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2024-12/HCBS%20Waiver%20V1.11.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health — Coverage Guidelines (HTML)",
+      "detector": "D20",
+      "url": "https://eohhs.ri.gov/providers-partners/provider-manuals-guidelines/medicaid-provider-manual/home-health/coverage",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Reference Manual",
+      "detector": "D20",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2021-03/hospice_manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician — Coverage Guidelines (HTML)",
+      "detector": "D4",
+      "url": "https://eohhs.ri.gov/providers-partners/provider-manuals-guidelines/medicaid-provider-manual/physician/physician",
+      "pp": null
+    },
+    {
+      "title": "Physician — Services Requiring Prior Approval (HTML)",
+      "detector": "D4,D15",
+      "url": "https://eohhs.ri.gov/providers-partners/provider-manuals-guidelines/medicaid-provider-manual/physician/prior-approval-pa",
+      "pp": null
+    },
+    {
+      "title": "Physician — Office Visit Limitations",
+      "detector": "D4",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2025-02/Office%20Visit%20Limitations.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Provider Reference Manual v1.5",
+      "detector": "D15",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2022-10/DURABLE%20MEDICAL%20EQUIPMENT%20V1.5.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME Supplies Screening List",
+      "detector": "D15",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2022-10/DME%20Supplies%20Screening%20List_0.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy — Coverage Guidelines (HTML)",
+      "detector": "D16,D23",
+      "url": "https://eohhs.ri.gov/providers-partners/provider-manuals-guidelines/medicaid-provider-manual/pharmacy",
+      "pp": null
+    },
+    {
+      "title": "Independent Clinical Laboratory Provider Reference Manual",
+      "detector": "D4",
+      "url": "https://eohhs.ri.gov/Portals/0/Uploads/Documents/MA%20Providers/MA%20Reference%20Guides/Clinical%20Lab/clinical_laboratory_manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Rehabilitative Services — Occupational Therapy Manual",
+      "detector": "D20",
+      "url": "https://eohhs.ri.gov/sites/g/files/xkgbur226/files/2026-04/RI%20Medicaid%20Provider%20Reference%20Manual%20%20Occupational%20Therapy.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Index curl 200. PDF pattern: /sites/g/files/xkgbur226/files/<YYYY-MM>/<Name> V<N>.pdf (Drupal media, dated upload folders) or legacy /Portals/0/Uploads/Documents/MA Providers/MA Reference Guides/<Type>/. ~28 provider types on index; Physician/Pharmacy/Home Health have no standalone PDF — coverage text lives on the HTML sub-page (treat as HTML→text). NEMT is statewide-brokered under managed-care (MTM), manual page hosts policy PDFs not a billing manual. Legacy .aspx hrefs on index 301 to Drupal slugs.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}

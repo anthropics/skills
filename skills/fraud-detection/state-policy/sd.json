@@ -1,0 +1,122 @@
+{
+  "name": "sd-medicaid-policy",
+  "kind": "state-policy",
+  "state": "SD",
+  "index": "https://dss.sd.gov/medicaid/providers/billingmanuals/",
+  "fetchVia": "curl",
+  "out": "policy/sd",
+  "note": "SD DSS Billing & Policy Manual — single flat index, ~100 per-chapter PDFs grouped by category (General/Professional/Institutional/HCBS/Pharmacy/Dental/HIPAA). Stable URLs at /docs/medicaid/providers/billingmanuals/<Category>/<Name>.pdf; curl 200, no login.",
+  "docs": [
+    {
+      "title": "Community Transportation (NEMT)",
+      "detector": "D19",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Community_Transportation.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ground Ambulance",
+      "detector": "D19",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Ground_Ambulance.pdf",
+      "pp": null
+    },
+    {
+      "title": "Air Ambulance",
+      "detector": "D19",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Air_Ambulance.pdf",
+      "pp": null
+    },
+    {
+      "title": "Secure Medical Transportation",
+      "detector": "D19",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Secure_Medical_Transporation.pdf",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Services",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Personal_Care_Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency Services",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Home_Health.pdf",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Private_Duty_Nursing.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS — HOPE Waiver (Home & Community Based Options and Person-Centered Excellence)",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/HCBS/Home_and_Community_Based_Options_and_Person-Centered_Excellence.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS — Assistive Daily Living Services Waiver",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/HCBS/Assistive_Daily_Living_Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Electronic Visit Verification (EVV)",
+      "detector": "D20",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/General/Electronic_Visit_Verification.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services",
+      "detector": "D4",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Physician_Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Telemedicine Services",
+      "detector": "D4",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Telemedicine.pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory and Pathology Services",
+      "detector": "D4",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Laboratory_and_Pathology_Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment, Prosthetics, Orthotics, Supplies",
+      "detector": "D15",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Durable_Medical_Equipment.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Pharmacy/Pharmacy_Services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Administered Drugs",
+      "detector": "D16",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Physician_Administered_Drugs.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Claim Guidance",
+      "detector": "D4",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/General/General_Claim_Guidance.pdf",
+      "pp": null
+    },
+    {
+      "title": "Provider Policy Requirements (enrollment/exclusion)",
+      "detector": "D3",
+      "url": "https://dss.sd.gov/docs/medicaid/providers/billingmanuals/Professional/Provider_Policy_Requirements.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "DSS South Dakota Medicaid Billing and Policy Manual. ~100 chapter PDFs on one flat index page (no per-category sub-pages — all hrefs inline). Captured 18 detector-relevant chapters. 4 transportation chapters (Community/Ground/Air/Secure). HCBS waivers in own category folder. Fee schedules at sibling /feeschedules/. URL pattern is stable (no dates/versions in path).",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

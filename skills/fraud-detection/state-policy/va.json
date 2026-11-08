@@ -1,0 +1,122 @@
+{
+  "name": "va-medicaid-policy",
+  "kind": "state-policy",
+  "state": "VA",
+  "index": "https://vamedicaid.dmas.virginia.gov/manuals/provider-manuals-library",
+  "fetchVia": "curl",
+  "out": "policy/va",
+  "note": "Virginia DMAS MES Provider Manuals Library. 22 per-service manuals, each split into Ch 1–6 PDFs (Ch I/III shared across all manuals). Direct /sites/default/files/ PDF links, curl 200, no login. No standalone Laboratory manual — lab covered under Practitioner Ch IV.",
+  "docs": [
+    {
+      "title": "All Manuals — Chapter I: General Information",
+      "detector": "D3,D4",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2024-08/Chapter%20I%20%28updated%208.28.24%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Transportation Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D19",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2024-08/Transportation%20Chap.%20IV%20%28updated%208.28.24%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Transportation Manual — Ch V: Billing Instructions",
+      "detector": "D19",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-12/Transportation%20Chapter%205%20%28updated%2012.5.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Transportation Manual — Ch VI: Utilization Review and Control",
+      "detector": "D19",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2023-12/Transportation%20-%20Chapter%206%20%28updated%2012.28.23%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D20",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2024-08/Home%20Health%20Chpt%20IV%20%28updated%208.28.24%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Manual — Ch V: Billing Instructions",
+      "detector": "D20",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-12/Home%20Health%20Chapter%205%20%28updated%2012.5.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "CCC Plus Waiver Manual — Ch IV: Covered Services and Limitations (HCBS/Personal Care)",
+      "detector": "D20",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2023-12/CCC%20Plus%20Waiver%20chapter%204%20%28updated%2012.29.23%29.pdf",
+      "pp": null
+    },
+    {
+      "title": "CCC Plus Waiver Manual — Ch VI: Utilization Review and Control",
+      "detector": "D20",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2024-05/CCC%2B%20Waiver%20Chapter%206%20%28updated%205.16.24%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Practitioner Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D4",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-10/Practitioner%20Chapter%20IV%20%28updated%208.28.24%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Practitioner Manual — Ch V: Billing Instructions",
+      "detector": "D4",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-12/Practitioner%20Chapter%205%20%28updated%2012.5.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Practitioner Manual — Ch VI: Utilization Review and Control",
+      "detector": "D4",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2023-12/Physician%20Chapter%20VI%20%28updated%2012.28.23%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Telehealth Services Supplement",
+      "detector": "D4",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2026-01/Telehealth%20Services%20Supplement%20%28updated%201.5.26%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Supplies Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D15",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-12/DME%20Chapter%20IV%20%28updated%2012.5.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Supplies Manual — Ch V: Billing Instructions",
+      "detector": "D15",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-12/DME%20Chapter%20V%20%28updated%2012.5.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME and Supplies Manual — Appendix D: Service Authorization",
+      "detector": "D15",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2025-10/DME%20Appendix%20D%20%28updated%209.12.25%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D16,D23",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2026-03/Pharmacy%20Chapter%204%20%28updated%203.4.26%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Manual — Ch VII: Drug Utilization Review",
+      "detector": "D16,D23",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2023-07/Pharmacy%20Chapter%207%20%28updated%203.2.23%29_Final.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospital Manual — Ch IV: Covered Services and Limitations",
+      "detector": "D20",
+      "url": "https://vamedicaid.dmas.virginia.gov/sites/default/files/2024-08/Hospital%20Chapter%20IV%20%28updated%208.28.24%29_Final.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "DMAS MES Drupal site. 22 manual hubs at /pdf_chapter/<slug>; each lists Ch 1–6+ PDFs. Ch I (General) and Ch III (Member Eligibility) are shared files across every manual. Captured Ch IV/V/VI from the 6 detector-relevant manuals (Transportation, Home Health, CCC+ Waiver, Practitioner, DME, Pharmacy) + Hospital Ch IV + Telehealth supplement. PDF filenames embed revision dates — will drift; re-scrape /pdf_chapter/<slug> for current href. Index + sub-pages + PDFs all curl 200.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

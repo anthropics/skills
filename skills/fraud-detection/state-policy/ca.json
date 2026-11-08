@@ -1,0 +1,110 @@
+{
+  "name": "ca-medicaid-policy",
+  "kind": "state-policy",
+  "state": "CA",
+  "index": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/publications",
+  "fetchVia": "browser",
+  "out": "policy/ca",
+  "note": "Medi-Cal Provider Manuals (Part 1 + per-community Part 2). 26 community manuals total; captured 14 detector-relevant Part 2 sections. PDF endpoint /file/manual?fn=<slug>.pdf returns 403 to plain curl (bot-gate). Pharmacy benefit is carved out to Medi-Cal Rx — only pharmserv.pdf remains here. IHSS personal-care is administered by CDSS, not in these manuals.",
+  "docs": [
+    {
+      "title": "Medical Transportation – Ground (NEMT/ambulance policy)",
+      "detector": "D19",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=mctrangnd.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Transportation – Ground: Billing Codes and Reimbursement Rates",
+      "detector": "D19",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=mctrangndcd.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Transportation – Air",
+      "detector": "D19",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=mctranair.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home and Community-Based Services (HCBS)",
+      "detector": "D20",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=home.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS Billing Codes and Reimbursement Rates",
+      "detector": "D20",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=homecd.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agencies (HHA)",
+      "detector": "D20",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=homehlth.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agencies (HHA) Billing Codes",
+      "detector": "D20",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=homehlthcd.pdf",
+      "pp": null
+    },
+    {
+      "title": "Evaluation & Management (E&M) — General Medicine Part 2",
+      "detector": "D4",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=eval.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment (DME): An Overview",
+      "detector": "D15",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=dura.pdf",
+      "pp": null
+    },
+    {
+      "title": "DME Billing Codes: Frequency Limits",
+      "detector": "D15",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=duracdfre.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Supplies",
+      "detector": "D15",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=mcsup.pdf",
+      "pp": null
+    },
+    {
+      "title": "Incontinence Medical Supplies",
+      "detector": "D15",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=incont.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacist Services (Pharmacy Part 2; drug benefit carved to Medi-Cal Rx)",
+      "detector": "D16,D23",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=pharmserv.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pathology: Billing and Modifiers (Laboratory)",
+      "detector": "D4",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=pathbil.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pathology: Drug Testing",
+      "detector": "D4,D16",
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=pathdrug.pdf",
+      "pp": null
+    },
+    {
+      "title": "Part 1 — Medi-Cal Program & Eligibility",
+      "detector": null,
+      "url": "https://mcweb.apps.prd.cammis.medi-cal.ca.gov/file/manual?fn=00medi-cal.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "26 community manuals on the index, each = Part 1 (shared) + Part 2 (per-service section PDFs). All PDFs share one endpoint: /file/manual?fn=<slug>.pdf (slug = parenthetical in section title, spaces stripped). curl -I returns 403 Forbidden, so fetchVia=browser. Per-community section lists at /publications/manual?community=<slug> (SPA-rendered).",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

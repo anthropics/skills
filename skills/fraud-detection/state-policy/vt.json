@@ -1,0 +1,104 @@
+{
+  "name": "vt-medicaid-policy",
+  "kind": "state-policy",
+  "state": "VT",
+  "index": "https://dvha.vermont.gov/providers/manuals",
+  "fetchVia": "browser",
+  "out": "policy/vt",
+  "note": "DVHA Manuals index — ~25 supplement PDFs split across two hosts: vtmedicaid.com/assets/manuals/ (curl 200) and dvha.vermont.gov/sites/dvha/files/ (curl 403, Incapsula). No standalone Physician or Lab manual — covered in General Provider Manual + PCP Manual.",
+  "docs": [
+    {
+      "title": "General Provider Manual",
+      "detector": "D3,D4",
+      "url": "https://vtmedicaid.com/assets/manuals/GeneralProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Billing and Forms Manual",
+      "detector": "D4",
+      "url": "https://vtmedicaid.com/assets/manuals/GeneralBillingFormsManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 and UB-04 Billing Guide",
+      "detector": "D4",
+      "url": "https://vtmedicaid.com/assets/manuals/CMS1500UB04BillingGuide.pdf",
+      "pp": null
+    },
+    {
+      "title": "Primary Care Provider Manual",
+      "detector": "D4",
+      "url": "https://www.vtmedicaid.com/assets/manuals/PCPManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Non-Emergency Medical Transportation (NEMT) Program Manual",
+      "detector": "D19",
+      "url": "https://dvha.vermont.gov/sites/dvha/files/documents/Medicaid-NEMT-Program-Manual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Supplement",
+      "detector": "D15",
+      "url": "https://vtmedicaid.com/assets/manuals/DMESupplement.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Provider Manual (2026-04-03)",
+      "detector": "D16,D23",
+      "url": "https://dvha.vermont.gov/sites/dvha/files/documents/Pharmacy-Provider-Manual-20260403.pdf",
+      "pp": null
+    },
+    {
+      "title": "340B Medicaid Carve-In Program Manual",
+      "detector": "D16",
+      "url": "https://vtmedicaid.com/assets/manuals/340BMedicaidCarveInProgram.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency, Assistive Community Care & Enhanced Residential Care Manual",
+      "detector": "D20",
+      "url": "https://www.vtmedicaid.com/assets/manuals/HH_ACCS_ERC_HBW.pdf",
+      "pp": null
+    },
+    {
+      "title": "High-Technology Nursing Program Manual / Billing Guide",
+      "detector": "D20",
+      "url": "https://vtmedicaid.com/assets/manuals/HiTechBillingGuide.pdf",
+      "pp": null
+    },
+    {
+      "title": "Electronic Visit Verification (EVV) Guide",
+      "detector": "D20",
+      "url": "https://dvha.vermont.gov/sites/dvha/files/documents/EVVGuide.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Manual",
+      "detector": "D20",
+      "url": "https://www.vtmedicaid.com/assets/manuals/HospiceProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "PT/OT/ST (Therapy) Supplement",
+      "detector": "D20",
+      "url": "https://www.vtmedicaid.com/assets/manuals/PT_OT_STSupplement.pdf",
+      "pp": null
+    },
+    {
+      "title": "FQHC and Rural Health Clinic Supplement",
+      "detector": "D4",
+      "url": "https://vtmedicaid.com/assets/manuals/FQHC_RHCSupplement.pdf",
+      "pp": null
+    },
+    {
+      "title": "Mental Health Services Supplement",
+      "detector": "D4",
+      "url": "https://vtmedicaid.com/assets/manuals/MHSupplement.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "DVHA index lists ~25 manuals/supplements; captured 15 detector-relevant. PDFs on vtmedicaid.com (Gainwell fiscal-agent host) curl fine; dvha.vermont.gov is Incapsula-gated (403 via curl) so fetchVia=browser. No dedicated Physician/Laboratory supplement — physician E&M + lab billing live inside the General Provider Manual. HCBS/Personal Care waivers (Choices for Care) are administered by DAIL, not on this DVHA index. Coverage rules transitioning from Medicaid Covered Services Rules 7100-7700 to AHS HCAR at humanservices.vermont.gov/rules-policies.",
+  "siteArchitecture": "waf-browser",
+  "lastVerified": "2026-06-22"
+}

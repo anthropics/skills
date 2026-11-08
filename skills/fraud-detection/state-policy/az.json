@@ -1,0 +1,98 @@
+{
+  "name": "az-medicaid-policy",
+  "kind": "state-policy",
+  "state": "AZ",
+  "index": "https://www.azahcccs.gov/PlansProviders/RatesAndBilling/FFS/providermanual.html",
+  "fetchVia": "curl",
+  "out": "policy/az",
+  "note": "AHCCCS Fee-For-Service Provider Billing Manual. 29 per-chapter PDFs under /PlansProviders/Downloads/FFSProviderManual/; curl 200, no login. Coverage policy proper lives in the parallel AMPM (Medical Policy Manual) at /shared/MedicalPolicyManual/ — billing chapters captured here are detector-relevant.",
+  "docs": [
+    {
+      "title": "Ch.14 — Transportation Services (NEMT + Ambulance)",
+      "detector": "D19",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap14Transportation.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.14 Exh.2 — NEMT Daily Trip Report Instructions",
+      "detector": "D19",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFSChap_14TransportationExhibit2.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.20 — Home Health Care Services",
+      "detector": "D20",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap20HomeHealthCare.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.21 — ALTCS (Arizona Long Term Care / HCBS)",
+      "detector": "D20",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap21ALTCS.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.23 — Hospice Services",
+      "detector": "D20",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap23Hospice.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.10 — Individual Practitioner Services (incl. lab/radiology)",
+      "detector": "D4",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap10.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.4 — General Billing Rules",
+      "detector": "D4",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap04GeneralBillingRules.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.8 — Prior Authorizations",
+      "detector": "D4,D15",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFSChap08PriorAuthorizations.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.13 — DME, Orthotics, Prosthetics, Medical Supplies",
+      "detector": "D15",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap13DME.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.12 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap12Pharmacy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.19 — Behavioral Health Services",
+      "detector": "D4",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap19BehavioralHealth.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.22 — Nursing Facility Services",
+      "detector": "D20",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap22NursingFacility.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.3 — Provider Records and Registration",
+      "detector": "D3",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFSChapter3ProviderRecordsandRegistration.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ch.16 — Free-Standing Ambulatory Surgery Centers",
+      "detector": "D4",
+      "url": "https://www.azahcccs.gov/PlansProviders/Downloads/FFSProviderManual/FFS_Chap16AmbulatorySurgeryCenters.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "AHCCCS FFS Provider Billing Manual — 29 chapters total, captured 14 detector-relevant. No standalone Laboratory chapter (lab billing under Ch.10 Individual Practitioner). Ch.11 Hospital under revision (no PDF, addendum only). Master PDF exists (MasterFFSManual.pdf) but flagged stale — use per-chapter. Companion AHCCCS Medical Policy Manual (AMPM) at https://www.azahcccs.gov/shared/MedicalPolicyManual/ has per-policy coverage docs (e.g. 310-BB Lab) — second-pass source if needed.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

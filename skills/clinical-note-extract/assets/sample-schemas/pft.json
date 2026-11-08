@@ -1,0 +1,14 @@
+{
+  "fev1_liters": { "desc": "FEV1 in liters, post-bronchodilator if both reported", "check": {"kind": "range", "min": 0.2, "max": 8, "unit": "L"} },
+  "fev1_percent_predicted": { "desc": "FEV1 as percent of predicted", "check": {"kind": "range", "min": 5, "max": 150, "unit": "%"} },
+  "fvc_liters": { "desc": "FVC in liters", "check": {"kind": "range", "min": 0.3, "max": 10, "unit": "L"} },
+  "fvc_percent_predicted": { "desc": "FVC as percent of predicted", "check": {"kind": "range", "min": 5, "max": 150, "unit": "%"} },
+  "fev1_fvc_ratio": { "desc": "FEV1/FVC ratio", "check": {"kind": "range", "min": 0.2, "max": 1.0} },
+  "dlco_percent_predicted": { "desc": "DLCO as percent of predicted", "check": {"kind": "range", "min": 5, "max": 150, "unit": "%"} },
+  "bronchodilator_response": { "desc": "was the bronchodilator response significant", "finding": true },
+  "interpretation_pattern": { "desc": "obstructive / restrictive / mixed / normal — as the interpreter stated it" },
+  "interpretation_severity": { "desc": "severity grade as the interpreter stated it" },
+  "home_o2": { "desc": "is the patient on home oxygen", "finding": true },
+  "primary_dx": { "desc": "primary pulmonary diagnosis as stated", "finding": true, "check": {"kind": "terminology", "via": "icd10cm"} },
+  "test_date": { "desc": "date the PFTs were performed", "check": {"kind": "date"} }
+}

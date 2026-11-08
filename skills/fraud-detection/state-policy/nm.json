@@ -1,0 +1,110 @@
+{
+  "name": "nm-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NM",
+  "index": "https://www.hca.nm.gov/providers/rules-nm-administrative-code/",
+  "fetchVia": "curl",
+  "out": "policy/nm",
+  "note": "NM HCA (formerly HSD/MAD) Program Rules — policy is codified as NMAC Title 8 Ch.300–354, one PDF per part. ~75 rule PDFs on the index, hosted on the State Records Center CDN (prod-rf-lambda.rtssaas.com, GUID paths). curl 200, no login. No standalone Laboratory rule — lab coverage lives inside 8.310.2/8.310.3.",
+  "docs": [
+    {
+      "title": "NMAC 8.324.7 — Transportation Services and Lodging",
+      "detector": "D19",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/9f683724-a31e-42b1-942d-770a9fa84a09/08.324.0007.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.301.6 — Client Medical Transportation Services",
+      "detector": "D19",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/dd7ce530-a765-454e-a64f-68ea7b98dacc/08.301.0006.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.325.9 — Home Health Services",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/07bf1527-942e-40a5-874e-5c5103acfc56/08.325.0009.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.308.12 — Managed Care Community Benefit (HCBS/Personal Care)",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/f80f8040-2ebb-423a-9706-5c4823d404d1/08.308.0012.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.314.5 — Developmental Disabilities HCBS Waiver",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/8c51fa27-dc62-48c9-bc9b-0fdcc627c0d7/08.314.0005.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.314.6 — Mi Via HCBS Waiver (self-directed)",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/40976824-b1c3-4fe3-badd-2d92a3cbf21d/08.314.0006.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.314.3 — Medically Fragile HCBS Waiver",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/539466e4-7f3a-42e5-aad1-b5bffde60616/08.314.0003.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.310.2 — Health Care Professional Services: General Benefit Description (incl. lab/radiology)",
+      "detector": "D4",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/f45bf130-38a2-43a2-a8ec-cd8199c0269d/08.310.0002.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.310.3 — Professional Providers, Services and Reimbursement",
+      "detector": "D4",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/356d359f-77ad-4ce7-82cf-00830375b8f1/08.310.0003.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.302.2 — Billing for Medicaid Services",
+      "detector": "D4",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/b22ca9bc-8069-497a-ab1e-aa5794c97a73/08.302.0002.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.324.5 — Vision/Hearing Appliances, DME, Oxygen, Medical Supplies, Prosthetics & Orthotics",
+      "detector": "D15",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/20be9224-c1f7-4d10-aa91-9b1934ab4a58/08.324.0005.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.324.4 — Pharmacy Services, Prescribing, and Practitioner-Administered Drugs",
+      "detector": "D16,D23",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/418e246e-9d60-45a4-a70e-5eca02d06826/08.324.0004.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.302.1 — General Provider Policies (enrollment/participation)",
+      "detector": "D3",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/3287594f-3326-45ed-b5dc-5885e08a4c98/08.302.0001.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.308.22 — Managed Care: Fraud, Waste and Abuse",
+      "detector": "D3",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/be1a6cf6-428b-44f4-8b56-9b212383f7ce/08.308.0022.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.351.2 — Sanctions and Remedies",
+      "detector": "D3",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/240e1de5-ed85-464b-9ae2-40eb91cf042d/08.351.0002.pdf",
+      "pp": null
+    },
+    {
+      "title": "NMAC 8.325.4 — Hospice Care Services",
+      "detector": "D20",
+      "url": "https://prod-rf-lambda.rtssaas.com/PublicFiles/d89c47bd0d70402dba89b03a22bda6d1/1b9f6240-1848-4285-9ced-4192dc23820d/08.325.0004.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "MAD Program Policy Manual = NMAC 8.3xx parts. Index page is a per-chapter table; the NMAC Number cell is the PDF anchor (link text is bare rule number, title is in adjacent table cell). Current-rule PDFs all hosted at prod-rf-lambda.rtssaas.com/PublicFiles/<tenant-guid>/<file-guid>/08.CCC.PPPP.pdf (SRCA NMAC repository); archived versions live under hca.nm.gov/wp-content/uploads/. Personal Care Option was repealed/folded into 8.308.12 Community Benefit under Centennial/Turquoise Care managed care. Fee schedules + billing supplements at sibling /providers/registers_and_supplements/.",
+  "siteArchitecture": "html-rules",
+  "lastVerified": "2026-06-22"
+}
