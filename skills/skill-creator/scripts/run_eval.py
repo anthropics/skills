@@ -19,6 +19,43 @@ from pathlib import Path
 from scripts.utils import parse_skill_md
 
 
+def preflight_check(model: str | None = None) -> None:
+    """Run a trivial claude -p call to verify credentials and environment.
+
+    Catches missing API keys, bad auth, and broken CLI installations before
+    the expensive evaluation suite starts.
+    """
+    cmd = ["claude", "-p", "Respond with exactly: ok", "--output-format", "text"]
+    if model:
+        cmd.extend(["--model", model])
+    env = {k: v for k, v in os.environ.items() if k != "CLAUDECODE"}
+    try:
+        result = subprocess.run(
+            cmd, capture_output=True, text=True, env=env, timeout=30,
+        )
+    except FileNotFoundError:
+        print(
+            "Error: 'claude' CLI not found on PATH. Install it or check your PATH.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print(
+            "Error: Pre-flight check timed out after 30 s — is the Claude CLI responsive?",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+    if result.returncode != 0:
+        print(
+            f"Error: Pre-flight credential check failed (exit code {result.returncode}).\n"
+            f"stderr: {result.stderr.strip()}\n"
+            f"Fix your credentials / environment variables before running the eval suite.",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
+
 def find_project_root() -> Path:
     """Find the project root by walking up from cwd looking for .claude/.
 
@@ -85,7 +122,7 @@ def run_single_query(
         process = subprocess.Popen(
             cmd,
             stdout=subprocess.PIPE,
-            stderr=subprocess.DEVNULL,
+            stderr=subprocess.PIPE,
             cwd=project_root,
             env=env,
         )
@@ -175,6 +212,16 @@ def run_single_query(
                 process.kill()
                 process.wait()
 
+        # Surface non-zero exit codes instead of silently returning False
+        if process.returncode and process.returncode != 0:
+            stderr_output = ""
+            if process.stderr:
+                stderr_output = process.stderr.read().decode("utf-8", errors="replace").strip()
+            raise RuntimeError(
+                f"claude -p exited with code {process.returncode}"
+                + (f": {stderr_output}" if stderr_output else "")
+            )
+
         return triggered
     finally:
         if command_file.exists():
@@ -220,6 +267,14 @@ def run_eval(
                 query_triggers[query] = []
             try:
                 query_triggers[query].append(future.result())
+            except RuntimeError as e:
+                # Surface CLI/credential errors loudly — these corrupt data if
+                # silently treated as "did not trigger".
+                raise RuntimeError(
+                    f"Evaluation query failed due to a CLI error (not a "
+                    f"trigger miss). This likely indicates a credential or "
+                    f"environment problem. Query: {query!r}\nError: {e}"
+                ) from e
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
@@ -268,6 +323,8 @@ def main():
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
+
+    preflight_check(model=args.model)
 
     eval_set = json.loads(Path(args.eval_set).read_text())
     skill_path = Path(args.skill_path)
