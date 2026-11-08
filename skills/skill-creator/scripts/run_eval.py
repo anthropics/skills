@@ -8,9 +8,10 @@ for a set of queries. Outputs results as JSON.
 import argparse
 import json
 import os
-import select
+import queue
 import subprocess
 import sys
+import threading
 import time
 import uuid
 from concurrent.futures import ProcessPoolExecutor, as_completed
@@ -30,6 +31,25 @@ def find_project_root() -> Path:
         if (parent / ".claude").is_dir():
             return parent
     return current
+
+
+def _drain_pipe(stream, chunks: "queue.Queue[bytes]") -> None:
+    """Forward a subprocess pipe into a queue, ending with a b"" sentinel.
+
+    Runs on a daemon thread. Exists because select.select() cannot watch pipes
+    on Windows -- select there accepts sockets only, so every call raised
+    OSError (WinError 10038), each probe was caught as "query failed", and the
+    whole eval scored as a non-trigger. Blocking reads on a thread behave
+    identically on POSIX and Windows.
+    """
+    try:
+        while True:
+            chunk = os.read(stream.fileno(), 8192)
+            chunks.put(chunk)
+            if not chunk:
+                break
+    except OSError:
+        chunks.put(b"")
 
 
 def run_single_query(
@@ -65,7 +85,7 @@ def run_single_query(
             f"# {skill_name}\n\n"
             f"This skill handles: {skill_description}\n"
         )
-        command_file.write_text(command_content)
+        command_file.write_text(command_content, encoding="utf-8")
 
         cmd = [
             "claude",
@@ -97,21 +117,26 @@ def run_single_query(
         pending_tool_name = None
         accumulated_json = ""
 
+        # Reader thread + queue rather than select(): same 1-second poll
+        # cadence and the same timeout semantics, but portable. EOF arrives as
+        # a b"" sentinel, so process exit is observed through the queue only
+        # after any buffered output has been consumed -- the previous
+        # poll()-then-break path could drop tail output on a fast exit.
+        chunks: "queue.Queue[bytes]" = queue.Queue()
+        threading.Thread(
+            target=_drain_pipe, args=(process.stdout, chunks), daemon=True
+        ).start()
+
         try:
             while time.time() - start_time < timeout:
-                if process.poll() is not None:
-                    remaining = process.stdout.read()
-                    if remaining:
-                        buffer += remaining.decode("utf-8", errors="replace")
-                    break
-
-                ready, _, _ = select.select([process.stdout], [], [], 1.0)
-                if not ready:
+                try:
+                    chunk = chunks.get(timeout=1.0)
+                except queue.Empty:
+                    if process.poll() is not None and chunks.empty():
+                        break
                     continue
-
-                chunk = os.read(process.stdout.fileno(), 8192)
                 if not chunk:
-                    break
+                    break  # EOF sentinel -- process closed stdout
                 buffer += chunk.decode("utf-8", errors="replace")
 
                 while "\n" in buffer:
@@ -269,7 +294,7 @@ def main():
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
 
-    eval_set = json.loads(Path(args.eval_set).read_text())
+    eval_set = json.loads(Path(args.eval_set).read_text(encoding="utf-8"))
     skill_path = Path(args.skill_path)
 
     if not (skill_path / "SKILL.md").exists():
