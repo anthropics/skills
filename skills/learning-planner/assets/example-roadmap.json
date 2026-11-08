@@ -1,0 +1,320 @@
+{
+  "meta": {
+    "title": "Foundations of Linear Algebra for Machine Learning",
+    "discipline": "Mathematics (Linear Algebra)",
+    "goal_type": "mastery",
+    "target_outcome": "Build the linear algebra foundation needed to read and implement ML papers confidently.",
+    "current_level": "Comfortable with high-school algebra; no prior linear algebra.",
+    "timeline": "8 weeks, roughly 6 hours per week",
+    "created_date": "2026-06-11",
+    "last_updated": "2026-06-11",
+    "notes": "This is a small worked example demonstrating the schema, not a complete curriculum. Field values are illustrative."
+  },
+  "modules": [
+    {
+      "id": "vectors-and-spaces",
+      "title": "Vectors, Vector Spaces, and Linear Combinations",
+      "parent_id": null,
+      "category": "core",
+      "sequencing": "sequential",
+      "skippable": true,
+      "priority": "high",
+      "prerequisites": [],
+      "estimated_effort": "1 week",
+      "status": "available",
+      "is_milestone": false,
+      "learning_objectives": [
+        "Define vectors, vector spaces, and subspaces",
+        "Compute linear combinations and determine linear independence by hand",
+        "Explain span and basis both geometrically and algebraically"
+      ],
+      "deep_understanding_concepts": [
+        "Why linear independence guarantees a unique representation in a given basis",
+        "The relationship between span, basis, and dimension"
+      ],
+      "common_mistakes": [
+        "Treating vectors purely as lists of numbers without geometric intuition",
+        "Confusing 'spans the space' with 'is a basis for the space'"
+      ],
+      "expected_competence": "Can determine whether a given set of vectors is linearly independent and/or spans a given space, and justify the answer without a calculator.",
+      "industry_expectations": "Assumed fluent background for any ML, quant, or scientific computing role; gaps here surface as confusion in later derivations.",
+      "mastery_goals": [
+        "Reason about vector spaces abstractly enough to follow proofs in later modules"
+      ],
+      "evaluation": [
+        {
+          "method": "exercise-set",
+          "description": "Solve a problem set on independence, span, and basis, including at least two short proofs of linear (in)dependence."
+        },
+        {
+          "method": "oral-explanation",
+          "description": "Explain, without notes, why a basis is the minimal spanning set and why dimension is well-defined."
+        }
+      ],
+      "real_world_competence": [
+        "Recognizing when a feature matrix has linearly dependent columns (multicollinearity) and what that implies for downstream models"
+      ],
+      "resources": [
+        {
+          "title": "Introductory linear algebra textbook or course covering vector spaces, span, and basis",
+          "type": "book or course",
+          "source": "needed",
+          "notes": "No resource specified yet -- ask the user what they have access to before recommending anything."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "matrix-operations",
+      "title": "Matrix Operations and Linear Transformations",
+      "parent_id": null,
+      "category": "core",
+      "sequencing": "sequential",
+      "skippable": true,
+      "priority": "high",
+      "prerequisites": ["vectors-and-spaces"],
+      "estimated_effort": "1.5 weeks",
+      "status": "locked",
+      "is_milestone": false,
+      "learning_objectives": [
+        "Perform matrix addition, multiplication, and inversion by hand for small matrices",
+        "Interpret a matrix as a linear transformation between vector spaces",
+        "Compute and interpret rank, null space, and column space"
+      ],
+      "deep_understanding_concepts": [
+        "Matrix multiplication as composition of linear transformations, not just a row-by-column algorithm",
+        "Why rank-nullity ties together the dimensions of domain, range, and kernel"
+      ],
+      "common_mistakes": [
+        "Memorizing the multiplication algorithm without connecting it to function composition",
+        "Assuming matrix multiplication is commutative"
+      ],
+      "expected_competence": "Can compute rank, null space, and column space for a 3x3 or 4x4 matrix by hand, and explain what each tells you about the corresponding linear transformation.",
+      "industry_expectations": "Used daily in any role involving linear models, computer graphics, optimization, or numerical methods.",
+      "mastery_goals": [
+        "Read matrix-based derivations in papers without needing to re-derive multiplication rules"
+      ],
+      "evaluation": [
+        {
+          "method": "exercise-set",
+          "description": "Compute rank, null space, and column space for a set of matrices, including at least one rank-deficient example."
+        },
+        {
+          "method": "implementation",
+          "description": "Implement matrix multiplication and Gaussian elimination from scratch (no library calls) and validate against a library implementation."
+        }
+      ],
+      "real_world_competence": [
+        "Debugging a numerical pipeline where a matrix is unexpectedly singular or near-singular",
+        "Understanding why floating-point matrix operations can be numerically unstable for ill-conditioned matrices"
+      ],
+      "resources": [
+        {
+          "title": "Same primary resource as the previous module, chapters on matrix operations and linear transformations",
+          "type": "book or course",
+          "source": "needed",
+          "notes": "Depends on the resource selected for vectors-and-spaces."
+        }
+      ],
+      "notes": ""
+    },
+    {
+      "id": "matrix-decompositions",
+      "title": "Matrix Decompositions (LU, QR, SVD)",
+      "parent_id": "matrix-operations",
+      "category": "optional",
+      "sequencing": "sequential",
+      "skippable": true,
+      "priority": "medium",
+      "prerequisites": ["matrix-operations"],
+      "estimated_effort": "1 week",
+      "status": "locked",
+      "is_milestone": false,
+      "learning_objectives": [
+        "Explain what LU, QR, and SVD decompositions represent geometrically",
+        "Choose an appropriate decomposition for a given numerical problem"
+      ],
+      "deep_understanding_concepts": [
+        "SVD as the generalization of eigendecomposition to non-square matrices",
+        "Why decompositions improve numerical stability compared to direct methods"
+      ],
+      "common_mistakes": [
+        "Treating decompositions as black-box library calls without understanding what they reveal about the matrix"
+      ],
+      "expected_competence": "Can explain what each decomposition reveals about a matrix (rank, conditioning, principal directions) and pick the right one for a stated numerical problem.",
+      "industry_expectations": "SVD in particular underlies PCA, recommender systems, and many dimensionality-reduction techniques used in production ML systems.",
+      "mastery_goals": [
+        "Connect SVD to PCA before starting any applied ML modules"
+      ],
+      "evaluation": [
+        {
+          "method": "implementation",
+          "description": "Implement PCA via SVD on a small dataset and verify the result matches a library implementation."
+        }
+      ],
+      "real_world_competence": [
+        "Recognizing when SVD-based dimensionality reduction is discarding meaningful signal vs. noise"
+      ],
+      "resources": [
+        {
+          "title": "Same primary resource, chapter on matrix decompositions",
+          "type": "book or course",
+          "source": "needed",
+          "notes": "This submodule is optional; can be deferred if time-constrained."
+        }
+      ],
+      "notes": "This is a submodule of matrix-operations. It is optional and can be skipped on a first pass."
+    },
+    {
+      "id": "eigenvalues-eigenvectors",
+      "title": "Eigenvalues, Eigenvectors, and Diagonalization",
+      "parent_id": null,
+      "category": "core",
+      "sequencing": "sequential",
+      "skippable": false,
+      "priority": "high",
+      "prerequisites": ["matrix-operations"],
+      "estimated_effort": "1.5 weeks",
+      "status": "locked",
+      "is_milestone": false,
+      "learning_objectives": [
+        "Compute eigenvalues and eigenvectors for small matrices by hand",
+        "Diagonalize a matrix when possible and explain when it is not possible",
+        "Connect eigendecomposition to repeated linear transformations"
+      ],
+      "deep_understanding_concepts": [
+        "Eigenvectors as directions preserved (up to scaling) by a transformation",
+        "Why not all matrices are diagonalizable, and what that implies practically"
+      ],
+      "common_mistakes": [
+        "Computing eigenvalues correctly but failing to interpret what they mean for the underlying transformation",
+        "Assuming all square matrices are diagonalizable"
+      ],
+      "expected_competence": "Can compute eigenvalues/eigenvectors for a 3x3 matrix by hand, diagonalize it if possible, and explain the geometric meaning of the result.",
+      "industry_expectations": "Foundational for PCA, spectral clustering, stability analysis of dynamical systems, and convergence analysis of iterative algorithms.",
+      "mastery_goals": [
+        "Be able to read and follow the spectral-theory sections of an ML or optimization paper without external help"
+      ],
+      "evaluation": [
+        {
+          "method": "exercise-set",
+          "description": "Compute eigenvalues, eigenvectors, and diagonalizations for a set of matrices, including at least one non-diagonalizable example."
+        },
+        {
+          "method": "derivation",
+          "description": "Derive the power iteration method for finding the dominant eigenvector and explain its convergence condition."
+        }
+      ],
+      "real_world_competence": [
+        "Diagnosing why an iterative algorithm fails to converge by examining the spectral radius of its update matrix"
+      ],
+      "resources": [
+        {
+          "title": "Same primary resource, chapters on eigenvalues and diagonalization",
+          "type": "book or course",
+          "source": "needed",
+          "notes": ""
+        }
+      ],
+      "notes": "Marked as not skippable: this module is foundational enough that even learners with prior exposure should validate it explicitly."
+    },
+    {
+      "id": "vector-calculus-intro",
+      "title": "Introduction to Vector Calculus (Gradients and Jacobians)",
+      "parent_id": null,
+      "category": "optional",
+      "sequencing": "parallel",
+      "skippable": true,
+      "priority": "medium",
+      "prerequisites": ["vectors-and-spaces"],
+      "estimated_effort": "1 week",
+      "status": "locked",
+      "is_milestone": false,
+      "learning_objectives": [
+        "Compute gradients and Jacobians for multivariate functions",
+        "Explain the geometric meaning of the gradient as the direction of steepest ascent"
+      ],
+      "deep_understanding_concepts": [
+        "The Jacobian as a local linear approximation of a nonlinear map"
+      ],
+      "common_mistakes": [
+        "Confusing the gradient (a vector) with the derivative (a scalar) when generalizing from single-variable calculus"
+      ],
+      "expected_competence": "Can compute the gradient and Jacobian of a given multivariate function and explain what each represents geometrically.",
+      "industry_expectations": "Directly underlies gradient descent and backpropagation; expected baseline for any ML engineering role.",
+      "mastery_goals": [
+        "Be ready to study gradient-based optimization without first needing a calculus refresher"
+      ],
+      "evaluation": [
+        {
+          "method": "exercise-set",
+          "description": "Compute gradients and Jacobians for a set of multivariate functions by hand."
+        }
+      ],
+      "real_world_competence": [
+        "Recognizing exploding/vanishing gradient symptoms as a Jacobian-conditioning problem"
+      ],
+      "resources": [
+        {
+          "title": "Any standard multivariable calculus reference covering gradients and Jacobians",
+          "type": "book or course",
+          "source": "needed",
+          "notes": "This module runs in parallel with matrix-operations -- it shares only the vectors-and-spaces prerequisite."
+        }
+      ],
+      "notes": "Optional and parallel: useful before any ML-application module, but not required to proceed through the core linear algebra sequence."
+    },
+    {
+      "id": "applications-in-ml",
+      "title": "Milestone Project: PCA and Linear Regression from Scratch",
+      "parent_id": null,
+      "category": "advanced",
+      "sequencing": "sequential",
+      "skippable": false,
+      "priority": "high",
+      "prerequisites": ["eigenvalues-eigenvectors"],
+      "estimated_effort": "1 week",
+      "status": "locked",
+      "is_milestone": true,
+      "learning_objectives": [
+        "Implement PCA from scratch using eigendecomposition or SVD",
+        "Implement ordinary least squares linear regression from scratch using matrix operations",
+        "Explain how each algorithm depends on the linear algebra concepts covered in this roadmap"
+      ],
+      "deep_understanding_concepts": [
+        "How the normal equations for linear regression arise from a least-squares minimization in vector-space terms"
+      ],
+      "common_mistakes": [
+        "Implementing PCA/regression by calling library functions without being able to explain the underlying linear algebra"
+      ],
+      "expected_competence": "Can implement both algorithms from scratch, explain every linear-algebra step used, and correctly diagnose failures (e.g., singular matrices) on edge-case inputs.",
+      "industry_expectations": "Being able to implement and explain these from first principles is a common bar in ML interviews and is directly useful when debugging library behavior in production.",
+      "mastery_goals": [
+        "Demonstrate end-to-end mastery of the linear algebra foundation by applying it to two canonical ML algorithms"
+      ],
+      "evaluation": [
+        {
+          "method": "project",
+          "description": "Build a small project implementing PCA and OLS linear regression from scratch (no high-level ML libraries), tested on a real dataset, with a short write-up explaining each linear-algebra step."
+        },
+        {
+          "method": "debugging exercise",
+          "description": "Given a deliberately ill-conditioned dataset, diagnose why the from-scratch regression implementation produces unstable coefficients and propose a fix."
+        }
+      ],
+      "real_world_competence": [
+        "Handling a near-singular design matrix in linear regression (multicollinearity) using regularization or dimensionality reduction",
+        "Explaining trade-offs between implementing from scratch vs. using optimized library routines in production"
+      ],
+      "resources": [
+        {
+          "title": "Any small tabular dataset suitable for linear regression and PCA",
+          "type": "dataset",
+          "source": "needed",
+          "notes": "User should supply or choose a dataset; not specified here."
+        }
+      ],
+      "notes": "This is the capstone milestone for the roadmap, marked is_milestone=true."
+    }
+  ]
+}
