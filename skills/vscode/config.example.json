@@ -1,0 +1,48 @@
+{
+  "_comment": "Copy this file to your config location (Windows: %APPDATA%\\vscode-skill\\config.json; macOS/Linux: $XDG_CONFIG_HOME/vscode-skill/config.json or ~/.config/vscode-skill/config.json) and uncomment/edit the values you need. All keys are optional.",
+  "product": "auto",
+  "tempDir": null,
+  "products": {
+    "vscode": {
+      "cliPath": "C:\\Users\\you\\scoop\\apps\\vscode\\current\\bin\\code.cmd"
+    },
+    "vscode-insiders": {
+      "cliPath": "C:\\Users\\you\\scoop\\apps\\vscode-insiders\\current\\bin\\code-insiders.cmd"
+    },
+    "cursor": {
+      "cliPath": "C:\\Users\\you\\AppData\\Local\\Programs\\cursor\\resources\\app\\bin\\cursor.cmd",
+      "userDataPath": "C:\\Users\\you\\AppData\\Roaming\\Cursor\\User",
+      "extensionsPath": "C:\\Users\\you\\.cursor\\extensions"
+    },
+    "vscodium": {
+      "cliPath": "C:\\Users\\you\\scoop\\apps\\vscodium\\current\\bin\\codium.cmd",
+      "userDataPath": "C:\\Users\\you\\AppData\\Roaming\\VSCodium\\User",
+      "extensionsPath": "C:\\Users\\you\\.vscode-oss\\extensions"
+    },
+    "trae-cn": {
+      "_note": "Example only. Configure the actual Trae CLI path on your machine before using --Product trae-cn.",
+      "cliPath": "C:\\Users\\you\\AppData\\Local\\Programs\\Trae CN\\bin\\trae-cn.cmd",
+      "userDataPath": "C:\\Users\\you\\AppData\\Roaming\\Trae CN\\User",
+      "extensionsPath": "C:\\Users\\you\\.trae-cn\\extensions"
+    },
+    "qoder": {
+      "_note": "VS Code-compatible editor/configuration surface only; proprietary Qoder AI features are out of scope.",
+      "cliPath": "C:\\Users\\you\\AppData\\Local\\Programs\\Qoder\\bin\\qoder.cmd",
+      "userDataPath": "C:\\Users\\you\\AppData\\Roaming\\Qoder\\User",
+      "extensionsPath": "C:\\Users\\you\\.qoder\\extensions"
+    },
+    "codebuddy-cn": {
+      "_note": "VS Code-compatible editor/configuration surface only; proprietary CodeBuddy AI features and marketplace state are out of scope.",
+      "cliPath": "C:\\Users\\you\\AppData\\Local\\Programs\\CodeBuddy CN\\bin\\codebuddy.cmd",
+      "userDataPath": "C:\\Users\\you\\AppData\\Roaming\\CodeBuddy CN\\User",
+      "extensionsPath": "C:\\Users\\you\\.codebuddycn\\extensions"
+    }
+  },
+  "ssh": {
+    "defaultHost": "localhost",
+    "defaultUser": "you"
+  },
+  "wsl": {
+    "defaultDistro": "Ubuntu-24.04"
+  }
+}
