@@ -151,12 +151,35 @@ def _worksheet_names(archive):
     return names
 
 
+def _data_table_refs(xml_bytes):
+    """Yield the ref of every <f t="dataTable"> element in worksheet XML.
+
+    Matches on the element's local name, so a namespaced <x:f> (x bound
+    to the SpreadsheetML namespace) is found the same as a plain <f>.
+    Falls back to the regex scan when the XML does not parse.
+    """
+    try:
+        root = ET.fromstring(xml_bytes)
+    except ET.ParseError:
+        xml = xml_bytes.decode("utf-8", "replace")
+        for tag in DATA_TABLE_TAG_RE.findall(xml):
+            ref = DATA_TABLE_REF_RE.search(tag)
+            yield ref.group(1) if ref else "?"
+        return
+    for elem in root.iter():
+        if elem.tag.rpartition("}")[2] != "f":
+            continue
+        if elem.get("t") == "dataTable":
+            yield elem.get("ref") or "?"
+
+
 def data_tables_at_risk(filename):
     """Return ['Sheet1!D6:D8', ...] for every Excel data table in the file.
 
     LibreOffice rewrites data tables as per-cell TABLE() formulas, so after a
     recalculation the cells are no longer a data table. The scan reads the
     worksheet XML directly: openpyxl does not surface data-table formulas.
+    A namespaced <x:f t="dataTable"> counts the same as a plain <f>.
     """
     try:
         with zipfile.ZipFile(filename) as archive:
@@ -168,11 +191,9 @@ def data_tables_at_risk(filename):
             for name in names:
                 if not (name.startswith("xl/worksheets/") and name.endswith(".xml")):
                     continue
-                xml = archive.read(name).decode("utf-8", "replace")
                 sheet = sheet_names.get(name, name)
-                for tag in DATA_TABLE_TAG_RE.findall(xml):
-                    ref = DATA_TABLE_REF_RE.search(tag)
-                    at_risk.append(f"{sheet}!{ref.group(1) if ref else '?'}")
+                for ref in _data_table_refs(archive.read(name)):
+                    at_risk.append(f"{sheet}!{ref}")
             return at_risk
     except (zipfile.BadZipFile, OSError):
         return []
