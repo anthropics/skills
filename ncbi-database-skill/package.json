@@ -1,0 +1,48 @@
+{
+  "name": "ncbi-database-skill",
+  "version": "1.0.1",
+  "description": "Comprehensive NCBI Database CLI tool for querying E-utilities API - Gene, PubMed, ClinVar, SRA, BLAST, and more",
+  "main": "src/index.js",
+  "bin": {
+    "ncbi": "bin/cli.js"
+  },
+  "scripts": {
+    "test": "node test/test.js",
+    "start": "node bin/cli.js"
+  },
+  "keywords": [
+    "ncbi",
+    "bioinformatics",
+    "e-utilities",
+    "pubmed",
+    "genbank",
+    "gene",
+    "protein",
+    "nucleotide",
+    "cli",
+    "clinvar",
+    "dbsnp",
+    "sra",
+    "blast",
+    "variant",
+    "genomics"
+  ],
+  "author": "Your Name <your.email@example.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/username/ncbi-database-skill.git"
+  },
+  "devDependencies": {},
+  "bugs": {
+    "url": "https://github.com/username/ncbi-database-skill/issues"
+  },
+  "homepage": "https://github.com/username/ncbi-database-skill#readme"
+}
