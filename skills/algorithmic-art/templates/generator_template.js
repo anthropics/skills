@@ -139,7 +139,8 @@ function hexToRgb(hex) {
 }
 
 function colorFromPalette(index) {
-    return params.colorPalette[index % params.colorPalette.length];
+    const palette = params.colorPalette;
+    return palette[((index % palette.length) + palette.length) % palette.length];
 }
 
 // Mapping and easing
