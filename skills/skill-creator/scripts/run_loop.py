@@ -290,21 +290,25 @@ def main():
 
     log_dir = results_dir / "logs" if results_dir else None
 
-    output = run_loop(
-        eval_set=eval_set,
-        skill_path=skill_path,
-        description_override=args.description,
-        num_workers=args.num_workers,
-        timeout=args.timeout,
-        max_iterations=args.max_iterations,
-        runs_per_query=args.runs_per_query,
-        trigger_threshold=args.trigger_threshold,
-        holdout=args.holdout,
-        model=args.model,
-        verbose=args.verbose,
-        live_report_path=live_report_path,
-        log_dir=log_dir,
-    )
+    try:
+        output = run_loop(
+            eval_set=eval_set,
+            skill_path=skill_path,
+            description_override=args.description,
+            num_workers=args.num_workers,
+            timeout=args.timeout,
+            max_iterations=args.max_iterations,
+            runs_per_query=args.runs_per_query,
+            trigger_threshold=args.trigger_threshold,
+            holdout=args.holdout,
+            model=args.model,
+            verbose=args.verbose,
+            live_report_path=live_report_path,
+            log_dir=log_dir,
+        )
+    except ValueError as error:
+        print(f"Error: {error}", file=sys.stderr)
+        sys.exit(1)
 
     # Save JSON output
     json_output = json.dumps(output, indent=2)
