@@ -278,6 +278,10 @@ This checks for:
 
 Fix any reported errors in fields.json before proceeding.
 
+To check placement visually, render the source PDF to page images and overlay the boxes:
+`python scripts/create_validation_image.py 1 fields.json images_dir/page_1.png boxes_1.png`
+The script scales PDF or image coordinates from `fields.json` to the rendered image size.
+
 ## Step 3: Fill the Form
 
 The fill script auto-detects the coordinate system and handles conversion:
