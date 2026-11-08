@@ -33,6 +33,8 @@ import tempfile
 import zipfile
 from pathlib import Path
 
+import defusedxml.minidom
+
 from office.helpers import rezip, safe_extract
 
 MINIMAL_SLIDE_XML = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
@@ -66,6 +68,7 @@ RELATIONSHIP_RE = re.compile(r"<Relationship\b[^>]*?(?:/>|>.*?</Relationship\s*>
 
 SLIDE_ID_MIN = 256
 SLIDE_ID_MAX = 2147483647
+PACKAGE_REL_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 
 
 def _die(msg: str) -> NoReturn:
@@ -220,25 +223,35 @@ def _add_to_presentation_rels(unpacked_dir: Path, dest: str) -> str:
     if existing:
         return existing
 
+    dom = defusedxml.minidom.parseString(pres_rels)
+    root = dom.documentElement
+    if root.namespaceURI != PACKAGE_REL_NS or root.localName != "Relationships":
+        _die("presentation.xml.rels has no package Relationships root")
     pres_xml = (unpacked_dir / "ppt" / "presentation.xml").read_text(encoding="utf-8")
-    used = {int(n) for n in re.findall(r'\bId="rId(\d+)"', pres_rels)}
+    used = {
+        int(match.group(1))
+        for rel in dom.getElementsByTagNameNS(PACKAGE_REL_NS, "Relationship")
+        if (match := re.fullmatch(r"rId(\d+)", rel.getAttribute("Id")))
+    }
     used |= {int(n) for n in re.findall(r'\br:id="rId(\d+)"', pres_xml)}
     rid = f"rId{max(used) + 1 if used else 1}"
 
-    new_rel = f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/{dest}"/>'
-    pres_rels = pres_rels.replace("</Relationships>", f"  {new_rel}\n</Relationships>")
-    pres_rels_path.write_text(pres_rels, encoding="utf-8")
+    prefix = f"{root.prefix}:" if root.prefix else ""
+    rel = dom.createElementNS(PACKAGE_REL_NS, f"{prefix}Relationship")
+    rel.setAttribute("Id", rid)
+    rel.setAttribute("Type", "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide")
+    rel.setAttribute("Target", f"slides/{dest}")
+    root.appendChild(rel)
+    pres_rels_path.write_text(dom.toxml(), encoding="utf-8")
 
     return rid
 
 
 def _find_slide_relationship(pres_rels: str, slide_name: str) -> str | None:
-    for m in re.finditer(r"<Relationship\b[^>]*>", pres_rels):
-        element = m.group(0)
-        if re.search(rf'Target="(?:/ppt/)?slides/{re.escape(slide_name)}"', element):
-            id_match = re.search(r'\bId="([^"]+)"', element)
-            if id_match:
-                return id_match.group(1)
+    dom = defusedxml.minidom.parseString(pres_rels)
+    for rel in dom.getElementsByTagNameNS(PACKAGE_REL_NS, "Relationship"):
+        if rel.getAttribute("Target") in (f"slides/{slide_name}", f"/ppt/slides/{slide_name}"):
+            return rel.getAttribute("Id") or None
     return None
 
 
