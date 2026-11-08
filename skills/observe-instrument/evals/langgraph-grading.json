@@ -1,0 +1,166 @@
+{
+  "expectations": [
+    {
+      "eval_id": 4,
+      "text": "Observe.init() is called at module level with an app_name and api_endpoint using os.getenv",
+      "passed": true,
+      "evidence": "Lines 28-31: Observe.init(app_name=\"currency_converter_agent\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\"))"
+    },
+    {
+      "eval_id": 4,
+      "text": "from ioa_observe.sdk import Observe is present in imports",
+      "passed": true,
+      "evidence": "Line 22: from ioa_observe.sdk import Observe"
+    },
+    {
+      "eval_id": 4,
+      "text": "from ioa_observe.sdk.decorators import agent, graph and tool (or observe_tool alias) are imported",
+      "passed": true,
+      "evidence": "Line 23: from ioa_observe.sdk.decorators import agent, graph, tool as observe_tool"
+    },
+    {
+      "eval_id": 4,
+      "text": "from ioa_observe.sdk.tracing import session_start is present",
+      "passed": true,
+      "evidence": "Line 24: from ioa_observe.sdk.tracing import session_start"
+    },
+    {
+      "eval_id": 4,
+      "text": "@observe_tool (or @tool from ioa_observe) decorator is applied to get_exchange_rate, stacked below @langchain_tool",
+      "passed": true,
+      "evidence": "Lines 36-37: @langchain_tool above @observe_tool(name=\"get_exchange_rate\"), making observe_tool the inner (closer to function) decorator"
+    },
+    {
+      "eval_id": 4,
+      "text": "@observe_tool (or @tool from ioa_observe) decorator is applied to convert_currency, stacked below @langchain_tool",
+      "passed": true,
+      "evidence": "Lines 59-60: @langchain_tool above @observe_tool(name=\"convert_currency\"), making observe_tool the inner (closer to function) decorator"
+    },
+    {
+      "eval_id": 4,
+      "text": "@agent decorator is applied to currency_agent_node function",
+      "passed": true,
+      "evidence": "Line 94: @agent(name=\"currency_agent_node\") above def currency_agent_node(state: MessagesState) -> dict:"
+    },
+    {
+      "eval_id": 4,
+      "text": "@graph decorator is applied to build_graph function",
+      "passed": true,
+      "evidence": "Line 100: @graph(name=\"build_graph\") above def build_graph():"
+    },
+    {
+      "eval_id": 4,
+      "text": "session_start() is called in main() before the agent invocation loop",
+      "passed": true,
+      "evidence": "Line 121: session_start() appears before the while True: loop at line 122"
+    },
+    {
+      "eval_id": 4,
+      "text": "The file remains functionally equivalent - all original logic is preserved",
+      "passed": true,
+      "evidence": "All original function bodies, logic, imports, and the main() structure are preserved; only observe SDK imports, Observe.init(), decorators, and session_start() were added"
+    },
+    {
+      "eval_id": 5,
+      "text": "Observe.init() is called with a meaningful app_name and OTLP_HTTP_ENDPOINT from os.getenv",
+      "passed": true,
+      "evidence": "Lines 28-31: Observe.init(app_name=\"currency_converter_agent\", api_endpoint=os.getenv(\"OTLP_HTTP_ENDPOINT\", \"http://localhost:4318\"))"
+    },
+    {
+      "eval_id": 5,
+      "text": "ioa_observe SDK imports are added",
+      "passed": true,
+      "evidence": "Lines 22-24: from ioa_observe.sdk import Observe; from ioa_observe.sdk.decorators import agent, graph, tool as observe_tool; from ioa_observe.sdk.tracing import session_start"
+    },
+    {
+      "eval_id": 5,
+      "text": "get_exchange_rate has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "Line 37: @observe_tool(name=\"get_exchange_rate\") applied to get_exchange_rate function"
+    },
+    {
+      "eval_id": 5,
+      "text": "convert_currency has the observe @tool decorator applied",
+      "passed": true,
+      "evidence": "Line 60: @observe_tool(name=\"convert_currency\") applied to convert_currency function"
+    },
+    {
+      "eval_id": 5,
+      "text": "currency_agent_node has @agent decorator",
+      "passed": true,
+      "evidence": "Line 94: @agent(name=\"currency_agent_node\") decorates currency_agent_node"
+    },
+    {
+      "eval_id": 5,
+      "text": "build_graph has @graph decorator",
+      "passed": true,
+      "evidence": "Line 100: @graph(name=\"build_graph\") decorates build_graph"
+    },
+    {
+      "eval_id": 5,
+      "text": "session_start() is called before agent invocations in main()",
+      "passed": true,
+      "evidence": "Line 121: session_start() is called before the while True: loop that invokes the agent"
+    },
+    {
+      "eval_id": 5,
+      "text": "No existing code is removed or broken - only additions are made",
+      "passed": true,
+      "evidence": "All original code from lines 1-121 is preserved verbatim; only new imports, Observe.init(), decorators, and session_start() were added"
+    },
+    {
+      "eval_id": 6,
+      "text": "Observe.init() is added after load_dotenv()",
+      "passed": true,
+      "evidence": "load_dotenv() at line 26, Observe.init() at lines 28-31 (immediately after)"
+    },
+    {
+      "eval_id": 6,
+      "text": "Observe SDK imports are present",
+      "passed": true,
+      "evidence": "Lines 22-24: ioa_observe.sdk imports for Observe, decorators (agent, graph, observe_tool), and session_start"
+    },
+    {
+      "eval_id": 6,
+      "text": "Both tool functions are wrapped with the observe @tool decorator",
+      "passed": true,
+      "evidence": "Line 37: @observe_tool(name=\"get_exchange_rate\"); Line 60: @observe_tool(name=\"convert_currency\")"
+    },
+    {
+      "eval_id": 6,
+      "text": "The agent node function currency_agent_node is decorated with @agent",
+      "passed": true,
+      "evidence": "Line 94: @agent(name=\"currency_agent_node\")"
+    },
+    {
+      "eval_id": 6,
+      "text": "The graph builder function build_graph is decorated with @graph",
+      "passed": true,
+      "evidence": "Line 100: @graph(name=\"build_graph\")"
+    },
+    {
+      "eval_id": 6,
+      "text": "session_start() appears in main() before the while loop or before agent invocation",
+      "passed": true,
+      "evidence": "Line 121: session_start() is called before while True: at line 122"
+    },
+    {
+      "eval_id": 6,
+      "text": "A summary of what was changed is provided to the user",
+      "passed": false,
+      "evidence": "The output file itself contains no summary text; a summary would be part of the assistant's conversational response, not embedded in the instrumented Python file"
+    },
+    {
+      "eval_id": 6,
+      "text": "The file remains functionally equivalent",
+      "passed": true,
+      "evidence": "All original logic, imports, function bodies, and main() structure are preserved intact; only additive instrumentation was applied"
+    }
+  ],
+  "summary": {
+    "passed": 25,
+    "failed": 1,
+    "total": 26,
+    "pass_rate": 0.9615384615384616
+  }
+}
