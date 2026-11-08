@@ -72,8 +72,20 @@ def remove_orphaned_slides(unpacked_dir: Path) -> list[str]:
     if not slides_dir.exists():
         return []
 
-    referenced_slides = get_slides_in_sldidlst(unpacked_dir)
     on_disk = sorted(slides_dir.glob("slide*.xml"))
+    if on_disk:
+        pres_path = unpacked_dir / "ppt" / "presentation.xml"
+        missing = [
+            path.name
+            for path in (pres_path, pres_rels_path)
+            if not path.is_file()
+        ]
+        if missing:
+            raise RefusedToClean(
+                f"Cannot identify referenced slides: missing {', '.join(missing)}"
+            )
+
+    referenced_slides = get_slides_in_sldidlst(unpacked_dir)
 
     if on_disk and not any(s.name in referenced_slides for s in on_disk):
         listed = re.findall(
