@@ -1,6 +1,6 @@
 ---
 name: mcp-builder
-description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (FastMCP) or Node/TypeScript (MCP SDK).
+description: Guide for creating high-quality MCP (Model Context Protocol) servers that enable LLMs to interact with external services through well-designed tools. Use when building MCP servers to integrate external APIs or services, whether in Python (MCP SDK, `MCPServer`/`FastMCP`) or Node/TypeScript (MCP SDK).
 license: Complete terms in LICENSE.txt
 ---
 
@@ -72,8 +72,16 @@ Don't mix the two in one project: v1 code samples (imports from `@modelcontextpr
 - For v1 projects only: `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md` and the [TypeScript Guide (v1)](./reference/node_mcp_server.md)
 
 **For Python:**
-- **Python SDK**: Use WebFetch to load `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
-- [🐍 Python Guide](./reference/python_mcp_server.md) - Python patterns and examples
+
+The Python SDK (`mcp` on PyPI) also has two major versions. Pick one before writing code:
+- **v2** (`mcp>=2`, server class `MCPServer` from `mcp.server`): the current release. Use it for new servers.
+- **v1** (`mcp<2`, server class `FastMCP` from `mcp.server.fastmcp`): use it only when the project already pins `mcp<2` or imports `mcp.server.fastmcp`. That import fails on `mcp` 2.x with `ModuleNotFoundError`.
+
+If the project already uses v1, tell the user once that v2 is the current release and that the migration guide is at `https://py.sdk.modelcontextprotocol.io/migration/index.md`. Then continue with v1 unless the user asks to migrate. Don't mix the two: v1 samples (`FastMCP`, camelCase fields such as `isError`) don't apply to v2.
+
+- **Python SDK (v2)**: Use WebFetch to load `https://py.sdk.modelcontextprotocol.io/llms.txt` (docs index; each page is served as markdown at its `index.md` URL)
+- [🐍 Python Guide (v2)](./reference/python_mcp_server_v2.md) - Python patterns and examples for `MCPServer`
+- For v1 projects only: `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/v1.x/README.md` and the [Python Guide (v1)](./reference/python_mcp_server.md)
 
 #### 1.4 Plan Your Implementation
 
@@ -91,7 +99,7 @@ Prioritize comprehensive API coverage. List endpoints to implement, starting wit
 
 See language-specific guides for project setup:
 - [⚡ TypeScript Guide (v2)](./reference/node_mcp_server_v2.md) - Project structure, package.json, tsconfig.json ([v1](./reference/node_mcp_server.md) for existing v1 projects)
-- [🐍 Python Guide](./reference/python_mcp_server.md) - Module organization, dependencies
+- [🐍 Python Guide (v2)](./reference/python_mcp_server_v2.md) - Project setup, lifespan, dependencies ([v1](./reference/python_mcp_server.md) for existing v1 projects)
 
 #### 2.2 Implement Core Infrastructure
 
@@ -153,6 +161,7 @@ Review for:
 
 **Python:**
 - Verify syntax: `python -m py_compile your_server.py`
+- v2 projects: test every tool in memory with `Client(mcp)`, as in [Verify Your Server](./reference/python_mcp_server_v2.md#verify-your-server)
 - Test with MCP Inspector
 
 See language-specific guides for detailed testing approaches and quality checklists.
@@ -220,12 +229,21 @@ Load these resources as needed during development:
   - Security and error handling standards
 
 ### SDK Documentation (Load During Phase 1/2)
-- **Python SDK**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/main/README.md`
+- **Python SDK (v2)**: Fetch the docs index from `https://py.sdk.modelcontextprotocol.io/llms.txt`
+- **Python SDK (v1, existing v1 projects only)**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/python-sdk/v1.x/README.md`
 - **TypeScript SDK (v2)**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/main/README.md`; full docs index at `https://ts.sdk.modelcontextprotocol.io/v2/llms.txt`
 - **TypeScript SDK (v1, existing v1 projects only)**: Fetch from `https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/v1.x/README.md`
 
 ### Language-Specific Implementation Guides (Load During Phase 2)
-- [🐍 Python Implementation Guide](./reference/python_mcp_server.md) - Complete Python/FastMCP guide with:
+- [🐍 Python Implementation Guide (SDK v2)](./reference/python_mcp_server_v2.md) - Complete guide for `MCPServer` with:
+  - Install, project setup and a v1 → v2 table
+  - The upstream API client in a lifespan, `Context` injection
+  - Tool design: `Annotated`/`Field` inputs, annotations, output and structured content, pagination, errors
+  - A complete example with an in-memory `Client` test
+  - Serving over stdio and Streamable HTTP, resources and prompts
+  - Migration steps and a quality checklist
+
+- [🐍 Python Implementation Guide (SDK v1)](./reference/python_mcp_server.md) - The equivalent guide for existing `FastMCP` (`mcp<2`) projects, with:
   - Server initialization patterns
   - Pydantic model examples
   - Tool registration with `@mcp.tool`
