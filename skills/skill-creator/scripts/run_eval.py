@@ -5,6 +5,9 @@ Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
 """
 
+# acqa-allow(single-backbone): upstream anthropics/skills tooling -- the trigger
+# eval measures Claude-specific skill triggering, so it calls `claude` directly
+# by design; multi-backbone routing is out of scope here.
 import argparse
 import json
 import os
@@ -88,6 +91,7 @@ def run_single_query(
             stderr=subprocess.DEVNULL,
             cwd=project_root,
             env=env,
+            creationflags=0x08000000 if os.name == "nt" else 0,
         )
 
         triggered = False

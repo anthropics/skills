@@ -18,6 +18,7 @@ import subprocess
 import socket
 import time
 import sys
+import os
 import argparse
 
 def is_server_ready(port, timeout=30):
@@ -70,7 +71,8 @@ def main():
                 server['cmd'],
                 shell=True,
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                creationflags=0x08000000 if os.name == "nt" else 0,
             )
             server_processes.append(process)
 
@@ -85,7 +87,10 @@ def main():
 
         # Run the command
         print(f"Running: {' '.join(args.command)}\n")
-        result = subprocess.run(args.command)
+        result = subprocess.run(
+            args.command,
+            creationflags=0x08000000 if os.name == "nt" else 0,
+        )
         sys.exit(result.returncode)
 
     finally:
