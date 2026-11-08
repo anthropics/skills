@@ -1,25 +1,37 @@
-import os
 import sys
+from pathlib import Path
 
 from pdf2image import convert_from_path
-
-
+from PIL import Image
 
 
 def convert(pdf_path, output_dir, max_dim=1000):
-    images = convert_from_path(pdf_path, dpi=200)
+    pdf_path = Path(pdf_path)
+    output_dir = Path(output_dir)
+
+    if not pdf_path.is_file():
+        raise FileNotFoundError(f"PDF not found: {pdf_path}")
+
+    if max_dim <= 0:
+        raise ValueError(f"max_dim must be positive, got {max_dim}")
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        images = convert_from_path(pdf_path, dpi=200, thread_count=4)
+    except Exception as e:
+        raise RuntimeError(f"failed to convert PDF: {pdf_path}") from e
 
     for i, image in enumerate(images):
         width, height = image.size
         if width > max_dim or height > max_dim:
-            scale_factor = min(max_dim / width, max_dim / height)
-            new_width = int(width * scale_factor)
-            new_height = int(height * scale_factor)
-            image = image.resize((new_width, new_height))
-        
-        image_path = os.path.join(output_dir, f"page_{i+1}.png")
+            scale_factor = max_dim / max(width, height)
+            new_size = (int(width * scale_factor), int(height * scale_factor))
+            image = image.resize(new_size, Image.LANCZOS)
+
+        image_path = output_dir / f"page_{i + 1}.png"
         image.save(image_path)
-        print(f"Saved page {i+1} as {image_path} (size: {image.size})")
+        print(f"Saved page {i + 1} as {image_path} (size: {image.size})")
 
     print(f"Converted {len(images)} pages to PNG images")
 
