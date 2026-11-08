@@ -84,6 +84,7 @@ def run_single_query(
 
         process = subprocess.Popen(
             cmd,
+            stdin=subprocess.DEVNULL,
             stdout=subprocess.PIPE,
             stderr=subprocess.DEVNULL,
             cwd=project_root,
