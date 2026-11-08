@@ -5,6 +5,8 @@ Tests whether a skill's description causes Claude to trigger (read the skill)
 for a set of queries. Outputs results as JSON.
 """
 
+from __future__ import annotations
+
 import argparse
 import json
 import os
@@ -32,6 +34,77 @@ def find_project_root() -> Path:
     return current
 
 
+def _parse_buffer_lines(
+    buffer: str,
+    clean_name: str,
+    pending_tool_name: str | None,
+    accumulated_json: str,
+    triggered: bool,
+) -> tuple[bool | None, str, str | None, str, bool]:
+    """Parse complete JSON lines from buffer looking for trigger evidence.
+
+    Returns (verdict, remaining_buffer, pending_tool_name, accumulated_json, triggered).
+    verdict is None: keep processing; True: skill triggered; False: skill not triggered.
+    """
+    while "\n" in buffer:
+        line, buffer = buffer.split("\n", 1)
+        line = line.strip()
+        if not line:
+            continue
+
+        try:
+            event = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+
+        # Early detection via stream events
+        if event.get("type") == "stream_event":
+            se = event.get("event", {})
+            se_type = se.get("type", "")
+
+            if se_type == "content_block_start":
+                cb = se.get("content_block", {})
+                if cb.get("type") == "tool_use":
+                    tool_name = cb.get("name", "")
+                    if tool_name in ("Skill", "Read"):
+                        pending_tool_name = tool_name
+                        accumulated_json = ""
+                    else:
+                        return False, "", None, "", False
+
+            elif se_type == "content_block_delta" and pending_tool_name:
+                delta = se.get("delta", {})
+                if delta.get("type") == "input_json_delta":
+                    accumulated_json += delta.get("partial_json", "")
+                    if clean_name in accumulated_json:
+                        return True, "", None, "", True
+
+            elif se_type in ("content_block_stop", "message_stop"):
+                if pending_tool_name:
+                    return clean_name in accumulated_json, buffer, None, "", clean_name in accumulated_json
+                if se_type == "message_stop":
+                    return False, "", None, "", False
+
+        # Fallback: full assistant message
+        elif event.get("type") == "assistant":
+            message = event.get("message", {})
+            for content_item in message.get("content", []):
+                if content_item.get("type") != "tool_use":
+                    continue
+                tool_name = content_item.get("name", "")
+                tool_input = content_item.get("input", {})
+                if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                    return True, buffer, None, "", True
+                elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                    return True, buffer, None, "", True
+                return False, "", None, "", False
+
+        elif event.get("type") == "result":
+            return triggered, buffer, None, "", triggered
+
+    return None, buffer, pending_tool_name, accumulated_json, triggered
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -39,6 +112,7 @@ def run_single_query(
     timeout: int,
     project_root: str,
     model: str | None = None,
+    worker_id: int = 0,
 ) -> bool:
     """Run a single query and return whether the skill was triggered.
 
@@ -47,10 +121,14 @@ def run_single_query(
     Uses --include-partial-messages to detect triggering early from
     stream events (content_block_start) rather than waiting for the
     full assistant message, which only arrives after tool execution.
+
+    worker_id isolates each parallel worker to a unique commands subdirectory,
+    so workers do not see each other's temporary skill files.
     """
     unique_id = uuid.uuid4().hex[:8]
     clean_name = f"{skill_name}-skill-{unique_id}"
-    project_commands_dir = Path(project_root) / ".claude" / "commands"
+    worker_subdir = f"eval-worker-{worker_id}"
+    project_commands_dir = Path(project_root) / ".claude" / "commands" / worker_subdir
     command_file = project_commands_dir / f"{clean_name}.md"
 
     try:
@@ -93,13 +171,13 @@ def run_single_query(
         triggered = False
         start_time = time.time()
         buffer = ""
-        # Track state for stream event detection
         pending_tool_name = None
         accumulated_json = ""
 
         try:
             while time.time() - start_time < timeout:
                 if process.poll() is not None:
+                    # Child has exited; read remaining data and parse it
                     remaining = process.stdout.read()
                     if remaining:
                         buffer += remaining.decode("utf-8", errors="replace")
@@ -114,61 +192,29 @@ def run_single_query(
                     break
                 buffer += chunk.decode("utf-8", errors="replace")
 
-                while "\n" in buffer:
-                    line, buffer = buffer.split("\n", 1)
-                    line = line.strip()
-                    if not line:
-                        continue
+                # Parse all complete lines in buffer
+                verdict, buffer, pending_tool_name, accumulated_json, triggered = _parse_buffer_lines(
+                    buffer, clean_name, pending_tool_name, accumulated_json, triggered
+                )
+                if verdict is not None:
+                    return verdict
 
-                    try:
-                        event = json.loads(line)
-                    except json.JSONDecodeError:
-                        continue
+            # Parse any remaining output after the child exited or timed out.
+            # This is the fix for Bug 1: previously, when the child exited,
+            # the remaining buffer was read but never parsed.
+            if buffer:
+                verdict, buffer, pending_tool_name, accumulated_json, triggered = _parse_buffer_lines(
+                    buffer, clean_name, pending_tool_name, accumulated_json, triggered
+                )
+                if verdict is not None:
+                    return verdict
+                # If we still have pending tool state, finalise it.
+                # The triggered variable may already be True from an assistant message
+                # parsed within _parse_buffer_lines.
+                if pending_tool_name:
+                    triggered = clean_name in accumulated_json
+                    return triggered
 
-                    # Early detection via stream events
-                    if event.get("type") == "stream_event":
-                        se = event.get("event", {})
-                        se_type = se.get("type", "")
-
-                        if se_type == "content_block_start":
-                            cb = se.get("content_block", {})
-                            if cb.get("type") == "tool_use":
-                                tool_name = cb.get("name", "")
-                                if tool_name in ("Skill", "Read"):
-                                    pending_tool_name = tool_name
-                                    accumulated_json = ""
-                                else:
-                                    return False
-
-                        elif se_type == "content_block_delta" and pending_tool_name:
-                            delta = se.get("delta", {})
-                            if delta.get("type") == "input_json_delta":
-                                accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
-                                    return True
-
-                        elif se_type in ("content_block_stop", "message_stop"):
-                            if pending_tool_name:
-                                return clean_name in accumulated_json
-                            if se_type == "message_stop":
-                                return False
-
-                    # Fallback: full assistant message
-                    elif event.get("type") == "assistant":
-                        message = event.get("message", {})
-                        for content_item in message.get("content", []):
-                            if content_item.get("type") != "tool_use":
-                                continue
-                            tool_name = content_item.get("name", "")
-                            tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
-                                triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
-                                triggered = True
-                            return triggered
-
-                    elif event.get("type") == "result":
-                        return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
@@ -197,7 +243,7 @@ def run_eval(
 
     with ProcessPoolExecutor(max_workers=num_workers) as executor:
         future_to_info = {}
-        for item in eval_set:
+        for worker_idx, item in enumerate(eval_set):
             for run_idx in range(runs_per_query):
                 future = executor.submit(
                     run_single_query,
@@ -207,6 +253,7 @@ def run_eval(
                     timeout,
                     str(project_root),
                     model,
+                    worker_idx % max(num_workers, 1),
                 )
                 future_to_info[future] = (item, run_idx)
 
