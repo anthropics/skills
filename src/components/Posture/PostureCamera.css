@@ -1,0 +1,226 @@
+.posture-camera {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.camera-container {
+  position: relative;
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.camera-video {
+  width: 100%;
+  height: auto;
+  display: block;
+  transform: scaleX(-1); /* Mirror effect */
+}
+
+.camera-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scaleX(-1); /* Mirror effect */
+}
+
+.camera-loading,
+.camera-error,
+.camera-prompt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px 30px;
+  border-radius: 12px;
+  color: white;
+  z-index: 10;
+}
+
+.spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 10px;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.camera-error {
+  background: rgba(239, 68, 68, 0.9);
+}
+
+.camera-prompt {
+  background: rgba(59, 130, 246, 0.9);
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* Posture Feedback */
+.posture-feedback {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.posture-score {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 15px 20px;
+  border-radius: 10px;
+  color: white;
+  font-weight: bold;
+}
+
+.score-value {
+  font-size: 48px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.score-label {
+  font-size: 18px;
+  opacity: 0.9;
+}
+
+/* Issues */
+.posture-issues {
+  background: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.posture-issues h4 {
+  margin: 0 0 10px;
+  color: #991b1b;
+  font-size: 16px;
+}
+
+.posture-issues ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.posture-issues li {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: white;
+}
+
+.posture-issues li:last-child {
+  margin-bottom: 0;
+}
+
+.issue-high {
+  border-left: 4px solid #ef4444;
+}
+
+.issue-medium {
+  border-left: 4px solid #f59e0b;
+}
+
+.issue-low {
+  border-left: 4px solid #6b7280;
+}
+
+.posture-issues strong {
+  display: block;
+  color: #1f2937;
+  margin-bottom: 5px;
+}
+
+.issue-fix {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Recommendations */
+.posture-recommendations {
+  background: #f0fdf4;
+  border: 2px solid #bbf7d0;
+  border-radius: 10px;
+  padding: 15px;
+}
+
+.posture-recommendations h4 {
+  margin: 0 0 10px;
+  color: #065f46;
+  font-size: 16px;
+}
+
+.posture-recommendations ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.posture-recommendations li {
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  background: white;
+  border-radius: 6px;
+  color: #064e3b;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.posture-recommendations li:last-child {
+  margin-bottom: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .posture-camera {
+    padding: 15px;
+  }
+
+  .camera-container {
+    max-width: 100%;
+  }
+
+  .posture-score {
+    flex-direction: column;
+    text-align: center;
+    gap: 5px;
+  }
+
+  .score-value {
+    font-size: 36px;
+  }
+
+  .score-label {
+    font-size: 16px;
+  }
+}
