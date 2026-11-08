@@ -37,6 +37,8 @@ def main():
     parser.add_argument('--server', action='append', dest='servers', required=True, help='Server command (can be repeated)')
     parser.add_argument('--port', action='append', dest='ports', type=int, required=True, help='Port for each server (must match --server count)')
     parser.add_argument('--timeout', type=int, default=30, help='Timeout in seconds per server (default: 30)')
+    parser.add_argument('--command-timeout', type=int, default=300, help='Timeout in seconds for the command to run (default: 300)')
+    parser.add_argument('--no-command-timeout', action='store_true', help='Disable the command timeout (run until completion)')
     parser.add_argument('command', nargs=argparse.REMAINDER, help='Command to run after server(s) ready')
 
     args = parser.parse_args()
@@ -85,7 +87,11 @@ def main():
 
         # Run the command
         print(f"Running: {' '.join(args.command)}\n")
-        result = subprocess.run(args.command)
+        try:
+            result = subprocess.run(args.command, timeout=None if args.no_command_timeout else args.command_timeout)
+        except subprocess.TimeoutExpired:
+            print(f"Error: command timed out after {args.command_timeout}s; servers are being stopped", file=sys.stderr)
+            sys.exit(124)
         sys.exit(result.returncode)
 
     finally:
