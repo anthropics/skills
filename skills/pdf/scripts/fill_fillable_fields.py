@@ -1,4 +1,5 @@
 import json
+import os
 import sys
 
 from pypdf import PdfReader, PdfWriter
@@ -9,7 +10,11 @@ from extract_form_field_info import get_field_info
 
 
 def fill_pdf_fields(input_pdf_path: str, fields_json_path: str, output_pdf_path: str):
-    with open(fields_json_path) as f:
+    if os.path.abspath(output_pdf_path) == os.path.abspath(input_pdf_path):
+        print(f"ERROR: output path cannot match input path ({output_pdf_path}); use a distinct output filename (e.g. *_filled.pdf)")
+        sys.exit(1)
+
+    with open(fields_json_path, encoding="utf-8") as f:
         fields = json.load(f)
     fields_by_page = {}
     for field in fields:

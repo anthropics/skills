@@ -94,6 +94,10 @@ percentages `0.0%`, **stored as fractions** (`0.15` renders `15.0%`; storing `15
 (`=B5*(1+$B$6)`, never `=B5*1.05`) · formulas consistent across every projection period, since a
 lone edited cell mid-row is the commonest silent error · guard denominators that can be zero.
 
+**Presentation gotchas:** merge banner/title cells across the table width (`ws.merge_cells("A1:G1")`)
+so colored fills and wide titles don't get clipped · double ampersands in headers/footers (`"Revenue && Costs"`)
+since single `&` denotes Excel section codes (`&C`, `&L`, `&R`).
+
 ## Dependencies
 
 `openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
