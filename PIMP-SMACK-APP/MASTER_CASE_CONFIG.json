@@ -1,0 +1,96 @@
+{
+  "_schema_version": "1.0.0",
+  "_description": "Master configuration file for all PIMP skills. Persists case data across sessions.",
+  "case_info": {
+    "case_number": "25-6461",
+    "ninth_circuit_no": "25-6461",
+    "district_case_no": "3:24-cv-00839-SB",
+    "district_court": "District of Oregon",
+    "court_name": "United States Court of Appeals for the Ninth Circuit",
+    "judge_name": "Hon. Stacy Beckerman",
+    "judge": "Hon. Stacy Beckerman",
+    "filing_date": ""
+  },
+  "parties": {
+    "appellant": {
+      "name": "Tyler Allen Lofall",
+      "role": "Plaintiff-Appellant",
+      "pro_se": true,
+      "address": "5809 W Park Place",
+      "city_state_zip": "Pasco, WA 99301",
+      "phone": "(386) 262-3322",
+      "email": "tyleralofall@gmail.com"
+    },
+    "appellees": []
+  },
+  "party_info": {
+    "name": "Tyler Allen Lofall",
+    "address_line_1": "5809 W Park Place",
+    "city_state_zip": "Pasco, WA 99301",
+    "city": "Pasco",
+    "state": "Washington",
+    "phone": "(386) 262-3322",
+    "email": "tyleralofall@gmail.com"
+  },
+  "current_filing": {
+    "type": "",
+    "title": "",
+    "word_count": 0,
+    "word_limit": 14000
+  },
+  "formatting": {
+    "jurisdiction": "NINTH_CIRCUIT",
+    "master_schema": "MASTER_FRAP",
+    "font": "Century Schoolbook",
+    "font_size": "14pt",
+    "line_spacing": "double",
+    "margins": "1in"
+  },
+  "completed_sections": {
+    "cover_page": false,
+    "disclosure_statement": false,
+    "table_of_contents": false,
+    "table_of_authorities": false,
+    "introduction": true,
+    "jurisdictional_statement": true,
+    "issues_presented": true,
+    "statement_of_case": true,
+    "summary_of_argument": true,
+    "standard_of_review": true,
+    "argument": true,
+    "conclusion": true,
+    "related_cases": false,
+    "certificate_compliance": false,
+    "certificate_service": false,
+    "addendum": false,
+    "legal_standard": true
+  },
+  "pimp_cards_earned": [
+    "CARD_003",
+    "CARD_004",
+    "CARD_005",
+    "CARD_006",
+    "CARD_007",
+    "CARD_008",
+    "CARD_009",
+    "CARD_010",
+    "CARD_011"
+  ],
+  "session_history": [],
+  "_last_updated": "2025-12-21T05:19:06.029262",
+  "citations_collected": {
+    "cases": [
+      "Ashcroft v. Iqbal,, 556 U.S. 662"
+    ],
+    "statutes": [
+      "28 U.S.C. \u00a7 1291",
+      "28 U.S.C. \u00a7 1331",
+      "42 U.S.C. \u00a7 1983"
+    ],
+    "rules": [
+      "Fed. R. App. P. 4(a)",
+      "Fed. R. Civ. P. 60(b)"
+    ]
+  },
+  "_brief_complete_shown": true
+}

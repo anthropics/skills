@@ -1,0 +1,194 @@
+{
+  "_DEFINITIONS": "# Skill Index Definitions\n\nThis file explains each field in `Skill_Index.json`.\n\n## Top-Level Fields\n\n**generated_at**: ISO timestamp when the index was built  \n**total_skills**: Count of valid skills indexed  \n**skills**: Array of skill objects (see below)\n\n---\n\n## Skill Object Fields\n\n**skill_name**: Folder name of the skill (kebab-case)\n\n**uses**: When to use this skill - examples of good use cases  \n*(Source: SKILL.md frontmatter `description` field)*\n\n**description**: What this skill outputs - detailed explanation of what it generates  \n*(Source: 1-models_readme.md `Description` section)*\n\n**requirements**: What the model needs to run this skill - input files, config schemas, directories  \n*(Source: 1-models_readme.md `requirements` section)*\n\n**cautions**: Things that might break or go wrong - warnings about edge cases, format requirements, validation failures  \n*(Source: 1-models_readme.md `Cautions` section)*\n\n**definitions**: Specialized terms used in this skill - glossary of domain-specific vocabulary  \n*(Source: 1-models_readme.md `Definitions` section)*\n\n**log**: Execution history - examples of successful runs with actual output  \n*(Source: 1-models_readme.md `log` section - populated after skill runs)*\n\n**model_readme**: How to execute this skill - exact commands, script paths, parameter formats  \n*(Source: 1-models_readme.md `model_readme` section)*\n\n**stackable_with**: Skills that work together with this one - can be chained or combined  \n*(Manually populated - not auto-extracted)*\n\n---\n\n## Field Purposes\n\n| Field | Purpose |\n|-------|---------|\n| `uses` | Helps models DECIDE when to use this skill |\n| `description` | Helps models UNDERSTAND what gets generated |\n| `requirements` | Helps models CHECK if they have what's needed |\n| `cautions` | Helps models AVOID common mistakes |\n| `definitions` | Helps models LEARN domain vocabulary |\n| `log` | Helps models SEE examples of real output |\n| `model_readme` | Helps models EXECUTE the skill correctly |\n| `stackable_with` | Helps models CHAIN multiple skills together |\n",
+  "generated_at": "2025-12-23T01:22:11.069490",
+  "total_skills": 17,
+  "skills": [
+    {
+      "skill_name": "algorithmic-art",
+      "uses": "",
+      "description": "This skill enables the creation of algorithmic art using p5.js. It follows a two-step process: first defining an \"Algorithmic Philosophy\" (a manifesto of the aesthetic movement), and then expressing that philosophy through code (HTML/JS). It emphasizes seeded randomness, emergent behavior, and computational beauty.",
+      "requirements": "- Ability to generate Markdown (.md) for the philosophy.\n- Ability to generate HTML and JavaScript (.js) for the p5.js sketch.\n- p5.js library (usually loaded via CDN in the generated HTML).",
+      "cautions": "- Do not copy existing artists' work; focus on original algorithmic concepts.\n- Ensure the generated HTML correctly references the p5.js library.\n- The philosophy step is critical; do not skip it to just write code.\n- The code should be 90% algorithmic generation and 10% parameters.",
+      "definitions": "- **Algorithmic Philosophy**: A written manifesto defining the aesthetic movement, rules, and behaviors of the art to be created.\n- **p5.js**: A JavaScript library for creative coding.\n- **Seeded Randomness**: Using a fixed seed to ensure reproducible but random-looking results.",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "To use this skill:\n1. **Phase 1**: Generate an Algorithmic Philosophy based on user input. Output this as a Markdown file.\n   - Name the movement.\n   - Articulate the philosophy (form, process, behavior).\n   - Emphasize craftsmanship.\n2. **Phase 2**: Implement the philosophy in p5.js.\n   - Create an HTML file that loads p5.js.\n   - Create a JS file with the sketch code.\n   - Ensure the code reflects the philosophy defined in Phase 1.\n\n**Helper Script**:\nYou can use `python skills/algorithmic-art/scripts/scaffold_art.py --name \"ProjectName\"` to create the folder structure and empty files in the OUTBOX.",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "artifacts-builder",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "brand-guidelines",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "canvas-design",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "declaration-builder",
+      "uses": "This is a piece of a larger Complete pro se litigation toolkit. This skill Creates declarations with proper structure (2 matching factual actions linking facts to elements; and then to the opposing parties. This applies multi level  rule based that will take a simple routine based variables such as the declaration and adds independant sub class with specific rules to the development of the document. Here we have the Declaration-Builder, and and building away... how ever the begining generic placeholder only tells us the basics, not what type, LR, about what... and then we get into specifics for example here jurisdiction. Every Jurisdiction has its own set of specific rules, formats, procedures, and this will change the coverpage, the  and while we  can make the changes manually to the documents, here we are going to bridge the gap, the ninth cir Juristiction-specific formatting were going to tweak via XML... and make it perfect every time.",
+      "description": "This skill is a PURE PYTHON XML-BASED DOCX GENERATOR that creates legal declarations using direct XML manipulation and zipfile packing. NO subprocess calls. Implements the \"2+2+1\" declaration structure (2 circumstances + 2 elements + 1 party link per fact). Supports jurisdiction-specific formatting rules (Ninth, First, DC circuits). Builds complete DOCX files from scratch by generating document.xml, styles.xml, and package files, then zipping into .docx format. This is the clean, self-contained approach.",
+      "requirements": "- Python 3.x standard library only (os, io, zipfile, datetime, typing, dataclasses, xml.sax.saxutils)\n- NO external dependencies (no python-docx, no subprocesses)\n- Jurisdiction config database built-in (JURISDICTIONS dict)\n- XML templates for document structure, styles, content types, relationships\n- DeclarationFact dataclass for 2+2+1 fact structure",
+      "cautions": "- XML must be well-formed or Word will reject the file\n- Margins, font sizes, line spacing use Word's measurement units (twips, half-points, twentieths of a point)\n- Jurisdiction rules are hardcoded in JURISDICTIONS dict - must update for new circuits\n- No validation of fact structure - assumes DeclarationFact objects are properly formed\n- Generated files have no edit history or metadata beyond basic document properties",
+      "definitions": "- **2+2+1 Structure**: Declaration format with 2 circumstances (time/place + parties), 2 elements (primary + supporting), 1 party link\n- **Twips**: 1/1440th of an inch (Word's base measurement unit for margins)\n- **Half-points**: Font size unit where 28 = 14pt\n- **XML Manipulation**: Directly editing document.xml instead of using library like python-docx\n- **Zipfile Packing**: Creating .docx by zipping XML files (DOCX is a ZIP container)\n- **DeclarationFact**: Dataclass representing single fact with title, circumstances, elements, party links, evidence UIDs",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "This is the GOLD STANDARD approach for document generation:\n- No external dependencies beyond Python stdlib\n- No subprocess calls\n- Direct XML control = perfect formatting preservation\n- Jurisdiction-aware via JURISDICTIONS config\n- Uses proper legal structure (2+2+1 facts)\n\nKey components:\n- document_builder.py: Main XML generator (633 lines)\n- DOCUMENT_XML_TEMPLATE: Base document structure\n- STYLES_XML: Formatting rules template\n- COVER_NINTH_XML: Ninth Circuit cover page template\n- JURISDICTIONS: Circuit-specific configs (font, margins, rules)\n\nThis should be the model for refactoring other skills.\n\n```",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "internal-comms",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "mcp-builder",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "ninth-circuit-brief-body",
+      "uses": "Generate Ninth Circuit appellate brief body sections. This skill should be used when assembling brief sections (jurisdictional statement, issues presented, statement of case, argument, etc.) from evidence and facts. Each section is built separately and assembled into a complete brief. NO REWORDING of source material.",
+      "description": "This is a REFERENCE-ONLY skill containing documentation, templates, and rules for Ninth Circuit brief body sections. NO EXECUTABLE SCRIPTS. Contains FRAP rules reference (frap_rules.md), data structure mapping guide (data-map.md), motion template guidelines (motion-template-guide.md), and example brief shell (Shell_Brief.pdf). Used by models to understand brief structure, citation requirements, and formatting standards when generating brief content with other skills.",
+      "requirements": "- None (read-only reference files)\n- PDF reader for Shell_Brief.pdf\n- Markdown viewer for .md files",
+      "cautions": "- This skill does NOT generate documents - it only provides reference material\n- FRAP rules may change - verify current rules before filing\n- Shell_Brief.pdf is an example only, not a template for direct use\n- Data mapping guide assumes specific JSON schema structure",
+      "definitions": "- **FRAP**: Federal Rules of Appellate Procedure governing appellate brief format and content\n- **Shell Brief**: Example document showing section structure without actual content\n- **Data Map**: Guide for mapping structured data (JSON) to brief sections\n- **Reference Skill**: Documentation-only skill with no executable components",
+      "log": "(No run logs - this is a documentation skill with no scripts to execute.)",
+      "model_readme": "This skill provides supporting documentation for brief generation:\n- **6-references/frap_rules.md**: Federal Rules of Appellate Procedure excerpts\n- **6-references/data-map.md**: JSON structure mapping for brief data\n- **6-references/motion-template-guide.md**: Guidelines for motion formatting\n- **6-references/Shell_Brief.pdf**: Example brief structure\n\nUse these references when generating brief content with ninth-circuit-opening-brief or other brief-generation skills. NO SCRIPTS TO RUN.\n\n```",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "ninth-circuit-cover",
+      "uses": "Generate Ninth Circuit Court of Appeals cover pages. This skill should be used when creating cover pages for appellate briefs, motions, or other filings in the Ninth Circuit. Requires case number, filing type, and judge name.",
+      "description": "This skill generates a Ninth Circuit Court of Appeals compliant cover page. It uses a Python script to populate a DOCX template with case-specific information such as the case number, filing title, and judge's name. It is designed to ensure formatting compliance for appellate briefs and motions.",
+      "requirements": "- Python 3.x\n- `python-docx` library\n- A valid DOCX template (internal to the script or provided path)\n- Access to `d:\\Nineth Circuit\\CLAUDE_COPILOT HLP\\NINTH CIR5\\COVER_GENERATOR_COMPLETE\\generate_cover.py` (Note: The script location is external to the skill folder in the current configuration, see SKILL.md).",
+      "cautions": "- Ensure the Case Number is in the correct format (e.g., 25-6461).\n- The script path is hardcoded in the SKILL.md examples; verify the path exists before running.\n- The output directory `COVER_GENERATOR_COMPLETE/output/` must exist or be writable.\n- Verify the judge's name spelling as it appears on the District Court docket.",
+      "definitions": "- **Case Number**: The appellate case number assigned by the Ninth Circuit (not the District Court number).\n- **Filing Name**: The exact title of the document being filed (e.g., \"APPELLANT'S OPENING BRIEF\").\n- **Judge Name**: The name of the District Court judge whose decision is being appealed.",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "To use this skill, execute the python script `generate_cover.py` with the required arguments.\nCommand format:\n`python \"d:\\Nineth Circuit\\CLAUDE_COPILOT HLP\\NINTH CIR5\\COVER_GENERATOR_COMPLETE\\generate_cover.py\" --case \"[CASE_NUMBER]\" --filing \"[FILING_NAME]\" --judge \"[JUDGE_NAME]\"`\n\nExample:\n`python \"d:\\Nineth Circuit\\CLAUDE_COPILOT HLP\\NINTH CIR5\\COVER_GENERATOR_COMPLETE\\generate_cover.py\" --case \"25-6461\" --filing \"APPELLANT'S OPENING BRIEF\" --judge \"Stacy Beckerman\"`\n\nThe output will be a DOCX file in the output directory. Check the terminal output for the exact path.",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "ninth-circuit-declaration",
+      "uses": "",
+      "description": "This skill is a BUILD ORCHESTRATOR that creates complete Ninth Circuit declarations by calling multiple external scripts in sequence: (1) regenerates template with strict formatting from styles.json, (2) generates cover page via COVER_GENERATOR, (3) populates declaration body via RENDER_SCRIPT with placeholder replacement, (4) merges cover + body into final DOCX. Takes a single JSON config file and outputs a 2-page formatted declaration. This is a pipeline coordinator, not a document builder itself.",
+      "requirements": "- Python 3.x\n- External scripts: COVER_GENERATOR (PIMP-SMACK-APP/_archive/COVER_GENERATOR_COMPLETE/generate_cover.py), RENDER_SCRIPT (universal-motion-brief/scripts/render_docx.py), MERGE_SCRIPT (scripts/merge_docs.py)\n- generator.py in 4-scripts folder for template regeneration\n- styles.json in skill root (3-styles.json)\n- declaration_template.docx in 5-templates folder\n- Valid JSON config file (supports both simple legacy format and advanced metadata format)",
+      "cautions": "- All external script paths are hardcoded - they MUST exist or build fails\n- Uses subprocess.run() to call external scripts (violates no-subprocess rule)\n- Temporary files created in .outbox are deleted after merge\n- Config file must have either 'metadata' key (advanced) or 'case_metadata' key (legacy)\n- Output filename enforced as YYYY-MM-DD_ToolName-Filename.docx format",
+      "definitions": "- **Build Orchestrator**: Script that coordinates multiple other scripts rather than doing work itself\n- **Strict Styles**: Formatting rules from legal_styles_strict.json enforcing court compliance\n- **Simple Config**: Legacy format with case_metadata, document_content, formatting keys\n- **Advanced Config**: New format with metadata, placeholders.standard, placeholders.runtime, styles keys\n- **Merge**: Combining cover page and body into single DOCX file",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "Run with: `python 4-scripts/build.py [config_file]`\nDefault config: filing_config.json in current directory\n\nThe orchestrator executes this pipeline:\n1. generator.py regenerates template with styles from 3-styles.json\n2. COVER_GENERATOR creates temp_cover.docx from case metadata\n3. RENDER_SCRIPT populates temp_body.docx from document_content placeholders\n4. MERGE_SCRIPT combines into final output\n\nWARNING: This uses subprocesses and external dependencies. Does NOT follow self-contained skill pattern. Candidate for refactoring.\n\n```",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "ninth-circuit-opening-brief",
+      "uses": "Assemble FRAP 28-compliant Ninth Circuit opening briefs by copying user-provided sections into a fixed template/ordering. Never rewrite substantive text.",
+      "description": "This skill assembles complete Ninth Circuit opening briefs by processing tagged section files (=== SECTION NAME === format) and combining them in proper FRAP 28 order. Three-script pipeline: (1) 6-ingest_brief_sections.py parses tagged text into sections.json, (2) 5-copy_plain_sections.py updates sections from tagged files with backup option, (3) 4-assemble_opening_brief.py builds final brief from JSON data with TOC/TOA generation, word count validation, and compliance checking. CRITICAL: NO TEXT GENERATION - scripts only copy/assemble existing text verbatim.",
+      "requirements": "- Python 3.x standard library (json, argparse, pathlib, re, datetime, collections)\n- Brief data files in 9-brief_data/ (sections.json, authorities.json)\n- Templates in 8-templates/ (if needed for formatting)\n- References in 7-references/ (formatting standards, local rules)\n- Tagged input files with === SECTION NAME === markers",
+      "cautions": "- Scripts are READ-ONLY copiers - they NEVER reword or generate text\n- Must run scripts in order: 6 (ingest), then 5 (copy), then 4 (assemble)\n- FRAP 32 word limit default 14000 words (excludes cover, TOC, TOA, certificates)\n- Tagged section names must match SECTION_MAP exactly (case-sensitive)\n- sections.json case_info is never touched by ingest/copy scripts\n- Use --backup flag before modifying existing sections.json",
+      "definitions": "- **Tagged Sections**: Text format using === HEADING === to mark section boundaries\n- **Verbatim Copy**: Exact text transfer with no rewording, styling, or generation\n- **FRAP 28**: Federal Rule of Appellate Procedure 28 defining brief structure and order\n- **TOC**: Table of Contents (auto-generated from headings)\n- **TOA**: Table of Authorities (auto-generated from citations in authorities.json)\n- **SECTION_MAP**: Dictionary mapping tag names to JSON section keys",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "Three-script workflow:\n\n**6-ingest_brief_sections.py** - Parse tagged text into sections.json\n```\npython 6-ingest_brief_sections.py --input pasted_brief.txt --backup\n```\n\n**5-copy_plain_sections.py** - Update specific sections from tagged file\n```\npython 5-copy_plain_sections.py --input updated_sections.txt --backup\n```\n\n**4-assemble_opening_brief.py** - Build final brief\n```\npython 4-assemble_opening_brief.py --all --case-no 25-XXXXX\npython 4-assemble_opening_brief.py --validate  # Check structure\npython 4-assemble_opening_brief.py --word-count  # Verify limits\n```\n\nData structure: 9-brief_data/sections.json contains case_info + sections\nAUTO_GENERATED sections: cover_page, TOC, TOA, certificates (built by assembler)\n\n```",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "skill-creator",
+      "uses": "",
+      "description": "This skill provides the canonical guide and tools for creating new skills or updating existing ones. It defines the required structure (SKILL.md, instructions folder, scripts), metadata standards, and best practices for extending the agent's capabilities. It includes scripts to validate the skill structure.",
+      "requirements": "- Python 3.x (for validation scripts)\n- A text editor\n- Understanding of the skill structure defined in `SKILL.md`.",
+      "cautions": "- Always run `scripts/build_index.py` (from the skills root) after creating or modifying a skill to ensure it is indexed correctly.\n- Do not deviate from the folder structure: `skills/[skill-name]/SKILL.md` and `skills/[skill-name]/[skill-name]_instructions/`.\n- Ensure `SKILL.md` has valid YAML frontmatter.",
+      "definitions": "- **Skill**: A modular package of knowledge and tools.\n- **Frontmatter**: YAML metadata at the top of `SKILL.md` (name, description).\n- **Instructions Folder**: A directory named `[skill-name]_instructions` containing numbered markdown files.",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "When creating a new skill:\n1. Create a new directory in `skills/` with a kebab-case name.\n2. Create `SKILL.md` with the required frontmatter.\n3. Create the `[skill-name]_instructions` directory.\n4. Add `1-models_readme.md` and populate it with this schema.\n5. Add any necessary scripts in a `scripts/` subdirectory.\n6. Run `python skills/skill-creator/scripts/quick_validate.py [path_to_new_skill]` to check your work.\n7. Run `python skills/scripts/build_index.py` to update the global index.",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "slack-gif-creator",
+      "uses": "",
+      "description": "This skill provides a toolkit for creating animated GIFs optimized for Slack. It includes validators for Slack's strict size/dimension constraints and composable primitives for creating animations (shake, bounce, etc.). It is useful for creating custom emoji or reaction GIFs.",
+      "requirements": "- Python environment with image processing capabilities (likely PIL/Pillow).\n- Access to the validator scripts and animation primitives defined in the skill.\n- Source images or text to animate.",
+      "cautions": "- **Strict Limits**: Slack Emoji GIFs must be < 64KB. This is very small.\n- **Dimensions**: 128x128 for emojis, 480x480 for message GIFs.\n- **Colors**: Limit palette to 32-48 colors for emojis to save space.",
+      "definitions": "- **Emoji GIF**: A small, square animated image used as a custom emoji.\n- **Message GIF**: A larger animated image used in chat messages.\n- **Validator**: A script that checks if the file meets Slack's technical requirements.",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "To create a Slack GIF:\n1. **Determine Type**: Emoji (<64KB) or Message (~2MB).\n2. **Create**: Use animation primitives (code) to generate frames.\n3. **Optimize**: Reduce colors, frames, and dimensions.\n4. **Validate**: Run the validator script to ensure it meets Slack's limits.\n5. **Iterate**: If validation fails, reduce quality/length and try again.\n\n**Helper Script**:\nUse `python skills/slack-gif-creator/scripts/create_gif.py --create-sample \"output.gif\"` to generate a sample or `--validate \"output.gif\"` to check compliance.",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "template-skill",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "theme-factory",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "universal-motion-brief",
+      "uses": "Build motions and appellate briefs from user-supplied DOCX templates using JSON or XML data. Preserves user formatting; requires template with {{placeholders}}.",
+      "description": "This skill builds motions and appellate briefs by merging structured data (JSON) into a user-supplied DOCX template. It preserves the original template's formatting, styles, and footnotes, making it ideal for generating documents that require strict adherence to a specific layout or style guide without the risk of generative AI hallucinating formatting.",
+      "requirements": "- Python 3.x\n- `python-docx` library\n- A `.docx` template file with `{{PLACEHOLDERS}}`.\n- A `.json` data file containing the values for the placeholders.",
+      "cautions": "- Placeholders must match exactly (case-sensitive).\n- Do not place placeholders inside footnotes if you need to preserve them (the script may not process them correctly or might break the footnote reference).\n- Ensure the JSON structure matches the expected placeholders.\n- The script does not re-flow text; it only replaces tokens.",
+      "definitions": "- **Template**: A DOCX file containing static text and `{{TOKEN}}` placeholders.\n- **Mapping**: An optional JSON file that maps keys in your data to the tokens in the template (e.g., `{\"case_no\": \"CASE_NUMBER\"}`).\n- **Render**: The process of replacing placeholders with actual data.",
+      "log": "(No run logs available yet. This section will be populated by the system upon successful execution.)",
+      "model_readme": "Use the `scripts/render_docx.py` script to generate the document.\n\nCommand format:\n`python skills/universal-motion-brief/scripts/render_docx.py --template \"[PATH_TO_TEMPLATE]\" --data \"[PATH_TO_DATA]\" --output \"[PATH_TO_OUTPUT]\"`\n\nOptions:\n- `--mapping [PATH]`: Use if your data keys don't match template tokens.\n- `--strict`: Fail if any placeholder is left unfilled.\n\nExample:\n`python skills/universal-motion-brief/scripts/render_docx.py --template \"templates/motion.docx\" --data \"data/motion_data.json\" --output \"OUTBOX/motion.docx\"`",
+      "stackable_with": []
+    },
+    {
+      "skill_name": "webapp-testing",
+      "uses": "",
+      "description": "",
+      "requirements": "",
+      "cautions": "",
+      "definitions": "",
+      "log": "",
+      "model_readme": "",
+      "stackable_with": []
+    }
+  ]
+}
