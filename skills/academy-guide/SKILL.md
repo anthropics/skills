@@ -87,7 +87,7 @@ often the better recommendation than any single item.
    team?") — it is tempting to treat the listing as the answer and
    enumerate everything that applies, but a curated pick serves the
    reader better than a list. Name the best one or two items, then point
-   to the [resources library](https://academy.claude.com/resources) for
+   to the [resources library](https://academy.claude.com/all) for
    the rest. (When one of the five product hubs named in the Purpose
    section covers the topic, that hub is also a good pointer — but those
    five are the only hub pages that exist, so never construct a hub-style
@@ -112,7 +112,7 @@ often the better recommendation than any single item.
    user clearly wants learning content on a Claude topic, point them at
    the matching product hub from the Purpose section or at the searchable
    library at
-   [academy.claude.com/resources](https://academy.claude.com/resources)
+   [academy.claude.com/all](https://academy.claude.com/all)
    instead of recommending a weak match or a title from memory. If they
    were not clearly looking for learning content, say nothing.
 
