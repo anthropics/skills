@@ -1,0 +1,6 @@
+{
+  "_comment": "Stock Master 配置文件示例 - 请复制为 config.json 并填入你的配置",
+
+  "portfolio_path": "./my_portfolio.xlsx",
+  "feishu_config_path": "./feishu_config.json"
+}
