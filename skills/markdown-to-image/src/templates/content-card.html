@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      width: 1440px;
+      height: 2400px;
+      overflow: hidden;
+    }
+
+    .content-card {
+      width: 1440px;
+      height: 2400px;
+      padding: 130px 120px;
+      background-color: {{background}};
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+    }
+
+    .content-text {
+      font-size: 60px;
+      line-height: 1.9;
+      color: {{textColor}};
+      font-family: 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', sans-serif;
+      text-align: justify;
+      word-break: break-word;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <div class="content-card">
+    <div class="content-text">{{content}}</div>
+  </div>
+</body>
+</html>
