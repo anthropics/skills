@@ -1,5 +1,8 @@
 .DS_Store
 __pycache__/
 .idea/
-.vscode/
 
+temp_auto_push.bat
+temp_interactive_push.bat
+.gitignore
+branch_structure.json
