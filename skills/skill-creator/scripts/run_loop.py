@@ -159,8 +159,9 @@ def run_loop(
                 fn = pos_runs - tp
                 fp = sum(r["triggers"] for r in neg)
                 neg_runs = sum(r["runs"] for r in neg)
-                tn = neg_runs - fp
-                total = tp + tn + fp + fn
+                neg_errors = sum(r.get("errors", 0) for r in neg)
+                tn = neg_runs - fp - neg_errors
+                total = pos_runs + neg_runs
                 precision = tp / (tp + fp) if (tp + fp) > 0 else 1.0
                 recall = tp / (tp + fn) if (tp + fn) > 0 else 1.0
                 accuracy = (tp + tn) / total if total > 0 else 0.0
