@@ -1,0 +1,114 @@
+# Copy this file to <your project>/task_spec.yaml and fill in.
+# The ml-evolve skill body is fixed; everything scenario-specific lives here.
+
+version: 1
+task_name: my_task
+
+context:
+  domain: "<short label, opaque to the skill>"
+  description: |
+    Describe the problem in 1–5 sentences. The skill surfaces this verbatim
+    to the plan / mutation agent; it does not interpret it.
+  references: []
+
+objective:
+  name: "<metric name>"
+  score_key: score
+  direction: max
+  constraints: []
+
+evaluator:
+  entrypoint: evaluator.py
+  timeout_sec: 0
+  data:
+    source: "<path or URI>"
+    split_strategy: "<e.g. time-forward / k-fold / group-by-user>"
+    purge_embargo: null
+  invalid_conditions:
+    - "NaN loss"
+    - "OOM / timeout"
+  notes: ""
+
+candidate:
+  template: initial_program.py
+  allowed_mutations:
+    - "model architecture (inside EVOLVE block)"
+    - "training loop"
+    - "feature pipeline within training window"
+    - "loss / regularization"
+  frozen:
+    - "evaluator.py"
+    - "data splits"
+    - "scoring formula"
+
+search_space:
+  "model.learning_rate":
+    type: float
+    low: 1.0e-4
+    high: 1.0e-1
+    log: true
+  "training.epochs":
+    type: int
+    low: 5
+    high: 50
+    step: 5
+
+branches:
+  - name: branch_a
+    hypothesis: "<first research direction>"
+    model_family_hints: []
+    kill_criteria: "no improvement after 3 architectures"
+  - name: branch_b
+    hypothesis: "<second, materially different direction>"
+    model_family_hints: []
+    kill_criteria: "no improvement after 3 architectures"
+  - name: branch_c
+    hypothesis: "<third direction>"
+    model_family_hints: []
+    kill_criteria: "no improvement after 3 architectures"
+
+stages:
+  search: small
+  promote: full
+  final: final
+  definitions:
+    - { name: smoke, cost_hint: seconds,          purpose: "pathway check" }
+    - { name: small, cost_hint: minutes,          purpose: "inner loop"     }
+    - { name: full,  cost_hint: tens of minutes,  purpose: "promotion gate" }
+    - { name: final, cost_hint: tens of minutes,  purpose: "reporting only" }
+
+search:
+  param_trials: 12
+  tpe_startup_trials: 5
+  exploitation_ratio: 0.65
+  population_size: 40
+  archive_size: 20
+  elite_selection_ratio: 0.20
+
+compute:
+  device: gpu
+  gpu_required: true
+  parallel_workers: 1
+  notes: ""
+
+budget:
+  iterations: 20
+  target_score: null
+  patience: 5
+  min_improvement: 1.0e-6
+
+promotion:
+  every: 5
+  top_k: 1
+  parallel_workers: 1
+
+plan:
+  allow_web: true
+  replan_every: 5
+
+run:
+  name: null
+  seed: 42
+  root: null
+
+secrets: []
