@@ -1,0 +1,16 @@
+{
+  "name": "html-to-pdf-hires",
+  "version": "1.0.0",
+  "description": "Pixel-perfect HTML to PDF via high-DPI screenshots",
+  "private": true,
+  "main": "scripts/convert.js",
+  "bin": {
+    "html-to-pdf-hires": "./scripts/convert.js"
+  },
+  "scripts": {
+    "convert": "node scripts/convert.js"
+  },
+  "dependencies": {
+    "puppeteer": "^22.0.0"
+  }
+}
