@@ -103,7 +103,7 @@ def _undeclared_axes(kind: str, block: str, axes: dict[str, list[str]]) -> list[
         return None
     ids = _AXID_RE.findall(block)
     declared = {i for group in axes.values() for i in group}
-    if len([i for i in ids if i in declared]) >= 2:
+    if len(set(ids) & declared) >= AXID_MINIMUM[kind]:
         return None
     return ids
 
@@ -131,10 +131,11 @@ def _check_chart_axis_references(part: str, xml: str) -> list[str]:
             hint = ("Fix: the part declares several axes of a kind -- declare the "
                     "secondary axes the series expects, or drop them")
         detail = (f"of which {', '.join(dead)} name no declared axis"
-                  if dead else f"only {len(ids)} of which this part declares")
+                  if dead else f"only {len(set(ids) & declared)} distinct axis references resolve")
         problems.append(
             f"{part}: <c:{kind}> references axId {', '.join(ids)}, {detail}, "
-            f"leaving fewer than two live axes; PowerPoint discards the chart. {hint}"
+            f"leaving fewer than {AXID_MINIMUM[kind]} live axes; "
+            f"PowerPoint discards the chart. {hint}"
         )
     return problems
 
