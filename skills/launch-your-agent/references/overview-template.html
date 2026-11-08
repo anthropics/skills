@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>competitor-digest — agent schema</title>
+<style>
+  :root {
+    /* warm paper palette (light) */
+    --bg:#faf9f5; --panel:#ffffff; --inset:#f0eee6; --ink:#141413; --body:#3d3d3a; --sub:#73726c; --mut:#9c9a92;
+    --hairline:rgba(20,20,19,.12); --hairline-soft:rgba(20,20,19,.07);
+    --live:#22865c; --live-bright:#1d7a52; --clay:#ad5724; --amber:#9a7d24; --ghost:#b0aea5;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+         background:var(--bg); color:var(--body); font-size:14px; line-height:1.5;
+         background-image:linear-gradient(rgba(20,20,19,.045) 1px,transparent 1px),
+                          linear-gradient(90deg,rgba(20,20,19,.045) 1px,transparent 1px);
+         background-size:46px 46px; }
+  .wrap { max-width:1320px; margin:0 auto; padding:0 22px 44px; }
+  @keyframes ledPulse { 0%,100%{opacity:1; box-shadow:0 0 0 0 rgba(34,134,92,.45);} 50%{opacity:.55; box-shadow:0 0 0 5px rgba(34,134,92,0);} }
+
+  /* ── top bar ─────────────────────────────────────────── */
+  .topbar { position:sticky; top:0; z-index:30; display:flex; align-items:center; justify-content:space-between; gap:18px;
+            background:rgba(250,249,245,.92); backdrop-filter:blur(16px); border-bottom:1px solid var(--hairline);
+            padding:12px 22px; margin:0 -22px; }
+  .ident { display:flex; align-items:center; gap:12px; min-width:0; }
+  .sigil { width:36px; height:36px; flex:none; display:flex; align-items:center; justify-content:center; border-radius:9px;
+           background:rgba(34,134,92,.10); border:1px solid rgba(34,134,92,.35); font-size:18px; }
+  h1 { margin:0; font-size:19px; font-weight:600; color:var(--ink); letter-spacing:-.01em; }
+  .statepill { display:inline-flex; align-items:center; gap:7px; padding:3px 11px; border-radius:999px; font-family:var(--mono);
+               font-size:11px; letter-spacing:.08em; }
+  .statepill.live { background:rgba(34,134,92,.10); border:1px solid rgba(34,134,92,.35); color:var(--live-bright); }
+  .statepill.planned { background:var(--inset); border:1px solid var(--hairline); color:var(--sub); }
+  .led { width:7px; height:7px; border-radius:50%; }
+  .led.live { background:var(--live); animation:ledPulse 2s ease-in-out infinite; }
+  .led.planned { background:transparent; border:1.5px solid var(--ghost); }
+  .byline { font-family:var(--mono); font-size:11.5px; color:var(--mut); margin-top:3px; }
+  .stats { display:flex; align-items:stretch; flex:none; }
+  .stat { padding:0 16px; border-left:1px solid var(--hairline); }
+  .stat:first-child { border-left:none; }
+  .stat-k { font-family:var(--mono); font-size:10px; letter-spacing:.13em; text-transform:uppercase; color:var(--mut); }
+  .stat-v { font-family:var(--mono); font-size:13.5px; color:var(--ink); margin-top:3px; white-space:nowrap; }
+  .stat-v .dim { color:var(--sub); }
+
+  .problem { margin:14px 2px 0; color:var(--sub); font-size:13.5px; max-width:95ch; }
+
+  /* ── schema pipeline ─────────────────────────────────── */
+  .lane-label { margin:18px 2px 8px; font-family:var(--mono); font-size:10.5px; letter-spacing:.16em; text-transform:uppercase; color:var(--mut); }
+  .pipeline { display:grid; grid-template-columns:minmax(240px,1fr) 28px minmax(360px,1.6fr) 28px minmax(280px,1.15fr); gap:12px; align-items:stretch; }
+  .col { display:flex; flex-direction:column; gap:12px; min-width:0; }
+  .col > .grow { flex:1; display:flex; flex-direction:column; }
+  .col > .grow .node-body { flex:1; }
+  .col-title { font-family:var(--mono); font-size:10px; letter-spacing:.16em; text-transform:uppercase; color:var(--sub); margin:0 0 -2px 2px; }
+  .joint { display:flex; align-items:center; justify-content:center; }
+  .joint::before { content:""; width:100%; height:1.5px; background:linear-gradient(90deg,var(--hairline),rgba(34,134,92,.5));
+                   clip-path:polygon(0 0,calc(100% - 8px) 0,calc(100% - 8px) -5px,100% 50%,calc(100% - 8px) 250%,calc(100% - 8px) 100%,0 100%); }
+
+  .node { background:var(--panel); border:1px solid var(--hairline); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .node.key { border-color:rgba(34,134,92,.30); }
+  .node.ghost { border-style:dashed; background:transparent; opacity:.62; }
+  .node-head { display:flex; align-items:center; gap:9px; padding:11px 14px; border-bottom:1px solid var(--hairline-soft); }
+  .node-icon { font-size:16px; line-height:1; }
+  .node-head h2 { margin:0; font-size:14.5px; font-weight:600; color:var(--ink); }
+  .node-meta { margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--mut); background:var(--inset);
+               border:1px solid var(--hairline); border-radius:6px; padding:3px 8px; white-space:nowrap;
+               max-width:60%; overflow:hidden; text-overflow:ellipsis; }
+  .node-meta b { color:var(--live-bright); font-weight:500; }
+  .node-body { padding:11px 14px 13px; }
+  .node-body p { margin:.3em 0; }
+  .node-foot { margin-top:auto; padding:9px 14px 11px; border-top:1px dashed var(--hairline-soft); color:var(--sub); font-size:12.5px; }
+  .field { margin:9px 0; }
+  .field:first-child { margin-top:2px; }
+  .field-k { font-family:var(--mono); font-size:10px; letter-spacing:.12em; text-transform:uppercase; color:var(--mut); margin-bottom:3px; }
+  .sub { color:var(--sub); } .small { font-size:13px; }
+  strong { color:var(--ink); font-weight:600; }
+  code, .mono { font-family:var(--mono); font-size:12.5px; background:var(--inset); border:1px solid var(--hairline-soft);
+                padding:1px 6px; border-radius:5px; color:var(--body); }
+  .tag { display:inline-block; padding:2px 8px; border-radius:6px; font-size:12px; margin:2px 4px 2px 0;
+         background:var(--inset); border:1px solid var(--hairline); color:var(--sub); font-family:var(--mono); }
+  .tag.on { color:var(--ink); border-color:rgba(173,87,36,.5); }
+  .tag.good { color:var(--live-bright); border-color:rgba(34,134,92,.40); }
+  .tag.warn { color:var(--amber); border-color:rgba(154,125,36,.45); }
+
+  /* environment frame around the worker */
+  .env-frame { border:1px dashed rgba(20,20,19,.18); border-radius:15px; padding:11px;
+               display:flex; flex-direction:column; gap:11px; background:rgba(20,20,19,.03); height:100%; }
+  .env-tab { align-self:flex-start; max-width:100%; background:var(--bg);
+             border:1px dashed rgba(20,20,19,.2); border-radius:10px; padding:4px 11px; line-height:1.5;
+             font-family:var(--mono); font-size:11px; color:var(--sub); overflow-wrap:anywhere; }
+  .attach-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .attach { background:var(--inset); border:1px solid var(--hairline-soft); border-radius:10px; padding:10px 12px; }
+  .attach.ghost { border-style:dashed; opacity:.58; }
+  .attach h3 { margin:0 0 4px; font-size:13px; color:var(--ink); display:flex; gap:7px; align-items:center; }
+  .attach p { margin:0; font-size:12.5px; color:var(--sub); }
+
+  /* lists */
+  ul,ol { margin:.3em 0 .3em 1.15em; padding:0; } li { margin:.3em 0; font-size:13px; }
+  ol.rubric { list-style:none; margin-left:0; counter-reset:rb; }
+  ol.rubric li { display:flex; gap:9px; counter-increment:rb; align-items:flex-start; }
+  ol.rubric li::before { content:counter(rb); flex:none; width:19px; height:19px; border-radius:5px; background:var(--inset);
+                         border:1px solid var(--hairline); display:flex; align-items:center; justify-content:center;
+                         font-family:var(--mono); font-size:11px; color:var(--live-bright); margin-top:1px; }
+
+  /* lower lanes */
+  .lane-grid { display:grid; grid-template-columns:1.1fr 1fr; gap:12px; margin-top:12px; }
+  .lane { background:var(--panel); border:1px solid var(--hairline); border-radius:12px; overflow:hidden; display:flex; flex-direction:column; }
+  .lane.full { margin-top:12px; }
+  .lane-head { display:flex; align-items:center; gap:9px; padding:11px 14px; border-bottom:1px solid var(--hairline-soft); }
+  .lane-head h2 { margin:0; font-size:14.5px; font-weight:600; color:var(--ink); }
+  .lane-meta { margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--mut); }
+  .lane-body { padding:10px 14px 12px; }
+  .overflow { overflow-x:auto; }
+  table { width:100%; border-collapse:collapse; font-size:13px; }
+  th { text-align:left; font-family:var(--mono); font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:var(--mut);
+       border-bottom:1px solid var(--hairline); padding:5px 8px; }
+  td { padding:6px 8px; border-bottom:1px solid var(--hairline-soft); vertical-align:top; }
+  tr:last-child td { border-bottom:none; }
+
+  /* version rail */
+  .rail { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:11px; }
+  .ver { background:var(--inset); border:1px solid var(--hairline); border-radius:10px; padding:11px 13px; position:relative; }
+  .ver-tag { font-family:var(--mono); font-size:11px; color:var(--clay); margin-bottom:4px; }
+  .ver-what { font-weight:600; font-size:13.5px; color:var(--ink); }
+  .ver-why { color:var(--sub); font-size:12.5px; margin:3px 0; }
+  .ver-how { font-size:12.5px; } .ver-how::before { content:"How: "; color:var(--clay); font-weight:600; }
+
+  a.console { color:var(--live-bright); text-decoration:none; border-bottom:1px dotted rgba(34,134,92,.5); }
+  a.console:hover { border-bottom-style:solid; }
+  footer { padding:20px 2px 0; color:var(--mut); font-family:var(--mono); font-size:11px; }
+  footer a { color:var(--sub); }
+
+  @media (max-width: 1020px) {
+    .pipeline { grid-template-columns:1fr; }
+    .joint { height:26px; }
+    .joint::before { width:1.5px; height:100%; background:linear-gradient(180deg,var(--hairline),rgba(34,134,92,.5));
+                     clip-path:polygon(0 0,100% 0,100% calc(100% - 8px),250% calc(100% - 8px),50% 100%,-150% calc(100% - 8px),0 calc(100% - 8px)); }
+    .lane-grid { grid-template-columns:1fr; }
+    .stats { display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ── top bar: identity + live state + stat strip ── -->
+  <div class="topbar">
+    <div class="ident">
+      <div class="sigil">🤖</div>
+      <div>
+        <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+          <h1>competitor-digest</h1>
+          <!-- swap to: <span class="statepill live"><span class="led live"></span>DEPLOYED · LIVE</span> once launched -->
+          <span class="statepill planned"><span class="led planned"></span>PLANNED · NOT LAUNCHED</span>
+        </div>
+        <div class="byline">Claude Managed Agent · Maya Chen · Brightline Analytics · created 2026-06-14</div>
+      </div>
+    </div>
+    <div class="stats">
+      <div class="stat"><div class="stat-k">Model</div><div class="stat-v">claude-opus-4-8</div></div>
+      <div class="stat"><div class="stat-k">Runs</div><div class="stat-v">Mon 7:00 <span class="dim">PT</span></div></div>
+      <!-- once live, every ID on this page links to its Console deep link, e.g.
+           <a class="console" href="https://platform.claude.com/workspaces/<workspace>/agents/<AGENT_ID>">agent_…</a>
+           (same pattern for /sessions/<id> and /deployments/<id>; swap <workspace> for the founder's) -->
+      <div class="stat"><div class="stat-k">Agent</div><div class="stat-v"><span class="dim">at launch</span></div></div>
+      <div class="stat"><div class="stat-k">Deployment</div><div class="stat-v"><span class="dim">after first pass</span></div></div>
+    </div>
+  </div>
+
+  <!-- the founder's own words from the interview — quote or closely paraphrase; never invent specifics (time spent, frequency) they didn't state -->
+  <p class="problem">Every Monday I spend ~3 hours pulling competitor pricing and feature changes into a digest for the team.</p>
+
+  <!-- ── schema: trigger → worker (in its environment) → output & grading ── -->
+  <p class="lane-label">System schema</p>
+  <div class="pipeline">
+
+    <div class="col">
+      <p class="col-title">Trigger</p>
+      <!-- The trigger node matches how the agent actually starts:
+           · scheduled  → 🗓️ Deployment node (this example)
+           · on-demand  → ▶️ "On-demand session" as the primary node (meta: manual · LAUNCH.md), with
+                          "🗓️ Deployment — not scheduled, see the version rail" as a one-line footer or ghost node
+           · event-driven → 🔌 "Triggered by your app" node (their backend calls POST /sessions or /deployments/<id>/run),
+                          with the call shape named in the body -->
+      <div class="node key grow">
+        <div class="node-head"><span class="node-icon">🗓️</span><h2>Deployment</h2><span class="node-meta">cron · <b>0 7 * * 1</b></span></div>
+        <div class="node-body">
+          <div class="field"><div class="field-k">schedule · expression / timezone</div><strong>Every Monday · 7:00 AM</strong> <span class="sub small">America/Los_Angeles</span></div>
+          <div class="field"><div class="field-k">Status</div><span class="tag">created after the first run passes</span></div>
+          <div class="field"><div class="field-k">initial_events</div><p class="small sub">Each firing replays the 🎯 outcome (right) into a fresh ▶️ session in the sandbox — nobody at a keyboard.</p></div>
+        </div>
+        <div class="node-foot">▶️ Also runs on demand any time — <code>LAUNCH.md</code> fires the same agent with the same outcome.</div>
+      </div>
+    </div>
+
+    <div class="joint" aria-hidden="true"></div>
+
+    <div class="col">
+      <p class="col-title">Worker</p>
+      <div class="env-frame">
+        <span class="env-tab">📦 environment · type: cloud · networking: unrestricted · packages: none</span>
+
+        <div class="node key">
+          <div class="node-head"><span class="node-icon">🤖</span><h2>Agent — competitor-digest</h2><span class="node-meta"><b>claude-opus-4-8</b> · v1 at launch</span></div>
+          <div class="node-body">
+            <div class="field"><div class="field-k">system · the job</div>
+              <p class="small">Researches the 5 named competitors' public sites, pricing pages, and changelogs; writes a weekly digest to <code>/mnt/session/outputs/digest.md</code>.</p></div>
+          </div>
+        </div>
+
+        <div class="attach-grid">
+          <div class="attach">
+            <h3>🛠️ Tools</h3>
+            <p><code>tools[] · agent_toolset_20260401</code><br><span class="tag on">web_search</span><span class="tag on">web_fetch</span><span class="tag">bash</span><span class="tag">read</span><span class="tag">write</span><span class="tag">edit</span><span class="tag">glob</span><span class="tag">grep</span></p>
+          </div>
+          <div class="attach">
+            <h3>🧠 Memory store</h3>
+            <p><code>resources[] · memory_store</code> <span class="tag good">read_write</span> <strong>competitor-history</strong> — last week's snapshot per competitor, so runs report changes, not re-descriptions.</p>
+          </div>
+          <div class="attach ghost">
+            <h3>🔌 Connectors &amp; 🔐 vaults</h3>
+            <p><code>mcp_servers[]</code> + <code>vault_ids[]</code> — empty in v0, public web only. Notion + Slack sit in the version rail below.</p>
+          </div>
+          <div class="attach ghost">
+            <h3>📄 Skills</h3>
+            <p><code>skills[]</code> — empty; plain markdown output.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="joint" aria-hidden="true"></div>
+
+    <div class="col">
+      <p class="col-title">Output &amp; grading</p>
+
+      <div class="node">
+        <div class="node-head"><span class="node-icon">📤</span><h2>Deliverable</h2><span class="node-meta">files api</span></div>
+        <div class="node-body">
+          <p class="small"><code>digest.md</code> — the weekly competitor digest, fetched from the run's outputs.</p>
+          <div class="field"><div class="field-k">Guardrails in effect</div>
+            <span class="tag">max_iterations: 3</span><span class="tag">drafts only — no write connectors wired</span></div>
+        </div>
+      </div>
+
+      <div class="node key grow">
+        <div class="node-head"><span class="node-icon">🎯</span><h2>Outcome</h2><span class="node-meta"><b>user.define_outcome</b> · max_iterations 3</span></div>
+        <div class="node-body">
+          <p class="small sub" style="margin-bottom:8px;">Your definition of done — <code>rubric.content</code>, graded by the platform every run.</p>
+          <ol class="rubric small">
+            <li>digest.md exists and covers all 5 competitors listed in the kickoff</li>
+            <li>Every pricing or feature change has a source link</li>
+            <li>Each competitor section ends with a one-line "so what for us"</li>
+            <li>Anything unchanged since last week sits in one "no movement" line</li>
+            <li>No claim without a source or an explicit "unverified" tag</li>
+          </ol>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── evals + run log ── -->
+  <div class="lane-grid">
+    <div class="lane">
+      <div class="lane-head"><span class="node-icon">📜</span><h2>Sessions · run log</h2><span class="lane-meta">no runs yet</span></div>
+      <div class="lane-body">
+        <div class="overflow">
+        <table>
+          <thead><tr><th>Run</th><th>Session</th><th>Rubric</th><th>Verdict</th><th>Note</th></tr></thead>
+          <tbody>
+            <tr><td>—</td><td class="mono">—</td><td>—</td><td><span class="tag">no runs yet</span></td><td class="sub">The first launch fills this in.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+    </div>
+    <div class="lane">
+      <div class="lane-head"><span class="node-icon">🧪</span><h2>Evals</h2><span class="lane-meta">3 cases · regression</span></div>
+      <div class="lane-body">
+        <div class="overflow">
+        <table>
+          <thead><tr><th>Case</th><th>Known-good answer</th><th>Last verdict</th></tr></thead>
+          <tbody>
+            <tr><td class="mono">week-of-may-25</td><td>Maya's hand-written digest</td><td><span class="tag">not run yet</span></td></tr>
+            <tr><td class="mono">week-of-jun-01</td><td>Hand-written digest</td><td><span class="tag">not run yet</span></td></tr>
+            <tr><td class="mono">week-of-jun-08</td><td>Hand-written digest</td><td><span class="tag">not run yet</span></td></tr>
+          </tbody>
+        </table>
+        </div>
+        <p class="small sub" style="margin:.5em 0 0;">Case 1 is the v0 input; the rest are held back and re-run before promoting any new agent version.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── version rail: what ships next ── -->
+  <div class="lane full">
+    <div class="lane-head"><span class="node-icon">🧭</span><h2>Next directions</h2><span class="lane-meta">the version rail</span></div>
+    <div class="lane-body">
+      <div class="rail">
+        <div class="ver">
+          <div class="ver-tag">v1</div>
+          <div class="ver-what">Agent posts the digest to Slack itself</div>
+          <div class="ver-why">Write-action — kept human-in-the-loop for v0</div>
+          <div class="ver-how">Slack MCP server + 🔐 vault credential, toolset gated <span class="mono">always_ask</span></div>
+        </div>
+        <div class="ver">
+          <div class="ver-tag">v2</div>
+          <div class="ver-what">Pull the internal strategy doc into context</div>
+          <div class="ver-why">Needs a Notion credential not on hand in the session</div>
+          <div class="ver-how">Notion MCP + vault <span class="mono">mcp_oauth</span>; reference the doc in the kickoff</div>
+        </div>
+        <div class="ver">
+          <div class="ver-tag">v3</div>
+          <div class="ver-what">Lock networking to the competitor sites only</div>
+          <div class="ver-why">Hardening — unrestricted is fine while read-only</div>
+          <div class="ver-how">Environment <span class="mono">networking: limited</span> + <span class="mono">allowed_hosts</span></div>
+        </div>
+        <div class="ver">
+          <div class="ver-tag">always</div>
+          <div class="ver-what">Re-run the eval cases before promoting a new version</div>
+          <div class="ver-why">Process habit, not a build task</div>
+          <div class="ver-how"><span class="mono">evals/run-evals.sh</span> against the new version; promote only when verdicts hold</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer>generated from build-sheet.json by claude code · live runs &amp; traces: <a href="https://platform.claude.com/workspaces/default/agents">open the console</a> (your key's workspace — swap "default" if yours differs)</footer>
+</div>
+</body>
+</html>
