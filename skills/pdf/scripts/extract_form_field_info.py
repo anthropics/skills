@@ -35,9 +35,12 @@ def make_field_dict(field, field_id):
     elif ft == "/Ch":
         field_dict["type"] = "choice"
         states = field.get("/_States_", [])
+        # PDF choice options are either plain strings or [export, display] pairs.
+        # Indexing a string state with [0]/[1] would yield its first two
+        # characters, so keep the option intact when it is a plain string.
         field_dict["choice_options"] = [{
-            "value": state[0],
-            "text": state[1],
+            "value": state if isinstance(state, str) else state[0],
+            "text": state if isinstance(state, str) else state[1],
         } for state in states]
     else:
         field_dict["type"] = f"unknown ({ft})"
