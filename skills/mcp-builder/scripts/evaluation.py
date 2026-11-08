@@ -83,6 +83,32 @@ def extract_xml_content(text: str, tag: str) -> str | None:
     return matches[-1].strip() if matches else None
 
 
+def _serialize_tool_result(tool_result: Any) -> str:
+    """Serialize an MCP tool result into text to feed back to the model.
+
+    ``connections.call_tool`` returns ``result.content``, which for a real MCP
+    server is a list of content blocks (e.g. ``mcp.types.TextContent``). Those
+    are pydantic objects that ``json.dumps`` cannot serialize, so serialize the
+    text of each block instead of dumping the raw objects. Falling through to
+    ``json.dumps`` on that list raised ``TypeError`` on every call, which the
+    caller turned into a fabricated "Error executing tool" message.
+    """
+    if isinstance(tool_result, list):
+        parts = []
+        for block in tool_result:
+            text = getattr(block, "text", None)
+            if text is not None:
+                parts.append(text)
+            elif hasattr(block, "model_dump"):
+                parts.append(json.dumps(block.model_dump(), default=str))
+            else:
+                parts.append(str(block))
+        return "\n".join(parts)
+    if isinstance(tool_result, dict):
+        return json.dumps(tool_result)
+    return str(tool_result)
+
+
 async def agent_loop(
     client: Anthropic,
     model: str,
@@ -114,7 +140,7 @@ async def agent_loop(
         tool_start_ts = time.time()
         try:
             tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            tool_response = _serialize_tool_result(tool_result)
         except Exception as e:
             tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
             tool_response += traceback.format_exc()
@@ -220,7 +246,7 @@ TASK_TEMPLATE = """
 async def run_evaluation(
     eval_path: Path,
     connection: Any,
-    model: str = "claude-3-7-sonnet-20250219",
+    model: str = "claude-sonnet-5",
 ) -> str:
     """Run evaluation with MCP server tools."""
     print("🚀 Starting Evaluation")
@@ -315,13 +341,13 @@ Examples:
   python evaluation.py -t sse -u https://example.com/mcp -H "Authorization: Bearer token" eval.xml
 
   # Evaluate an HTTP MCP server with custom model
-  python evaluation.py -t http -u https://example.com/mcp -m claude-3-5-sonnet-20241022 eval.xml
+  python evaluation.py -t http -u https://example.com/mcp -m claude-sonnet-5 eval.xml
         """,
     )
 
     parser.add_argument("eval_file", type=Path, help="Path to evaluation XML file")
     parser.add_argument("-t", "--transport", choices=["stdio", "sse", "http"], default="stdio", help="Transport type (default: stdio)")
-    parser.add_argument("-m", "--model", default="claude-3-7-sonnet-20250219", help="Claude model to use (default: claude-3-7-sonnet-20250219)")
+    parser.add_argument("-m", "--model", default="claude-sonnet-5", help="Claude model to use (default: claude-sonnet-5)")
 
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
