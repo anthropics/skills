@@ -85,31 +85,44 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
         metadata_path = eval_dir / "eval_metadata.json"
+        eval_name = ""
         if metadata_path.exists():
             try:
                 with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                    metadata = json.load(mf)
+                    eval_id = metadata.get("eval_id", eval_idx)
+                    eval_name = metadata.get("eval_name", "")
             except (json.JSONDecodeError, OSError):
                 eval_id = eval_idx
         else:
             try:
                 eval_id = int(eval_dir.name.split("-")[1])
-            except ValueError:
+            except (ValueError, IndexError):
                 eval_id = eval_idx
 
         # Discover config directories dynamically rather than hardcoding names
         for config_dir in sorted(eval_dir.iterdir()):
             if not config_dir.is_dir():
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+
+            run_dirs = sorted(config_dir.glob("run-*"))
+            has_direct_grading = (config_dir / "grading.json").exists()
+
+            # Skip non-config directories (no run-* subdirs and no direct grading.json)
+            if not run_dirs and not has_direct_grading:
                 continue
+
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            # Handle flat layout (grading.json directly in config dir, no run-* nesting)
+            if not run_dirs and has_direct_grading:
+                run_dirs_to_process = [(config_dir, 1)]
+            else:
+                run_dirs_to_process = [(rd, int(rd.name.split("-")[1])) for rd in run_dirs]
+
+            for run_dir, run_number in run_dirs_to_process:
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -126,6 +139,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 # Extract metrics
                 result = {
                     "eval_id": eval_id,
+                    "eval_name": eval_name,
                     "run_number": run_number,
                     "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
                     "passed": grading.get("summary", {}).get("passed", 0),
@@ -237,6 +251,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for result in results[config]:
             runs.append({
                 "eval_id": result["eval_id"],
+                "eval_name": result.get("eval_name", ""),
                 "configuration": config,
                 "run_number": result["run_number"],
                 "result": {
@@ -260,6 +275,15 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for r in config
     ))
 
+    # Calculate actual runs per configuration (max run count across eval+config combos)
+    from collections import Counter
+    run_counts: Counter = Counter()
+    for config, config_results in results.items():
+        for eval_id in set(r["eval_id"] for r in config_results):
+            count = sum(1 for r in config_results if r["eval_id"] == eval_id)
+            run_counts[(eval_id, config)] = count
+    runs_per_configuration = max(run_counts.values()) if run_counts else 1
+
     benchmark = {
         "metadata": {
             "skill_name": skill_name or "<skill-name>",
@@ -268,7 +292,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             "analyzer_model": "<model-name>",
             "timestamp": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "evals_run": eval_ids,
-            "runs_per_configuration": 3
+            "runs_per_configuration": runs_per_configuration
         },
         "runs": runs,
         "run_summary": run_summary,
