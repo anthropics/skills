@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "md2video-audio",
+      "description": "automated workflow to convert local Markdown files into high-quality MP4 presentation videos with neural text-to-speech",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/md2video-audio"
+      ]
     }
   ]
 }
