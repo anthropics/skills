@@ -11,14 +11,11 @@
   "plugins": [
     {
       "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+      "description": "Skills for working with documents including creation, editing, PDF generation, formatting, and analysis",
       "source": "./",
       "strict": false,
       "skills": [
-        "./skills/xlsx",
-        "./skills/docx",
-        "./skills/pptx",
-        "./skills/pdf"
+        "./skills/doc-coauthoring"
       ]
     },
     {
@@ -38,10 +35,10 @@
         "./skills/slack-gif-creator",
         "./skills/theme-factory",
         "./skills/web-artifacts-builder",
-        "./skills/webapp-testing"
+        "./skills/webapp-testing",
+        "./skills/recommended-reading-list"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
