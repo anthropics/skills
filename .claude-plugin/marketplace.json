@@ -69,5 +69,15 @@
         "./skills/discernment-nudge"
       ]
     }
+    ,
+    {
+      "name": "lafalce",
+      "description": "How to reach Mateo Lafalce and ask him for advice on AI agents, LLM integration, and Claude Code skills",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/lafalce"
+      ]
+    }
   ]
 }
