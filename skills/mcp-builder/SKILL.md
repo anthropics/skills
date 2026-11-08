@@ -31,6 +31,9 @@ Clear, descriptive tool names help agents find the right tools quickly. Use cons
 **Context Management:**
 Agents benefit from concise tool descriptions and the ability to filter/paginate results. Design tools that return focused, relevant data. Some clients support code execution which can help agents filter and process data efficiently.
 
+**Server Instructions and Tool Search:**
+Clients such as Claude Code defer tool definitions and load only tool names and server instructions at session start. Write server instructions that say what the server is for and when to search for its tools, with the key words first. See [Server Instructions and Tool Search](./reference/mcp_best_practices.md#server-instructions-and-tool-search).
+
 **Actionable Error Messages:**
 Error messages should guide agents toward solutions with specific suggestions and next steps.
 
@@ -132,6 +135,8 @@ For each tool:
 - `idempotentHint`: true/false
 - `openWorldHint`: true/false
 
+Set them accurately: clients act on them (Claude Code runs read-only calls in parallel and can retry idempotent calls to a remote server after a dropped connection).
+
 ---
 
 ### Phase 3: Review and Test
@@ -217,6 +222,7 @@ Load these resources as needed during development:
   - Response format guidelines (JSON vs Markdown)
   - Pagination best practices
   - Transport selection (streamable HTTP vs stdio)
+  - Server instructions, tool search and tool result size limits in Claude Code
   - Security and error handling standards
 
 ### SDK Documentation (Load During Phase 1/2)

@@ -26,6 +26,11 @@
 - **stdio**: For local integrations, command-line tools
 - Avoid SSE (deprecated in favor of streamable HTTP)
 
+### Server Instructions
+- Set `instructions` on the server: with tool search, clients like Claude Code load only tool names and server instructions up front
+- Lead with the words users type when they need your service
+- See [Server Instructions and Tool Search](#server-instructions-and-tool-search)
+
 ---
 
 ## Server Naming Conventions
@@ -199,6 +204,54 @@ Provide annotations to help clients understand tool behavior:
 | `openWorldHint` | boolean | true | Tool interacts with external entities |
 
 **Important**: Annotations are hints, not security guarantees. Clients should not make security-critical decisions based solely on annotations.
+
+Set them accurately, because clients act on them. Claude Code, for example, runs calls to `readOnlyHint` tools in parallel with other read-only calls, and can repeat a call to an `idempotentHint` tool on a remote (HTTP) server once, on a new connection, if the connection closed before the call was answered.
+
+---
+
+## Server Instructions and Tool Search
+
+Clients increasingly defer tool definitions instead of sending every schema with every request. In [Claude Code's tool search](https://code.claude.com/docs/en/mcp#scale-with-mcp-tool-search), on by default, **only tool names and server instructions load at session start**; a tool's full definition loads when Claude searches for it. Your server instructions are then what tells Claude when to look at your server at all, much like a skill's description.
+
+Write server instructions that state:
+- What category of tasks the tools handle, in the words users use (product names, domain terms, other languages your users write in)
+- When to search for these tools (identifiers, URLs or keywords that signal your service)
+- The key capabilities, and anything non-obvious about combining the tools
+
+Keep instructions and descriptions short, and put the important words first. Claude Code cuts text past these limits, and Claude sees only the part before the cut:
+
+| Text | Limit |
+|------|-------|
+| Server instructions, and the description of a tool that loads up front | 4,096 characters |
+| The description of a tool loaded through tool search | 16,384 characters |
+
+Tool search matches Claude's query against a description within the shorter limit, so the words Claude would search for belong near the start.
+
+Setting instructions:
+
+```python
+mcp = FastMCP("tracker_mcp", instructions="Issue tracker (tickets, sprints). Use for keys like DEV-123 ...")  # MCPServer(...) in SDK v2
+```
+
+```typescript
+const server = new McpServer(
+  { name: "tracker-mcp-server", version: "1.0.0" },
+  { instructions: "Issue tracker (tickets, sprints). Use for keys like DEV-123 ..." }
+);
+```
+
+To load a specific tool up front instead of deferring it, set `"anthropic/alwaysLoad": true` in the tool's `_meta` (`meta=` in the Python `@mcp.tool` decorator, `_meta` in the TypeScript `registerTool` config). Reserve it for the one or two tools almost every session needs.
+
+---
+
+## Tool Result Size in Claude Code
+
+Claude Code limits what a tool result can put into the conversation ([MCP output limits](https://code.claude.com/docs/en/mcp#mcp-output-limits-and-warnings)):
+
+- It warns when a result exceeds 10,000 tokens and caps results at 25,000 tokens by default (users can change the cap with `MAX_MCP_OUTPUT_TOKENS`).
+- A successful text result longer than 50,000 characters is saved to a file and replaced with a file reference, unless the tool sets `_meta["anthropic/maxResultSizeChars"]` in its `tools/list` entry (up to 500,000). Use that only for outputs that are inherently large and needed whole, such as schemas or file trees.
+
+Design for these limits instead of relying on them: default to 20–50 items, return the fields an agent needs to act, and when a single field (a long description or comment) can be huge, cut it and say how to fetch the rest.
 
 ---
 
