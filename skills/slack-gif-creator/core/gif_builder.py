@@ -207,14 +207,18 @@ class GIFBuilder:
             num_colors = min(num_colors, 48)  # More aggressive color limit for emoji
 
             # More aggressive FPS reduction for emoji
-            if len(self.frames) > 12:
+            target_frames = 12
+            if len(self.frames) > target_frames:
                 print(
-                    f"  Reducing frames from {len(self.frames)} to ~12 for emoji size"
+                    f"  Reducing frames from {len(self.frames)} to {target_frames} for emoji size"
                 )
-                # Keep every nth frame to get close to 12 frames
-                keep_every = max(1, len(self.frames) // 12)
+                # Sample evenly spaced frames. A floor-divided stride
+                # (len // 12) is 1 for 13-23 frames and undershoots for any
+                # count that isn't a multiple of 12, so it can't hit the target.
+                frame_count = len(self.frames)
                 self.frames = [
-                    self.frames[i] for i in range(0, len(self.frames), keep_every)
+                    self.frames[i * frame_count // target_frames]
+                    for i in range(target_frames)
                 ]
 
         # Optimize colors with global palette
