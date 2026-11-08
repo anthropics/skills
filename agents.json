@@ -1,0 +1,39 @@
+{
+  "agents": {
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "name": "Personal Assistant",
+        "workspace": "~/clawd",
+        "sandbox": { "mode": "off" }
+      },
+      {
+        "id": "family",
+        "name": "Family Bot",
+        "workspace": "~/clawd-family",
+        "sandbox": {
+          "mode": "all",
+          "scope": "agent"
+        },
+        "tools": {
+          "allow": ["read"],
+          "deny": ["exec", "write", "edit", "apply_patch", "process", "browser"]
+        }
+      }
+    ]
+  },
+  "bindings": [
+    {
+      "agentId": "family",
+      "match": {
+        "provider": "whatsapp",
+        "accountId": "*",
+        "peer": {
+          "kind": "group",
+          "id": "120363424282127706@g.us"
+        }
+      }
+    }
+  ]
+}
