@@ -9,6 +9,10 @@ This file contains WebFetch URLs for fetching current information from platform.
 - User asks about features not covered in cached content
 - User needs specific API details or examples
 
+## Fallback Strategy
+
+If direct WebFetch to any URL fails or returns a fetch/permission error, constrain search queries explicitly to official Anthropic documentation domains (`site:platform.claude.com`, `site:docs.anthropic.com`, or `site:code.claude.com`) to ensure responses are sourced from verified documentation rather than unverified third-party blogs.
+
 ## Claude API Documentation URLs
 
 ### Models & Pricing
