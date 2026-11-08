@@ -1,0 +1,31 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "brianjosh",
+  "version": "1.0.0",
+  "description": "Evidence-based application coaching across education, academia, government, nonprofit, and industry.",
+  "author": {
+    "name": "Dr. De.Souz.AI",
+    "url": "https://www.linkedin.com/in/drdesouza/"
+  },
+  "repository": "https://github.com/mrdesouzaphd-cmyk/skills",
+  "keywords": [
+    "career",
+    "resume",
+    "academic-cv",
+    "job-applications"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "BrianJosh",
+        "shortDescription": "Tailor applications with evidence and honest gap analysis",
+        "longDescription": "Compare a job posting with candidate evidence, draft truthful applications, explore skill gaps, and prepare interviews or LinkedIn outreach.",
+        "developerName": "Dr. De.Souz.AI",
+        "category": "Productivity",
+        "defaultPrompt": [
+          "Use BrianJosh to compare my CV with this vacancy and draft a truthful application."
+        ]
+      }
+    }
+  }
+}

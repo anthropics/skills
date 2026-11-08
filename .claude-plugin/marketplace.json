@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -52,7 +51,25 @@
       ]
     },
     {
-      "name": "academy-guide",
+      "name": "notion-spec-to-implementation",
+      "description": "Converts Notion feature specs into technical implementation plans.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/notion-spec-to-implementation"
+      ]
+    },
+    {
+      "name": "quantitative-resume-auditor",
+      "description": "Audits resumes with Python: metric density (M/B ratio) vs. 3.0 Gold Standard.",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/quantitative-resume-auditor"
+          ]
+  },
+  {
+"name": "academy-guide",
       "description": "Recommends relevant Claude Academy courses, tutorials, and use cases when users ask how to use Claude",
       "source": "./",
       "strict": false,
