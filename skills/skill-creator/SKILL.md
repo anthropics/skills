@@ -393,6 +393,31 @@ While it runs, periodically tail the output to give the user updates on which it
 
 This handles the full optimization loop automatically. It splits the eval set into 60% train and 40% held-out test, evaluates the current description (running each query 3 times to get a reliable trigger rate), then calls Claude to propose improvements based on what failed. It re-evaluates each new description on both train and test, iterating up to 5 times. When it's done, it opens an HTML report in the browser showing the results per iteration and returns JSON with `best_description` — selected by test score rather than train score to avoid overfitting.
 
+### Evaluating a skill that is already installed
+
+By default the eval writes a uniquely-named copy of the skill into
+`.claude/commands/` and checks whether Claude invoked *that* name. If the skill
+under test is already on the load path, Claude invokes the real skill instead,
+the unique name never appears, and every query is scored as a miss - the run
+completes normally and reports a 0.0 trigger rate across the board.
+
+Pass `--use-installed` to match the installed skill by its real name:
+
+```bash
+python -m scripts.run_eval \
+  --eval-set <path-to-trigger-eval.json> \
+  --skill-path <path-to-skill> \
+  --use-installed
+```
+
+This measures the description the skill currently ships with, so it is the right
+mode for auditing skills already in use. It cannot be combined with
+`--description`, because a candidate description is injected through the probe
+copy that `--use-installed` skips; passing both is rejected rather than silently
+ignoring the override. For the same reason `run_loop.py`, which tests candidate
+descriptions, always uses the probe mechanism - uninstall or temporarily move the
+skill out of the load path before optimizing it.
+
 ### How skill triggering works
 
 Understanding the triggering mechanism helps design better eval queries. Skills appear in Claude's `available_skills` list with their name + description, and Claude decides whether to consult a skill based on that description. The important thing to know is that Claude only consults skills for tasks it can't easily handle on its own — simple, one-step queries like "read this PDF" may not trigger a skill even if the description matches perfectly, because Claude can handle them directly with basic tools. Complex, multi-step, or specialized queries reliably trigger skills when the description matches.
