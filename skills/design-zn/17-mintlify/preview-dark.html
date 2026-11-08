@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Mintlify (Dark)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --black: #ededed;
+    --white: #0d0d0d;
+    --gray-50: #141414;
+    --gray-100: #1a1a1a;
+    --gray-200: #2a2a2a;
+    --gray-400: #666666;
+    --gray-500: #888888;
+    --gray-700: #a0a0a0;
+    --brand: #18E299;
+    --brand-light: #0d3d2a;
+    --brand-deep: #5eedb8;
+    --warn: #e6a733;
+    --info-blue: #5b94e0;
+    --error: #e06b6b;
+    --border-subtle: rgba(255,255,255,0.06);
+    --border-medium: rgba(255,255,255,0.10);
+    --shadow-ambient: rgba(0,0,0,0.3) 0px 2px 4px;
+    --shadow-button: rgba(0,0,0,0.4) 0px 1px 2px;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'Geist Mono', ui-monospace, SFMono-Regular, 'Roboto Mono', Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--white);
+    color: var(--black);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* DARK MODE BADGE */
+  .dark-badge {
+    position: fixed; top: 16px; right: 16px; z-index: 200;
+    background: var(--brand); color: #0d0d0d;
+    padding: 6px 14px; border-radius: 9999px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(13,13,13,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+  .nav-brand { font-size: 14px; font-weight: 600; color: var(--black); text-decoration: none; letter-spacing: -0.28px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--gray-500); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--brand); }
+  .nav-cta {
+    display: inline-block; background: var(--black); color: var(--white);
+    padding: 7px 18px; border-radius: 9999px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.88; }
+
+  /* HERO */
+  .hero {
+    padding: 96px 32px 80px; text-align: center;
+    background: linear-gradient(180deg, #061f14 0%, #0f1a15 30%, #0d0d0d 100%);
+    position: relative;
+  }
+  .hero h1 {
+    font-size: 56px; font-weight: 600; line-height: 1.10;
+    letter-spacing: -1.28px; color: var(--black); margin-bottom: 16px;
+  }
+  .hero p { font-size: 18px; font-weight: 400; line-height: 1.50; color: var(--gray-500); max-width: 560px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-dark {
+    display: inline-block; background: var(--black); color: var(--white);
+    padding: 10px 24px; border-radius: 9999px; border: none;
+    font-family: var(--font-sans); font-size: 15px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+    box-shadow: var(--shadow-button);
+  }
+  .btn-dark:hover { opacity: 0.88; }
+  .btn-ghost {
+    display: inline-block; background: transparent; color: var(--black);
+    padding: 10px 24px; border-radius: 9999px; border: 1px solid var(--border-medium);
+    font-family: var(--font-sans); font-size: 15px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: border-color 0.15s;
+  }
+  .btn-ghost:hover { border-color: var(--gray-400); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label {
+    font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+    color: var(--gray-400); text-transform: uppercase; margin-bottom: 8px;
+    letter-spacing: 0.6px;
+  }
+  .section-title { font-size: 32px; font-weight: 600; line-height: 1.20; letter-spacing: -0.8px; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--border-subtle); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 16px; overflow: hidden; border: 1px solid var(--border-subtle); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.26px; }
+  .color-swatch-hex { font-size: 12px; color: var(--gray-500); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--gray-400); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--gray-500); letter-spacing: -0.28px; margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--gray-400); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--gray-400); margin-top: 8px; }
+  .btn-brand {
+    display: inline-block; background: var(--brand); color: #0d0d0d;
+    padding: 10px 24px; border-radius: 9999px; font-size: 15px; font-weight: 500;
+    text-decoration: none; border: none; cursor: pointer;
+  }
+  .btn-pill-badge {
+    display: inline-block; background: var(--brand-light); color: var(--brand-deep);
+    padding: 4px 12px; border-radius: 9999px; font-size: 13px; font-weight: 500;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 0.3px;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card {
+    background: var(--gray-50); border-radius: 16px; padding: 24px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-ambient);
+    transition: border-color 0.2s;
+  }
+  .card:hover { border-color: var(--border-medium); }
+  .card h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.2px; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--gray-500); line-height: 1.50; }
+  .card-badge {
+    display: inline-block; font-family: var(--font-mono); font-size: 12px; font-weight: 500;
+    text-transform: uppercase; padding: 2px 10px; border-radius: 9999px; margin-bottom: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  /* FEATURED CARD */
+  .card-featured {
+    background: var(--gray-50); border-radius: 24px; padding: 32px;
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-ambient);
+  }
+  .card-featured h3 { font-size: 24px; font-weight: 600; letter-spacing: -0.24px; margin-bottom: 8px; }
+  .card-featured p { font-size: 16px; color: var(--gray-500); line-height: 1.50; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--black); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--gray-50); color: var(--black);
+    border: 1px solid var(--border-medium); padding: 10px 16px; border-radius: 9999px;
+    font-family: var(--font-sans); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+  .form-input--focus { border-color: var(--brand); box-shadow: 0 0 0 1px var(--brand); }
+  .form-input--error { border-color: var(--error); box-shadow: 0 0 0 1px var(--error); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--gray-50); color: var(--black);
+    border: 1px solid var(--border-medium); padding: 12px 16px; border-radius: 16px;
+    font-family: var(--font-sans); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--gray-400); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--brand); border-radius: 4px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--gray-400); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--black); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--gray-400); }
+  .radius-context { font-size: 10px; color: var(--gray-400); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--gray-50); border-radius: 16px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 600; letter-spacing: -0.28px; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--gray-400); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--border-subtle); font-size: 13px; color: var(--gray-500); }
+  .footer a { color: var(--brand); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 40px; letter-spacing: -0.8px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="dark-badge">Dark Mode</div>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Mintlify</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+  <div class="hero-buttons">
+    <a class="btn-dark" href="#">Get Started</a>
+    <a class="btn-ghost" href="#">View Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0d0d0d"></div><div class="color-swatch-info"><div class="color-swatch-name">Near Black</div><div class="color-swatch-hex">#0d0d0d</div><div class="color-swatch-role">Dark background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ededed"></div><div class="color-swatch-info"><div class="color-swatch-name">Near White</div><div class="color-swatch-hex">#ededed</div><div class="color-swatch-role">Primary text (dark)</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#18E299"></div><div class="color-swatch-info"><div class="color-swatch-name">Brand Green</div><div class="color-swatch-hex">#18E299</div><div class="color-swatch-role">Brand accent, CTAs</div></div></div>
+  </div>
+
+  <div class="color-group-label">Brand Extended</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#0d3d2a"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Dark</div><div class="color-swatch-hex">#0d3d2a</div><div class="color-swatch-role">Badge bg (dark)</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5eedb8"></div><div class="color-swatch-info"><div class="color-swatch-name">Green Light</div><div class="color-swatch-hex">#5eedb8</div><div class="color-swatch-role">Badge text (dark)</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1ba673"></div><div class="color-swatch-info"><div class="color-swatch-name">Annotate Green</div><div class="color-swatch-hex">#1ba673</div><div class="color-swatch-role">Code annotations</div></div></div>
+  </div>
+
+  <div class="color-group-label">Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5b94e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Info Blue</div><div class="color-swatch-hex">#5b94e0</div><div class="color-swatch-role">Tags, annotations</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e6a733"></div><div class="color-swatch-info"><div class="color-swatch-name">Warn Amber</div><div class="color-swatch-hex">#e6a733</div><div class="color-swatch-role">Warnings, caution</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e06b6b"></div><div class="color-swatch-info"><div class="color-swatch-name">Error Red</div><div class="color-swatch-hex">#e06b6b</div><div class="color-swatch-role">Errors, destructive</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale (Dark)</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a0a0a0"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 700</div><div class="color-swatch-hex">#a0a0a0</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#888888"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 500</div><div class="color-swatch-hex">#888888</div><div class="color-swatch-role">Tertiary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#666666"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 400</div><div class="color-swatch-hex">#666666</div><div class="color-swatch-role">Placeholders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#2a2a2a"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 200</div><div class="color-swatch-hex">#2a2a2a</div><div class="color-swatch-role">Borders</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1a1a1a"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 100</div><div class="color-swatch-hex">#1a1a1a</div><div class="color-swatch-role">Surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#141414"></div><div class="color-swatch-info"><div class="color-swatch-name">Gray 50</div><div class="color-swatch-hex">#141414</div><div class="color-swatch-role">Card background</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:56px; font-weight:600; line-height:1.10; letter-spacing:-1.28px;">Display Hero</div><div class="type-meta">Display Hero — 56px / 600 / 1.10 / -1.28px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:40px; font-weight:600; line-height:1.10; letter-spacing:-0.8px;">Section Heading</div><div class="type-meta">Section Heading — 40px / 600 / 1.10 / -0.8px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:24px; font-weight:500; line-height:1.30; letter-spacing:-0.24px;">Sub-heading</div><div class="type-meta">Sub-heading — 24px / 500 / 1.30 / -0.24px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:20px; font-weight:600; line-height:1.30; letter-spacing:-0.2px;">Card Title</div><div class="type-meta">Card Title — 20px / 600 / 1.30 / -0.2px / Inter</div></div>
+  <div class="type-sample"><div style="font-size:18px; font-weight:400; line-height:1.50;">Body Large — The intelligent knowledge platform that powers your documentation, APIs, and guides.</div><div class="type-meta">Body Large — 18px / 400 / 1.50 / normal / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body — Standard reading text for documentation and content.</div><div class="type-meta">Body — 16px / 400 / 1.50 / normal / Inter</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:500; line-height:1.50;">Body Medium — Navigation and emphasized text</div><div class="type-meta">Body Medium — 16px / 500 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:15px; font-weight:500; line-height:1.50;">Button Label</div><div class="type-meta">Button — 15px / 500 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:500; line-height:1.50;">Link / Caption</div><div class="type-meta">Link / Caption — 14px / 500 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-size:13px; font-weight:500; line-height:1.50; text-transform:uppercase; letter-spacing:0.65px;">Section Label</div><div class="type-meta">Label Uppercase — 13px / 500 / uppercase / 0.65px / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:12px; font-weight:500; line-height:1.50; text-transform:uppercase; letter-spacing:0.6px;">MONO TECHNICAL LABEL</div><div class="type-meta">Mono Code — 12px / 500 / uppercase / 0.6px / Geist Mono</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:10px; font-weight:500; line-height:1.50; text-transform:uppercase;">MICRO LABEL</div><div class="type-meta">Mono Micro — 10px / 500 / uppercase / Geist Mono</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-dark" href="#">Get Started</a><div class="button-label">Primary</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">Documentation</a><div class="button-label">Ghost / Outline</div></div>
+    <div class="button-item"><a class="btn-brand" href="#">Start Building</a><div class="button-label">Brand Accent</div></div>
+    <div class="button-item"><span class="btn-pill-badge">Documentation</span><div class="button-label">Pill Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(91,148,224,0.15); color:#5b94e0; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:500;">Info</span><div class="button-label">Info Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(230,167,51,0.15); color:#e6a733; padding:4px 12px; border-radius:9999px; font-size:12px; font-weight:500;">Warning</span><div class="button-label">Warning Badge</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:var(--brand-light); color:var(--brand-deep);">Docs</div>
+      <h3>Intelligent Search</h3>
+      <p>AI-powered search that understands your documentation and delivers precise answers to developer questions.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:rgba(91,148,224,0.12); color:#5b94e0;">API</div>
+      <h3>API Reference</h3>
+      <p>Auto-generated API documentation with interactive examples, authentication flows, and code snippets.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:rgba(230,167,51,0.12); color:#e6a733;">Analytics</div>
+      <h3>Documentation Analytics</h3>
+      <p>Track what developers search for, which pages perform best, and where they get stuck.</p>
+    </div>
+  </div>
+
+  <div style="margin-top:32px;">
+    <div class="color-group-label">Featured Card (24px radius)</div>
+    <div class="card-featured">
+      <div class="card-badge" style="background:var(--brand-light); color:var(--brand-deep);">Featured</div>
+      <h3>The Intelligent Knowledge Platform</h3>
+      <p>Build beautiful documentation that powers your developer community. AI-enhanced, automatically updated, and always in sync with your codebase.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="text" placeholder="you@company.com"><div class="form-state-label">Default (pill shape)</div></div>
+  <div class="form-group"><label class="form-label">Organization</label><input class="form-input form-input--focus" type="text" value="Mintlify"><div class="form-state-label">Focus (green ring)</div></div>
+  <div class="form-group"><label class="form-label">API Key</label><input class="form-input form-input--error" type="text" value="invalid-key"><div class="form-state-label">Error (red ring)</div></div>
+  <div class="form-group"><label class="form-label">Description</label><textarea class="form-textarea" placeholder="Tell us about your project..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:64px"></div><div class="spacing-value">64</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Code, tags</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Nav buttons</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div><div class="radius-context">Featured</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px</div><div class="radius-context">Buttons, pills</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid var(--border-subtle);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No shadow</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-subtle); box-shadow: var(--shadow-ambient);"><div class="elevation-label">Level 1: Subtle</div><div class="elevation-desc">6% border + ambient</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-medium); box-shadow: var(--shadow-ambient);"><div class="elevation-label">Level 2: Medium</div><div class="elevation-desc">10% border + ambient</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--border-medium); box-shadow: rgba(0,0,0,0.4) 0px 4px 12px;"><div class="elevation-label">Level 3: Raised</div><div class="elevation-desc">Stronger shadow</div></div>
+    <div class="elevation-card" style="border: 1px solid var(--brand); box-shadow: 0 0 0 1px var(--brand);"><div class="elevation-label">Focus Ring</div><div class="elevation-desc">Brand green ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://mintlify.com/">mintlify.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

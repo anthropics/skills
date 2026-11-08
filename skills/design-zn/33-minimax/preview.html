@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: MiniMax (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Brand Primary */
+    --brand-blue: #1456f0;
+    --sky-blue: #3daeff;
+    --brand-pink: #ea5ec1;
+
+    /* Blue Scale */
+    --primary-200: #bfdbfe;
+    --primary-light: #60a5fa;
+    --primary-500: #3b82f6;
+    --primary-600: #2563eb;
+    --primary-700: #1d4ed8;
+    --brand-deep: #17437d;
+
+    /* Text */
+    --text-near-black: #222222;
+    --text-dark: #18181b;
+    --text-charcoal: #181e25;
+    --text-dark-gray: #45515e;
+    --text-mid-gray: #8e8e93;
+    --text-light-gray: #5f5f5f;
+
+    /* Surface */
+    --bg-white: #ffffff;
+    --bg-light-gray: #f0f0f0;
+    --border-light: #f2f3f5;
+    --border-gray: #e5e7eb;
+
+    /* Shadows */
+    --shadow-standard: rgba(0, 0, 0, 0.08) 0px 4px 6px;
+    --shadow-soft-glow: rgba(0, 0, 0, 0.08) 0px 0px 22.576px;
+    --shadow-brand-purple: rgba(44, 30, 116, 0.16) 0px 0px 15px;
+    --shadow-brand-purple-offset: rgba(44, 30, 116, 0.11) 6.5px 2px 17.5px;
+    --shadow-card-elevation: rgba(36, 36, 36, 0.08) 0px 12px 16px -4px;
+
+    /* Fonts */
+    --font-primary: 'DM Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-display: 'Outfit', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mid: 'Poppins', sans-serif;
+    --font-data: 'Roboto', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-white);
+    color: var(--text-near-black);
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 40px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-light);
+  }
+  .nav-brand {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-dark);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 8px; align-items: center; }
+  .nav-links a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 6px 16px;
+    border-radius: 9999px;
+    transition: background 0.2s, opacity 0.2s;
+    line-height: 1.50;
+  }
+  .nav-links a:hover { background: rgba(0,0,0,0.05); }
+  .nav-links a.active { background: rgba(0,0,0,0.05); }
+  .nav-cta {
+    background: var(--text-charcoal);
+    color: #fff;
+    padding: 8px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+
+  /* HERO */
+  .hero {
+    text-align: center;
+    padding: 100px 40px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 900px;
+    height: 500px;
+    background: radial-gradient(ellipse at center,
+      rgba(20,86,240,0.06) 0%,
+      rgba(59,130,246,0.04) 40%,
+      transparent 70%
+    );
+    filter: blur(40px);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: 80px;
+    font-weight: 500;
+    line-height: 1.10;
+    color: var(--text-near-black);
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero p {
+    color: var(--text-dark-gray);
+    font-family: var(--font-primary);
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.50;
+    max-width: 600px;
+    margin: 0 auto 40px;
+    position: relative;
+  }
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    position: relative;
+  }
+  .btn-primary {
+    background: var(--text-charcoal);
+    color: #fff;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+    transition: background 0.2s;
+  }
+  .btn-primary:hover { background: #222; }
+  .btn-secondary {
+    background: var(--bg-light-gray);
+    color: #333333;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+    transition: background 0.2s;
+  }
+  .btn-secondary:hover { background: #e5e5e5; }
+
+  /* SECTIONS */
+  .section {
+    padding: 64px 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section + .section {
+    border-top: 1px solid var(--border-light);
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 31px;
+    font-weight: 600;
+    line-height: 1.50;
+    color: var(--text-near-black);
+    margin-bottom: 12px;
+  }
+  .section-desc {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--text-dark-gray);
+    margin-bottom: 40px;
+    max-width: 640px;
+  }
+
+  /* COLOR PALETTE */
+  .color-group-title {
+    font-family: var(--font-mid);
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text-near-black);
+    margin-bottom: 16px;
+    margin-top: 32px;
+    line-height: 1.50;
+  }
+  .color-group-title:first-of-type { margin-top: 0; }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .color-swatch {
+    border-radius: 13px;
+    overflow: hidden;
+    border: 1px solid var(--border-gray);
+    background: var(--bg-white);
+  }
+  .color-swatch-block {
+    height: 80px;
+    width: 100%;
+  }
+  .color-swatch-info {
+    padding: 10px 12px;
+  }
+  .color-swatch-name {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-near-black);
+    line-height: 1.50;
+  }
+  .color-swatch-hex {
+    font-family: var(--font-data);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-mid-gray);
+    line-height: 1.50;
+  }
+  .color-swatch-role {
+    font-family: var(--font-primary);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-dark-gray);
+    margin-top: 2px;
+    line-height: 1.50;
+  }
+
+  /* TYPOGRAPHY */
+  .type-row {
+    display: flex;
+    align-items: baseline;
+    gap: 32px;
+    padding: 20px 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  .type-row:last-child { border-bottom: none; }
+  .type-meta {
+    min-width: 200px;
+    flex-shrink: 0;
+  }
+  .type-label {
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-mid-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1.50;
+  }
+  .type-specs {
+    font-family: var(--font-data);
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text-dark-gray);
+    line-height: 1.50;
+    margin-top: 4px;
+  }
+  .type-sample {
+    flex: 1;
+    color: var(--text-near-black);
+  }
+
+  /* BUTTONS */
+  .button-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    align-items: center;
+  }
+  .button-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .button-showcase-label {
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-mid-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .btn-pill-primary-dark {
+    background: var(--text-charcoal);
+    color: #fff;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+  .btn-pill-nav {
+    background: rgba(0,0,0,0.05);
+    color: var(--text-dark);
+    padding: 8px 20px;
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+  .btn-pill-white {
+    background: #fff;
+    color: rgba(24,30,37,0.8);
+    padding: 8px 20px;
+    border: 1px solid var(--border-gray);
+    border-radius: 9999px;
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    opacity: 0.7;
+    line-height: 1.50;
+  }
+  .btn-secondary-light {
+    background: var(--bg-light-gray);
+    color: #333;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+  .btn-small {
+    background: var(--text-charcoal);
+    color: #fff;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 8px;
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+  .btn-pill-blue {
+    background: var(--primary-500);
+    color: #fff;
+    padding: 11px 20px;
+    border: none;
+    border-radius: 9999px;
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    line-height: 1.50;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .card {
+    border-radius: 20px;
+    overflow: hidden;
+    background: var(--bg-white);
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 6px;
+    border: 1px solid var(--border-light);
+  }
+  .card-gradient {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card-gradient-1 {
+    background: linear-gradient(135deg, #f472b6, #a855f7, #6366f1);
+  }
+  .card-gradient-2 {
+    background: linear-gradient(135deg, #fb923c, #f97316, #ef4444);
+  }
+  .card-gradient-3 {
+    background: linear-gradient(135deg, #60a5fa, #3b82f6, #1d4ed8);
+  }
+  .card-gradient-icon {
+    width: 56px;
+    height: 56px;
+    background: rgba(255,255,255,0.25);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: #fff;
+    backdrop-filter: blur(8px);
+  }
+  .card-body {
+    padding: 20px;
+  }
+  .card-body h3 {
+    font-family: var(--font-display);
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.71;
+    color: var(--text-near-black);
+    margin-bottom: 8px;
+  }
+  .card-body p {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.50;
+    color: var(--text-dark-gray);
+  }
+  .card-featured {
+    box-shadow: rgba(44, 30, 116, 0.16) 0px 0px 15px;
+    border: none;
+  }
+
+  /* FORMS */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    max-width: 700px;
+  }
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .form-group.full-width {
+    grid-column: 1 / -1;
+  }
+  .form-label {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-near-black);
+    line-height: 1.50;
+  }
+  .form-input {
+    font-family: var(--font-primary);
+    font-size: 16px;
+    font-weight: 400;
+    padding: 10px 14px;
+    border: 1px solid var(--border-gray);
+    border-radius: 8px;
+    background: var(--bg-white);
+    color: var(--text-near-black);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    line-height: 1.50;
+  }
+  .form-input::placeholder {
+    color: var(--text-mid-gray);
+  }
+  .form-input:focus {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59,130,246,0.15);
+  }
+  .form-input.error {
+    border-color: #ef4444;
+    box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+  }
+  .form-error {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 400;
+    color: #ef4444;
+    line-height: 1.50;
+  }
+  .form-hint {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mid-gray);
+    line-height: 1.50;
+  }
+  textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+  }
+
+  /* SPACING */
+  .spacing-row {
+    display: flex;
+    gap: 16px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .spacing-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .spacing-box {
+    background: var(--primary-500);
+    border-radius: 4px;
+    opacity: 0.85;
+  }
+  .spacing-label {
+    font-family: var(--font-data);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-mid-gray);
+  }
+
+  /* RADIUS */
+  .radius-row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+  }
+  .radius-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-light-gray);
+    border: 2px solid var(--border-gray);
+  }
+  .radius-label {
+    font-family: var(--font-data);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-mid-gray);
+    text-align: center;
+  }
+  .radius-name {
+    font-family: var(--font-primary);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--text-dark-gray);
+    text-align: center;
+  }
+
+  /* ELEVATION */
+  .elevation-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 24px;
+  }
+  .elevation-card {
+    background: var(--bg-white);
+    border-radius: 16px;
+    padding: 32px 20px;
+    text-align: center;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: 1px solid var(--border-light);
+  }
+  .elevation-card.level-0 {
+    box-shadow: none;
+  }
+  .elevation-card.level-1 {
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 4px 6px;
+  }
+  .elevation-card.level-2 {
+    box-shadow: rgba(0, 0, 0, 0.08) 0px 0px 22.576px;
+  }
+  .elevation-card.level-3 {
+    box-shadow: rgba(44, 30, 116, 0.16) 0px 0px 15px;
+    border: none;
+  }
+  .elevation-card.level-4 {
+    box-shadow: rgba(36, 36, 36, 0.08) 0px 12px 16px -4px;
+  }
+  .elevation-level {
+    font-family: var(--font-display);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-near-black);
+  }
+  .elevation-name {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-dark-gray);
+  }
+  .elevation-desc {
+    font-family: var(--font-data);
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-mid-gray);
+    line-height: 1.40;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--text-charcoal);
+    color: rgba(255,255,255,0.8);
+    padding: 48px 40px 32px;
+    margin-top: 64px;
+  }
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    font-family: var(--font-primary);
+    font-size: 14px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.8);
+  }
+  .footer-note {
+    font-family: var(--font-primary);
+    font-size: 13px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">awesome-design-md</div>
+  <div class="nav-links">
+    <a href="#colors" class="active">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#forms">Forms</a>
+    <a href="#spacing">Spacing</a>
+  </div>
+  <button class="nav-cta">Get Started</button>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System<br>Inspired by MiniMax</h1>
+  <p>A clean, approachable design language that bridges consumer-friendly appeal with technical credibility through white-space-driven layouts and colorful product accents.</p>
+  <div class="hero-actions">
+    <button class="btn-primary">Get Started</button>
+    <button class="btn-secondary">View Documentation</button>
+  </div>
+</section>
+
+<!-- 1. COLOR PALETTE -->
+<section class="section" id="colors">
+  <h2 class="section-title">1. Color Palette</h2>
+  <p class="section-desc">MiniMax uses a white-dominant foundation with a blue brand spectrum and colorful product card accents. Purple-tinted shadows create subtle brand-colored depth.</p>
+
+  <h3 class="color-group-title">Brand Primary</h3>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#1456f0"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Brand Blue</div>
+        <div class="color-swatch-hex">#1456f0</div>
+        <div class="color-swatch-role">Primary brand identity</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#3daeff"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Sky Blue</div>
+        <div class="color-swatch-hex">#3daeff</div>
+        <div class="color-swatch-role">Lighter brand accent</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#ea5ec1"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Brand Pink</div>
+        <div class="color-swatch-hex">#ea5ec1</div>
+        <div class="color-swatch-role">Secondary brand accent</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="color-group-title">Blue Scale (Primary)</h3>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#bfdbfe"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Primary 200</div>
+        <div class="color-swatch-hex">#bfdbfe</div>
+        <div class="color-swatch-role">Light blue backgrounds</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#60a5fa"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Primary Light</div>
+        <div class="color-swatch-hex">#60a5fa</div>
+        <div class="color-swatch-role">Active states, highlights</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#3b82f6"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Primary 500</div>
+        <div class="color-swatch-hex">#3b82f6</div>
+        <div class="color-swatch-role">Standard blue actions</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#2563eb"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Primary 600</div>
+        <div class="color-swatch-hex">#2563eb</div>
+        <div class="color-swatch-role">Hover states</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#1d4ed8"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Primary 700</div>
+        <div class="color-swatch-hex">#1d4ed8</div>
+        <div class="color-swatch-role">Pressed/active states</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#17437d"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Brand Deep</div>
+        <div class="color-swatch-hex">#17437d</div>
+        <div class="color-swatch-role">Deep blue emphasis</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="color-group-title">Text Colors</h3>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#222222"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Near Black</div>
+        <div class="color-swatch-hex">#222222</div>
+        <div class="color-swatch-role">Primary text</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#18181b"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Dark</div>
+        <div class="color-swatch-hex">#18181b</div>
+        <div class="color-swatch-role">Button text, headings</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#181e25"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Charcoal</div>
+        <div class="color-swatch-hex">#181e25</div>
+        <div class="color-swatch-role">Dark surfaces, footer</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#45515e"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Dark Gray</div>
+        <div class="color-swatch-hex">#45515e</div>
+        <div class="color-swatch-role">Secondary text</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#8e8e93"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Mid Gray</div>
+        <div class="color-swatch-hex">#8e8e93</div>
+        <div class="color-swatch-role">Tertiary text, muted</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#5f5f5f"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Light Gray</div>
+        <div class="color-swatch-hex">#5f5f5f</div>
+        <div class="color-swatch-role">Helper text</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="color-group-title">Surface & Background</h3>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#ffffff; border-bottom: 1px solid #e5e7eb;"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Pure White</div>
+        <div class="color-swatch-hex">#ffffff</div>
+        <div class="color-swatch-role">Primary background</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#f0f0f0"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Light Gray</div>
+        <div class="color-swatch-hex">#f0f0f0</div>
+        <div class="color-swatch-role">Secondary backgrounds</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#f2f3f5"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Border Light</div>
+        <div class="color-swatch-hex">#f2f3f5</div>
+        <div class="color-swatch-role">Subtle section dividers</div>
+      </div>
+    </div>
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#e5e7eb"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Border Gray</div>
+        <div class="color-swatch-hex">#e5e7eb</div>
+        <div class="color-swatch-role">Component borders</div>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="color-group-title">Semantic</h3>
+  <div class="color-grid">
+    <div class="color-swatch">
+      <div class="color-swatch-block" style="background:#e8ffea"></div>
+      <div class="color-swatch-info">
+        <div class="color-swatch-name">Success Background</div>
+        <div class="color-swatch-hex">#e8ffea</div>
+        <div class="color-swatch-role">Positive state backgrounds</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. TYPOGRAPHY -->
+<section class="section" id="typography">
+  <h2 class="section-title">2. Typography Scale</h2>
+  <p class="section-desc">Multi-font system: DM Sans for UI, Outfit for display headings, Poppins for mid-tier, and Roboto for data/technical contexts. Weight 500 as default emphasis.</p>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Display Hero</div>
+      <div class="type-specs">DM Sans / Outfit -- 80px -- 500 -- 1.10</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-display);font-size:80px;font-weight:500;line-height:1.10;">Hero Headline</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Section Heading</div>
+      <div class="type-specs">Outfit -- 31px -- 600 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-display);font-size:31px;font-weight:600;line-height:1.50;">Section Heading</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Section Heading Alt</div>
+      <div class="type-specs">Roboto / DM Sans -- 32px -- 600 -- 0.88</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-data);font-size:32px;font-weight:600;line-height:0.88;">Compact Header</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Card Title</div>
+      <div class="type-specs">Outfit -- 28px -- 600 -- 1.71</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-display);font-size:28px;font-weight:600;line-height:1.71;">Card Title</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Sub-heading</div>
+      <div class="type-specs">Poppins -- 24px -- 500 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-mid);font-size:24px;font-weight:500;line-height:1.50;">Sub-heading Text</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Feature Label</div>
+      <div class="type-specs">Poppins -- 18px -- 500 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-mid);font-size:18px;font-weight:500;line-height:1.50;">Feature Label Text</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Body Large</div>
+      <div class="type-specs">DM Sans -- 20px -- 500 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:20px;font-weight:500;line-height:1.50;">Emphasized body text for important passages</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Body</div>
+      <div class="type-specs">DM Sans -- 16px -- 400 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:16px;font-weight:400;line-height:1.50;">Standard body text for general content and descriptions across the interface.</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Body Bold</div>
+      <div class="type-specs">DM Sans -- 16px -- 700 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:16px;font-weight:700;line-height:1.50;">Strong emphasis for important content</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Nav / Link</div>
+      <div class="type-specs">DM Sans -- 14px -- 500 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:14px;font-weight:500;line-height:1.50;">Navigation links and secondary text</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Button Small</div>
+      <div class="type-specs">DM Sans -- 13px -- 600 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:13px;font-weight:600;line-height:1.50;">Compact Button Label</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Caption</div>
+      <div class="type-specs">DM Sans / Poppins -- 13px -- 400 -- 1.70</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:13px;font-weight:400;line-height:1.70;">Metadata and caption text</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Small Label</div>
+      <div class="type-specs">DM Sans -- 12px -- 600 -- 1.50</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:12px;font-weight:600;line-height:1.50;">TAGS AND BADGES</div>
+  </div>
+
+  <div class="type-row">
+    <div class="type-meta">
+      <div class="type-label">Micro</div>
+      <div class="type-specs">DM Sans / Outfit -- 10px -- 500 -- 1.80</div>
+    </div>
+    <div class="type-sample" style="font-family:var(--font-primary);font-size:10px;font-weight:500;line-height:1.80;">Tiny annotations and micro text</div>
+  </div>
+</section>
+
+<!-- 3. BUTTONS -->
+<section class="section" id="buttons">
+  <h2 class="section-title">3. Button Variants</h2>
+  <p class="section-desc">Pill buttons (9999px radius) for navigation and toggles, standard radius (8px) for CTA buttons. Weight 500 for default emphasis.</p>
+
+  <div class="button-grid">
+    <div class="button-showcase">
+      <span class="button-showcase-label">Pill Primary Dark</span>
+      <button class="btn-pill-primary-dark">Get Started</button>
+    </div>
+    <div class="button-showcase">
+      <span class="button-showcase-label">Pill Nav</span>
+      <button class="btn-pill-nav">Products</button>
+    </div>
+    <div class="button-showcase">
+      <span class="button-showcase-label">Pill White</span>
+      <button class="btn-pill-white">Overview</button>
+    </div>
+    <div class="button-showcase">
+      <span class="button-showcase-label">Secondary Light</span>
+      <button class="btn-secondary-light">Learn More</button>
+    </div>
+    <div class="button-showcase">
+      <span class="button-showcase-label">Button Small</span>
+      <button class="btn-small">Try Now</button>
+    </div>
+    <div class="button-showcase">
+      <span class="button-showcase-label">Pill Blue</span>
+      <button class="btn-pill-blue">Sign Up Free</button>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CARDS -->
+<section class="section" id="cards">
+  <h2 class="section-title">4. Card Examples</h2>
+  <p class="section-desc">Product cards use vibrant gradients as visual anchors against white canvas. Generous 20-24px border radius with purple-tinted brand shadows for featured elements.</p>
+
+  <div class="card-grid">
+    <div class="card card-featured">
+      <div class="card-gradient card-gradient-1">
+        <div class="card-gradient-icon">&#9733;</div>
+      </div>
+      <div class="card-body">
+        <h3>AI Chat</h3>
+        <p>Conversational AI powered by advanced language models for natural dialogue and creative content generation.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-gradient card-gradient-2">
+        <div class="card-gradient-icon">&#9672;</div>
+      </div>
+      <div class="card-body">
+        <h3>Video Generation</h3>
+        <p>Transform text descriptions into high-quality video content with state-of-the-art generative models.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-gradient card-gradient-3">
+        <div class="card-gradient-icon">&#9836;</div>
+      </div>
+      <div class="card-body">
+        <h3>Music Studio</h3>
+        <p>Create original music compositions with AI-driven arrangement and production tools.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5. FORMS -->
+<section class="section" id="forms">
+  <h2 class="section-title">5. Form Elements</h2>
+  <p class="section-desc">Clean form elements with 8px border radius, subtle borders, and blue focus rings. DM Sans at 16px for inputs, 14px for labels.</p>
+
+  <div class="form-grid">
+    <div class="form-group">
+      <label class="form-label">Full Name</label>
+      <input type="text" class="form-input" placeholder="Enter your name" value="Jane Cooper">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email Address</label>
+      <input type="email" class="form-input" placeholder="you@example.com">
+      <span class="form-hint">We'll never share your email.</span>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Focused Input</label>
+      <input type="text" class="form-input" placeholder="Click to focus" style="border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,0.15);">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Error State</label>
+      <input type="text" class="form-input error" value="Invalid input">
+      <span class="form-error">This field is required.</span>
+    </div>
+    <div class="form-group full-width">
+      <label class="form-label">Message</label>
+      <textarea class="form-input" placeholder="Describe your project or question..."></textarea>
+    </div>
+  </div>
+</section>
+
+<!-- 6. SPACING -->
+<section class="section" id="spacing">
+  <h2 class="section-title">6. Spacing Scale</h2>
+  <p class="section-desc">Base unit 8px. Scale provides a consistent rhythm for layout and component spacing across the design system.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:16px;height:2px;"></div>
+      <span class="spacing-label">2px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:16px;height:4px;"></div>
+      <span class="spacing-label">4px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:16px;height:6px;"></div>
+      <span class="spacing-label">6px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:16px;height:8px;"></div>
+      <span class="spacing-label">8px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:20px;height:10px;"></div>
+      <span class="spacing-label">10px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:22px;height:11px;"></div>
+      <span class="spacing-label">11px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:28px;height:14px;"></div>
+      <span class="spacing-label">14px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:32px;height:16px;"></div>
+      <span class="spacing-label">16px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:48px;height:24px;"></div>
+      <span class="spacing-label">24px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:64px;height:32px;"></div>
+      <span class="spacing-label">32px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:80px;height:40px;"></div>
+      <span class="spacing-label">40px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:100px;height:50px;"></div>
+      <span class="spacing-label">50px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:128px;height:64px;"></div>
+      <span class="spacing-label">64px</span>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width:160px;height:80px;"></div>
+      <span class="spacing-label">80px</span>
+    </div>
+  </div>
+</section>
+
+<!-- 7. BORDER RADIUS -->
+<section class="section" id="radius">
+  <h2 class="section-title">7. Border Radius Scale</h2>
+  <p class="section-desc">From minimal 4px tags to full 9999px pill shapes. Generous rounding (20-24px) defines the product card aesthetic.</p>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:4px;"></div>
+      <span class="radius-name">Minimal</span>
+      <span class="radius-label">4px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:8px;"></div>
+      <span class="radius-name">Standard</span>
+      <span class="radius-label">8px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:13px;"></div>
+      <span class="radius-name">Comfortable</span>
+      <span class="radius-label">13px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:20px;"></div>
+      <span class="radius-name">Generous</span>
+      <span class="radius-label">20px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:24px;"></div>
+      <span class="radius-name">Large</span>
+      <span class="radius-label">24px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:32px;"></div>
+      <span class="radius-name">Pill</span>
+      <span class="radius-label">32px</span>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius:9999px;"></div>
+      <span class="radius-name">Full</span>
+      <span class="radius-label">9999px</span>
+    </div>
+  </div>
+</section>
+
+<!-- 8. ELEVATION -->
+<section class="section" id="elevation">
+  <h2 class="section-title">8. Elevation / Depth</h2>
+  <p class="section-desc">MiniMax uses distinctive purple-tinted shadows for featured elements, connecting the shadow system to the blue brand identity. Neutral shadows at low opacity keep everything light and airy.</p>
+
+  <div class="elevation-grid">
+    <div class="elevation-card level-0">
+      <span class="elevation-level">Level 0</span>
+      <span class="elevation-name">Flat</span>
+      <span class="elevation-desc">No shadow. White backgrounds, text blocks.</span>
+    </div>
+    <div class="elevation-card level-1">
+      <span class="elevation-level">Level 1</span>
+      <span class="elevation-name">Subtle</span>
+      <span class="elevation-desc">Standard cards, containers.</span>
+    </div>
+    <div class="elevation-card level-2">
+      <span class="elevation-level">Level 2</span>
+      <span class="elevation-name">Ambient</span>
+      <span class="elevation-desc">Soft glow around elements.</span>
+    </div>
+    <div class="elevation-card level-3">
+      <span class="elevation-level">Level 3</span>
+      <span class="elevation-name">Brand Glow</span>
+      <span class="elevation-desc">Featured product cards with purple tint.</span>
+    </div>
+    <div class="elevation-card level-4">
+      <span class="elevation-level">Level 4</span>
+      <span class="elevation-name">Elevated</span>
+      <span class="elevation-desc">Lifted cards, hover states.</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="footer-inner">
+    <span class="footer-brand">awesome-design-md</span>
+    <span class="footer-note">Design system preview inspired by MiniMax</span>
+  </div>
+</footer>
+
+</body>
+</html>

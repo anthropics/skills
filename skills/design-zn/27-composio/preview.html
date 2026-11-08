@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Composio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-white: #ffffff;
+    --color-brand: #0007cd;
+    --color-black: #000000;
+    --color-void: #0f0f0f;
+    --color-charcoal: #2c2c2c;
+    --color-muted-smoke: #444444;
+    --color-cyan: #00ffff;
+    --color-signal-blue: #0089ff;
+    --color-ocean-blue: #0096ff;
+    --color-light-border: #e0e0e0;
+    --ghost-white: rgba(255,255,255,0.6);
+    --whisper-white: rgba(255,255,255,0.5);
+    --phantom-white: rgba(255,255,255,0.2);
+    --border-mist-12: rgba(255,255,255,0.12);
+    --border-mist-10: rgba(255,255,255,0.10);
+    --border-mist-08: rgba(255,255,255,0.08);
+    --border-mist-06: rgba(255,255,255,0.06);
+    --border-mist-04: rgba(255,255,255,0.04);
+    --cyan-12: rgba(0,255,255,0.12);
+    --font-sans: 'abcDiatype', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--color-void);
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: rgba(15,15,15,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-mist-06);
+  }
+  .nav-brand { font-size: 18px; font-weight: 500; letter-spacing: -0.3px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--ghost-white); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--color-white); }
+  .nav-cta {
+    background: var(--color-white);
+    color: var(--color-void);
+    padding: 8px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,7,205,0.25) 0%, rgba(0,255,255,0.08) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-size: 64px;
+    font-weight: 400;
+    line-height: 0.87;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero p {
+    color: var(--ghost-white);
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+  .btn-primary {
+    background: var(--color-white);
+    color: var(--color-void);
+    padding: 10px 28px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+  .btn-cyan {
+    background: var(--cyan-12);
+    color: var(--color-white);
+    padding: 10px 28px;
+    border: 1px solid var(--color-ocean-blue);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-family: var(--font-mono);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: var(--color-cyan);
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-size: 40px;
+    font-weight: 400;
+    line-height: 1.0;
+    margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-mist-06);
+    margin: 0 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--ghost-white);
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border: 1px solid var(--border-mist-10);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .color-swatch-block {
+    height: 80px;
+    position: relative;
+  }
+  .color-swatch-info {
+    padding: 12px;
+    background: var(--color-black);
+  }
+  .color-swatch-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--ghost-white); margin-bottom: 4px; }
+  .color-swatch-role { font-size: 12px; color: var(--muted-smoke); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-mist-04); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample-text { margin-bottom: 8px; }
+  .type-sample-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--muted-smoke);
+    letter-spacing: -0.24px;
+  }
+
+  /* BUTTONS */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .button-demo { text-align: center; }
+  .button-demo-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted-smoke);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+  .btn-ghost-blue {
+    background: transparent;
+    color: var(--color-white);
+    padding: 10px 24px;
+    border: 1px solid var(--color-signal-blue);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+  .btn-ghost-charcoal {
+    background: transparent;
+    color: var(--color-white);
+    padding: 10px 24px;
+    border: 1px solid var(--color-charcoal);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+  .btn-phantom {
+    background: var(--phantom-white);
+    color: var(--whisper-white);
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--color-black);
+    border-radius: 4px;
+    padding: 28px;
+  }
+  .card-standard { border: 1px solid var(--border-mist-10); }
+  .card-brutalist {
+    border: 1px solid var(--border-mist-10);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15);
+  }
+  .card-glow {
+    border: 1px solid var(--border-mist-10);
+    box-shadow: 0px 8px 32px rgba(0,0,0,0.5);
+    position: relative;
+  }
+  .card-glow::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 4px;
+    background: radial-gradient(ellipse at center, rgba(0,255,255,0.06) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .card h3 { font-size: 24px; font-weight: 500; line-height: 1.2; margin-bottom: 12px; position: relative; z-index: 1; }
+  .card p { color: var(--ghost-white); font-size: 15px; line-height: 1.63; position: relative; z-index: 1; }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: var(--color-cyan);
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* FORMS */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .form-group { margin-bottom: 20px; }
+  .form-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: var(--ghost-white);
+  }
+  .form-input {
+    width: 100%;
+    padding: 10px 14px;
+    background: transparent;
+    border: 1px solid var(--border-mist-10);
+    border-radius: 4px;
+    color: var(--color-white);
+    font-size: 16px;
+    font-family: var(--font-sans);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: var(--whisper-white); }
+  .form-input-focus { border-color: var(--color-signal-blue); }
+  .form-input-error { border-color: #ff4444; }
+  .form-error-text { font-size: 12px; color: #ff4444; margin-top: 6px; }
+  textarea.form-input { min-height: 100px; resize: vertical; }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { text-align: center; }
+  .spacing-box {
+    background: var(--cyan-12);
+    border: 1px solid rgba(0,255,255,0.3);
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .spacing-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted-smoke);
+  }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--color-black);
+    border: 1px solid var(--border-mist-12);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--muted-smoke);
+  }
+  .radius-context {
+    font-size: 11px;
+    color: var(--muted-smoke);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elevation-card {
+    background: var(--color-black);
+    border-radius: 4px;
+    padding: 24px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .elevation-flat { border: none; }
+  .elevation-contained { border: 1px solid var(--border-mist-06); }
+  .elevation-standard { border: 1px solid var(--border-mist-10); }
+  .elevation-brutalist {
+    border: 1px solid var(--border-mist-10);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.15);
+  }
+  .elevation-floating {
+    border: 1px solid var(--border-mist-10);
+    box-shadow: 0px 8px 32px rgba(0,0,0,0.5);
+  }
+  .elevation-name { font-size: 16px; font-weight: 500; margin-bottom: 8px; }
+  .elevation-desc { font-size: 13px; color: var(--ghost-white); line-height: 1.5; }
+  .elevation-level {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-cyan);
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    margin-top: 12px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-links a:not(.nav-cta-wrapper) { display: none; }
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 36px; }
+    .section { padding: 60px 20px; }
+    .section-heading { font-size: 28px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .form-grid { grid-template-columns: 1fr; }
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .button-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand">Composio</div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#forms">Forms</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#elevation">Elevation</a>
+    <button class="nav-cta">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Preview:<br>Composio</h1>
+  <p>Auto-generated design token catalog from DESIGN.md</p>
+  <div class="hero-buttons">
+    <button class="btn-primary">Explore Tokens</button>
+    <button class="btn-cyan">View Source</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">01 / Color Palette</div>
+  <h2 class="section-heading">Color Palette & Roles</h2>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #0007cd;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Composio Cobalt</div>
+          <div class="color-swatch-hex">#0007cd</div>
+          <div class="color-swatch-role">Core brand color for high-priority interactive elements</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Secondary & Accent</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #00ffff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Electric Cyan</div>
+          <div class="color-swatch-hex">#00ffff</div>
+          <div class="color-swatch-role">Attention-grabbing accent for glows and highlights</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #0089ff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Signal Blue</div>
+          <div class="color-swatch-hex">#0089ff</div>
+          <div class="color-swatch-role">Button borders and interactive focus states</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #0096ff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Ocean Blue</div>
+          <div class="color-swatch-hex">#0096ff</div>
+          <div class="color-swatch-role">CTA button accent borders</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #0f0f0f; border-bottom: 1px solid var(--border-mist-10);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Void Black</div>
+          <div class="color-swatch-hex">#0f0f0f</div>
+          <div class="color-swatch-role">Primary page background</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #000000; border-bottom: 1px solid var(--border-mist-10);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure Black</div>
+          <div class="color-swatch-hex">#000000</div>
+          <div class="color-swatch-role">Card interiors and deep-nested containers</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #2c2c2c;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Charcoal</div>
+          <div class="color-swatch-hex">#2c2c2c</div>
+          <div class="color-swatch-role">Secondary button borders and dividers</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffffff;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Primary headings and high-emphasis text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #444444;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Muted Smoke</div>
+          <div class="color-swatch-hex">#444444</div>
+          <div class="color-swatch-role">De-emphasized body text, metadata</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: rgba(255,255,255,0.6);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Ghost White</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.6)</div>
+          <div class="color-swatch-role">Secondary body text and link labels</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: rgba(255,255,255,0.5);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Whisper White</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.5)</div>
+          <div class="color-swatch-role">Tertiary button text and placeholders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: rgba(255,255,255,0.2);"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Phantom White</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.2)</div>
+          <div class="color-swatch-role">Subtle button backgrounds and receded UI</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Border System</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: var(--color-void); display: flex; align-items: center; justify-content: center;"><div style="width: 60%; height: 60%; border: 1px solid rgba(255,255,255,0.12); border-radius: 4px;"></div></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Mist 12</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.12)</div>
+          <div class="color-swatch-role">Prominent card edges, content separators</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: var(--color-void); display: flex; align-items: center; justify-content: center;"><div style="width: 60%; height: 60%; border: 1px solid rgba(255,255,255,0.10); border-radius: 4px;"></div></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Mist 10</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.10)</div>
+          <div class="color-swatch-role">Standard container borders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: var(--color-void); display: flex; align-items: center; justify-content: center;"><div style="width: 60%; height: 60%; border: 1px solid rgba(255,255,255,0.06); border-radius: 4px;"></div></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Mist 06</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.06)</div>
+          <div class="color-swatch-role">Section dividers, subtle groupings</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: var(--color-void); display: flex; align-items: center; justify-content: center;"><div style="width: 60%; height: 60%; border: 1px solid rgba(255,255,255,0.04); border-radius: 4px;"></div></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Mist 04</div>
+          <div class="color-swatch-hex">rgba(255,255,255,0.04)</div>
+          <div class="color-swatch-role">Faintest atmospheric separation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">02 / Typography Scale</div>
+  <h2 class="section-heading">Typography Rules</h2>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 64px; font-weight: 400; line-height: 0.87;">Display Hero</div>
+    <div class="type-sample-label">Display / Hero &mdash; 64px / 400 / 0.87 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 48px; font-weight: 400; line-height: 1.0;">Section Heading</div>
+    <div class="type-sample-label">Section Heading &mdash; 48px / 400 / 1.00 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 40px; font-weight: 400; line-height: 1.0;">Sub-heading Large</div>
+    <div class="type-sample-label">Sub-heading Large &mdash; 40px / 400 / 1.00 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 28px; font-weight: 400; line-height: 1.2;">Sub-heading</div>
+    <div class="type-sample-label">Sub-heading &mdash; 28px / 400 / 1.20 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 24px; font-weight: 500; line-height: 1.2;">Card Title</div>
+    <div class="type-sample-label">Card Title &mdash; 24px / 500 / 1.20 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 20px; font-weight: 500; line-height: 1.2;">Feature Label</div>
+    <div class="type-sample-label">Feature Label &mdash; 20px / 500 / 1.20 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 18px; font-weight: 400; line-height: 1.2;">Body Large</div>
+    <div class="type-sample-label">Body Large &mdash; 18px / 400 / 1.20 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 16px; font-weight: 400; line-height: 1.5;">Body / Button Text</div>
+    <div class="type-sample-label">Body / Button &mdash; 16px / 400 / 1.50 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 15px; font-weight: 400; line-height: 1.63;">Body Small &mdash; used for longer-form content blocks</div>
+    <div class="type-sample-label">Body Small &mdash; 15px / 400 / 1.63 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 14px; font-weight: 400; line-height: 1.63; color: var(--ghost-white);">Caption text for descriptions and metadata</div>
+    <div class="type-sample-label">Caption &mdash; 14px / 400 / 1.63 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 13px; font-weight: 500; line-height: 1.5;">Label Text</div>
+    <div class="type-sample-label">Label &mdash; 13px / 500 / 1.50 / normal &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-size: 12px; font-weight: 500; line-height: 1.0; text-transform: uppercase; letter-spacing: 0.3px;">TAG / OVERLINE</div>
+    <div class="type-sample-label">Tag / Overline &mdash; 12px / 500 / 1.00 / 0.3px / uppercase &mdash; abcDiatype</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 16px; font-weight: 400; line-height: 1.5; letter-spacing: -0.32px;">const agent = composio.create({ tools: ["github", "slack"] })</div>
+    <div class="type-sample-label">Code Body &mdash; 16px / 400 / 1.50 / -0.32px &mdash; JetBrains Mono</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: 1.5; letter-spacing: -0.28px;">npx composio-cli init --framework langchain</div>
+    <div class="type-sample-label">Code Small &mdash; 14px / 400 / 1.50 / -0.28px &mdash; JetBrains Mono</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 12px; font-weight: 400; line-height: 1.5; letter-spacing: -0.28px;">import { Composio } from "composio-core"</div>
+    <div class="type-sample-label">Code Caption &mdash; 12px / 400 / 1.50 / -0.28px &mdash; JetBrains Mono</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: 1.43; text-transform: uppercase; letter-spacing: 0.7px;">CODE OVERLINE</div>
+    <div class="type-sample-label">Code Overline &mdash; 14px / 400 / 1.43 / 0.7px / uppercase &mdash; JetBrains Mono</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 11px; font-weight: 400; line-height: 1.33; text-transform: uppercase; letter-spacing: 0.55px;">CODE MICRO TAG</div>
+    <div class="type-sample-label">Code Micro &mdash; 11px / 400 / 1.33 / 0.55px / uppercase &mdash; JetBrains Mono</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">03 / Button Variants</div>
+  <h2 class="section-heading">Buttons</h2>
+
+  <div class="button-row">
+    <div class="button-demo">
+      <button class="btn-primary">Get Started</button>
+      <div class="button-demo-label">Primary / White Fill</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-cyan">View Docs</button>
+      <div class="button-demo-label">Cyan Accent CTA</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost-blue">Learn More</button>
+      <div class="button-demo-label">Ghost / Signal Blue</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost-charcoal">Secondary</button>
+      <div class="button-demo-label">Ghost / Charcoal</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-phantom">Dismiss</button>
+      <div class="button-demo-label">Phantom</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-title">04 / Card Examples</div>
+  <h2 class="section-heading">Cards & Containers</h2>
+
+  <div class="card-grid">
+    <div class="card card-standard">
+      <div class="card-label">Standard Card</div>
+      <h3>Border Mist 10</h3>
+      <p>Standard content card with subtle white border at 10% opacity and 4px radius. The default container for most content blocks.</p>
+    </div>
+    <div class="card card-brutalist">
+      <div class="card-label">Brutalist Shadow</div>
+      <h3>Hard Offset 4px</h3>
+      <p>Distinctive hard-offset shadow (4px right, 4px down) at 15% opacity. Adds a raw, retro-computing personality to select elements.</p>
+    </div>
+    <div class="card card-glow">
+      <div class="card-label">Floating + Glow</div>
+      <h3>Cyan Glow Halo</h3>
+      <p>Soft diffuse shadow (8px 32px) with a radial cyan gradient halo. Used for highest-emphasis elevated content and feature highlights.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- FORMS -->
+<section class="section" id="forms">
+  <div class="section-title">05 / Form Elements</div>
+  <h2 class="section-heading">Inputs & Forms</h2>
+
+  <div class="form-grid">
+    <div>
+      <div class="form-group">
+        <label class="form-label">Default Input</label>
+        <input type="text" class="form-input" placeholder="Enter your API key...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Focus State</label>
+        <input type="text" class="form-input form-input-focus" value="composio-api-key-xxxxx">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Error State</label>
+        <input type="text" class="form-input form-input-error" value="invalid-key">
+        <div class="form-error-text">Invalid API key format</div>
+      </div>
+    </div>
+    <div>
+      <div class="form-group">
+        <label class="form-label">Textarea</label>
+        <textarea class="form-input" placeholder="Describe your agent's task..."></textarea>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-title">06 / Spacing Scale</div>
+  <h2 class="section-heading">Spacing System</h2>
+  <p style="color: var(--ghost-white); margin-bottom: 32px;">Base unit: 8px. Scale builds from 1px to 40px.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 4px; height: 4px;"></div>
+      <div class="spacing-label">1px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 8px; height: 8px;"></div>
+      <div class="spacing-label">2px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 16px; height: 16px;"></div>
+      <div class="spacing-label">4px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 24px; height: 24px;"></div>
+      <div class="spacing-label">6px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 32px; height: 32px;"></div>
+      <div class="spacing-label">8px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 40px; height: 40px;"></div>
+      <div class="spacing-label">10px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 48px; height: 48px;"></div>
+      <div class="spacing-label">12px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 56px; height: 56px;"></div>
+      <div class="spacing-label">14px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 64px; height: 64px;"></div>
+      <div class="spacing-label">16px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 72px; height: 72px;"></div>
+      <div class="spacing-label">18px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 80px; height: 80px;"></div>
+      <div class="spacing-label">20px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 96px; height: 96px;"></div>
+      <div class="spacing-label">24px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 120px; height: 120px;"></div>
+      <div class="spacing-label">30px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 128px; height: 128px;"></div>
+      <div class="spacing-label">32px</div>
+    </div>
+    <div class="spacing-item">
+      <div class="spacing-box" style="width: 160px; height: 160px;"></div>
+      <div class="spacing-label">40px</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <div class="section-title">07 / Border Radius Scale</div>
+  <h2 class="section-heading">Border Radius</h2>
+
+  <div class="radius-row">
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 0px;"></div>
+      <div class="radius-label">0px</div>
+      <div class="radius-context">Sharp / None</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 2px;"></div>
+      <div class="radius-label">2px</div>
+      <div class="radius-context">Nearly squared</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 4px;"></div>
+      <div class="radius-label">4px</div>
+      <div class="radius-context">Subtly rounded</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 37px;"></div>
+      <div class="radius-label">37px</div>
+      <div class="radius-context">Pill-shaped</div>
+    </div>
+    <div class="radius-item">
+      <div class="radius-box" style="border-radius: 9999px;"></div>
+      <div class="radius-label">9999px</div>
+      <div class="radius-context">Full round</div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">08 / Elevation & Depth</div>
+  <h2 class="section-heading">Depth & Elevation</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card elevation-flat">
+      <div>
+        <div class="elevation-name">Flat</div>
+        <div class="elevation-desc">No shadow, no border. Page background and inline text.</div>
+      </div>
+      <div class="elevation-level">Level 0</div>
+    </div>
+    <div class="elevation-card elevation-contained">
+      <div>
+        <div class="elevation-name">Contained</div>
+        <div class="elevation-desc">Border Mist 04-08. Background groupings, subtle sections.</div>
+      </div>
+      <div class="elevation-level">Level 1</div>
+    </div>
+    <div class="elevation-card elevation-standard">
+      <div>
+        <div class="elevation-name">Card</div>
+        <div class="elevation-desc">Border Mist 10-12. Standard content cards, code blocks.</div>
+      </div>
+      <div class="elevation-level">Level 2</div>
+    </div>
+    <div class="elevation-card elevation-brutalist">
+      <div>
+        <div class="elevation-name">Brutalist</div>
+        <div class="elevation-desc">Hard offset shadow (4px 4px, 15% black). Distinctive feature highlights.</div>
+      </div>
+      <div class="elevation-level">Level 3</div>
+    </div>
+    <div class="elevation-card elevation-floating">
+      <div>
+        <div class="elevation-name">Floating</div>
+        <div class="elevation-desc">Soft diffuse shadow (0px 8px 32px, 50% black). Modals, overlays.</div>
+      </div>
+      <div class="elevation-level">Level 4</div>
+    </div>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>

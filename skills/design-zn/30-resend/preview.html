@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Resend (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Serif+Display&family=Commit+Mono&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --void: #000000;
+    --near-white: #f0f0f0;
+    --white: #ffffff;
+    --silver: #a1a4a5;
+    --dark-gray: #464a4d;
+    --mid-gray: #5c5c5c;
+    --orange-10: #ff801f;
+    --orange-11: #ffa057;
+    --green-4: #11ff99;
+    --blue-10: #3b9eff;
+    --yellow-9: #ffc53d;
+    --red-5: #ff2047;
+    --frost-border: rgba(214, 235, 253, 0.19);
+    --frost-border-alt: rgba(217, 237, 254, 0.145);
+    --ring-shadow: rgba(176, 199, 217, 0.145) 0px 0px 0px 1px;
+    --font-serif: 'DM Serif Display', Georgia, serif;
+    --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'Commit Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--void);
+    color: var(--near-white);
+    font-family: var(--font-sans);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--frost-border);
+  }
+  .nav-brand { font-family: var(--font-sans); font-size: 14px; font-weight: 500; color: var(--near-white); text-decoration: none; letter-spacing: 0.35px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--silver); text-decoration: none; letter-spacing: 0.35px; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--near-white); }
+  .nav-cta {
+    display: inline-block; background: var(--white); color: var(--void);
+    padding: 5px 14px; border-radius: 9999px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: opacity 0.15s;
+  }
+  .nav-cta:hover { opacity: 0.85; }
+
+  .hero {
+    padding: 100px 32px 80px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: -60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(255,128,31,0.08) 0%, rgba(0,0,0,0) 70%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; z-index: 1; max-width: 800px; margin: 0 auto; }
+  .hero h1 {
+    font-family: var(--font-serif); font-size: 88px; font-weight: 400;
+    line-height: 1.00; letter-spacing: -0.96px; margin-bottom: 20px;
+  }
+  .hero p { font-size: 20px; font-weight: 400; line-height: 1.30; color: var(--silver); max-width: 500px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-white {
+    display: inline-block; background: var(--white); color: var(--void);
+    padding: 8px 20px; border-radius: 9999px; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-white:hover { opacity: 0.85; }
+  .btn-frost {
+    display: inline-block; background: transparent; color: var(--near-white);
+    padding: 8px 20px; border-radius: 9999px;
+    border: 1px solid var(--frost-border);
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer; transition: background 0.15s;
+  }
+  .btn-frost:hover { background: rgba(255,255,255,0.08); }
+  .btn-ghost {
+    display: inline-block; background: transparent; color: var(--near-white);
+    padding: 8px 14px; border-radius: 4px; border: none;
+    font-family: var(--font-sans); font-size: 14px; font-weight: 500;
+    text-decoration: none; cursor: pointer;
+  }
+
+  .section { padding: 64px 32px; max-width: 1100px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--mid-gray); text-transform: uppercase; margin-bottom: 8px; }
+  .section-title { font-family: var(--font-sans); font-size: 28px; font-weight: 500; line-height: 1.30; letter-spacing: -1.4px; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--frost-border); margin: 0; }
+
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 12px; overflow: hidden; border: 1px solid var(--frost-border); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+  .color-swatch-hex { font-size: 11px; color: var(--silver); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 10px; color: var(--mid-gray); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 500; color: var(--silver); margin: 24px 0 10px; }
+
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid rgba(214,235,253,0.1); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 11px; color: var(--mid-gray); margin-top: 8px; }
+
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 11px; font-weight: 500; color: var(--mid-gray); margin-top: 8px; }
+
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px; }
+  .card { background: transparent; border: 1px solid var(--frost-border); border-radius: 16px; padding: 24px; transition: border-color 0.2s; }
+  .card:hover { border-color: rgba(214,235,253,0.35); }
+  .card h3 { font-size: 18px; font-weight: 500; margin-bottom: 8px; }
+  .card p { font-size: 14px; color: var(--silver); line-height: 1.50; }
+  .card-badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 10px; border-radius: 9999px; margin-bottom: 12px; }
+
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--near-white); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: transparent; color: var(--near-white);
+    border: 1px solid var(--frost-border); padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-sans); font-size: 14px; outline: none; transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--blue-10); }
+  .form-input--focus { border-color: var(--blue-10); }
+  .form-input--error { border-color: var(--red-5); box-shadow: 0 0 0 1px rgba(255,32,71,0.3); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: transparent; color: var(--near-white);
+    border: 1px solid var(--frost-border); padding: 8px 12px; border-radius: 4px;
+    font-family: var(--font-sans); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 10px; color: var(--mid-gray); margin-top: 4px; }
+
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--orange-10); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 10px; color: var(--mid-gray); }
+
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 60px; height: 60px; border: 1px solid var(--frost-border); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-mono); font-size: 10px; color: var(--mid-gray); }
+  .radius-context { font-size: 9px; color: var(--dark-gray); }
+
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+  .elevation-card { background: transparent; border-radius: 12px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 500; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 10px; color: var(--mid-gray); }
+
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--frost-border); font-size: 13px; color: var(--silver); }
+  .footer a { color: var(--orange-10); text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    .hero h1 { font-size: 56px; letter-spacing: -0.56px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Get Started</a>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <h1>Design System<br>Inspired by Resend</h1>
+    <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value — visualized.</p>
+    <div class="hero-buttons">
+      <a class="btn-white" href="#">Get Started</a>
+      <a class="btn-frost" href="#">Documentation</a>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#000000"></div><div class="color-swatch-info"><div class="color-swatch-name">Void Black</div><div class="color-swatch-hex">#000000</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f0f0f0"></div><div class="color-swatch-info"><div class="color-swatch-name">Near White</div><div class="color-swatch-hex">#f0f0f0</div><div class="color-swatch-role">Primary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Maximum emphasis</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff801f"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange 10</div><div class="color-swatch-hex">#ff801f</div><div class="color-swatch-role">Primary orange accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffa057"></div><div class="color-swatch-info"><div class="color-swatch-name">Orange 11</div><div class="color-swatch-hex">#ffa057</div><div class="color-swatch-role">Light orange</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#11ff99"></div><div class="color-swatch-info"><div class="color-swatch-name">Green 4</div><div class="color-swatch-hex">#11ff99</div><div class="color-swatch-role">Success / green accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#3b9eff"></div><div class="color-swatch-info"><div class="color-swatch-name">Blue 10</div><div class="color-swatch-hex">#3b9eff</div><div class="color-swatch-role">Interactive blue</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffc53d"></div><div class="color-swatch-info"><div class="color-swatch-name">Yellow 9</div><div class="color-swatch-hex">#ffc53d</div><div class="color-swatch-role">Warning / gold</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ff2047"></div><div class="color-swatch-info"><div class="color-swatch-name">Red 5</div><div class="color-swatch-hex">#ff2047</div><div class="color-swatch-role">Error / destructive</div></div></div>
+  </div>
+
+  <div class="color-group-label">Neutral Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#a1a4a5"></div><div class="color-swatch-info"><div class="color-swatch-name">Silver</div><div class="color-swatch-hex">#a1a4a5</div><div class="color-swatch-role">Secondary text</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#5c5c5c"></div><div class="color-swatch-info"><div class="color-swatch-name">Mid Gray</div><div class="color-swatch-hex">#5c5c5c</div><div class="color-swatch-role">Muted labels</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#464a4d"></div><div class="color-swatch-info"><div class="color-swatch-name">Dark Gray</div><div class="color-swatch-hex">#464a4d</div><div class="color-swatch-role">Tertiary text</div></div></div>
+  </div>
+
+  <div class="color-group-label">Border & Surface</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background: rgba(214,235,253,0.19); border: 1px solid rgba(214,235,253,0.3)"></div><div class="color-swatch-info"><div class="color-swatch-name">Frost Border</div><div class="color-swatch-hex">rgba(214,235,253,0.19)</div><div class="color-swatch-role">Signature icy border</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background: rgba(255,255,255,0.28)"></div><div class="color-swatch-info"><div class="color-swatch-name">White Hover</div><div class="color-swatch-hex">rgba(255,255,255,0.28)</div><div class="color-swatch-role">Button hover</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-family:var(--font-serif); font-size:88px; font-weight:400; line-height:1.00; letter-spacing:-0.96px;">Display Hero</div><div class="type-meta">Display Hero — 96px / 400 / 1.00 / -0.96px / Domaine Display</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:48px; font-weight:400; line-height:1.20; letter-spacing:-2.8px;">Section Heading</div><div class="type-meta">Section Heading — 56px / 400 / 1.20 / -2.8px / ABC Favorit</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:20px; font-weight:400; line-height:1.30;">Sub-heading text</div><div class="type-meta">Sub-heading — 20px / 400 / 1.30 / ABC Favorit</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:24px; font-weight:500; line-height:1.50;">Feature Title</div><div class="type-meta">Feature Title — 24px / 500 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:18px; font-weight:400; line-height:1.50;">Body Large — Email for developers. Build, test, and deliver transactional emails at scale.</div><div class="type-meta">Body Large — 18px / 400 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:16px; font-weight:400; line-height:1.50;">Body — The best way to reach humans instead of spam folders. Deliver transactional and marketing emails at scale.</div><div class="type-meta">Body — 16px / 400 / 1.50 / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:14px; font-weight:500; line-height:1.43; letter-spacing:0.35px;">Nav Link</div><div class="type-meta">Nav Link — 14px / 500 / 1.43 / +0.35px / ABC Favorit</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:14px; font-weight:500; line-height:1.43;">Button / Link</div><div class="type-meta">Button — 14px / 500 / 1.43 / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-sans); font-size:12px; font-weight:500; line-height:1.33; text-transform:uppercase;">Small Uppercase</div><div class="type-meta">Small Uppercase — 12px / 500 / uppercase / Inter</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:16px; font-weight:400; line-height:1.50; color:var(--orange-10);">resend.emails.send({ to: 'user@example.com' })</div><div class="type-meta">Code Body — 16px / 400 / 1.50 / Commit Mono</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:12px; font-weight:400; line-height:1.33; color:var(--silver);">npm install resend</div><div class="type-meta">Code Small — 12px / 400 / 1.33 / Commit Mono</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-white" href="#">Get Started</a><div class="button-label">White Solid Pill</div></div>
+    <div class="button-item"><a class="btn-frost" href="#">Documentation</a><div class="button-label">Frost Pill</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">Learn more</a><div class="button-label">Ghost</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(255,128,31,0.15); color:var(--orange-10); padding:2px 10px; border-radius:9999px; font-size:12px; font-weight:500;">Email API</span><div class="button-label">Accent Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(59,158,255,0.15); color:var(--blue-10); padding:2px 10px; border-radius:9999px; font-size:12px; font-weight:500;">Webhooks</span><div class="button-label">Blue Badge</div></div>
+    <div class="button-item"><span style="display:inline-block; background:rgba(17,255,153,0.12); color:var(--green-4); padding:2px 10px; border-radius:9999px; font-size:12px; font-weight:500;">Delivered</span><div class="button-label">Green Badge</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:rgba(255,128,31,0.12); color:var(--orange-10);">Email API</div>
+      <h3>First-class developer experience</h3>
+      <p>Build with a simple, elegant interface that gets out of your way. Send emails with just a few lines of code.</p>
+    </div>
+    <div class="card" style="border-color: rgba(214,235,253,0.35);">
+      <div class="card-badge" style="background:rgba(59,158,255,0.12); color:var(--blue-10);">Elevated</div>
+      <h3>Reach humans, not spam</h3>
+      <p>Deliver transactional emails at scale. Card shown with brighter frost border on hover.</p>
+    </div>
+    <div class="card" style="border-radius: 24px;">
+      <div class="card-badge" style="background:rgba(17,255,153,0.12); color:var(--green-4);">Section</div>
+      <h3>React Email</h3>
+      <p>Build beautiful emails using React components. 24px radius section panel variant.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">API Key</label><input class="form-input" type="text" placeholder="re_123456789"><div class="form-state-label">Default (frost border)</div></div>
+  <div class="form-group"><label class="form-label">To Address</label><input class="form-input form-input--focus" type="email" value="user@example.com"><div class="form-state-label">Focus (blue border)</div></div>
+  <div class="form-group"><label class="form-label">Domain</label><input class="form-input form-input--error" type="text" value="invalid-domain"><div class="form-state-label">Error (red border)</div></div>
+  <div class="form-group"><label class="form-label">Email Body</label><textarea class="form-textarea" placeholder="Write your email content..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:20px"></div><div class="spacing-value">20</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:40px"></div><div class="spacing-value">40</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Inputs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:6px"></div><div class="radius-label">6px</div><div class="radius-context">Menus</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Tabs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div><div class="radius-label">12px</div><div class="radius-context">Containers</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:16px"></div><div class="radius-label">16px</div><div class="radius-context">Cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div><div class="radius-label">24px</div><div class="radius-context">Sections</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px; width:60px; height:60px;"></div><div class="radius-label">9999px</div><div class="radius-context">Pills</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid rgba(214,235,253,0.08);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No shadow — void background</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(176,199,217,0.145) 0px 0px 0px 1px;"><div class="elevation-label">Level 1: Ring</div><div class="elevation-desc">Blue-tinted ring shadow</div></div>
+    <div class="elevation-card" style="border: 1px solid rgba(214,235,253,0.19);"><div class="elevation-label">Level 1b: Frost</div><div class="elevation-desc">Icy frost border</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.1) 0px 1px 3px, rgba(0,0,0,0.1) 0px 1px 2px -1px;"><div class="elevation-label">Level 2: Subtle</div><div class="elevation-desc">Minimal card elevation</div></div>
+    <div class="elevation-card" style="box-shadow: rgb(0,0,0) 0px 0px 0px 8px;"><div class="elevation-label">Focus</div><div class="elevation-desc">Heavy black focus ring</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://resend.com/">resend.com</a> DESIGN.md — awesome-design-md
+</footer>
+
+</body>
+</html>

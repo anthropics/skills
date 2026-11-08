@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: Cursor (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cursor-dark: #26251e;
+    --cursor-cream: #f2f1ed;
+    --cursor-light: #e6e5e0;
+    --surface-100: #f7f7f4;
+    --surface-200: #f2f1ed;
+    --surface-300: #ebeae5;
+    --surface-400: #e6e5e0;
+    --surface-500: #e1e0db;
+    --white: #ffffff;
+    --black: #000000;
+    --accent: #f54e00;
+    --error: #cf2d56;
+    --success: #1f8a65;
+    --gold: #c08532;
+    --thinking: #dfa88f;
+    --grep: #9fc9a2;
+    --read: #9fbbe0;
+    --edit: #c0a8dd;
+    --text-primary: #26251e;
+    --text-secondary: rgba(38, 37, 30, 0.55);
+    --text-tertiary: rgba(38, 37, 30, 0.4);
+    --border-default: rgba(38, 37, 30, 0.1);
+    --border-medium: rgba(38, 37, 30, 0.2);
+    --border-strong: rgba(38, 37, 30, 0.55);
+    --shadow-card: rgba(0,0,0,0.14) 0px 28px 70px 0px, rgba(0,0,0,0.1) 0px 14px 32px 0px, rgba(38,37,30,0.1) 0px 0px 0px 1px;
+    --shadow-ambient: rgba(0,0,0,0.02) 0px 0px 16px 0px, rgba(0,0,0,0.008) 0px 0px 8px 0px;
+    --shadow-focus: rgba(0,0,0,0.1) 0px 4px 12px;
+    --font-gothic: system-ui, -apple-system, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-serif: 'Source Serif 4', 'Iowan Old Style', 'Palatino Linotype', Georgia, Cambria, 'Times New Roman', Times, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    --font-ui: system-ui, -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--cursor-cream);
+    color: var(--text-primary);
+    font-family: var(--font-gothic);
+    font-size: 16px; font-weight: 400; line-height: 1.50;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 32px;
+    background: rgba(242, 241, 237, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-default);
+  }
+  .nav-brand { font-size: 14px; font-weight: 600; color: var(--text-primary); text-decoration: none; letter-spacing: -0.28px; }
+  .nav-links { display: flex; gap: 24px; list-style: none; }
+  .nav-links a { font-size: 14px; font-weight: 500; color: var(--text-secondary); text-decoration: none; transition: color 0.15s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta {
+    display: inline-block; background: var(--surface-300); color: var(--text-primary);
+    padding: 8px 16px; border-radius: 8px; font-size: 14px; font-weight: 500;
+    text-decoration: none; transition: all 0.15s;
+  }
+  .nav-cta:hover { background: var(--surface-500); }
+
+  /* HERO */
+  .hero { padding: 96px 32px 80px; text-align: center; }
+  .hero h1 {
+    font-size: 72px; font-weight: 400; line-height: 1.10;
+    letter-spacing: -2.16px; color: var(--text-primary); margin-bottom: 16px;
+  }
+  .hero p { font-family: var(--font-serif); font-size: 19.2px; font-weight: 400; line-height: 1.50; color: var(--text-secondary); max-width: 600px; margin: 0 auto 32px; }
+  .hero-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn-primary {
+    display: inline-block; background: var(--surface-300); color: var(--text-primary);
+    padding: 10px 14px 10px 14px; border-radius: 8px; border: none;
+    font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: all 0.15s;
+  }
+  .btn-primary:hover { color: var(--error); }
+  .btn-dark {
+    display: inline-block; background: var(--cursor-dark); color: var(--cursor-cream);
+    padding: 10px 20px; border-radius: 8px; border: none;
+    font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-dark:hover { opacity: 0.85; }
+  .btn-ghost {
+    display: inline-block; background: rgba(38,37,30,0.06); color: var(--text-secondary);
+    padding: 6px 12px; border-radius: 8px; border: none;
+    font-family: var(--font-gothic); font-size: 14px; font-weight: 400;
+    text-decoration: none; cursor: pointer; transition: color 0.15s;
+  }
+  .btn-ghost:hover { color: var(--error); }
+  .btn-pill {
+    display: inline-block; background: var(--surface-400); color: rgba(38,37,30,0.6);
+    padding: 3px 8px; border-radius: 9999px; font-size: 14px; font-weight: 400;
+    text-decoration: none; transition: color 0.15s;
+  }
+  .btn-pill:hover { color: var(--error); }
+
+  /* SECTIONS */
+  .section { padding: 64px 32px; max-width: 1200px; margin: 0 auto; }
+  .section-label { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-tertiary); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+  .section-title { font-size: 36px; font-weight: 400; line-height: 1.20; letter-spacing: -0.72px; margin-bottom: 32px; }
+  .section-divider { border: none; border-top: 1px solid var(--border-default); margin: 0; }
+
+  /* COLORS */
+  .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 12px; margin-bottom: 24px; }
+  .color-swatch { border-radius: 8px; overflow: hidden; border: 1px solid var(--border-default); background: var(--white); }
+  .color-swatch-block { height: 72px; width: 100%; }
+  .color-swatch-info { padding: 10px 12px; }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; letter-spacing: -0.26px; }
+  .color-swatch-hex { font-size: 12px; color: var(--text-secondary); font-family: var(--font-mono); }
+  .color-swatch-role { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
+  .color-group-label { font-size: 14px; font-weight: 600; color: var(--text-secondary); letter-spacing: -0.28px; margin: 24px 0 10px; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid var(--border-default); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-meta { font-family: var(--font-mono); font-size: 12px; font-weight: 500; color: var(--text-tertiary); margin-top: 8px; }
+
+  /* BUTTONS */
+  .button-row { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; }
+  .button-item { text-align: center; }
+  .button-label { font-size: 12px; font-weight: 500; color: var(--text-tertiary); margin-top: 8px; }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+  .card { background: var(--white); border-radius: 8px; padding: 24px; border: 1px solid var(--border-default); transition: box-shadow 0.2s; }
+  .card:hover { box-shadow: var(--shadow-card); }
+  .card h3 { font-size: 22px; font-weight: 400; letter-spacing: -0.11px; margin-bottom: 8px; }
+  .card p { font-family: var(--font-serif); font-size: 17.28px; color: var(--text-secondary); line-height: 1.35; }
+  .card-badge { display: inline-block; font-size: 12px; font-weight: 500; padding: 2px 8px; border-radius: 9999px; margin-bottom: 12px; }
+
+  /* FORMS */
+  .form-group { margin-bottom: 20px; max-width: 400px; }
+  .form-label { display: block; font-size: 14px; font-weight: 500; color: var(--text-primary); margin-bottom: 6px; }
+  .form-input {
+    width: 100%; background: var(--white); color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px 8px 6px; border-radius: 4px;
+    font-family: var(--font-gothic); font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  .form-input:focus { border-color: var(--accent); }
+  .form-input--focus { border-color: var(--accent); }
+  .form-input--error { border-color: var(--error); }
+  .form-textarea {
+    width: 100%; min-height: 80px; background: var(--white); color: var(--text-primary);
+    border: 1px solid var(--border-default); padding: 8px; border-radius: 4px;
+    font-family: var(--font-gothic); font-size: 14px; resize: vertical; outline: none;
+  }
+  .form-state-label { font-size: 11px; color: var(--text-tertiary); margin-top: 4px; }
+
+  /* SPACING */
+  .spacing-row { display: flex; align-items: flex-end; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .spacing-item { text-align: center; }
+  .spacing-block { background: var(--cursor-dark); border-radius: 3px; margin-bottom: 6px; height: 28px; }
+  .spacing-value { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-tertiary); }
+
+  /* RADIUS */
+  .radius-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box { width: 64px; height: 64px; background: var(--cursor-dark); margin-bottom: 6px; }
+  .radius-label { font-family: var(--font-mono); font-size: 11px; font-weight: 500; color: var(--text-tertiary); }
+  .radius-context { font-size: 10px; color: var(--text-tertiary); }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .elevation-card { background: var(--white); border-radius: 8px; padding: 20px; text-align: center; }
+  .elevation-label { font-size: 14px; font-weight: 600; letter-spacing: -0.28px; margin-bottom: 4px; }
+  .elevation-desc { font-family: var(--font-mono); font-size: 11px; color: var(--text-tertiary); }
+
+  /* FOOTER */
+  .footer { padding: 32px; text-align: center; border-top: 1px solid var(--border-default); font-family: var(--font-serif); font-size: 14px; color: var(--text-secondary); }
+  .footer a { color: var(--accent); text-decoration: underline; }
+
+  @media (max-width: 768px) {
+    .hero h1 { font-size: 36px; letter-spacing: -0.72px; }
+    .nav-links { display: none; }
+    .section { padding: 48px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" href="#">awesome-design-md</a>
+  <ul class="nav-links">
+    <li><a href="#colors">Colors</a></li>
+    <li><a href="#typography">Typography</a></li>
+    <li><a href="#buttons">Buttons</a></li>
+    <li><a href="#cards">Cards</a></li>
+    <li><a href="#forms">Forms</a></li>
+    <li><a href="#spacing">Spacing</a></li>
+  </ul>
+  <a class="nav-cta" href="#">Download Editor</a>
+</nav>
+
+<section class="hero">
+  <h1>Design System<br>Inspired by Cursor</h1>
+  <p>A design token catalog generated from DESIGN.md. Every color, font, component, and spacing value -- visualized in warm cream tones.</p>
+  <div class="hero-buttons">
+    <a class="btn-dark" href="#">Download Cursor</a>
+    <a class="btn-primary" href="#">View Documentation</a>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="colors">
+  <div class="section-label">01 / Colors</div>
+  <h2 class="section-title">Color Palette</h2>
+
+  <div class="color-group-label">Primary</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#26251e"></div><div class="color-swatch-info"><div class="color-swatch-name">Cursor Dark</div><div class="color-swatch-hex">#26251e</div><div class="color-swatch-role">Primary text, headings</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f1ed"></div><div class="color-swatch-info"><div class="color-swatch-name">Cursor Cream</div><div class="color-swatch-hex">#f2f1ed</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e6e5e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Cursor Light</div><div class="color-swatch-hex">#e6e5e0</div><div class="color-swatch-role">Secondary surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ffffff; border-bottom:1px solid rgba(38,37,30,0.1)"></div><div class="color-swatch-info"><div class="color-swatch-name">Pure White</div><div class="color-swatch-hex">#ffffff</div><div class="color-swatch-role">Card surfaces</div></div></div>
+  </div>
+
+  <div class="color-group-label">Accent & Semantic</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f54e00"></div><div class="color-swatch-info"><div class="color-swatch-name">Cursor Orange</div><div class="color-swatch-hex">#f54e00</div><div class="color-swatch-role">Brand accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c08532"></div><div class="color-swatch-info"><div class="color-swatch-name">Gold</div><div class="color-swatch-hex">#c08532</div><div class="color-swatch-role">Secondary accent</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#cf2d56"></div><div class="color-swatch-info"><div class="color-swatch-name">Error</div><div class="color-swatch-hex">#cf2d56</div><div class="color-swatch-role">Error, hover state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#1f8a65"></div><div class="color-swatch-info"><div class="color-swatch-name">Success</div><div class="color-swatch-hex">#1f8a65</div><div class="color-swatch-role">Success state</div></div></div>
+  </div>
+
+  <div class="color-group-label">AI Timeline Colors</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#dfa88f"></div><div class="color-swatch-info"><div class="color-swatch-name">Thinking</div><div class="color-swatch-hex">#dfa88f</div><div class="color-swatch-role">AI thinking state</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9fc9a2"></div><div class="color-swatch-info"><div class="color-swatch-name">Grep</div><div class="color-swatch-hex">#9fc9a2</div><div class="color-swatch-role">Search operations</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#9fbbe0"></div><div class="color-swatch-info"><div class="color-swatch-name">Read</div><div class="color-swatch-hex">#9fbbe0</div><div class="color-swatch-role">File reading</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#c0a8dd"></div><div class="color-swatch-info"><div class="color-swatch-name">Edit</div><div class="color-swatch-hex">#c0a8dd</div><div class="color-swatch-role">Code editing</div></div></div>
+  </div>
+
+  <div class="color-group-label">Surface Scale</div>
+  <div class="color-grid">
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f7f7f4"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 100</div><div class="color-swatch-hex">#f7f7f4</div><div class="color-swatch-role">Lightest surface</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#f2f1ed"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 200</div><div class="color-swatch-hex">#f2f1ed</div><div class="color-swatch-role">Page background</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#ebeae5"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 300</div><div class="color-swatch-hex">#ebeae5</div><div class="color-swatch-role">Button default</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e6e5e0"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 400</div><div class="color-swatch-hex">#e6e5e0</div><div class="color-swatch-role">Card backgrounds</div></div></div>
+    <div class="color-swatch"><div class="color-swatch-block" style="background:#e1e0db"></div><div class="color-swatch-info"><div class="color-swatch-name">Surface 500</div><div class="color-swatch-hex">#e1e0db</div><div class="color-swatch-role">Active/pressed</div></div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="typography">
+  <div class="section-label">02 / Typography</div>
+  <h2 class="section-title">Typography Scale</h2>
+
+  <div class="type-sample"><div style="font-size:72px; font-weight:400; line-height:1.10; letter-spacing:-2.16px;">Display Hero</div><div class="type-meta">Display Hero -- 72px / 400 / 1.10 / -2.16px / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-size:36px; font-weight:400; line-height:1.20; letter-spacing:-0.72px;">Section Heading</div><div class="type-meta">Section Heading -- 36px / 400 / 1.20 / -0.72px / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-size:26px; font-weight:400; line-height:1.25; letter-spacing:-0.325px;">Sub-heading</div><div class="type-meta">Sub-heading -- 26px / 400 / 1.25 / -0.325px / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-size:22px; font-weight:400; line-height:1.30; letter-spacing:-0.11px;">Title Small</div><div class="type-meta">Title Small -- 22px / 400 / 1.30 / -0.11px / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-serif); font-size:19.2px; font-weight:500; line-height:1.50;">Body Serif -- The AI-first code editor that helps you build software faster with intelligent assistance.</div><div class="type-meta">Body Serif -- 19.2px / 500 / 1.50 / jjannon (with cswh)</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-serif); font-size:17.28px; font-weight:400; line-height:1.35;">Body Serif Small -- Write code naturally with AI that understands your entire codebase.</div><div class="type-meta">Body Serif SM -- 17.28px / 400 / 1.35 / jjannon</div></div>
+  <div class="type-sample"><div style="font-size:16px; font-weight:400; line-height:1.50;">Body Sans -- Standard UI text for navigation and interface elements</div><div class="type-meta">Body Sans -- 16px / 400 / 1.50 / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-size:14px; font-weight:400; line-height:1.00;">Button Label</div><div class="type-meta">Button Label -- 14px / 400 / 1.00 / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-size:11px; font-weight:500; line-height:1.50;">Caption -- Small metadata and labels</div><div class="type-meta">Caption -- 11px / 500 / 1.50 / CursorGothic</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-mono); font-size:12px; font-weight:400; line-height:1.67;">const editor = await cursor.init({ ai: true });</div><div class="type-meta">Mono Body -- 12px / 400 / 1.67 / berkeleyMono</div></div>
+  <div class="type-sample"><div style="font-family:var(--font-ui); font-size:11px; font-weight:500; line-height:1.27; text-transform:uppercase; letter-spacing:0.048px;">AI OPERATIONS</div><div class="type-meta">System Micro -- 11px / 500 / uppercase / system-ui</div></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="buttons">
+  <div class="section-label">03 / Buttons</div>
+  <h2 class="section-title">Button Variants</h2>
+  <div class="button-row">
+    <div class="button-item"><a class="btn-dark" href="#">Download Cursor</a><div class="button-label">Primary Dark</div></div>
+    <div class="button-item"><a class="btn-primary" href="#">Documentation</a><div class="button-label">Primary Surface</div></div>
+    <div class="button-item"><a class="btn-ghost" href="#">Learn More</a><div class="button-label">Ghost</div></div>
+    <div class="button-item"><a class="btn-pill" href="#">AI-First</a><div class="button-label">Pill Tag</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--thinking); color:var(--cursor-dark); padding:3px 8px; border-radius:9999px; font-size:12px; font-weight:500;">Thinking</span><div class="button-label">Timeline Pill</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--grep); color:var(--cursor-dark); padding:3px 8px; border-radius:9999px; font-size:12px; font-weight:500;">Grep</span><div class="button-label">Timeline Pill</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--read); color:var(--cursor-dark); padding:3px 8px; border-radius:9999px; font-size:12px; font-weight:500;">Read</span><div class="button-label">Timeline Pill</div></div>
+    <div class="button-item"><span style="display:inline-block; background:var(--edit); color:var(--cursor-dark); padding:3px 8px; border-radius:9999px; font-size:12px; font-weight:500;">Edit</span><div class="button-label">Timeline Pill</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="cards">
+  <div class="section-label">04 / Cards</div>
+  <h2 class="section-title">Card Examples</h2>
+  <div class="card-grid">
+    <div class="card">
+      <div class="card-badge" style="background:rgba(245,78,0,0.1); color:var(--accent);">AI</div>
+      <h3>Tab Autocomplete</h3>
+      <p>Cursor predicts your next edit and suggests multi-line changes. Accept with a single tab press for flow-state coding.</p>
+    </div>
+    <div class="card" style="box-shadow: var(--shadow-card);">
+      <div class="card-badge" style="background:rgba(159,187,224,0.2); color:#4a7ab5;">Elevated</div>
+      <h3>Chat with Codebase</h3>
+      <p>Ask questions about your entire repository. Cursor understands project structure, dependencies, and conventions.</p>
+    </div>
+    <div class="card">
+      <div class="card-badge" style="background:rgba(192,168,221,0.2); color:#7b5fa8;">Agent</div>
+      <h3>Agentic Editing</h3>
+      <p>Describe what you want in natural language. Cursor's agent mode makes multi-file changes across your codebase.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="forms">
+  <div class="section-label">05 / Forms</div>
+  <h2 class="section-title">Form Elements</h2>
+  <div class="form-group"><label class="form-label">Project Name</label><input class="form-input" type="text" placeholder="my-cursor-project"><div class="form-state-label">Default (warm border)</div></div>
+  <div class="form-group"><label class="form-label">Repository</label><input class="form-input form-input--focus" type="text" value="cursor/editor"><div class="form-state-label">Focus (accent orange)</div></div>
+  <div class="form-group"><label class="form-label">API Key</label><input class="form-input form-input--error" type="text" value="invalid-key"><div class="form-state-label">Error (warm crimson)</div></div>
+  <div class="form-group"><label class="form-label">Instructions</label><textarea class="form-textarea" placeholder="Describe the changes you want..."></textarea></div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="spacing">
+  <div class="section-label">06 / Spacing</div>
+  <h2 class="section-title">Spacing Scale</h2>
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-block" style="width:2px"></div><div class="spacing-value">2</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:3px"></div><div class="spacing-value">3</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:4px"></div><div class="spacing-value">4</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:5px"></div><div class="spacing-value">5</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:6px"></div><div class="spacing-value">6</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:8px"></div><div class="spacing-value">8</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:10px"></div><div class="spacing-value">10</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:12px"></div><div class="spacing-value">12</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:16px"></div><div class="spacing-value">16</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:24px"></div><div class="spacing-value">24</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:32px"></div><div class="spacing-value">32</div></div>
+    <div class="spacing-item"><div class="spacing-block" style="width:48px"></div><div class="spacing-value">48</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="radius">
+  <div class="section-label">07 / Radius</div>
+  <h2 class="section-title">Border Radius Scale</h2>
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius:1.5px"></div><div class="radius-label">1.5px</div><div class="radius-context">Micro</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:2px"></div><div class="radius-label">2px</div><div class="radius-context">Inline</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:3px"></div><div class="radius-label">3px</div><div class="radius-context">Small</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:4px"></div><div class="radius-label">4px</div><div class="radius-context">Cards, inputs</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div><div class="radius-label">8px</div><div class="radius-context">Buttons, cards</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:10px"></div><div class="radius-label">10px</div><div class="radius-context">Featured</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius:9999px"></div><div class="radius-label">9999px</div><div class="radius-context">Pills</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<section class="section" id="elevation">
+  <div class="section-label">08 / Elevation</div>
+  <h2 class="section-title">Elevation &amp; Depth</h2>
+  <div class="elevation-grid">
+    <div class="elevation-card" style="border: 1px solid var(--border-default);"><div class="elevation-label">Level 0: Flat</div><div class="elevation-desc">No shadow</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(38,37,30,0.1) 0px 0px 0px 1px;"><div class="elevation-label">Level 1: Border Ring</div><div class="elevation-desc">oklab warm border</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(38,37,30,0.2) 0px 0px 0px 1px;"><div class="elevation-label">Level 1b: Medium</div><div class="elevation-desc">Emphasized border</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.02) 0px 0px 16px 0px, rgba(0,0,0,0.008) 0px 0px 8px 0px;"><div class="elevation-label">Level 2: Ambient</div><div class="elevation-desc">Subtle glow</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.14) 0px 28px 70px 0px, rgba(0,0,0,0.1) 0px 14px 32px 0px, rgba(38,37,30,0.1) 0px 0px 0px 1px;"><div class="elevation-label">Level 3: Elevated</div><div class="elevation-desc">Modal / popover</div></div>
+    <div class="elevation-card" style="box-shadow: rgba(0,0,0,0.1) 0px 4px 12px;"><div class="elevation-label">Focus</div><div class="elevation-desc">Interactive focus</div></div>
+  </div>
+</section>
+
+<footer class="footer">
+  Generated from <a href="https://cursor.com/">cursor.com</a> DESIGN.md -- awesome-design-md
+</footer>
+
+</body>
+</html>

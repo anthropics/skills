@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: ClickHouse (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Inconsolata:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* ClickHouse brand tokens */
+    --color-neon-volt: #faff69;
+    --color-forest-green: #166534;
+    --color-dark-forest: #14572f;
+    --color-pale-yellow: #f4f692;
+    --color-border-olive: #4f5100;
+    --color-olive-dark: #161600;
+    --color-pure-black: #000000;
+    --color-near-black: #141414;
+    --color-charcoal: #414141;
+    --color-deep-charcoal: #343434;
+    --color-hover-gray: #3a3a3a;
+    --color-pure-white: #ffffff;
+    --color-silver: #a0a0a0;
+    --color-mid-gray: #585858;
+    --color-border-gray: #e5e7eb;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-code: 'Inconsolata', SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    /* Light mode overrides (inverted for catalog viewing) */
+    --bg-page: #ffffff;
+    --bg-card: #f8f8f8;
+    --bg-nav: rgba(255,255,255,0.95);
+    --text-primary: #000000;
+    --text-secondary: #414141;
+    --text-muted: #a0a0a0;
+    --border-color: #e5e7eb;
+    --border-subtle: #f0f0f0;
+    --section-label-color: #166534;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nav-brand {
+    font-family: var(--font-body);
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.3px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-brand .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: var(--color-neon-volt);
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 900;
+    color: var(--color-pure-black);
+  }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--color-forest-green); }
+  .nav-cta {
+    background: var(--color-forest-green);
+    color: var(--color-pure-white);
+    padding: 8px 16px;
+    border: 1px solid var(--color-forest-green);
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 700px;
+    height: 700px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(250,255,105,0.06) 0%, rgba(22,101,52,0.03) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: var(--font-body);
+    font-size: 72px;
+    font-weight: 900;
+    line-height: 1.0;
+    letter-spacing: normal;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--color-forest-green), var(--color-neon-volt));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 18px;
+    line-height: 1.56;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+
+  /* BUTTONS */
+  .btn-neon {
+    background: var(--color-neon-volt);
+    color: #151515;
+    padding: 12px 16px;
+    border: 1px solid var(--color-neon-volt);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-dark {
+    background: var(--color-near-black);
+    color: var(--color-pure-white);
+    padding: 12px 16px;
+    border: 1px solid var(--color-near-black);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-forest {
+    background: var(--color-forest-green);
+    color: var(--color-pure-white);
+    padding: 12px 16px;
+    border: 1px solid var(--color-near-black);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-primary);
+    padding: 12px 32px;
+    border: 1px solid var(--color-border-gray);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-title {
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.4px;
+    color: var(--section-label-color);
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: var(--font-body);
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 1.11;
+    letter-spacing: normal;
+    margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .color-swatch-block {
+    height: 80px;
+    position: relative;
+  }
+  .color-swatch-info {
+    padding: 12px;
+    background: var(--bg-card);
+  }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-code); font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .color-swatch-role { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample-text { margin-bottom: 8px; }
+  .type-sample-label {
+    font-family: var(--font-code);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* BUTTON DEMOS */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .button-demo { text-align: center; }
+  .button-demo-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 28px;
+  }
+  .card-standard { border: 1px solid var(--border-color); }
+  .card-neon { border: 2px solid var(--color-neon-volt); }
+  .card-inset {
+    border: 1px solid var(--border-color);
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.06), 0px 4px 25px rgba(0,0,0,0.14) inset;
+  }
+  .card h3 { font-family: var(--font-body); font-size: 24px; font-weight: 700; line-height: 1.17; margin-bottom: 12px; }
+  .card p { color: var(--text-secondary); font-size: 15px; line-height: 1.63; }
+  .card-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: var(--color-forest-green);
+    margin-bottom: 16px;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--color-near-black);
+    border: 1px solid rgba(65,65,65,0.8);
+    border-radius: 4px;
+    padding: 20px 24px;
+    margin-top: 24px;
+    font-family: var(--font-code);
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    color: var(--color-pure-white);
+    overflow-x: auto;
+  }
+  .code-block .keyword { color: var(--color-neon-volt); }
+  .code-block .string { color: var(--color-forest-green); }
+  .code-block .comment { color: var(--color-silver); }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { text-align: center; }
+  .spacing-box {
+    background: rgba(250,255,105,0.15);
+    border: 1px solid rgba(250,255,105,0.4);
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .spacing-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .radius-context {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elevation-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 24px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .elevation-flat { border: none; background: var(--bg-page); }
+  .elevation-bordered { border: 1px solid var(--border-color); }
+  .elevation-subtle { border: 1px solid var(--border-color); box-shadow: 0px 1px 3px rgba(0,0,0,0.1), 0px 1px 2px -1px rgba(0,0,0,0.1); }
+  .elevation-elevated { border: 1px solid var(--border-color); box-shadow: 0px 10px 15px -3px rgba(0,0,0,0.1), 0px 4px 6px -4px rgba(0,0,0,0.1); }
+  .elevation-pressed { border: 1px solid var(--border-color); box-shadow: 0px 4px 4px rgba(0,0,0,0.06), 0px 4px 25px rgba(0,0,0,0.14) inset; }
+  .elevation-neon { border: 2px solid var(--color-neon-volt); }
+  .elevation-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .elevation-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .elevation-level {
+    font-family: var(--font-code);
+    font-size: 11px;
+    color: var(--color-forest-green);
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    margin-top: 12px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-links a:not(.nav-cta-wrapper) { display: none; }
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 48px; }
+    .section { padding: 60px 20px; }
+    .section-heading { font-size: 28px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .button-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><span class="icon">CH</span> ClickHouse</div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#elevation">Elevation</a>
+    <button class="nav-cta">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Preview:<br><span>ClickHouse</span></h1>
+  <p>Auto-generated design token catalog from DESIGN.md &mdash; Light mode (inverted)</p>
+  <div class="hero-buttons">
+    <button class="btn-neon">Explore Tokens</button>
+    <button class="btn-ghost">View Source</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">01 / Color Palette</div>
+  <h2 class="section-heading">Color Palette & Roles</h2>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary &mdash; Neon Volt Family</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #faff69;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Neon Volt</div>
+          <div class="color-swatch-hex">#faff69</div>
+          <div class="color-swatch-role">Signature brand accent, CTAs, accent borders, link hovers</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #f4f692;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pale Yellow</div>
+          <div class="color-swatch-hex">#f4f692</div>
+          <div class="color-swatch-role">Active/pressed state text color</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #4f5100;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Olive</div>
+          <div class="color-swatch-hex">#4f5100</div>
+          <div class="color-swatch-role">Ghost button borders, muted neon sibling</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #161600; border-bottom: 1px solid #414141;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Olive Dark</div>
+          <div class="color-swatch-hex">#161600</div>
+          <div class="color-swatch-role">Darkest neon-tinted color for subtle brand text</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">CTA Greens</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #166534;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Forest Green</div>
+          <div class="color-swatch-hex">#166534</div>
+          <div class="color-swatch-role">Secondary CTA buttons, Get Started actions</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #14572f;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Dark Forest</div>
+          <div class="color-swatch-hex">#14572f</div>
+          <div class="color-swatch-role">Darker green for borders and secondary accents</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #000000; border-bottom: 1px solid #414141;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure Black</div>
+          <div class="color-swatch-hex">#000000</div>
+          <div class="color-swatch-role">Primary page background, maximum contrast canvas</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #141414; border-bottom: 1px solid #414141;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Near Black</div>
+          <div class="color-swatch-hex">#141414</div>
+          <div class="color-swatch-role">Button backgrounds, slightly elevated surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #3a3a3a;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Hover Gray</div>
+          <div class="color-swatch-hex">#3a3a3a</div>
+          <div class="color-swatch-role">Button hover state background</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Borders</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffffff; border-bottom: 1px solid #e5e7eb;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Pure White</div>
+          <div class="color-swatch-hex">#ffffff</div>
+          <div class="color-swatch-role">Primary text on dark surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #a0a0a0;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Silver</div>
+          <div class="color-swatch-hex">#a0a0a0</div>
+          <div class="color-swatch-role">Secondary body text, muted content</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #414141;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Charcoal</div>
+          <div class="color-swatch-hex">#414141</div>
+          <div class="color-swatch-role">Primary border color at 80% opacity</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #343434;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Deep Charcoal</div>
+          <div class="color-swatch-hex">#343434</div>
+          <div class="color-swatch-role">Darker border variant for subtle division</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #e5e7eb; border-bottom: 1px solid #ccc;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Border Gray</div>
+          <div class="color-swatch-hex">#e5e7eb</div>
+          <div class="color-swatch-role">Light border variant for light contexts</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">02 / Typography Scale</div>
+  <h2 class="section-heading">Typography Rules</h2>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 96px; font-weight: 900; line-height: 1.0;">Display Mega</div>
+    <div class="type-sample-label">Display Mega &mdash; 96px / 900 (Black) / 1.00 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 72px; font-weight: 700; line-height: 1.0;">Display Hero</div>
+    <div class="type-sample-label">Display / Hero &mdash; 72px / 700 / 1.00 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 36px; font-weight: 600; line-height: 1.30;">Feature Heading</div>
+    <div class="type-sample-label">Feature Heading &mdash; 36px / 600 / 1.30 / normal &mdash; Inter (Basier in production)</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 24px; font-weight: 700; line-height: 1.17;">Sub-heading Bold</div>
+    <div class="type-sample-label">Sub-heading &mdash; 24px / 600-700 / 1.17-1.38 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 20px; font-weight: 600; line-height: 1.40;">Feature Title</div>
+    <div class="type-sample-label">Feature Title &mdash; 20px / 600-700 / 1.40 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 18px; font-weight: 400; line-height: 1.56;">Body large for intro paragraphs and button text. Inter provides geometric precision across the entire weight spectrum from 400 to 900.</div>
+    <div class="type-sample-label">Body Large &mdash; 18px / 400-700 / 1.56 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 16px; font-weight: 400; line-height: 1.50;">Standard body text for paragraphs, navigation links, and button labels. Weight 400 for reading, 600-700 for UI elements.</div>
+    <div class="type-sample-label">Body / Button &mdash; 16px / 400-700 / 1.50 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 14px; font-weight: 500; line-height: 1.43; color: var(--text-secondary);">Caption and metadata text for descriptions and links</div>
+    <div class="type-sample-label">Caption &mdash; 14px / 400-700 / 1.43 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 14px; font-weight: 600; line-height: 1.43; text-transform: uppercase; letter-spacing: 1.4px; color: var(--text-muted);">UPPERCASE SECTION LABEL</div>
+    <div class="type-sample-label">Uppercase Label &mdash; 14px / 600 / 1.43 / 1.4px / uppercase &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-code); font-size: 16px; font-weight: 600; line-height: 1.50;">SELECT count() FROM system.query_log</div>
+    <div class="type-sample-label">Code &mdash; 16px / 600 / 1.50 / normal &mdash; Inconsolata</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 12px; font-weight: 500; line-height: 1.33;">Small supporting text</div>
+    <div class="type-sample-label">Small &mdash; 12px / 500 / 1.33 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 11.2px; font-weight: 500; line-height: 1.79; color: var(--text-muted);">MICRO TAG LABEL</div>
+    <div class="type-sample-label">Micro &mdash; 11.2px / 500 / 1.79 / normal &mdash; Inter</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">03 / Button Variants</div>
+  <h2 class="section-heading">Buttons</h2>
+
+  <div class="button-row">
+    <div class="button-demo">
+      <button class="btn-neon">Neon Primary</button>
+      <div class="button-demo-label">Neon Volt CTA</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-dark">Dark Solid</button>
+      <div class="button-demo-label">Dark Solid</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-forest">Get Started</button>
+      <div class="button-demo-label">Forest Green</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost">View Docs</button>
+      <div class="button-demo-label">Ghost / Outlined</div>
+    </div>
+    <div class="button-demo">
+      <button style="background: transparent; color: var(--text-primary); padding: 8px 20px; border: 1px solid var(--border-color); border-radius: 9999px; font-size: 14px; font-family: var(--font-body); font-weight: 500; cursor: pointer;">Pill Toggle</button>
+      <div class="button-demo-label">Pill Toggle</div>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top: 40px;">
+    <span class="comment">-- ClickHouse query example</span><br>
+    <span class="keyword">SELECT</span> count() <span class="keyword">FROM</span> system.query_log<br>
+    <span class="keyword">WHERE</span> type = <span class="string">'QueryFinish'</span>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-title">04 / Card Examples</div>
+  <h2 class="section-heading">Cards & Containers</h2>
+
+  <div class="card-grid">
+    <div class="card card-standard">
+      <div class="card-label">Standard Card</div>
+      <h3>Charcoal Border</h3>
+      <p>Standard content card with 1px solid charcoal border at 80% opacity and 8px radius. The default container for features, stats, and content sections.</p>
+    </div>
+    <div class="card card-neon">
+      <div class="card-label" style="color: #9a9d00;">Neon Highlighted</div>
+      <h3>Neon Volt Border</h3>
+      <p>Featured or selected card with 2px solid Neon Volt border. Creates maximum emphasis against the dark canvas with the signature yellow-green accent.</p>
+    </div>
+    <div class="card card-inset">
+      <div class="card-label">Inset / Pressed</div>
+      <h3>Inset Shadow</h3>
+      <p>Card with inset shadow creating a "pressed into the surface" effect. Unique to ClickHouse's depth system for active or contained elements.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-title">05 / Spacing Scale</div>
+  <h2 class="section-heading">Spacing System</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Base unit: 8px. Scale from 2px to 64px with additional intermediate values.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-box" style="width: 8px; height: 8px;"></div><div class="spacing-label">2px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 18px; height: 18px;"></div><div class="spacing-label">6px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 32px; height: 32px;"></div><div class="spacing-label">8px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 40px; height: 40px;"></div><div class="spacing-label">10px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 48px; height: 48px;"></div><div class="spacing-label">12px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 64px; height: 64px;"></div><div class="spacing-label">16px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 80px; height: 80px;"></div><div class="spacing-label">20px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 96px; height: 96px;"></div><div class="spacing-label">24px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 128px; height: 128px;"></div><div class="spacing-label">32px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 160px; height: 160px;"></div><div class="spacing-label">40px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 192px; height: 192px;"></div><div class="spacing-label">48px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 256px; height: 256px;"></div><div class="spacing-label">64px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <div class="section-title">06 / Border Radius Scale</div>
+  <h2 class="section-heading">Border Radius</h2>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius: 4px;"></div><div class="radius-label">4px</div><div class="radius-context">Sharp &mdash; buttons, badges, code</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 8px;"></div><div class="radius-label">8px</div><div class="radius-context">Comfortable &mdash; cards, containers</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 9999px;"></div><div class="radius-label">9999px</div><div class="radius-context">Pill &mdash; toggles, indicators</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">07 / Elevation & Depth</div>
+  <h2 class="section-heading">Depth & Elevation</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card elevation-flat">
+      <div><div class="elevation-name">Flat</div><div class="elevation-desc">No shadow. Black background, text blocks, inline content.</div></div>
+      <div class="elevation-level">Level 0</div>
+    </div>
+    <div class="elevation-card elevation-bordered">
+      <div><div class="elevation-name">Bordered</div><div class="elevation-desc">1px solid charcoal at 80% opacity. Standard cards and containers.</div></div>
+      <div class="elevation-level">Level 1</div>
+    </div>
+    <div class="elevation-card elevation-subtle">
+      <div><div class="elevation-name">Subtle</div><div class="elevation-desc">Subtle shadow (1px 3px). Soft card lift on the dark canvas.</div></div>
+      <div class="elevation-level">Level 2</div>
+    </div>
+    <div class="elevation-card elevation-elevated">
+      <div><div class="elevation-name">Elevated</div><div class="elevation-desc">Medium shadow (10px 15px). Feature cards and hover states.</div></div>
+      <div class="elevation-level">Level 3</div>
+    </div>
+    <div class="elevation-card elevation-pressed">
+      <div><div class="elevation-name">Pressed / Inset</div><div class="elevation-desc">Inset shadow (4px 25px inset). "Sunk into the surface" effect, unique to ClickHouse.</div></div>
+      <div class="elevation-level">Level 4</div>
+    </div>
+    <div class="elevation-card elevation-neon">
+      <div><div class="elevation-name">Neon Highlight</div><div class="elevation-desc">Neon Volt border (#faff69). Featured/selected cards, maximum emphasis.</div></div>
+      <div class="elevation-level">Level 5</div>
+    </div>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>
