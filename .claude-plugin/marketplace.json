@@ -69,5 +69,15 @@
         "./skills/discernment-nudge"
       ]
     }
+    ,
+    {
+      "name": "resume-screening",
+      "description": "Screens job applications exported from macOS Mail, tiers candidates with red-flag checks, extracts contacts, and builds an HR-ready PDF report with original resumes attached",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/resume-screening"
+      ]
+    }
   ]
 }
