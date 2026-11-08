@@ -1,0 +1,345 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [ main, develop ]
+    paths:
+      - 'skills/**'
+      - '.github/workflows/validate-skills.yml'
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'skills/**'
+
+jobs:
+  validate-skills:
+    runs-on: ubuntu-latest
+    name: Validate Skill Structure and Content
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Validate SKILL.md files (scoped to changes)
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          import sys
+          import subprocess
+          from pathlib import Path
+
+          def get_changed_skills():
+              """Get list of skills changed in this branch"""
+              try:
+                  # Get list of changed files
+                  result = subprocess.run(
+                      ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+                      capture_output=True,
+                      text=True
+                  )
+                  changed_files = result.stdout.strip().split('\n')
+
+                  # Extract skill names from changed files
+                  changed_skills = set()
+                  for file in changed_files:
+                      if file.startswith('skills/'):
+                          parts = file.split('/')
+                          if len(parts) > 1:
+                              changed_skills.add(parts[1])
+
+                  return changed_skills
+              except Exception as e:
+                  print(f"⚠️  Could not determine changed skills: {e}")
+                  return set()
+
+          def validate_skill_md(skill_path):
+              """Validate SKILL.md has proper YAML frontmatter"""
+              skill_file = skill_path / 'SKILL.md'
+
+              if not skill_file.exists():
+                  return False, f"Missing SKILL.md in {skill_path}"
+
+              content = skill_file.read_text()
+
+              # Check for YAML frontmatter
+              if not content.startswith('---'):
+                  return False, f"SKILL.md missing YAML frontmatter: {skill_path}"
+
+              # Extract frontmatter
+              parts = content.split('---', 2)
+              if len(parts) < 3:
+                  return False, f"Invalid YAML frontmatter in {skill_path}"
+
+              frontmatter = parts[1]
+
+              # Check required fields
+              if 'name:' not in frontmatter:
+                  return False, f"Missing 'name' field in {skill_path}"
+              if 'description:' not in frontmatter:
+                  return False, f"Missing 'description' field in {skill_path}"
+
+              return True, f"✓ {skill_path.name}"
+
+          def validate_license(skill_path):
+              """Validate LICENSE.txt exists"""
+              license_file = skill_path / 'LICENSE.txt'
+
+              if not license_file.exists():
+                  return False, f"Missing LICENSE.txt in {skill_path}"
+
+              return True, f"✓ License valid: {skill_path.name}"
+
+          def check_sensitive_data(skill_path):
+              """Check for sensitive data in skill files - only in new/changed files"""
+              # More specific patterns to avoid documentation false positives
+              patterns = [
+                  (r'sk-[A-Za-z0-9]{48}', 'OpenAI API key'),  # OpenAI keys
+                  (r'AKIA[0-9A-Z]{16}', 'AWS access key'),    # AWS keys
+                  (r'ghp_[A-Za-z0-9]{36}', 'GitHub token'),   # GitHub tokens
+              ]
+
+              sensitive_files = ['.env', '.env.local', '.env.secret']
+              issues = []
+
+              for root, dirs, files in os.walk(skill_path):
+                  # Skip node_modules and similar
+                  dirs[:] = [d for d in dirs if d not in ['node_modules', '.git', '__pycache__']]
+
+                  for file in files:
+                      if file in sensitive_files:
+                          issues.append(f"Found sensitive file: {file}")
+                          continue
+
+                      filepath = Path(root) / file
+                      # Only check files in skills/*/SKILL.md, LICENSE.txt, and new files
+                      relative = filepath.relative_to(skill_path)
+                      if str(relative) not in ['SKILL.md', 'LICENSE.txt'] and not filepath.suffix in ['.py', '.js', '.ts']:
+                          continue
+
+                      try:
+                          content = filepath.read_text(errors='ignore')
+                          for pattern, desc in patterns:
+                              if re.search(pattern, content):
+                                  issues.append(f"Potential {desc} in {relative}")
+                      except Exception:
+                          pass
+
+              if issues:
+                  return False, '\n  '.join(issues)
+
+              return True, f"✓ No sensitive data: {skill_path.name}"
+
+          # Get skills changed in this branch
+          changed_skills = get_changed_skills()
+
+          if changed_skills:
+              print(f"Validating changed skills: {', '.join(sorted(changed_skills))}\n")
+          else:
+              print("No skills changed in this branch. Skipping skill validation.\n")
+              sys.exit(0)
+
+          # Find all skill directories
+          skills_dir = Path('skills')
+          errors = []
+
+          for skill_path in sorted(skills_dir.iterdir()):
+              if not skill_path.is_dir() or skill_path.name.startswith('.'):
+                  continue
+
+              # Skip non-skill directories
+              if not (skill_path / 'SKILL.md').exists():
+                  continue
+
+              # Only validate skills that changed
+              if skill_path.name not in changed_skills:
+                  continue
+
+              # Validate SKILL.md
+              valid, msg = validate_skill_md(skill_path)
+              if not valid:
+                  errors.append(msg)
+              else:
+                  print(msg)
+
+              # Validate LICENSE
+              valid, msg = validate_license(skill_path)
+              if not valid:
+                  errors.append(msg)
+              else:
+                  print(msg)
+
+              # Check for sensitive data
+              valid, msg = check_sensitive_data(skill_path)
+              if not valid:
+                  errors.append(msg)
+              else:
+                  print(msg)
+
+          if errors:
+              print('\n❌ Validation errors:')
+              for error in errors:
+                  print(f'  - {error}')
+              sys.exit(1)
+
+          print('\n✅ All changed skills validated successfully!')
+          EOF
+
+      - name: Validate file structure
+        run: |
+          python3 << 'EOF'
+          import os
+          import sys
+          import subprocess
+          from pathlib import Path
+
+          def get_changed_skills():
+              """Get list of skills changed in this branch"""
+              try:
+                  result = subprocess.run(
+                      ['git', 'diff', '--name-only', 'origin/main...HEAD'],
+                      capture_output=True,
+                      text=True
+                  )
+                  changed_files = result.stdout.strip().split('\n')
+                  changed_skills = set()
+                  for file in changed_files:
+                      if file.startswith('skills/'):
+                          parts = file.split('/')
+                          if len(parts) > 1:
+                              changed_skills.add(parts[1])
+                  return changed_skills
+              except Exception as e:
+                  print(f"⚠️  Could not determine changed skills: {e}")
+                  return set()
+
+          changed_skills = get_changed_skills()
+          if not changed_skills:
+              print("No skills changed in this branch. Skipping file structure validation.")
+              sys.exit(0)
+
+          skills_dir = Path('skills')
+          issues = []
+
+          for skill_path in sorted(skills_dir.iterdir()):
+              if not skill_path.is_dir() or skill_path.name.startswith('.'):
+                  continue
+
+              if not (skill_path / 'SKILL.md').exists():
+                  continue
+
+              # Only validate changed skills
+              if skill_path.name not in changed_skills:
+                  continue
+
+              # Check for unexpected large files
+              for file in skill_path.rglob('*'):
+                  if file.is_file():
+                      size = file.stat().st_size
+                      # Flag files larger than 50MB
+                      if size > 50 * 1024 * 1024:
+                          issues.append(f"Large file {file.relative_to(skill_path)} ({size / 1024 / 1024:.1f}MB)")
+
+          if issues:
+              print('⚠️  File size warnings:')
+              for issue in issues:
+                  print(f'  - {issue}')
+              # Don't fail on warnings
+
+          print('✅ File structure validation passed!')
+          EOF
+
+  lint-python:
+    runs-on: ubuntu-latest
+    name: Lint Python Code in Skills
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pylint flake8
+
+      - name: Check Python code in skills
+        run: |
+          python3 << 'EOF'
+          import os
+          import subprocess
+          from pathlib import Path
+
+          python_files = list(Path('skills').rglob('*.py'))
+
+          if python_files:
+              print(f"Found {len(python_files)} Python files")
+              for py_file in python_files:
+                  print(f"  - {py_file}")
+
+              # Run basic checks
+              for py_file in python_files:
+                  try:
+                      result = subprocess.run(
+                          ['python', '-m', 'py_compile', str(py_file)],
+                          capture_output=True,
+                          text=True
+                      )
+                      if result.returncode != 0:
+                          print(f"❌ Syntax error in {py_file}: {result.stderr}")
+                      else:
+                          print(f"✓ {py_file}")
+                  except Exception as e:
+                      print(f"⚠️  Could not check {py_file}: {e}")
+          else:
+              print("No Python files found in skills")
+          EOF
+
+  validate-references:
+    runs-on: ubuntu-latest
+    name: Validate Internal References
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check for broken references
+        run: |
+          python3 << 'EOF'
+          import os
+          import re
+          from pathlib import Path
+
+          skills_dir = Path('skills')
+          issues = []
+
+          for md_file in skills_dir.rglob('*.md'):
+              content = md_file.read_text()
+              # Look for references to files
+              pattern = r'\[.*?\]\((.*?)\)'
+              matches = re.findall(pattern, content)
+
+              for match in matches:
+                  if match.startswith('http'):
+                      continue
+
+                  ref_path = md_file.parent / match
+                  if not ref_path.exists():
+                      issues.append(f"Broken reference in {md_file.relative_to(skills_dir)}: {match}")
+
+          if issues:
+              print('⚠️  Potential broken references:')
+              for issue in issues:
+                  print(f'  - {issue}')
+
+          print('✅ Reference validation complete!')
+          EOF
