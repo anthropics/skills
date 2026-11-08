@@ -1,0 +1,26 @@
+{
+  "name": "generate-screenshot",
+  "version": "1.0.0",
+  "description": "Claude CLI skill to generate web app screenshots across viewports and colour modes using Playwright",
+  "author": "Akaal Creatives <https://www.akaalcreatives.com>",
+  "main": "run.js",
+  "scripts": {
+    "setup": "npm install && npx playwright install chromium",
+    "install-browsers": "npx playwright install chromium"
+  },
+  "dependencies": {
+    "playwright": "^1.57.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-skill",
+    "playwright",
+    "screenshot",
+    "testing",
+    "automation"
+  ]
+}
