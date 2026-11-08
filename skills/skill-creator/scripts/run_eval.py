@@ -32,6 +32,16 @@ def find_project_root() -> Path:
     return current
 
 
+def _mentions_skill(text: str, skill_name: str, clean_name: str) -> bool:
+    """True when the tool payload references the decoy command or the real skill.
+
+    While iterating, the skill under test is usually installed for real, so the
+    model often invokes the real ``<skill>`` (or reads its SKILL.md) instead of
+    the decoy ``<skill>-skill-<hash>``. Both count as a trigger.
+    """
+    return clean_name in text or skill_name in text
+
+
 def run_single_query(
     query: str,
     skill_name: str,
@@ -144,12 +154,12 @@ def run_single_query(
                             delta = se.get("delta", {})
                             if delta.get("type") == "input_json_delta":
                                 accumulated_json += delta.get("partial_json", "")
-                                if clean_name in accumulated_json:
+                                if _mentions_skill(accumulated_json, skill_name, clean_name):
                                     return True
 
                         elif se_type in ("content_block_stop", "message_stop"):
                             if pending_tool_name:
-                                return clean_name in accumulated_json
+                                return _mentions_skill(accumulated_json, skill_name, clean_name)
                             if se_type == "message_stop":
                                 return False
 
@@ -161,9 +171,9 @@ def run_single_query(
                                 continue
                             tool_name = content_item.get("name", "")
                             tool_input = content_item.get("input", {})
-                            if tool_name == "Skill" and clean_name in tool_input.get("skill", ""):
+                            if tool_name == "Skill" and _mentions_skill(tool_input.get("skill", ""), skill_name, clean_name):
                                 triggered = True
-                            elif tool_name == "Read" and clean_name in tool_input.get("file_path", ""):
+                            elif tool_name == "Read" and _mentions_skill(tool_input.get("file_path", ""), skill_name, clean_name):
                                 triggered = True
                             return triggered
 
