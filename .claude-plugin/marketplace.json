@@ -69,5 +69,15 @@
         "./skills/discernment-nudge"
       ]
     }
+    ,
+    {
+      "name": "instashare",
+      "description": "Share the current Claude Code chat session as a public link via instashare.to",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/instashare"
+      ]
+    }
   ]
 }
