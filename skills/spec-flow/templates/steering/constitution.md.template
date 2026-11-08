@@ -1,0 +1,90 @@
+# Project Constitution
+
+> **Last Updated**: {{DATE}}
+> **Maintainers**: {{TEAM/NAMES}}
+
+## Purpose
+
+<!-- What is the purpose of this document? -->
+
+This document defines the governance principles and decision-making guidelines for {{PROJECT_NAME}}.
+
+## Core Values
+
+<!-- What principles guide development decisions? -->
+
+1. **{{Value 1}}**: {{description}}
+2. **{{Value 2}}**: {{description}}
+3. **{{Value 3}}**: {{description}}
+
+## Decision-Making Principles
+
+### When to Write a Spec
+
+A spec is required when:
+
+- [ ] Adding a new feature that affects multiple components
+- [ ] Making breaking changes to existing APIs
+- [ ] Changing core architecture or data models
+- [ ] Work estimated at more than {{time threshold}}
+
+A spec is NOT required when:
+
+- Bug fixes with clear scope
+- Documentation updates
+- Minor refactoring (no behavior change)
+- Dependency updates (unless major version)
+
+### Approval Process
+
+| Change Type | Approvers | Review Time |
+|-------------|-----------|-------------|
+| Minor | 1 team member | 1 day |
+| Standard | 2 team members | 3 days |
+| Major | Tech lead + 1 | 5 days |
+| Breaking | All stakeholders | 1 week |
+
+### Conflict Resolution
+
+When disagreements occur:
+
+1. **Data first**: Bring evidence (metrics, user feedback, benchmarks)
+2. **Prototype**: Build a minimal proof-of-concept if unclear
+3. **Time-box**: Set a deadline for decision
+4. **Escalate**: If still blocked, {{escalation path}}
+
+## Quality Standards
+
+### Code Quality
+
+- [ ] All code must pass linting
+- [ ] Test coverage minimum: {{percentage}}%
+- [ ] No known security vulnerabilities
+- [ ] Documentation for public APIs
+
+### Review Criteria
+
+- [ ] Meets acceptance criteria from spec
+- [ ] No regression in existing functionality
+- [ ] Performance acceptable (see tech.md for targets)
+- [ ] Follows code style (see structure.md)
+
+## Communication Guidelines
+
+### Spec Updates
+
+- Notify stakeholders when spec status changes
+- Update tasks.md daily during active development
+- Archive completed specs within {{time}} of completion
+
+### Blocking Issues
+
+- Raise blockers within {{time}} of discovery
+- Tag in {{communication channel}}
+- Update spec with blocker status
+
+## Change History
+
+| Date | Change | Author |
+|------|--------|--------|
+| {{date}} | Initial constitution | {{author}} |
