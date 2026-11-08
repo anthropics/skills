@@ -1,0 +1,32 @@
+{
+  "name": "aurelion-advisor",
+  "display_name": "AURELION Advisor — Career Strategy & Planning",
+  "version": "1.0.0",
+  "description": "A strategic planning skill that acts as a personal career GPS — helping structure advancement goals, investigate career scenarios, map stakeholder dynamics, and build a methodology library using the AURELION 5-floor framework.",
+  "author": {
+    "name": "chase-key",
+    "url": "https://github.com/chase-key"
+  },
+  "license": "MIT",
+  "categories": ["career", "planning", "strategy", "productivity"],
+  "keywords": ["career", "strategy", "planning", "stakeholder", "gap-analysis", "aurelion", "advisor", "methodology"],
+  "homepage": "https://github.com/chase-key/aurelion-advisor-lite",
+  "repository": "https://github.com/chase-key/aurelion-advisor-lite",
+  "entrypoint": "SKILL.md",
+  "skill_type": "instructions",
+  "compatibility": {
+    "claude_code": true,
+    "codex_cli": true,
+    "chatgpt": true,
+    "copilot_chat": true
+  },
+  "requires": [],
+  "recommended_with": ["aurelion-kernel"],
+  "ecosystem": "aurelion",
+  "ecosystem_url": "https://github.com/chase-key/aurelion-hub",
+  "related_skills": [
+    "aurelion-kernel",
+    "aurelion-agent",
+    "aurelion-memory"
+  ]
+}
