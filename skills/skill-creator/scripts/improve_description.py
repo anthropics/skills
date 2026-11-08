@@ -39,6 +39,7 @@ def _call_claude(prompt: str, model: str | None, timeout: int = 300) -> str:
         text=True,
         env=env,
         timeout=timeout,
+        creationflags=0x08000000 if os.name == "nt" else 0,
     )
     if result.returncode != 0:
         raise RuntimeError(

@@ -16,6 +16,7 @@ Examples:
 """
 
 import argparse
+import os
 import posixpath
 import subprocess
 import sys
@@ -208,6 +209,7 @@ def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
         ],
         capture_output=True,
         text=True,
+        creationflags=0x08000000 if os.name == "nt" else 0,
     )
     if result.returncode != 0:
         raise RuntimeError("Image conversion failed")

@@ -41,7 +41,11 @@ RECALCULATE_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
 def has_gtimeout():
     try:
         subprocess.run(
-            ["gtimeout", "--version"], capture_output=True, timeout=1, check=False
+            ["gtimeout", "--version"],
+            capture_output=True,
+            timeout=1,
+            check=False,
+            creationflags=0x08000000 if os.name == "nt" else 0,
         )
         return True
     except (FileNotFoundError, subprocess.TimeoutExpired):
@@ -189,7 +193,12 @@ def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
 
     try:
         result = subprocess.run(
-            cmd, capture_output=True, text=True, env=get_soffice_env(), timeout=timeout + 15
+            cmd,
+            capture_output=True,
+            text=True,
+            env=get_soffice_env(),
+            timeout=timeout + 15,
+            creationflags=0x08000000 if os.name == "nt" else 0,
         )
     except subprocess.TimeoutExpired:
         return {"error": timed_out}

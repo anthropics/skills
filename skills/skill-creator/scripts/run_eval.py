@@ -88,6 +88,7 @@ def run_single_query(
             stderr=subprocess.DEVNULL,
             cwd=project_root,
             env=env,
+            creationflags=0x08000000 if os.name == "nt" else 0,
         )
 
         triggered = False

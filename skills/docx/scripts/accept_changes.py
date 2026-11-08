@@ -5,6 +5,7 @@ Requires LibreOffice (soffice) to be installed.
 
 import argparse
 import logging
+import os
 import shutil
 import subprocess
 from pathlib import Path
@@ -72,6 +73,7 @@ def accept_changes(
             timeout=30,
             check=False,
             env=get_soffice_env(),
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
     except subprocess.TimeoutExpired:
         return (
@@ -107,6 +109,7 @@ def _setup_libreoffice_macro() -> bool:
             timeout=10,
             check=False,
             env=get_soffice_env(),
+            creationflags=subprocess.CREATE_NO_WINDOW if os.name == "nt" else 0,
         )
         macro_dir.mkdir(parents=True, exist_ok=True)
 

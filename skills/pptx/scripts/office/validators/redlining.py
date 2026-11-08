@@ -11,6 +11,7 @@ Only the document body is compared. Headers, footers, footnotes and endnotes
 are separate parts and are not checked.
 """
 
+import os
 import subprocess
 import tempfile
 import zipfile
@@ -20,6 +21,8 @@ import defusedxml.ElementTree as ET
 from defusedxml.common import DefusedXmlException
 
 from helpers import rendered_text, safe_extract
+
+CREATE_NO_WINDOW = 0x08000000 if os.name == "nt" else 0
 
 
 class RedliningValidator:
@@ -194,14 +197,15 @@ class RedliningValidator:
                         "git",
                         "diff",
                         "--word-diff=plain",
-                        "--word-diff-regex=.",  
-                        "-U0",  
+                        "--word-diff-regex=.",
+                        "-U0",
                         "--no-index",
                         str(original_file),
                         str(modified_file),
                     ],
                     capture_output=True,
                     text=True,
+                    creationflags=CREATE_NO_WINDOW,
                 )
 
                 if result.stdout.strip():
@@ -223,13 +227,14 @@ class RedliningValidator:
                         "git",
                         "diff",
                         "--word-diff=plain",
-                        "-U0",  
+                        "-U0",
                         "--no-index",
                         str(original_file),
                         str(modified_file),
                     ],
                     capture_output=True,
                     text=True,
+                    creationflags=CREATE_NO_WINDOW,
                 )
 
                 if result.stdout.strip():

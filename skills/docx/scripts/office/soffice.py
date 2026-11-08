@@ -23,6 +23,8 @@ import tempfile
 from collections.abc import Iterable
 from pathlib import Path
 
+CREATE_NO_WINDOW = 0x08000000 if os.name == "nt" else 0
+
 
 def get_soffice_env() -> dict:
     env = os.environ.copy()
@@ -43,6 +45,7 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
                 tempfile.TemporaryDirectory(prefix="lo_profile_", ignore_cleanup_errors=True)
             )
             args = [f"-env:UserInstallation={Path(profile).as_uri()}"] + args
+        kwargs.setdefault("creationflags", CREATE_NO_WINDOW)
         return subprocess.run(["soffice"] + args, env=get_soffice_env(), **kwargs)
 
 
@@ -69,6 +72,7 @@ def _ensure_shim() -> Path:
         ["gcc", "-shared", "-fPIC", "-o", str(_SHIM_SO), str(src), "-ldl"],
         check=True,
         capture_output=True,
+        creationflags=CREATE_NO_WINDOW,
     )
     src.unlink()
     return _SHIM_SO
