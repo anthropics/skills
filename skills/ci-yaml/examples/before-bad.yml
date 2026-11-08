@@ -1,0 +1,20 @@
+# Deliberately mediocre example. Trips 11 rules across all four categories.
+# See examples/after-good.yml for the audit-clean rewrite.
+
+name: CI
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -r requirements.txt
+      - run: ruff check . && pytest
+      - run: echo "Built by ${{ github.event.pull_request.title }}"

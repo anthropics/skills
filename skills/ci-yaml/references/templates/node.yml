@@ -1,0 +1,59 @@
+# Node.js project. Works for npm, pnpm, or yarn — pick {PACKAGE_MANAGER}
+# accordingly and {INSTALL_CMD} matches it.
+#
+# Substitute:
+#   {NODE_VERSIONS}       — json array, e.g. ["20", "22"]
+#   {PACKAGE_MANAGER}     — "npm" / "pnpm" / "yarn"
+#   {INSTALL_CMD}         — "npm ci" / "pnpm install --frozen-lockfile" / "yarn install --frozen-lockfile"
+#   {LINT_CMD}            — e.g. "npm run lint" or "pnpm lint"
+#   {TEST_CMD}            — e.g. "npm test" or "pnpm test"
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+  pull_request:
+    paths-ignore:
+      - '**.md'
+      - 'docs/**'
+      - 'LICENSE'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Test (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: {NODE_VERSIONS}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: '{PACKAGE_MANAGER}'
+
+      - name: Install dependencies
+        run: {INSTALL_CMD}
+
+      - name: Run tests
+        run: {TEST_CMD}
+
+      - name: Run linter
+        run: {LINT_CMD}
