@@ -82,7 +82,7 @@ def package_skill(skill_path, output_dir=None):
         output_path = Path(output_dir).resolve()
         output_path.mkdir(parents=True, exist_ok=True)
     else:
-        output_path = Path.cwd()
+        output_path = Path.cwd().resolve()
 
     skill_filename = output_path / f"{skill_name}.skill"
 
@@ -92,6 +92,8 @@ def package_skill(skill_path, output_dir=None):
             # Walk through the skill directory, excluding build artifacts
             for file_path in skill_path.rglob('*'):
                 if not file_path.is_file():
+                    continue
+                if file_path.samefile(skill_filename):
                     continue
                 arcname = file_path.relative_to(skill_path.parent)
                 if should_exclude(arcname):
