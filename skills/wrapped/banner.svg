@@ -1,0 +1,36 @@
+<svg width="900" height="190" viewBox="0 0 900 190" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="title" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#56c8f5"/>
+      <stop offset="45%"  stop-color="#818cf8"/>
+      <stop offset="100%" stop-color="#c084fc"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#0d1117"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Window body -->
+  <rect width="900" height="190" rx="12" fill="#0d1117"/>
+  <!-- Title bar -->
+  <rect width="900" height="52" rx="12" fill="url(#bar)"/>
+  <rect y="40" width="900" height="12" fill="#161b22"/>
+  <line x1="0" y1="52" x2="900" y2="52" stroke="#21262d" stroke-width="1"/>
+  <!-- Outer border -->
+  <rect x=".5" y=".5" width="899" height="189" rx="11.5" fill="none" stroke="#30363d" stroke-width="1"/>
+
+  <!-- Window controls -->
+  <circle cx="28" cy="26" r="7" fill="#ff5f57"/>
+  <circle cx="52" cy="26" r="7" fill="#febc2e"/>
+  <circle cx="76" cy="26" r="7" fill="#28c840"/>
+
+  <!-- Title bar text -->
+  <text x="450" y="26" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#8b949e" text-anchor="middle" dominant-baseline="middle">claude-code-wrapped — /wrapped</text>
+
+  <!-- CLAUDE WRAPPED main title -->
+  <text x="450" y="116" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="52" font-weight="bold" text-anchor="middle" dominant-baseline="middle" fill="url(#title)" letter-spacing="4">CLAUDE WRAPPED</text>
+
+  <!-- Subtitle -->
+  <text x="450" y="163" font-family="'SF Mono','Fira Code',Consolas,monospace" font-size="13" fill="#484f58" text-anchor="middle" letter-spacing="8">YOUR YEAR IN CLAUDE CODE</text>
+</svg>
