@@ -85,10 +85,13 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
     for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
         metadata_path = eval_dir / "eval_metadata.json"
+        eval_name = None
         if metadata_path.exists():
             try:
-                with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                with open(metadata_path, encoding="utf-8") as mf:
+                    meta = json.load(mf)
+                    eval_id = meta.get("eval_id", eval_idx)
+                    eval_name = meta.get("eval_name")
             except (json.JSONDecodeError, OSError):
                 eval_id = eval_idx
         else:
@@ -117,7 +120,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                     continue
 
                 try:
-                    with open(grading_file) as f:
+                    with open(grading_file, encoding="utf-8") as f:
                         grading = json.load(f)
                 except json.JSONDecodeError as e:
                     print(f"Warning: Invalid JSON in {grading_file}: {e}")
@@ -126,6 +129,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 # Extract metrics
                 result = {
                     "eval_id": eval_id,
+                    "eval_name": eval_name or f"Eval {eval_id}",
                     "run_number": run_number,
                     "pass_rate": grading.get("summary", {}).get("pass_rate", 0.0),
                     "passed": grading.get("summary", {}).get("passed", 0),
@@ -139,7 +143,7 @@ def load_run_results(benchmark_dir: Path) -> dict:
                 timing_file = run_dir / "timing.json"
                 if result["time_seconds"] == 0.0 and timing_file.exists():
                     try:
-                        with open(timing_file) as tf:
+                        with open(timing_file, encoding="utf-8") as tf:
                             timing_data = json.load(tf)
                         result["time_seconds"] = timing_data.get("total_duration_seconds", 0.0)
                         result["tokens"] = timing_data.get("total_tokens", 0)
@@ -205,8 +209,13 @@ def aggregate_results(results: dict) -> dict:
 
     # Calculate delta between the first two configs (if two exist)
     if len(configs) >= 2:
-        primary = run_summary.get(configs[0], {})
-        baseline = run_summary.get(configs[1], {})
+        primary_keys = [c for c in configs if c in ("with_skill", "new_skill")]
+        baseline_keys = [c for c in configs if c in ("without_skill", "old_skill")]
+        primary_name = primary_keys[0] if primary_keys else configs[0]
+        remaining = [c for c in configs if c != primary_name]
+        baseline_name = baseline_keys[0] if baseline_keys and baseline_keys[0] != primary_name else (remaining[0] if remaining else configs[1])
+        primary = run_summary.get(primary_name, {})
+        baseline = run_summary.get(baseline_name, {})
     else:
         primary = run_summary.get(configs[0], {}) if configs else {}
         baseline = {}
@@ -237,6 +246,7 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
         for result in results[config]:
             runs.append({
                 "eval_id": result["eval_id"],
+                "eval_name": result.get("eval_name", f"Eval {result['eval_id']}"),
                 "configuration": config,
                 "run_number": result["run_number"],
                 "result": {
@@ -374,13 +384,13 @@ def main():
     output_md = output_json.with_suffix(".md")
 
     # Write benchmark.json
-    with open(output_json, "w") as f:
+    with open(output_json, "w", encoding="utf-8") as f:
         json.dump(benchmark, f, indent=2)
     print(f"Generated: {output_json}")
 
     # Write benchmark.md
     markdown = generate_markdown(benchmark)
-    with open(output_md, "w") as f:
+    with open(output_md, "w", encoding="utf-8") as f:
         f.write(markdown)
     print(f"Generated: {output_md}")
 
