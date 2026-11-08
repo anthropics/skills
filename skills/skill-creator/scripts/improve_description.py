@@ -6,6 +6,9 @@ by calling `claude -p` as a subprocess (same auth pattern as run_eval.py —
 uses the session's Claude Code auth, no separate ANTHROPIC_API_KEY needed).
 """
 
+# acqa-allow(single-backbone): upstream anthropics/skills tooling -- this eval
+# helper intentionally drives only the `claude` CLI (the skill-creator eval loop
+# is Claude-specific by design); multi-backbone routing is out of scope here.
 import argparse
 import json
 import os
