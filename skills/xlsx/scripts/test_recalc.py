@@ -46,7 +46,9 @@ def namespace_data_table_f(path):
     """Rewrite the data-table <f> as <x:f>, x bound to the main namespace.
 
     A valid worksheet may prefix the formula element; the scan must still
-    find the table. Only the data-table <f>...</f> pair is rewritten.
+    find the table. Only the data-table <f> is rewritten. openpyxl may
+    write the element paired (<f>...</f>) or self-closing (<f ... />);
+    match both forms.
     """
     with zipfile.ZipFile(path) as zin:
         items = {n: zin.read(n) for n in zin.namelist()}
@@ -55,8 +57,8 @@ def namespace_data_table_f(path):
             xml = data.decode("utf-8")
             xml = xml.replace("<worksheet ", f'<worksheet xmlns:x="{MAIN_NS}" ', 1)
             xml, n = re.subn(
-                r'<f t="dataTable"([^>]*)>(.*?)</f>',
-                lambda m: f'<x:f t="dataTable"{m.group(1)}>{m.group(2)}</x:f>',
+                r'<f t="dataTable"([^>]*?)(?:/>|>(.*?)</f>)',
+                lambda m: f'<x:f t="dataTable"{m.group(1)}>{m.group(2) or ""}</x:f>',
                 xml, count=1)
             assert n == 1, f"no data-table <f> in {name}"
             items[name] = xml.encode("utf-8")
