@@ -1,0 +1,42 @@
+{
+  "narrative": {
+    "arc": "what is the story shape?",
+    "opening_move": "how does this speaker open?",
+    "framework_used": "named framework or none",
+    "anti_pattern": "what they explicitly reject",
+    "stakes": "what hangs in the balance",
+    "resolution": "where they leave the audience"
+  },
+  "vocabulary": {
+    "register": "casual | direct-blunt | quiet-mystic | founder-confident | …",
+    "signature_phrases": ["3-7 phrases this speaker uses repeatedly"],
+    "blocked_words": ["words this speaker never uses"],
+    "rhetorical_devices": ["repetition | tricolon | …"],
+    "vocabulary_density": "dense | spare | technical | poetic",
+    "metaphor_source": "domain (sports, war, biology, music, …)"
+  },
+  "design": {
+    "composition_pref": "what visual layouts they favor (if visual)",
+    "typography": "type choices (if cited)",
+    "restraint": "ornate | balanced | minimal",
+    "palette": ["color motifs"],
+    "spacing": "tight | loose",
+    "iconography": "what shapes/icons recur"
+  },
+  "meta_text": {
+    "framework_used": "named framework",
+    "anchor": "one-line first-principle anchor",
+    "contrarian_take": "what mainstream they push back on",
+    "self_revealing_metaphor": "metaphor they apply to themselves",
+    "wisdom_source": "where they say their insights come from",
+    "vulnerability_marker": "what they admit struggling with"
+  },
+  "creative_direction": {
+    "first_principles_anchor": "one-line statement of root belief",
+    "energy_level": "low-still | calm-resolute | high-intense",
+    "humor_register": "none | dry | playful | absurd",
+    "audience_address": "first | second | third person",
+    "pacing": "slow | medium | rapid",
+    "callback_density": "low | medium | high"
+  }
+}
