@@ -1,6 +1,6 @@
 ---
 name: doc-coauthoring
-description: Guide users through a structured workflow for co-authoring documentation. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks.
+description: Guide users through a structured, multi-turn workflow for co-authoring documentation, where Claude asks questions and the user replies over several turns. Use when user wants to write documentation, proposals, technical specs, decision docs, or similar structured content. This workflow helps users efficiently transfer context, refine content through iteration, and verify the doc works for readers. Trigger when user mentions writing docs, creating proposals, drafting specs, or similar documentation tasks. Needs an interactive session to ask its questions — when a back-and-forth is unavailable or the user explicitly declines it, draft directly from available context instead of opening with questions (see "Producing a Draft Without Interaction").
 ---
 
 # Doc Co-Authoring Workflow
@@ -8,6 +8,16 @@ description: Guide users through a structured workflow for co-authoring document
 This skill provides a structured workflow for guiding users through collaborative document creation. Act as an active guide, walking users through three stages: Context Gathering, Refinement & Structure, and Reader Testing.
 
 ## When to Offer This Workflow
+
+This workflow is interactive by design: Claude asks questions and the user answers them over several turns. Before offering it, check whether that back-and-forth is actually possible.
+
+**Skip straight to drafting (see "Producing a Draft Without Interaction" below) instead of offering the workflow when either is true:**
+- The session is non-interactive (e.g., a scripted or CI invocation with no way to receive further replies).
+- The user has explicitly asked for a finished artifact with no further discussion (e.g., "just write it, no back and forth," "I need the finished thing on disk, not in the chat") **and** has already supplied enough context in the request to draft from (background, audience, key facts, or constraints).
+
+A request that merely names an output file (e.g., "save it to `doc.md`") is not by itself a reason to skip — that's normal for this workflow too. It's the combination of *no room for reply* and *context already given* that means Stage 1's questions would have no one to answer.
+
+**Otherwise, offer the structured workflow as normal:**
 
 **Trigger conditions:**
 - User mentions writing documentation: "write a doc", "draft a proposal", "create a spec", "write up"
@@ -24,6 +34,15 @@ Offer the user a structured workflow for co-authoring the document. Explain the 
 Explain that this approach helps ensure the doc works well when others read it (including when they paste it into Claude). Ask if they want to try this workflow or prefer to work freeform.
 
 If user declines, work freeform. If user accepts, proceed to Stage 1.
+
+## Producing a Draft Without Interaction
+
+When the gating check above says to skip the offer, don't open with clarifying questions — there's no one positioned to answer them. Instead:
+
+1. Draft directly from the context already supplied in the request. Pick a structure that fits the stated doc type (the section suggestions in Stage 2 apply here too).
+2. Where something is missing that a question would normally cover, don't stall on it — make a reasonable assumption and write it down, then list it under an "Open Questions" section at the end of the document so it's visible rather than silently guessed.
+3. Write the result to the requested path (or a reasonable default filename if none was given) rather than only showing it in chat — the request asked for a file, not a conversation.
+4. If the session does continue into further turns, treat what was written as the Stage 2 starting point and refine it with the user from there instead of restarting from Stage 1.
 
 ## Stage 1: Context Gathering
 
