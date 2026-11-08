@@ -1,6 +1,6 @@
 ---
 name: skill-creator
-description: Create new skills, modify and improve existing skills, and measure skill performance. Use when users want to create a skill from scratch, edit, or optimize an existing skill, run evals to test a skill, benchmark skill performance with variance analysis, or optimize a skill's description for better triggering accuracy.
+description: Create, modify, and evaluate Claude skills. Use when the user wants to author a new skill from scratch, iterate on an existing one, or run evals to measure and improve trigger accuracy.
 ---
 
 # Skill Creator
@@ -368,7 +368,7 @@ Present the eval set to the user for review using the HTML template:
    - `__SKILL_DESCRIPTION_PLACEHOLDER__` → the skill's current description
 3. Write to a temp file (e.g., `/tmp/eval_review_<skill-name>.html`) and open it: `open /tmp/eval_review_<skill-name>.html`
 4. The user can edit queries, toggle should-trigger, add/remove entries, then click "Export Eval Set"
-5. The file downloads to `~/Downloads/eval_set.json` — check the Downloads folder for the most recent version in case there are multiple (e.g., `eval_set (1).json`)
+5. The file downloads to the user's default browser download folder. Ask the user for the path if unclear, and check for the most recent version in case multiple exist (e.g., `eval_set (1).json`).
 
 This step matters — bad eval queries lead to bad descriptions.
 
