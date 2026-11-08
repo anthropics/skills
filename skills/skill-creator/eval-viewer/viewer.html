@@ -804,6 +804,7 @@
         } else if (file.type === "pdf") {
           const iframe = document.createElement("iframe");
           iframe.src = file.data_uri;
+          iframe.sandbox = "";  // preview only: no scripts, forms, or top navigation (#1793)
           content.appendChild(iframe);
         } else if (file.type === "xlsx") {
           renderXlsx(content, file.data_b64);
@@ -844,10 +845,22 @@
             container.appendChild(sheetLabel);
           }
 
-          const htmlStr = XLSX.utils.sheet_to_html(ws, { editable: false });
-          const wrapper = document.createElement("div");
-          wrapper.innerHTML = htmlStr;
-          container.appendChild(wrapper);
+          // Build the table with DOM APIs so untrusted cell content is never
+          // parsed as markup (see #1793): sheet_to_html + innerHTML would
+          // let an HTML-typed cell or a future SheetJS escaping change land
+          // attacker-controlled HTML in the document.
+          const rows = XLSX.utils.sheet_to_json(ws, { header: 1, defval: "" });
+          const table = document.createElement("table");
+          for (const row of rows) {
+            const tr = document.createElement("tr");
+            for (const cell of row) {
+              const td = document.createElement("td");
+              td.textContent = cell == null ? "" : String(cell);
+              tr.appendChild(td);
+            }
+            table.appendChild(tr);
+          }
+          container.appendChild(table);
         }
       } catch (err) {
         container.textContent = "Error rendering spreadsheet: " + err.message;
@@ -964,6 +977,7 @@
         } else if (file.type === "pdf") {
           const iframe = document.createElement("iframe");
           iframe.src = file.data_uri;
+          iframe.sandbox = "";  // preview only: no scripts, forms, or top navigation (#1793)
           fc.appendChild(iframe);
         } else if (file.type === "xlsx") {
           renderXlsx(fc, file.data_b64);
