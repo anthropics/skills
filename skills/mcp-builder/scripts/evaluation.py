@@ -302,6 +302,38 @@ def parse_env_vars(env_list: list[str]) -> dict[str, str]:
     return env
 
 
+# Options whose value is a single token. Used to avoid mistaking such a value
+# for the positional evaluation file when it happens to end in ".xml".
+SCALAR_OPTIONS = frozenset(
+    {"-t", "--transport", "-m", "--model", "-c", "--command", "-u", "--url", "-o", "--output"}
+)
+
+
+def lift_trailing_eval_file(argv: list[str]) -> list[str]:
+    """Keep a trailing evaluation file out of the greedy list options.
+
+    ``-a``, ``-e`` and ``-H`` use ``nargs="+"``, so argparse assigns every
+    following non-option token to them. When ``eval_file`` is written last — the
+    form used in every example in ``reference/evaluation.md`` and in this
+    script's epilog — it is swallowed by the preceding list option and parsing
+    fails with ``error: the following arguments are required: eval_file``.
+
+    Moving such a trailing token to the front makes the documented commands work
+    without changing how any option is spelled: the positional consumes it
+    before the list options start. Only a bare ``*.xml`` token is lifted, and
+    never when it is the direct value of a scalar option such as ``-o
+    report.xml``.
+    """
+    if len(argv) < 2:
+        return argv
+    last = argv[-1]
+    if last.startswith("-") or "=" in last or not last.lower().endswith(".xml"):
+        return argv
+    if argv[-2] in SCALAR_OPTIONS:
+        return argv
+    return [last, *argv[:-1]]
+
+
 async def main():
     parser = argparse.ArgumentParser(
         description="Evaluate MCP servers using test questions",
@@ -325,16 +357,35 @@ Examples:
 
     stdio_group = parser.add_argument_group("stdio options")
     stdio_group.add_argument("-c", "--command", help="Command to run MCP server (stdio only)")
-    stdio_group.add_argument("-a", "--args", nargs="+", help="Arguments for the command (stdio only)")
-    stdio_group.add_argument("-e", "--env", nargs="+", help="Environment variables in KEY=VALUE format (stdio only)")
+    stdio_group.add_argument(
+        "-a",
+        "--args",
+        nargs="+",
+        action="extend",
+        help="Arguments for the command (stdio only). Repeat the flag to pass several.",
+    )
+    stdio_group.add_argument(
+        "-e",
+        "--env",
+        nargs="+",
+        action="extend",
+        help="Environment variables in KEY=VALUE format (stdio only). Repeat the flag to pass several.",
+    )
 
     remote_group = parser.add_argument_group("sse/http options")
     remote_group.add_argument("-u", "--url", help="MCP server URL (sse/http only)")
-    remote_group.add_argument("-H", "--header", nargs="+", dest="headers", help="HTTP headers in 'Key: Value' format (sse/http only)")
+    remote_group.add_argument(
+        "-H",
+        "--header",
+        nargs="+",
+        action="extend",
+        dest="headers",
+        help="HTTP headers in 'Key: Value' format (sse/http only). Repeat the flag to pass several.",
+    )
 
     parser.add_argument("-o", "--output", type=Path, help="Output file for evaluation report (default: stdout)")
 
-    args = parser.parse_args()
+    args = parser.parse_args(lift_trailing_eval_file(sys.argv[1:]))
 
     if not args.eval_file.exists():
         print(f"Error: Evaluation file not found: {args.eval_file}")
