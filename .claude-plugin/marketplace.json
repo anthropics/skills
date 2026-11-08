@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "agent-guild-trust",
+      "description": "Free, read-only live preflight for unfamiliar A2A or MCP endpoints and public Agent Guild passport verification",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/agent-guild-trust"
+      ]
     }
   ]
 }
