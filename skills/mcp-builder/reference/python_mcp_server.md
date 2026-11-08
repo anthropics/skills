@@ -529,6 +529,10 @@ async def interactive_tool(resource_id: str, ctx: Context) -> str:
 Expose data as resources for efficient, template-based access:
 
 ```python
+from pathlib import Path
+
+DOCS_DIR = Path("./docs").resolve()
+
 @mcp.resource("file://documents/{name}")
 async def get_document(name: str) -> str:
     '''Expose documents as MCP resources.
@@ -536,9 +540,10 @@ async def get_document(name: str) -> str:
     Resources are useful for static or semi-static data that doesn't
     require complex parameters. They use URI templates for flexible access.
     '''
-    document_path = f"./docs/{name}"
-    with open(document_path, "r") as f:
-        return f.read()
+    file_path = (DOCS_DIR / name).resolve()
+    if not file_path.is_relative_to(DOCS_DIR) or not file_path.is_file():
+        raise ValueError(f"Document not found or access denied: {name}")
+    return file_path.read_text(encoding="utf-8")
 
 @mcp.resource("config://settings/{key}")
 async def get_setting(key: str, ctx: Context) -> str:
