@@ -13,6 +13,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import xml.etree.ElementTree as ET
 import zipfile
 from pathlib import Path
 
@@ -26,6 +27,9 @@ SOFFICE_MISSING = "soffice not found on PATH; LibreOffice is required to recalcu
 MAX_LOCATIONS = 100
 
 EXTERNAL_REF_RE = re.compile(r"""(?<![\w"\[])'?\[\d+\][^!"\[\]]*'?!""")
+
+DATA_TABLE_TAG_RE = re.compile(r"""<f\b[^>]*\bt\s*=\s*["']dataTable["'][^>]*>""")
+DATA_TABLE_REF_RE = re.compile(r"""\bref\s*=\s*["']([^"']+)["']""")
 
 RECALCULATE_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
@@ -121,6 +125,80 @@ def external_links_at_risk(filename):
         return at_risk
 
 
+def _worksheet_names(archive):
+    """Map xl/worksheets/*.xml paths to sheet names, via workbook.xml + rels."""
+    main_ns = "http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+    rel_ns = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+    try:
+        wb = ET.fromstring(archive.read("xl/workbook.xml"))
+        rels = ET.fromstring(archive.read("xl/_rels/workbook.xml.rels"))
+    except (KeyError, ET.ParseError):
+        return {}
+    targets = {rel.get("Id"): rel.get("Target") for rel in rels}
+    names = {}
+    sheets = wb.find(f"{{{main_ns}}}sheets")
+    if sheets is None:
+        return {}
+    for sheet in sheets:
+        target = targets.get(sheet.get(f"{{{rel_ns}}}id"), "") or ""
+        if target.startswith("/"):
+            path = target[1:]
+        elif target.startswith("xl/"):
+            path = target
+        else:
+            path = "xl/" + target
+        names[path] = sheet.get("name")
+    return names
+
+
+def _data_table_refs(xml_bytes):
+    """Yield the ref of every <f t="dataTable"> element in worksheet XML.
+
+    Matches on the element's local name, so a namespaced <x:f> (x bound
+    to the SpreadsheetML namespace) is found the same as a plain <f>.
+    Falls back to the regex scan when the XML does not parse.
+    """
+    try:
+        root = ET.fromstring(xml_bytes)
+    except ET.ParseError:
+        xml = xml_bytes.decode("utf-8", "replace")
+        for tag in DATA_TABLE_TAG_RE.findall(xml):
+            ref = DATA_TABLE_REF_RE.search(tag)
+            yield ref.group(1) if ref else "?"
+        return
+    for elem in root.iter():
+        if elem.tag.rpartition("}")[2] != "f":
+            continue
+        if elem.get("t") == "dataTable":
+            yield elem.get("ref") or "?"
+
+
+def data_tables_at_risk(filename):
+    """Return ['Sheet1!D6:D8', ...] for every Excel data table in the file.
+
+    LibreOffice rewrites data tables as per-cell TABLE() formulas, so after a
+    recalculation the cells are no longer a data table. The scan reads the
+    worksheet XML directly: openpyxl does not surface data-table formulas.
+    A namespaced <x:f t="dataTable"> counts the same as a plain <f>.
+    """
+    try:
+        with zipfile.ZipFile(filename) as archive:
+            names = archive.namelist()
+            if "xl/workbook.xml" not in names:
+                return []
+            sheet_names = _worksheet_names(archive)
+            at_risk = []
+            for name in names:
+                if not (name.startswith("xl/worksheets/") and name.endswith(".xml")):
+                    continue
+                sheet = sheet_names.get(name, name)
+                for ref in _data_table_refs(archive.read(name)):
+                    at_risk.append(f"{sheet}!{ref}")
+            return at_risk
+    except (zipfile.BadZipFile, OSError):
+        return []
+
+
 def recalc(filename, timeout=30, force=False):
     if not Path(filename).exists():
         return {"error": f"File {filename} does not exist"}
@@ -153,6 +231,23 @@ def recalc(filename, timeout=30, force=False):
                 ),
                 "external_link_cells": shown,
                 "external_link_cells_truncated": max(0, len(at_risk) - len(shown)),
+            }
+
+        try:
+            tables = data_tables_at_risk(filename)
+        except Exception as e:
+            return {"error": f"Could not inspect {filename} for data tables: {e}"}
+        if tables:
+            shown = tables[:MAX_LOCATIONS]
+            return {
+                "error": (
+                    "Refusing to recalculate: this workbook contains Excel data tables, and "
+                    "LibreOffice rewrites them as per-cell TABLE() formulas, so they would stop "
+                    "being data tables. Recalculate this workbook in Excel itself, or pass "
+                    "--force to accept the rewrite."
+                ),
+                "data_table_ranges": shown,
+                "data_table_ranges_truncated": max(0, len(tables) - len(shown)),
             }
 
     with tempfile.TemporaryDirectory(
@@ -293,7 +388,7 @@ def main():
         print("  - error_summary: Breakdown by error type with locations")
         print("    - #VALUE!, #DIV/0!, #REF!, #NAME?, #NULL!, #NUM!, #N/A")
         print("\nOn any failure the JSON has an 'error' key and no 'status'.")
-        print("--force recalculates even when it would destroy external links.")
+        print("--force recalculates even when it would destroy external links or data tables.")
         sys.exit(1)
 
     filename = args[0]
