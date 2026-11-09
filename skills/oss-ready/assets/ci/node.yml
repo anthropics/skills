@@ -1,0 +1,22 @@
+# Replace the install/lint/test lines with the commands the audit detected.
+# Use `npm ci`, `pnpm install --frozen-lockfile` or `yarn install --frozen-lockfile`
+# to match the project's lockfile. For pnpm, add pnpm/action-setup before setup-node.
+name: CI
+
+on:
+  push:
+    branches: [{{DEFAULT_BRANCH}}]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: {{NODE_VERSION}}
+          cache: {{PACKAGE_MANAGER}}
+      - run: {{INSTALL_COMMAND}}
+      - run: {{LINT_COMMAND}}
+      - run: {{TEST_COMMAND}}
