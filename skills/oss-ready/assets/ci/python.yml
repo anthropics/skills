@@ -1,0 +1,23 @@
+# Replace the install/lint/test lines with the commands the audit detected.
+# Set the version matrix from `requires-python` in pyproject.toml if present.
+name: CI
+
+on:
+  push:
+    branches: [{{DEFAULT_BRANCH}}]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [{{PYTHON_VERSIONS}}]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: {{INSTALL_COMMAND}}
+      - run: {{LINT_COMMAND}}
+      - run: {{TEST_COMMAND}}

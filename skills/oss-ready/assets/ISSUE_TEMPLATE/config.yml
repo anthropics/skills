@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: {{REPO_URL}}/security/policy
+    about: Please report security issues privately, not as a public issue.
+  # Remove this entry if the project has no discussion forum or chat.
+  - name: Questions and help
+    url: {{SUPPORT_URL}}
+    about: Ask questions here instead of opening an issue.
