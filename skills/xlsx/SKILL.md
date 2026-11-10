@@ -13,7 +13,14 @@ license: Complete terms in LICENSE.txt
 | **Quick look** at a sheet | `markitdown file.xlsx` — `## SheetName` per sheet; reads `.xlsm` too. No cell coordinates, so don't plan edits from it |
 | **Read** a model (formulas *and* values) | two `load_workbook` passes — see gotchas |
 
-> `openpyxl`, `pandas`, and `markitdown` are preinstalled — do not run `pip install` first; write the script and import directly. Only if an import fails (or the `markitdown` command is missing): `pip install` the missing package.
+> `openpyxl`, `pandas`, and `markitdown` are preinstalled in the sandbox only — do not run `pip install` first there; write the script and import directly. Outside the sandbox, check first with `python3 -c "import openpyxl, pandas, markitdown"`; if that fails, do not `pip install` into the system Python (macOS system Python is externally managed, so installing there is unreliable). Create a virtual environment and install there instead:
+>
+> ```bash
+> python3 -m venv .venv
+> .venv/bin/pip install openpyxl pandas markitdown
+> ```
+>
+> Then run the skill's scripts with `.venv/bin/python`, and use `.venv/bin/markitdown` if the `markitdown` command is missing.
 
 > Script paths below are relative to this skill's directory.
 
@@ -96,4 +103,4 @@ lone edited cell mid-row is the commonest silent error · guard denominators tha
 
 ## Dependencies
 
-`openpyxl`, `pandas`, `markitdown` (pip, preinstalled — install only if an import fails or the command is missing) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
+`openpyxl`, `pandas`, `markitdown` (pip, preinstalled in the sandbox only — outside it, use a virtual environment; see the note at the top) · LibreOffice (`soffice`, auto-configured for sandboxed environments via `scripts/office/soffice.py`)
