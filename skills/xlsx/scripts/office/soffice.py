@@ -17,11 +17,45 @@ callers that build their own argv (they must pass -env:UserInstallation too).
 
 import contextlib
 import os
+import shutil
 import socket
 import subprocess
+import sys
 import tempfile
 from collections.abc import Iterable
 from pathlib import Path
+
+
+def find_soffice() -> str | None:
+    """Locate the soffice binary: PATH first, then well-known install locations.
+
+    A default macOS install puts soffice inside the app bundle, not on PATH,
+    so a machine with LibreOffice installed still reports "soffice not found"
+    unless this lookup runs. Same for the standard Windows install.
+    """
+    found = shutil.which("soffice")
+    if found:
+        return found
+    for candidate in _known_soffice_paths():
+        if os.path.isfile(candidate) and os.access(candidate, os.X_OK):
+            return candidate
+    return None
+
+
+def _known_soffice_paths() -> tuple[str, ...]:
+    if sys.platform == "darwin":
+        return ("/Applications/LibreOffice.app/Contents/MacOS/soffice",)
+    if sys.platform == "win32":
+        # Built with backslashes explicitly: os.path.join follows the host
+        # platform, and these paths are Windows paths by definition.
+        return tuple(
+            f"{base}\\LibreOffice\\program\\soffice.exe"
+            for base in (
+                os.environ.get("ProgramFiles", r"C:\Program Files"),
+                os.environ.get("ProgramFiles(x86)", r"C:\Program Files (x86)"),
+            )
+        )
+    return ()
 
 
 def get_soffice_env() -> dict:
@@ -37,13 +71,19 @@ def get_soffice_env() -> dict:
 
 def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
     args = list(args)
+    soffice = find_soffice()
+    if soffice is None:
+        raise FileNotFoundError(
+            "soffice not found: LibreOffice is required but is not installed "
+            "or not on PATH (checked PATH and the standard install locations)"
+        )
     with contextlib.ExitStack() as stack:
         if not any(str(a).startswith("-env:UserInstallation") for a in args):
             profile = stack.enter_context(
                 tempfile.TemporaryDirectory(prefix="lo_profile_", ignore_cleanup_errors=True)
             )
             args = [f"-env:UserInstallation={Path(profile).as_uri()}"] + args
-        return subprocess.run(["soffice"] + args, env=get_soffice_env(), **kwargs)
+        return subprocess.run([soffice] + args, env=get_soffice_env(), **kwargs)
 
 
 
