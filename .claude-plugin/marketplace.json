@@ -18,7 +18,8 @@
         "./skills/xlsx",
         "./skills/docx",
         "./skills/pptx",
-        "./skills/pdf"
+        "./skills/pdf",
+        "./skills/xlcalc-xlsx"
       ]
     },
     {
