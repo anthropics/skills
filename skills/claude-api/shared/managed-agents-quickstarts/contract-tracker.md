@@ -22,7 +22,7 @@ mcp_servers:
     url: https://mcp.box.com
   - name: asana
     type: url
-    url: https://mcp.asana.com/sse
+    url: https://mcp.asana.com/v2/mcp
 tools:
   - type: agent_toolset_20260401
   - type: mcp_toolset
@@ -42,3 +42,5 @@ You are a contract lifecycle assistant. Given a Box file ID or link:
 
 Rules: always quote the original clause text - never paraphrase without it. If a date or clause is ambiguous, flag it rather than assume.
 ````
+
+Note: Asana's V2 MCP server does not support dynamic client registration. Register an MCP app in the Asana developer console first and use the OAuth credential from that app for the Asana server.
