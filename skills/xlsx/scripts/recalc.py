@@ -16,12 +16,12 @@ import time
 import zipfile
 from pathlib import Path
 
-from office.soffice import get_soffice_env, run_soffice
+from office.soffice import find_soffice, get_soffice_env, run_soffice
 
 from openpyxl import load_workbook
 
 MACRO_FILENAME = "Module1.xba"
-SOFFICE_MISSING = "soffice not found on PATH; LibreOffice is required to recalculate"
+SOFFICE_MISSING = "soffice not found; LibreOffice is required to recalculate"
 
 MAX_LOCATIONS = 100
 
@@ -171,8 +171,12 @@ def _recalc_with_profile(filename, abs_path, timeout, profile_dir: Path):
 
     before = _stamp(abs_path)
 
+    soffice = find_soffice()
+    if soffice is None:
+        return {"error": SOFFICE_MISSING}
+
     cmd = [
-        "soffice",
+        soffice,
         "--headless",
         "--norestore",
         f"-env:UserInstallation={profile_url}",
