@@ -1,6 +1,6 @@
 // node tests/run.mjs (from the skill directory) — needs python3 with openpyxl, and `npm install --prefix scripts`.
 import { execFileSync, spawnSync } from 'node:child_process'
-import { chmodSync, mkdtempSync, statSync, writeFileSync, copyFileSync } from 'node:fs'
+import { chmodSync, copyFileSync, linkSync, mkdtempSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -54,6 +54,32 @@ t('recalc: clean file is clean, values readable by openpyxl, mode kept', () => {
   ok(code === 0 && out.status === 'clean' && out.written, JSON.stringify(out))
   ok(pyValues(f('clean.xlsx'), ['A3'])[0] === 3, 'A3 not stored')
   ok((statSync(f('clean.xlsx')).mode & 0o777) === 0o600, 'mode changed')
+})
+t('recalc: overwrites in place — inode, hard links, owner, xattrs kept', () => {
+  execFileSync('python3', [join(here, 'fixtures.py'), join(dir, 'again')])
+  const file = join(dir, 'again', 'clean.xlsx')
+  const link = join(dir, 'again', 'link.xlsx')
+  chmodSync(file, 0o640)
+  linkSync(file, link)
+  if (process.platform === 'darwin') execFileSync('xattr', ['-w', 'com.example.tag', 'kept', file])
+  else spawnSync('setfattr', ['-n', 'user.tag', '-v', 'kept', file])
+  const before = statSync(file)
+  const { out } = xl('recalc', file)
+  const after = statSync(file)
+  ok(out.written, JSON.stringify(out))
+  ok(after.ino === before.ino && after.uid === before.uid && after.gid === before.gid, 'inode or owner changed')
+  ok((after.mode & 0o777) === 0o640 && after.nlink === 2, 'mode or hard link lost')
+  ok(pyValues(link, ['A3'])[0] === 3, 'hard link does not see the new content')
+  if (process.platform === 'darwin') ok(execFileSync('xattr', ['-p', 'com.example.tag', file], { encoding: 'utf8' }).trim() === 'kept', 'xattr lost')
+  ok(!readdirSync(join(dir, 'again')).some((n) => n.endsWith('.tmp')), 'temp file left behind')
+})
+t('recalc: read-only file is refused and left untouched', () => {
+  const file = join(dir, 'again', 'errors.xlsx')
+  const bytes = readFileSync(file)
+  chmodSync(file, 0o444)
+  const { code, out } = xl('recalc', file)
+  ok(code === 1 && /unchanged/.test(out.error), JSON.stringify(out))
+  ok(Buffer.compare(bytes, readFileSync(file)) === 0, 'file changed')
 })
 t('recalc: second run leaves the file alone', () => {
   const { out } = xl('recalc', f('clean.xlsx'))

@@ -2,7 +2,7 @@
 // Build, edit, recalculate, check and show .xlsx workbooks with the xlcalc engine. See ../SKILL.md.
 import { readFile } from 'node:fs/promises'
 import { ensureLocale, Failure, loadEngine } from './lib/engine.mjs'
-import { readInput, writeAtomic } from './lib/io.mjs'
+import { readInput, writeWorkbook } from './lib/io.mjs'
 import { buildReport, findBadFormats, ref, usedRange } from './lib/report.mjs'
 
 const USAGE = `usage:
@@ -75,7 +75,7 @@ async function writeOver(engine, original, snapshot, target) {
     throw e
   }
   const unchanged = written.data === original || Buffer.compare(Buffer.from(written.data), original) === 0
-  if (!unchanged) await writeAtomic(target, written.data)
+  if (!unchanged) await writeWorkbook(target, written.data)
   return { issues: written.issues, unchanged }
 }
 
@@ -109,7 +109,7 @@ async function build(engine, [specPath, out], flags) {
   if (bad.length) throw new Failure('number formats Excel would refuse to open; nothing written', { problems: bad })
   const session = wrapInput(engine, () => engine.core.createSession(book, sessionOptions(flags)))
   const { data, issues } = await engine.xlsx.writeXlsx(session.getSnapshot(), { values: 'preserve' })
-  await writeAtomic(out, data)
+  await writeWorkbook(out, data)
   return buildReport(engine, { action: 'build', file: out, written: true, session, book: session.getBook(), writeIssues: issues })
 }
 

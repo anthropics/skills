@@ -1,4 +1,4 @@
-import { chmod, readFile, rename, stat, unlink, writeFile } from 'node:fs/promises'
+import { open, readFile, rename, unlink } from 'node:fs/promises'
 import { basename, dirname, extname, join, resolve } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { Failure } from './engine.mjs'
@@ -21,23 +21,47 @@ export async function readInput(path, ...args) {
   return typeof value === 'function' && args.length ? value(...args) : value
 }
 
-// Write through a temp file in the same directory, keeping the mode of the file it replaces
-// (a 0600 workbook must not come out 0644 under the umask).
-export async function writeAtomic(target, data) {
+// An existing file is overwritten in place, never replaced by a rename: the inode stays, and with it the owner, group,
+// mode, ACLs, extended attributes and hard links. The new bytes go to a private temp file first, so if the overwrite
+// fails part-way the full new workbook is still on disk and the error names it. A new file is written by rename.
+export async function writeWorkbook(target, data) {
   const full = resolve(target)
-  let mode
-  try {
-    mode = (await stat(full)).mode & 0o7777
-  } catch {
-    /* a new file */
-  }
   const temp = join(dirname(full), `.${basename(full)}.${process.pid}.tmp`)
   try {
-    await writeFile(temp, data, mode === undefined ? undefined : { mode })
-    if (mode !== undefined) await chmod(temp, mode)
-    await rename(temp, full)
+    const t = await open(temp, 'wx', 0o600)
+    try {
+      await t.writeFile(data)
+      await t.sync()
+    } finally {
+      await t.close()
+    }
   } catch (e) {
     await unlink(temp).catch(() => {})
     throw new Failure(`could not write ${target}: ${e.message}`)
   }
+
+  let handle
+  try {
+    handle = await open(full, 'r+')
+  } catch (e) {
+    if (e.code === 'ENOENT') {
+      await rename(temp, full).catch(async (err) => {
+        await unlink(temp).catch(() => {})
+        throw new Failure(`could not write ${target}: ${err.message}`)
+      })
+      return
+    }
+    await unlink(temp).catch(() => {})
+    throw new Failure(`could not write ${target}: ${e.message}; the original is unchanged`)
+  }
+  try {
+    await handle.truncate(0)
+    await handle.writeFile(data)
+    await handle.sync()
+  } catch (e) {
+    await handle.close().catch(() => {})
+    throw new Failure(`overwriting ${target} failed part-way (${e.message}); the complete new workbook is in ${temp}`, { recovery: temp })
+  }
+  await handle.close()
+  await unlink(temp).catch(() => {})
 }
