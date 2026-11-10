@@ -73,9 +73,12 @@ def validate_gif(
         )
         dim_pass = aspect_ratio <= 2.0 and 320 <= min(width, height) <= 640
 
+    size_pass = (not is_emoji) or (size_kb <= 128)
+    passes = dim_pass and size_pass
+
     results = {
         "file": str(gif_path),
-        "passes": dim_pass,
+        "passes": passes,
         "width": width,
         "height": height,
         "size_kb": size_kb,
@@ -112,10 +115,12 @@ def validate_gif(
                 f"  Note: {'Emoji should be 128x128' if is_emoji else 'Unusual dimensions for Slack'}"
             )
 
-        if size_mb > 5.0:
+        if not size_pass:
+            print(f"  Note: Exceeds Slack's 128 KB emoji size limit")
+        elif size_mb > 5.0:
             print(f"  Note: Large file size - consider fewer frames/colors")
 
-    return dim_pass, results
+    return passes, results
 
 
 def is_slack_ready(
