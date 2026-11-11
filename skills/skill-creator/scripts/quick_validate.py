@@ -4,7 +4,6 @@ Quick validation script for skills - minimal version
 """
 
 import sys
-import os
 import re
 import yaml
 from pathlib import Path
@@ -38,8 +37,14 @@ def validate_skill(skill_path):
     except yaml.YAMLError as e:
         return False, f"Invalid YAML in frontmatter: {e}"
 
-    # Define allowed properties
-    ALLOWED_PROPERTIES = {'name', 'description', 'license', 'allowed-tools', 'metadata', 'compatibility'}
+    # Every key documented in the SKILL.md frontmatter reference at
+    # https://code.claude.com/docs/en/skills.md
+    ALLOWED_PROPERTIES = {
+        'name', 'description', 'when_to_use', 'argument-hint', 'arguments',
+        'disable-model-invocation', 'user-invocable', 'allowed-tools', 'disallowed-tools',
+        'model', 'effort', 'context', 'agent', 'background', 'hooks', 'paths', 'shell',
+        'metadata', 'license', 'compatibility',
+    }
 
     # Check for unexpected properties (excluding nested keys under metadata)
     unexpected_keys = set(frontmatter.keys()) - ALLOWED_PROPERTIES
