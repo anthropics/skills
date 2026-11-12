@@ -8,7 +8,8 @@ Requires the `managed-agents-2026-04-01` beta header (the SDK sets it automatica
 
 A deployment bundles everything a session needs (agent, environment, optional files / GitHub / memory stores / vaults) plus a `schedule` and the `initial_events` that kick off each run:
 
-- `agent` and `environment_id` are required - same shapes as `sessions.create` (see `shared/managed-agents-core.md`). A deployment targeting a **self-hosted** environment can attach `memory_store` resources (SDK worker required - `shared/managed-agents-self-hosted-sandboxes.md` § Memory stores); `file` and `github_repository` resources need a cloud environment. The Console deployment form doesn't offer memory stores for self-hosted environments - attach them via the API/SDK.
+- `agent` and `environment_id` are required. For both create and update, `agent` is an agent ID string (pins the latest version when the deployment is created or updated) or an object such as `{"type": "agent", "id": "agent_...", "version": 1}` to pin a specific version. The API reference marks `version` optional but also says the object needs both `id` and `version`; include it explicitly to avoid ambiguity. Unlike `sessions.create`, deployments do **not** accept `agent_with_overrides`. To schedule a different model, deploy a separate agent configured with that model, or schedule session creation yourself and use session overrides (see `shared/managed-agents-core.md`).
+- A deployment targeting a **self-hosted** environment can attach `memory_store` resources (SDK worker required - `shared/managed-agents-self-hosted-sandboxes.md` § Memory stores); `file` and `github_repository` resources need a cloud environment. The Console deployment form doesn't offer memory stores for self-hosted environments - attach them via the API/SDK.
 - `initial_events` must contain at least one starting event - a `user.message` **or** a `user.define_outcome`. Same default as sessions: a scheduled run whose job is one deliverable (the weekly report, the compliance scan's findings file, a dataset) starts with `user.define_outcome` plus a drafted starter rubric (`shared/managed-agents-outcomes.md`); use `user.message` when the run is conversational or has no checkable output. A run whose work is changing records in outside systems (filing, escalating or closing tickets) also starts with `user.message`, since there is no artifact for the grader to score; a run that produces a report, a dataset or a PR keeps its outcome, even if it then emails or posts it. (A deployment's `initial_events` also accepts `system.message`, which a session's does not.)
 - `schedule` takes a cron `expression` and an IANA `timezone`. Minute-level granularity is the maximum.
 
@@ -38,7 +39,7 @@ EOF
 ```python
 deployment = client.beta.deployments.create(
     name="Weekly compliance scan",
-    agent=agent.id,
+    agent={"type": "agent", "id": agent.id, "version": agent.version},
     environment_id=environment.id,
     initial_events=[
         {
