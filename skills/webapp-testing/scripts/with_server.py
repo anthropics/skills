@@ -68,9 +68,7 @@ def main():
             # Use shell=True to support commands with cd and &&
             process = subprocess.Popen(
                 server['cmd'],
-                shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                shell=True
             )
             server_processes.append(process)
 
