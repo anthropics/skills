@@ -39,7 +39,8 @@ import pypdfium2 as pdfium
 
 pdf = pdfium.PdfDocument("document.pdf")
 for i, page in enumerate(pdf):
-    text = page.get_text()
+    textpage = page.get_textpage()
+    text = textpage.get_text_range()
     print(f"Page {i+1} text length: {len(text)} chars")
 ```
 
@@ -533,7 +534,7 @@ with open("cropped.pdf", "wb") as output:
 - Process pages individually with pypdfium2
 
 ### 2. For Text Extraction
-- `pdftotext -bbox-layout` is fastest for plain text extraction
+- `pdftotext` is fastest for plain text extraction
 - Use pdfplumber for structured data and tables
 - Avoid `pypdf.extract_text()` for very large documents
 

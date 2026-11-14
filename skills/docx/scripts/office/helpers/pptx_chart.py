@@ -1,14 +1,19 @@
-"""Find chart XML that PowerPoint refuses but the schema accepts.
+"""Find chart XML that PowerPoint refuses or repairs.
 
-Detection only: for either fault more than one repair is valid, and only the
-author knows which was meant.
+Detection only: more than one repair is usually valid, and only the author knows
+which was meant.
 """
 
 
 from __future__ import annotations
 
+import html
 import re
+from collections import Counter
 from typing import Mapping
+
+from defusedxml import ElementTree
+from defusedxml.common import DefusedXmlException
 
 from . import part_text
 
@@ -19,8 +24,12 @@ _GROUPING_RE = re.compile(r"""<c:grouping\b[^>]*?\bval=["'](\w+)["']""")
 _DLBL_POS_RE = re.compile(r"""<c:dLblPos\b[^>]*?\bval=["'](\w+)["']""")
 
 def _strip_ext_lst(text: str) -> str:
+    return _strip_outermost(text, "c:extLst")
+
+
+def _strip_outermost(text: str, name: str) -> str:
     out, cursor = [], 0
-    for lo, hi in _ext_lst_spans(text):
+    for lo, hi in _outermost_spans(text, name):
         out.append(text[cursor:lo])
         cursor = hi
     out.append(text[cursor:])
@@ -139,18 +148,113 @@ def _check_chart_axis_references(part: str, xml: str) -> list[str]:
     return problems
 
 
-def _ext_lst_spans(text: str) -> list[tuple[int, int]]:
+def _shown(value: str) -> str:
+    return '"' + repr(value[:20])[1:-1] + '"'
+
+
+DECIMAL_SETTINGS = (
+    "crossesAt", "max", "min", "majorUnit", "minorUnit", "logBase",
+    "forward", "backward", "intercept", "x", "y", "w", "h",
+    "splitPos", "custUnit", "pictureStackUnit",
+)
+_DECIMAL_SETTING_RE = re.compile(
+    rf"""<c:({"|".join(DECIMAL_SETTINGS)})\b[^<>]*?\bval=["']([^"'<>]*)["']"""
+)
+_DECIMAL_RE = re.compile(
+    r"[+-]?(\d+(\.\d*)?|\.\d+)([eE][+-]?\d+)?"
+    r"|[+-]?(inf|infinity|nan(\(\w*\))?|\u221e|1\.#(inf|qnan|snan|ind)\d*)",
+    re.IGNORECASE,
+)
+
+
+def _check_decimal_settings(part: str, xml: str) -> list[str]:
+    problems = []
+    for name, raw in sorted(set(_DECIMAL_SETTING_RE.findall(_strip_ext_lst(xml)))):
+        value = html.unescape(raw)  
+        if _DECIMAL_RE.fullmatch(value.strip()):
+            continue
+        fix = "Fix: write a plain number, or remove the element"
+        if name == "crossesAt" and value.strip() == "autoZero":
+            fix = ("Fix: leave valAxisCrossesAt: 0 out of the pptxgenjs options, the axis "
+                   "crosses at zero anyway. In the XML, write "
+                   '<c:crosses val="autoZero"/> or a number')
+        problems.append(
+            f"{part}: <c:{name} val={_shown(value)}> is not a number, and PowerPoint "
+            f"will offer to repair the deck. {fix}"
+        )
+    return problems
+
+
+def _local(tag: str) -> str:
+    return tag.rsplit("}", 1)[-1]
+
+
+def _drawn_series(root) -> list:
+    found, to_visit = [], [root]
+    while to_visit:  
+        for child in to_visit.pop():
+            name = _local(child.tag)
+            if name == "ser":
+                found.append(child)
+            elif name == "AlternateContent":
+                to_visit.extend(child[:1])
+            elif name != "extLst":
+                to_visit.append(child)
+    return found
+
+
+def _check_series_order(part: str, xml: str) -> list[str]:
+    try:
+        root = ElementTree.fromstring(xml.encode("utf-8", "surrogateescape"))
+    except (ElementTree.ParseError, DefusedXmlException, LookupError, ValueError):
+        return []
+    orders = Counter()
+    for series in _drawn_series(root):
+        own = [c.get("val", "") for c in series if _local(c.tag) == "order"]
+        if own and own[0].isascii() and own[0].isdigit():
+            orders[own[0]] += 1  
+    repeated = sorted((o for o, n in orders.items() if n > 1), key=lambda o: (len(o), o))
+    if not repeated:
+        return []
+    return [
+        f"{part}: two or more series share the <c:order> value {', '.join(o[:12] for o in repeated)}, "
+        f"and PowerPoint will offer to repair the deck. Fix: number <c:order> "
+        f"(and <c:idx>) 0, 1, 2... across every series in the chart, a combo "
+        f"chart's line series carrying on from its bars"
+    ]
+
+
+PRESET_DASHES = frozenset({
+    "solid", "dot", "dash", "lgDash", "dashDot", "lgDashDot", "lgDashDotDot",
+    "sysDash", "sysDot", "sysDashDot", "sysDashDotDot",
+})
+_PRESET_DASH_RE = re.compile(r"""<a:prstDash\b[^<>]*?\bval=["']([^"'<>]*)["']""")
+
+
+def _check_preset_dashes(part: str, xml: str) -> list[str]:
+    values = {html.unescape(v) for v in _PRESET_DASH_RE.findall(_strip_ext_lst(xml))}
+    return [
+        f"{part}: <a:prstDash val={_shown(value)}> is not a dash style, and PowerPoint "
+        f"will offer to repair the deck. Use one of {', '.join(sorted(PRESET_DASHES))}. "
+        f"In pptxgenjs, lineDash takes one such word for the whole chart, not an array"
+        for value in sorted(values)
+        if value.strip() not in PRESET_DASHES
+    ]
+
+
+def _outermost_spans(text: str, name: str) -> list[tuple[int, int]]:
     spans: list[tuple[int, int]] = []
     depth = 0
     start = 0
-    for match in re.finditer(r"<(/?)c:extLst\b[^>]*?(/?)>", text):
+    for match in re.finditer(rf"<(/?){name}\b[^<>]*?(/?)>", text):
         closing, self_closing = match.group(1), match.group(2)
         if self_closing:
             continue
         if closing:
-            depth -= 1
-            if depth == 0:
-                spans.append((start, match.end()))
+            if depth:  
+                depth -= 1
+                if depth == 0:
+                    spans.append((start, match.end()))
         else:
             if depth == 0:
                 start = match.start()
@@ -158,13 +262,22 @@ def _ext_lst_spans(text: str) -> list[tuple[int, int]]:
     return spans
 
 
-CHART_CHECKS = (_check_stacked_label_positions, _check_chart_axis_references)
+CHART_CHECKS = (
+    _check_stacked_label_positions,
+    _check_chart_axis_references,
+    _check_decimal_settings,
+    _check_series_order,
+    _check_preset_dashes,
+)
+
+
+_COMMENT_OR_PI_RE = re.compile(r"<!--.*?(?:-->|\Z)|<\?(?!xml\s).*?(?:\?>|\Z)", re.DOTALL)
 
 
 def find_chart_problems(files: Mapping[str, bytes]) -> list[str]:
     problems: list[str] = []
     for part in sorted(n for n in files if _CHART_PART_RE.fullmatch(n)):
-        xml = part_text(files[part])
+        xml = _strip_outermost(_COMMENT_OR_PI_RE.sub("", part_text(files[part])), "mc:Fallback")
         for check in CHART_CHECKS:
             problems.extend(check(part, xml))
     return problems
