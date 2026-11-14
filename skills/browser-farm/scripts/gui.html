@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>浏览器农场</title>
+<style>
+  :root { --line: #e5e7eb; --txt: #1f2937; --dim: #6b7280; --green: #16a34a; --gray: #9ca3af; --blue: #2563eb; --red: #dc2626; }
+  * { box-sizing: border-box; margin: 0; }
+  body { font-family: "Microsoft YaHei", system-ui, sans-serif; color: var(--txt); background: #f3f4f6; }
+  header { display: flex; align-items: center; gap: 16px; padding: 14px 24px; background: #fff; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header h1 { font-size: 18px; }
+  header .add { display: flex; gap: 8px; margin-left: auto; }
+  header input { padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; width: 200px; font-size: 14px; }
+  .btn { padding: 7px 14px; border: 1px solid var(--line); border-radius: 6px; background: #fff; cursor: pointer; font-size: 14px; }
+  .btn:hover { background: #f9fafb; }
+  .btn.primary { background: var(--blue); border-color: var(--blue); color: #fff; }
+  .btn.primary:hover { background: #1d4ed8; }
+  .btn:disabled { opacity: .45; cursor: not-allowed; }
+  main { max-width: 860px; margin: 20px auto; padding: 0 16px; }
+  .slot { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .slot .id { font-weight: 700; font-size: 17px; }
+  .slot .note { color: var(--dim); font-size: 14px; }
+  .slot .port { color: var(--dim); font-size: 13px; }
+  .badge { font-size: 13px; padding: 3px 10px; border-radius: 99px; }
+  .badge.on { background: #dcfce7; color: var(--green); }
+  .badge.off { background: #f3f4f6; color: var(--gray); }
+  .slot .ops { margin-left: auto; display: flex; gap: 8px; }
+  .detail { width: 100%; border-top: 1px dashed var(--line); padding-top: 10px; font-size: 13px; color: var(--dim); display: none; }
+  .detail.open { display: block; }
+  .detail li { list-style: none; padding: 3px 0; word-break: break-all; }
+  .detail .shotbox { margin-bottom: 8px; }
+  .detail .shot { max-width: 320px; border: 1px solid var(--line); border-radius: 6px; display: block; }
+  .detail .shotmsg { display: block; margin-bottom: 4px; }
+  .detail .snapline { margin-top: 8px; display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .dim { color: var(--dim); }
+  .empty { text-align: center; color: var(--dim); padding: 48px 0; background: #fff; border: 1px dashed var(--line); border-radius: 10px; }
+  h2.sec { font-size: 16px; margin: 18px 0 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  h2.sec .bulk { margin-left: auto; display: flex; gap: 8px; }
+  .btn.mini { padding: 4px 10px; font-size: 13px; }
+  #rec-bar { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 18px; margin-bottom: 10px; }
+  #rec-bar .row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  #rec-bar select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; max-width: 170px; }
+  #rec-bar input { padding: 7px 10px; border: 1px solid var(--line); border-radius: 6px; font-size: 14px; width: 150px; }
+  #rec-bar .live { color: var(--red); font-size: 14px; font-weight: 700; }
+  .script { background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 18px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .script .name { font-weight: 700; font-size: 15px; }
+  .script .desc { color: var(--dim); font-size: 13px; }
+  .script .msg { width: 100%; font-size: 12px; color: var(--dim); border-top: 1px dashed var(--line); padding-top: 6px; word-break: break-all; display: none; }
+  .script .msg.show { display: block; }
+  .script .msg.errmsg { color: var(--red); }
+  .script .ops { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  .script select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; max-width: 150px; }
+  .badge.run { background: #dcfce7; color: var(--green); }
+  .badge.err { background: #fee2e2; color: var(--red); }
+  .badge.bind { background: #dbeafe; color: #1d4ed8; }
+  #toast { position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%); padding: 10px 20px; border-radius: 8px; font-size: 14px; color: #fff; opacity: 0; transition: opacity .25s; max-width: 80vw; }
+  #toast.ok { background: var(--green); opacity: 1; }
+  #toast.err { background: var(--red); opacity: 1; }
+  #hint { display: none; background: #fef9c3; border: 1px solid #fde047; border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; font-size: 14px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>浏览器农场</h1>
+  <div class="add">
+    <input id="note" placeholder="新档位备注（账号名）" maxlength="60">
+    <button class="btn primary" onclick="addSlot()">登记</button>
+    <button class="btn" onclick="exportCfg()">导出配置</button>
+    <button class="btn" onclick="importCfg()">导入配置</button>
+    <input type="file" id="import-file" accept=".json,application/json" hidden>
+  </div>
+</header>
+<main>
+  <h2 class="sec">档位 <span class="bulk">
+    <button class="btn mini" onclick="bulkSlots('window')">全部启动</button>
+    <button class="btn mini" onclick="bulkSlots('bg')">全部后台跑</button>
+    <button class="btn mini" onclick="bulkSlots('eff')">全部效率跑</button>
+    <button class="btn mini" onclick="bulkSlots('stop')">全部停止</button>
+  </span></h2>
+  <div id="hint">「启动」弹真 Chrome 窗口：扫码/输验证码/日常上网都在窗口里。「后台跑」切无窗口省内存（登录态都在）。窗口关了档就停，要用再点启动。窗口和后台随便切：跑着的脚本会等档位回来接着跑（约 90 秒内）。</div>
+  <div id="list"></div>
+  <div id="scripts">
+    <h2 class="sec">挂机脚本 <span class="bulk">
+      <button class="btn mini" onclick="bulkScripts('start')">全部启动</button>
+      <button class="btn mini" onclick="bulkScripts('stop')">全部停止</button>
+    </span></h2>
+    <div id="rec-bar">
+      <div class="row" id="rec-form">
+        <select id="rec-slot"></select>
+        <input id="rec-name" placeholder="脚本名（可空）" maxlength="30">
+        <button class="btn primary" onclick="recStart()">开始录制</button>
+      </div>
+      <div class="row" id="rec-live" style="display:none">
+        <span class="live" id="rec-live-txt"></span>
+        <button class="btn" onclick="recStop()">停止并存脚本</button>
+        <button class="btn" onclick="recStopAgent()">停止存Agent笔记</button>
+        <button class="btn" onclick="recDrop()">不存</button>
+      </div>
+    </div>
+    <div id="script-list"><div class="empty">加载中…</div></div>
+  </div>
+</main>
+<div id="toast"></div>
+<script>
+'use strict';
+const API = location.origin;
+let busy = {}; // 按档位锁按钮，防止连点重复发命令
+let toastTimer = null, hintShown = false;
+
+function toast(msg, ok) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = ok ? 'ok' : 'err';
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.className = ''; }, ok ? 1800 : 4000);
+}
+
+async function api(method, p, body) {
+  const res = await fetch(API + p, {
+    method,
+    headers: body ? { 'Content-Type': 'application/json' } : {},
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  const data = await res.json().catch(() => { throw new Error('总管回话不是 JSON'); });
+  if (data.ok === false) throw new Error(data.error || '操作失败');
+  return data;
+}
+
+async function refresh() {
+  let r;
+  try { r = await api('GET', '/slots'); }
+  catch (e) { toast('连不上总管: ' + e.message, false); return; }
+  const slots = r.slots;
+  const wasRec = recInfo;
+  recInfo = r.recording || null;
+  recLast = r.lastRec || null;
+  // 录着→浏览器被关：服务端已把会话收了，这边补一句人话，红条收回不无声无息
+  if (wasRec && !recInfo && recLast && recLast.aborted && Date.now() - recLast.at < 15000) {
+    toast('档 ' + recLast.slotId + ' 的浏览器关了，那场录制没保存（已录 ' + recLast.count + ' 步）', false);
+  }
+  lastSlots = slots;
+  const list = document.getElementById('list');
+  if (!slots.length) {
+    list.innerHTML = '<div class="empty">还没有档位。右上角写个账号名点「登记」。</div>';
+    return;
+  }
+  // 开着的详情面板：原 DOM 节点先摘下来，重建完放回去——内容不闪、截图 img 不重载、5 秒截图定时器不用重挂
+  const openNodes = new Map();
+  for (const d of list.querySelectorAll('.detail.open')) openNodes.set(d.dataset.id, d);
+  list.innerHTML = slots.map(s => {
+    const dis = busy[s.id] ? 'disabled' : '';
+    return '<div class="slot">' +
+      '<span class="id">' + s.id + '</span>' +
+      '<span class="note">' + esc(s.note || '') + '</span>' +
+      '<span class="port">端口 ' + s.port + '</span>' +
+      '<span class="badge ' + (s.alive ? 'on' : 'off') + '">' + (s.alive ? (s.mode === 'eff' ? '运行中·效率' : '运行中') : '已停') + '</span>' +
+      '<div class="ops">' +
+        '<button class="btn primary" ' + dis + ' onclick="op(\'' + s.id + '\',\'window\')">启动</button>' +
+        '<button class="btn" ' + dis + ' onclick="op(\'' + s.id + '\',\'bg\')">后台跑</button>' +
+        '<button class="btn" ' + dis + ' onclick="op(\'' + s.id + '\',\'eff\')">效率跑</button>' +
+        '<button class="btn" ' + dis + ' onclick="op(\'' + s.id + '\',\'stop\')">停止</button>' +
+        '<button class="btn" onclick="toggleDetail(\'' + s.id + '\')">详情</button>' +
+      '</div>' +
+      '<div class="detail' + (openNodes.has(s.id) ? ' open' : '') + '" data-id="' + s.id + '" id="d-' + s.id + '"></div>' +
+    '</div>';
+  }).join('');
+  for (const [id, node] of openNodes) {
+    const fresh = document.getElementById('d-' + id);
+    if (fresh) fresh.replaceWith(node); // 档位还在就原样放回（截图img不重载不闪）；档位没了就丢弃
+  }
+  for (const id of Object.keys(shotTimers)) { // 档位没了/清空了，孤儿截图定时器一起收
+    if (!slots.some(s => s.id === id)) stopShotTimer(id);
+  }
+}
+
+async function op(id, act) {
+  if (busy[id]) return;
+  busy[id] = true; refresh();
+  try {
+    if (act === 'window') {
+      try { await api('POST', '/slot/' + id + '/stop', {}); } catch (e) {} // 在跑（窗口/后台）都先停，登录态在档里不丢
+      await api('POST', '/slot/' + id + '/start', { mode: 'headful' });
+      toast('档 ' + id + ' 浏览器窗口已打开', true);
+      if (!hintShown) { document.getElementById('hint').style.display = 'block'; hintShown = true; }
+    }
+    else if (act === 'bg') {
+      try { await api('POST', '/slot/' + id + '/stop', {}); } catch (e) {}
+      await api('POST', '/slot/' + id + '/start', {});
+      toast('档 ' + id + ' 已后台跑（无窗口，登录态都在）', true);
+    }
+    else if (act === 'eff') {
+      try { await api('POST', '/slot/' + id + '/stop', {}); } catch (e) {}
+      await api('POST', '/slot/' + id + '/start', { mode: 'eff' });
+      toast('档 ' + id + ' 已效率跑（无窗口+拦广告埋点域名，登录态都在）', true);
+    }
+    else if (act === 'stop') { const r = await api('POST', '/slot/' + id + '/halt', {}); toast('档 ' + id + ' 已停止' + (r.stoppedScripts ? '（' + r.stoppedScripts + ' 个脚本也停了）' : ''), true); }
+  } catch (e) { toast(e.message, false); }
+  delete busy[id];
+  refresh();
+}
+
+// ---------- 详情面板：当前页截图（5 秒自刷）+ 页面列表 + 快照/回滚 ----------
+const shotTimers = {}; // slotId -> 定时器（面板开着才轮询截图，关了就停）
+let snapList = {};     // slotId -> 快照名数组（回滚按钮按下标取名，快照名不进 HTML 属性防注入）
+
+function stopShotTimer(id) { if (shotTimers[id]) { clearInterval(shotTimers[id]); delete shotTimers[id]; } }
+
+async function toggleDetail(id) {
+  const d = document.getElementById('d-' + id);
+  d.classList.toggle('open');
+  if (d.classList.contains('open')) fillDetail(id);
+  else stopShotTimer(id);
+}
+
+async function fillDetail(id) {
+  const d = document.getElementById('d-' + id);
+  if (!d) return;
+  d.textContent = '加载中…';
+  stopShotTimer(id);
+  let s;
+  try { s = await api('GET', '/slot/' + id); }
+  catch (e) { d.textContent = '详情拉取失败: ' + e.message; return; }
+  let sn = { snapshots: [] };
+  try { sn = await api('GET', '/slot/' + id + '/snapshots'); } catch (e) {}
+  snapList[id] = (sn.snapshots || []).map(x => x.name);
+  const t = s.targets || [];
+  d.innerHTML =
+    '<div class="shotbox"><span class="shotmsg" id="shotmsg-' + id + '"></span><img class="shot" id="shot-' + id + '" alt="当前页截图"></div>' +
+    (t.length
+      ? '<ul>' + t.map(x => '<li>' + esc(x.title || '(无标题)') + ' — ' + esc(x.url) + '</li>').join('') + '</ul>'
+      : '<div class="dim">没有打开的页面（启动后会显示）</div>') +
+    '<div class="snapline">快照：' + (snapList[id].length
+      ? snapList[id].map((n, i) => '<button class="btn mini" onclick="doRestore(\'' + id + '\',' + i + ')">回滚·' + esc(n) + '</button>').join(' ')
+      : '<span class="dim">还没有</span>') +
+    ' <button class="btn mini" onclick="doSnap(\'' + id + '\')">＋拍快照</button></div>';
+  updateShot(id, s.alive);
+  if (s.alive) shotTimers[id] = setInterval(() => updateShot(id, true), 5000); // 开着才看，关面板即停
+}
+
+function updateShot(id, alive) {
+  const img = document.getElementById('shot-' + id);
+  const msg = document.getElementById('shotmsg-' + id);
+  if (!img || !msg) return;
+  if (!alive) { img.removeAttribute('src'); msg.textContent = '档位没在跑，启动后这里能看到画面'; return; }
+  msg.textContent = '';
+  img.onerror = () => { img.removeAttribute('src'); msg.textContent = '截图拉不到（页面可能刚关，稍后再看）'; };
+  img.src = '/slot/' + id + '/shot?_=' + Date.now();
+}
+
+async function doSnap(id) {
+  if (busy[id]) return;
+  const name = prompt('快照名（空了自动起）', '');
+  if (name === null) return; // 点了取消
+  const now = new Date(), pad = x => String(x).padStart(2, '0');
+  const finalName = name.trim() || (pad(now.getMonth() + 1) + pad(now.getDate()) + '-' + pad(now.getHours()) + pad(now.getMinutes()));
+  busy[id] = true; refresh();
+  try {
+    await api('POST', '/slot/' + id + '/snapshot', { name: finalName });
+    toast('快照「' + finalName + '」拍好了（自动停机拍、拍完自动回到后台跑）', true);
+  } catch (e) { toast('快照失败: ' + e.message, false); }
+  delete busy[id];
+  refresh(); fillDetail(id);
+}
+
+async function doRestore(id, i) {
+  const name = (snapList[id] || [])[i];
+  if (!name) return;
+  if (!confirm('回滚到「' + name + '」？拍这快照之后的登录和数据都没了')) return;
+  if (busy[id]) return;
+  busy[id] = true; refresh();
+  try {
+    await api('POST', '/slot/' + id + '/restore', { name });
+    toast('已回滚到「' + name + '」（跑着的会自动回到后台）', true);
+  } catch (e) { toast('回滚失败: ' + e.message, false); }
+  delete busy[id];
+  refresh(); fillDetail(id);
+}
+
+async function addSlot() {
+  const input = document.getElementById('note');
+  const note = input.value.trim();
+  if (!note) { toast('先写个备注（账号名）', false); return; }
+  try {
+    const r = await api('POST', '/slots/add', { note });
+    input.value = '';
+    toast('已登记档 ' + r.slot.id + '（端口 ' + r.slot.port + '）', true);
+    refresh();
+  } catch (e) { toast(e.message, false); }
+}
+
+document.getElementById('note').addEventListener('keydown', e => { if (e.key === 'Enter') addSlot(); });
+
+// ---------- 挂机脚本区 ----------
+let lastSlots = []; // 档位列表给脚本区的选档下拉用
+let lastScripts = []; // 脚本列表（批量启动用）
+let lastRuns = {};    // scriptId -> 运行状态（选档默认和批量启停用）
+let scriptSlot = {}; // scriptId -> 选的档位，重渲染不丢
+let recInfo = null; // 录制状态（/slots 带回来）：{slotId, count} | null
+let recPick = '';    // 录制条选的档位，重渲染不丢
+let recLast = null;  // 上一场录制存了啥（/slots 带回来）：{scriptId, slotId, name} | null——刚录的脚本默认挂回录它的档
+let bulkBusy = false; // 批量操作锁：进行中别再点
+
+// 脚本选档的默认值：手动选过 > 绑定的档 > 刚录它的档 > 上次实际跑的档 > 第一个档。没有"看着选中了其实没选上"这回事
+function pickSlotFor(sid) {
+  if (scriptSlot[sid] && lastSlots.some(x => x.id === scriptSlot[sid])) return scriptSlot[sid];
+  const sc = lastScripts.find(x => x.id === sid); // 绑定了就默认它：点启动/批量启动都不用选
+  if (sc && sc.bindSlot && lastSlots.some(x => x.id === sc.bindSlot)) return sc.bindSlot;
+  if (recLast && recLast.scriptId === sid && lastSlots.some(x => x.id === recLast.slotId)) return recLast.slotId;
+  const ran = lastRuns[sid];
+  if (ran && ran.slotId && lastSlots.some(x => x.id === ran.slotId)) return ran.slotId;
+  return lastSlots.length ? lastSlots[0].id : '';
+}
+
+// 录制条：没在录=表单（选档+名字+开始），在录=红字计数+停止并保存。
+// select 只在没录时刷新选项，录着的时候别动它（人在窗口里点，这边怎么刷都不影响）
+function paintRecBar() {
+  const form = document.getElementById('rec-form');
+  const live = document.getElementById('rec-live');
+  if (recInfo) {
+    form.style.display = 'none';
+    live.style.display = 'flex';
+    document.getElementById('rec-live-txt').textContent =
+      '● 录着：档 ' + recInfo.slotId + ' 已录 ' + recInfo.count + ' 下（窗口右下角可直接停止，新开标签页也录）';
+  } else {
+    form.style.display = 'flex';
+    live.style.display = 'none';
+    const sel = document.getElementById('rec-slot');
+    const opts = lastSlots.map(x => '<option value="' + esc(x.id) + '">' + esc(x.id + ' ' + (x.note || '')) + '</option>').join('');
+    if (sel.innerHTML !== opts) { // 输入框和选择不动焦点，选项变了才重画
+      sel.innerHTML = opts;
+      if (lastSlots.find(x => x.id === recPick)) sel.value = recPick;
+    }
+  }
+}
+
+async function recStart() {
+  const sel = document.getElementById('rec-slot');
+  const id = sel.value;
+  if (!id) { toast('先选个档位（没有就先登记一个）', false); return; }
+  recPick = id;
+  try {
+    await api('POST', '/slot/' + id + '/record', { action: 'start', name: document.getElementById('rec-name').value });
+    recInfo = { slotId: id, count: 0 };
+    paintRecBar();
+    toast('开始录制：档 ' + id + ' 的窗口已弹出，在里面点，窗口右下角「■ 停止并保存」收工（新开标签页也录）', true);
+  } catch (e) { toast(e.message, false); }
+}
+
+async function recStop() {
+  if (!recInfo) return;
+  try {
+    const r = await api('POST', '/slot/' + recInfo.slotId + '/record', {
+      action: 'stop', name: document.getElementById('rec-name').value,
+    });
+    recInfo = null; paintRecBar();
+    toast('已存脚本 ' + r.script.id + '「' + r.script.name + '」' + r.count + ' 步，在下面选档启动', true);
+    refreshScripts();
+  } catch (e) {
+    recInfo = null; paintRecBar(); // 服务端会话已清（一步没录到等），这里跟着收
+    toast(e.message, false);
+  }
+}
+async function recStopAgent() { // 停止并存成 agent 笔记：不建脚本，落 agent-notes/ 一份 md 给 agent 直接读
+  if (!recInfo) return;
+  try {
+    const r = await api('POST', '/slot/' + recInfo.slotId + '/record', {
+      action: 'stop', name: document.getElementById('rec-name').value, asAgent: true,
+    });
+    recInfo = null; paintRecBar();
+    toast('已存 Agent 笔记 ' + r.agentNote + '（' + r.count + ' 步，没建脚本）', true);
+  } catch (e) {
+    recInfo = null; paintRecBar(); // 服务端会话已清（一步没录到等），这里跟着收
+    toast(e.message, false);
+  }
+}
+async function recDrop() { // 不存：整场扔掉（录废了/点错了），一个文件都不落
+  if (!recInfo) return;
+  if (!confirm('这场不存了？录的步骤全扔掉')) return;
+  try {
+    const r = await api('POST', '/slot/' + recInfo.slotId + '/record', { action: 'stop', discard: true });
+    recInfo = null; paintRecBar();
+    toast(r.discarded ? '已丢弃 ' + r.count + ' 步，没保存' : '已收（没保存）', true);
+  } catch (e) {
+    recInfo = null; paintRecBar();
+    toast(e.message, false);
+  }
+}
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+function scriptDesc(s) {
+  return s.type === 'watch'
+    ? '盯「' + s.watch.rowText + '」' + s.watch.columnHeader + ' ' + (s.watch.op || '>=') + ' ' + s.watch.value + ' → 点「' + s.watch.clickText + '」'
+    : s.steps.length + ' 步循环' + ((s.steps || []).some(x => x && x.href) ? ' ·自动开页' : '');
+}
+
+function runBadge(run) {
+  if (!run) return '';
+  const map = {
+    running: ['run', '跑着'],
+    stopping: ['run', '停止中'],
+    done: ['off', '跑完'],
+    error: ['err', '出错'],
+  };
+  const m = map[run.state] || ['off', run.state];
+  return '<span class="badge ' + m[0] + '">' + m[1] + '</span>';
+}
+
+async function refreshScripts() {
+  let r;
+  try { r = await api('GET', '/scripts'); }
+  catch (e) { return; } // 总管没起时档位区已经报过，这里不重复弹
+  lastScripts = r.scripts; lastRuns = r.runs || {};
+  paintRecBar();
+  const box = document.getElementById('script-list');
+  if (!r.scripts.length) {
+    box.innerHTML = '<div class="empty">还没有脚本。上面选个档位点「开始录制」，在弹出的窗口里点一遍要重复的操作，窗口右下角「停止并保存」收工。</div>';
+    return;
+  }
+  box.innerHTML = r.scripts.map(s => {
+    const run = r.runs[s.id];
+    const alive = run && run.state === 'running';
+    const selSlot = pickSlotFor(s.id);
+    const opts = lastSlots.map(x => '<option value="' + esc(x.id) + '"' + (x.id === selSlot ? ' selected' : '') + '>' + esc(x.id + ' ' + (x.note || '')) + '</option>').join('');
+    return '<div class="script" data-sid="' + esc(s.id) + '">' +
+      '<span class="id">' + esc(s.id) + '</span>' +
+      '<span class="name">' + esc(s.name) + '</span>' +
+      '<span class="desc">' + esc(s.desc || scriptDesc(s)) + '</span>' +
+      (s.bindSlot ? '<span class="badge bind">绑 档' + esc(s.bindSlot) + '</span>' : '') +
+      runBadge(run) +
+      '<div class="ops">' +
+        '<select onchange="scriptSlot[\'' + esc(s.id) + '\']=this.value">' + opts + '</select>' +
+        '<button class="btn primary" onclick="startScript(\'' + esc(s.id) + '\')"' + (alive ? ' disabled' : '') + '>启动</button>' +
+        '<button class="btn" onclick="stopScript(\'' + esc(s.id) + '\')"' + (alive || (run && run.state === 'stopping') ? '' : ' disabled') + '>停止</button>' +
+        (s.bindSlot
+          ? '<button class="btn" onclick="unbindScript(\'' + esc(s.id) + '\')">解绑</button>'
+          : '<button class="btn" onclick="bindScript(\'' + esc(s.id) + '\')">绑</button>') +
+        '<button class="btn" onclick="delScript(\'' + esc(s.id) + '\')"' + (alive ? ' disabled' : '') + '>删除</button>' +
+      '</div>' +
+      '<div class="msg' + (run && (run.lastMsg || run.error) ? ' show' : '') + (run && run.state === 'error' ? ' errmsg' : '') + '" id="msg-' + esc(s.id) + '">' + (run ? esc('@档' + run.slotId + ' ' + (run.state === 'error' && run.error ? '出错原因: ' + run.error : run.lastMsg || '')) : '') + '</div>' +
+    '</div>';
+  }).join('');
+}
+
+async function startScript(sid) {
+  const slot = pickSlotFor(sid);
+  if (!slot) { toast('还没有档位，先上面登记一个', false); return; }
+  try {
+    await api('POST', '/script/' + sid + '/start', { slot });
+    toast('脚本 ' + sid + ' 已在后台起跑（档 ' + slot + '）', true);
+    refreshScripts();
+  } catch (e) { toast(e.message, false); }
+}
+
+async function stopScript(sid) {
+  try {
+    await api('POST', '/script/' + sid + '/stop', {});
+    toast('脚本 ' + sid + ' 停止中', true);
+    refreshScripts();
+  } catch (e) { toast(e.message, false); }
+}
+
+async function delScript(sid) {
+  if (!confirm('删除脚本 ' + sid + '？删了就没了（档位数据不动）')) return;
+  try {
+    await api('POST', '/script/' + sid + '/delete', {});
+    delete scriptSlot[sid];
+    toast('脚本 ' + sid + ' 已删', true);
+    refreshScripts();
+  } catch (e) { toast(e.message, false); }
+}
+
+// 绑定：skill 跟档位（端口+登录态）绑死，以后点启动不用再选档
+async function bindScript(sid) {
+  const slot = pickSlotFor(sid); // 绑这张卡当前下拉选中的档
+  if (!slot) { toast('还没有档位，先上面登记一个', false); return; }
+  if (!confirm('把脚本 ' + sid + ' 绑到档 ' + slot + '？以后启动默认就在这个档跑')) return;
+  try {
+    const r = await api('POST', '/script/' + sid + '/bind', { slot });
+    toast('脚本 ' + sid + ' 已绑档 ' + r.bindSlot + '，点启动直接跑', true);
+    refreshScripts();
+  } catch (e) { toast(e.message, false); }
+}
+async function unbindScript(sid) {
+  if (!confirm('解绑脚本 ' + sid + '？启动时要重新选档')) return;
+  try {
+    await api('POST', '/script/' + sid + '/bind', { slot: '' });
+    toast('脚本 ' + sid + ' 已解绑', true);
+    refreshScripts();
+  } catch (e) { toast(e.message, false); }
+}
+
+// ---------- 批量：全部启动/全部停止 ----------
+async function bulkSlots(act) {
+  if (bulkBusy) return;
+  const slots = lastSlots;
+  if (!slots.length) { toast('还没有档位', false); return; }
+  if (act === 'stop' && !confirm('全部停止：所有档位上的脚本也一起停，确定？')) return;
+  bulkBusy = true;
+  const name = act === 'window' ? '全部启动' : act === 'bg' ? '全部后台跑' : act === 'eff' ? '全部效率跑' : '全部停止';
+  toast(name + '：进行中（一个一个来，别关页面）…', true);
+  try {
+    let n = 0, fail = 0, lastErr = '';
+    for (const s of slots) {
+      try {
+        if (act === 'window') {
+          if (!s.alive) { await api('POST', '/slot/' + s.id + '/start', { mode: 'headful' }); n++; } // 在跑的不动：不打断上面的脚本
+        } else if (act === 'bg') {
+          if (s.alive) { try { await api('POST', '/slot/' + s.id + '/stop', {}); } catch (e) {} } // 切后台=先停再起，脚本靠重连窗活着穿过
+          await api('POST', '/slot/' + s.id + '/start', {});
+          n++;
+        } else if (act === 'eff') {
+          if (s.alive) { try { await api('POST', '/slot/' + s.id + '/stop', {}); } catch (e) {} } // 效率跑同款：先停再起，脚本靠重连窗活着穿过
+          await api('POST', '/slot/' + s.id + '/start', { mode: 'eff' });
+          n++;
+        } else {
+          await api('POST', '/slot/' + s.id + '/halt', {}); n++; // halt=连档上脚本一起真停（死档上的重连脚本也收得住）
+        }
+      } catch (e) { fail++; lastErr = s.id + ': ' + e.message; }
+    }
+    toast(name + '：动了 ' + n + ' 个档' + (fail ? '，' + fail + ' 个失败（' + lastErr + '）' : ''), !fail);
+  } finally { bulkBusy = false; refresh(); }
+}
+
+async function bulkScripts(act) {
+  if (bulkBusy) return;
+  if (!lastScripts.length) { toast('还没有脚本', false); return; }
+  bulkBusy = true;
+  const name = act === 'start' ? '脚本全部启动' : '脚本全部停止';
+  toast(name + '：进行中…', true);
+  try {
+    let n = 0, fail = 0, lastErr = '';
+    for (const s of lastScripts) {
+      const run = lastRuns[s.id];
+      const alive = run && run.state === 'running';
+      try {
+        if (act === 'start') {
+          if (alive) continue; // 跑着的不重起
+          const slot = pickSlotFor(s.id);
+          if (!slot) { fail++; lastErr = s.id + ': 没有档位'; continue; }
+          await api('POST', '/script/' + s.id + '/start', { slot });
+          n++;
+        } else {
+          if (!alive) continue;
+          await api('POST', '/script/' + s.id + '/stop', {});
+          n++;
+        }
+      } catch (e) { fail++; lastErr = s.id + ': ' + e.message; }
+    }
+    toast(name + '：动了 ' + n + ' 个' + (fail ? '，' + fail + ' 个失败（' + lastErr + '）' : ''), !fail);
+  } finally { bulkBusy = false; refreshScripts(); }
+}
+
+// ---------- 配置搬家：导出/导入 ----------
+// 导出=档位登记（备注+端口）+全部脚本。登录态在档位数据目录里不跟走：另一台电脑各档开窗登一次就行
+async function exportCfg() {
+  try {
+    const r = await api('GET', '/config/export');
+    const blob = new Blob([JSON.stringify(r.payload, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'farm-config-' + new Date().toISOString().slice(0, 10) + '.json';
+    a.click();
+    URL.revokeObjectURL(a.href);
+    toast('已导出（' + r.summary + '）。拷到另一台电脑，那边点「导入配置」就行（登录态不跟走，各档登一次）', true);
+  } catch (e) { toast('导出失败: ' + e.message, false); }
+}
+function importCfg() { document.getElementById('import-file').click(); }
+document.getElementById('import-file').addEventListener('change', async e => {
+  const f = e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  try {
+    const data = JSON.parse(await f.text());
+    const r = await api('POST', '/config/import', data);
+    toast('导入完成：脚本 +' + r.addedScripts + (r.renamedScripts ? '（' + r.renamedScripts + ' 个编号被占自动改号）' : '')
+      + '，档位 +' + r.addedSlots + (r.skippedSlots ? '（' + r.skippedSlots + ' 个端口被占跳过）' : '')
+      + '。各档开窗登录一次就能用', true);
+    refresh();
+    refreshScripts();
+  } catch (e2) { toast('导入失败: ' + e2.message, false); }
+});
+
+refresh();
+refreshScripts();
+setInterval(refresh, 3000);
+setInterval(refreshScripts, 3000);
+</script>
+</body>
+</html>

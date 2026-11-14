@@ -1,0 +1,381 @@
+paths:
+  materials_dir: ./materials
+  output_dir: ./output
+  bgm_dir: ./bgm_library
+  db_path: ./data/adflow.db
+  log_dir: ./data/logs
+llm:
+  active: dashscope
+  model: qwen-max
+  max_tokens: 8192
+  temperature: 0.9
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key_env: DASHSCOPE_API_KEY
+  providers:
+    dashscope:
+      base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+      api_key_env: DASHSCOPE_API_KEY
+      model: qwen-max
+    deepseek:
+      base_url: https://api.deepseek.com/v1
+      api_key_env: DEEPSEEK_API_KEY
+      model: deepseek-chat
+    moonshot:
+      base_url: https://api.moonshot.cn/v1
+      api_key_env: MOONSHOT_API_KEY
+      model: moonshot-v1-8k
+    openai:
+      base_url: https://api.openai.com/v1
+      api_key_env: OPENAI_API_KEY
+      model: gpt-4o-mini
+  local:
+    enabled: true
+    base_url: http://localhost:11434/v1
+    model: qwen3:8b
+    api_key: ollama
+    timeout: 900   # 本地兜底请求超时（秒）：8B 生成 1 变体 script 约 40s/轮，3 轮含重试重写需留足余量
+  api_key: ''
+tts:
+  # skill 版默认 edge（微软 Edge-TTS，免费无需任何 key）。
+  # 想换火山/MiniMax：改这里为 volcano / minimax，并按 references/tts-setup.md 配置。
+  backend: edge
+  voice: BV001_streaming
+  speech_rate: 1.1
+  volume: 50
+  voice_diversity:
+    enabled: true
+    strategy: gender_alternate
+    gender: any
+  emotion:
+    auto_detect: true
+    default: 中性
+  edge_tts:
+    voice: zh-CN-XiaoxiaoNeural
+  minimax:
+    api_key: ''
+    group_id: ''
+    voice: Chinese_Warm_Woman
+  volcano:
+    app_id: ''
+    access_token: ''
+    voice: BV001_streaming
+    use_bigtts: false
+    cluster: volcano_tts
+editing:
+  default_resolution:
+  - 1080
+  - 1920
+  default_fps: 30
+  video_codec: libx264
+  audio_codec: aac
+  crf: 19
+  shot_duration_ms: 2500
+  remove_voice: false
+  normalize_loudness: true
+  subtitle:
+    font: ''
+    font_size: 56
+    color: white
+    stroke_color: black
+    stroke_width: 2
+    fixed_y: 500
+    safe_margin_bottom: 180
+    safe_margin_sides: 80
+    # CTA 句（结尾行动号召）字幕色：白字黑边在任何素材上都看得清；
+    # 想要红色仪式感可改 #FF4444，但红/暖色素材上会看不见
+    cta_color: white
+diversity:
+  cooldown_hours_default: 48
+  cooldown_hours_hook: 72
+  cooldown_hours_cta: 36
+  window_size: 20
+  max_usage_in_window: 2
+  match_weights:
+    tag_similarity: 0.3
+    semantic: 0.0    # skill 版关闭中文 CLIP 语义匹配（免装 torch/transformers，标签匹配已够用）
+    performance: 0.3
+    freshness: 0.2
+  adjacent_diversity:
+    similarity_threshold: 0.7
+    penalty_factor: 0.35
+analytics:
+  factor_extraction:
+    frame_sample_rate: 2
+    audio_analysis: true
+    scene_detection: true
+  aesthetic_model:
+    model_path: ./data/aesthetic_model.json
+    min_samples: 20
+    cv_folds: 5
+  qwen_advisor:
+    enabled: true
+    model: qwen-max
+    temperature: 0.3
+scheduler:
+  daily_fetch_time: 08:00
+  weekly_optimize_day: monday
+  weekly_optimize_time: 09:00
+compliance:
+  check_ad_law: true
+  check_platform_rules: true
+  sensitive_words_file: ./adflow/compliance/sensitive_words.txt
+platform_styles:
+  douyin:
+    tone: 口语化、强钩子、节奏快，像朋友聊天一样自然
+    hook_types:
+    - 反差
+    - 痛点提问
+    - 数据冲击
+    - 场景代入
+    - 反常识
+    cta_phrases:
+    - 点击下方小黄车
+    - 评论区告诉我
+    - 左下角有同款
+    subtitle_speed: 快
+    emoji_usage: false
+    max_duration_sec: 60
+  xiaohongshu:
+    tone: 种草安利、闺蜜感、真诚分享，用体验说话
+    hook_types:
+    - 真实分享
+    - 避坑
+    - 回购N次
+    - 对比测评
+    - 场景代入
+    cta_phrases:
+    - 戳左下角
+    - 同款在主页
+    - 链接在评论区
+    subtitle_speed: 中
+    emoji_usage: true
+    max_duration_sec: 90
+  kuaishou:
+    tone: 接地气、老铁文化、价格敏感，直爽不绕弯
+    hook_types:
+    - 价格冲击
+    - 真实测评
+    - 老铁推荐
+    - 实惠对比
+    cta_phrases:
+    - 老铁们冲就完了
+    - 点击下方下单
+    - 手慢就没了
+    subtitle_speed: 快
+    emoji_usage: false
+    max_duration_sec: 45
+  shipinhao:
+    tone: 情感细腻、故事性强、中老年友好，娓娓道来
+    hook_types:
+    - 情感共鸣
+    - 健康关怀
+    - 家人推荐
+    - 实用分享
+    cta_phrases:
+    - 点击了解更多
+    - 在下方即可购买
+    - 分享给有需要的朋友
+    subtitle_speed: 中
+    emoji_usage: false
+    max_duration_sec: 60
+  ocean_engine:
+    tone: 信息流标准风格，可根据产品灵活调整
+    hook_types:
+    - 痛点提问
+    - 利益承诺
+    - 场景代入
+    - 数据冲击
+    cta_phrases:
+    - 点击下方链接
+    - 立即下单
+    - 限时抢购
+    subtitle_speed: 快
+    emoji_usage: false
+    max_duration_sec: 60
+platform_defaults:
+  douyin:
+    aspect_ratio: '9:16'
+    resolution:
+    - 1080
+    - 1920
+    max_duration_sec: 300
+    recommended_duration_sec:
+    - 15
+    - 60
+  ocean_engine:
+    aspect_ratio: '9:16'
+    resolution:
+    - 1080
+    - 1920
+    max_duration_sec: 300
+    recommended_duration_sec:
+    - 15
+    - 60
+  kuaishou:
+    aspect_ratio: '9:16'
+    resolution:
+    - 1080
+    - 1920
+    max_duration_sec: 300
+    recommended_duration_sec:
+    - 15
+    - 45
+  shipinhao:
+    aspect_ratio: '9:16'
+    resolution:
+    - 1080
+    - 1920
+    max_duration_sec: 300
+    recommended_duration_sec:
+    - 15
+    - 60
+copy_optimization:
+  enabled: true
+  prompt_version: v2
+  quality_threshold: 6.0
+  diversity_threshold: 0.5
+  few_shot_examples: true
+  lora_enabled: false
+  lora_adapter: ''
+segmentation:
+  # skill 无模型模式：智能断句关闭，全部走标点断句（免 Ollama/云端探测等待）
+  enabled: false
+  backend: ollama
+  model: qwen3:8b
+  base_url: http://localhost:11434/v1
+  api_key: ollama
+  temperature: 0.1
+  max_tokens: 2048
+  timeout: 30
+  fallback: punctuation
+  cache_enabled: true
+  min_chars: 5
+  max_chars: 25
+  target_range:
+  - 8
+  - 20
+  emotion_length:
+    激昂:
+    - 6
+    - 12
+    紧迫:
+    - 5
+    - 10
+    温和:
+    - 12
+    - 22
+    中性:
+    - 8
+    - 18
+segment_tts:
+  pause_normal: 380
+  concat_method: ffmpeg
+  normalize_volume: true
+  trim_silence: true
+  trim_threshold_db: -50
+  trim_keep_head_ms: 20
+  trim_keep_tail_ms: 50
+filter_system:
+  enabled: true
+  copy:
+    enabled: true
+    pass_threshold: 6.5
+    warning_threshold: 4.5
+    max_retries: 2
+  tts:
+    enabled: true
+    pass_threshold: 6.0
+    warning_threshold: 4.0
+    max_retries: 2
+  report:
+    enabled: true
+    save_to_file: true
+    output_dir: output/_filter_reports
+video_orientation:
+  enabled: true
+  face_detection: false   # 非口播混剪关闭人脸优先裁剪（Haar 对普通片段误检率高，导致画面裁偏）
+  phone_landscape_detection: true
+  crop_strategy: smart
+  sample_frame_sec: 1.0
+bgm:
+  enabled: true   # 是否自动轮换 BGM（按列表顺序）
+digital_human:
+  enabled: false              # skill 版默认关闭（需另装 MuseTalk 环境，未装时保持 false，生成降级为无数字人）
+  python: D:/miniconda3/envs/musetalk/python.exe   # MuseTalk conda 环境的 python.exe 绝对路径
+  bridge: digital_human/musetalk_bridge.py   # 桥接脚本（相对项目根）
+  avatars_dir: digital_human/avatars         # 数字人形象目录（相对项目根）
+  pip_position: bottom_right  # 画中画锚点：top_left/top_right/bottom_left/bottom_right
+  pip_margin: 20              # 距边缘像素
+  pip_border_color: white     # 矩形边框颜色
+  pip_border_width: 3         # 矩形边框宽度
+  pip_scale: 0.333            # 宽高缩放比例（宽高各 1/3 = 面积约 1/9）
+  timeout_sec: 600            # 单条生成超时（首次含模型加载，偏长）
+anti_dedup:
+  enabled: true
+  similarity_threshold: 0.7
+color_grade:
+  enabled: true
+  brightness: 0.02
+  contrast: 0.08
+  saturation: 0.12
+  temperature: 0.02
+  reference_transfer:
+    enabled: true
+    strength: 0.6
+  lut:
+    enabled: false
+    lut_dir: data/luts/
+    default_lut: ''
+evolution:
+  enabled: true
+  factor_injection:
+    enabled: true
+    min_samples: 20
+  aesthetic_filter:
+    enabled: false
+    pass_threshold: 0.6
+subtitle_effects:
+  enabled: true
+  default_effect: fade
+  effect_duration: 0.3
+  keyword_highlight: true
+  highlight_color: '#FFD700'
+
+# ── BGM 卡点/快闪出片（make_beat_video.py 专用，BGM 当主时钟）──
+beat_cut:
+  # 成片时长封顶（秒）：整首歌进来也只取这么长
+  max_duration: 60
+  # BGM 音量（0-1）：节奏片里 BGM 是主角，比文案片的 0.15 高得多
+  bgm_volume: 0.9
+  style_presets:
+    # 快闪：全程每拍一刀；重音刀 punch+白闪，隔 3 刀镜像一次
+    flash:
+      punch: 0.16
+      flash: white          # white / black / none
+      mirror_every: 3       # 0 = 不镜像
+      calm_zoom: 0.0        # 普通刀缓推幅度（快闪里普通刀也保持硬切感）
+    # 标准卡点：平稳段两拍一刀 + 缓推铺垫，高潮段每拍一刀 + punch
+    standard:
+      punch: 0.12
+      flash: none
+      mirror_every: 0
+      calm_zoom: 0.06
+    # 前缓后炸：平稳段四拍一刀缓缓推，进高潮后每拍一刀全特效
+    build:
+      punch: 0.18
+      flash: white
+      mirror_every: 4
+      calm_zoom: 0.10
+  # 选镜头：按画面运动强度打分优选（重音刀配最"动"的画面，平稳刀配安静段）
+  # false = 退回顺序游标选法
+  motion_pick: true
+  # 倒放镜头占比（0~1，0=不倒放）：回手镜头穿插正放更有节奏感
+  reverse_ratio: 0.15
+  # 每 N 个重音刀把 punch 换成冲击抖动换个花样（0=只用 punch）
+  shake_every: 4
+  # 大字快闪（--words 传入时生效）
+  word:
+    font_size: 100
+    color: '#FFFFFF'
+    stroke_color: '#000000'
+    stroke_width: 5

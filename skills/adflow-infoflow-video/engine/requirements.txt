@@ -1,0 +1,36 @@
+# AdFlow — 信息流广告 AI Agent 自动剪辑系统
+
+# GUI
+PyQt6>=6.5
+
+# 配置
+PyYAML>=6.0
+ruamel.yaml>=0.18                 # config_loader 顶层导入（2026-08-29 前漏声明，干净环境装依赖即崩）
+
+# 视频处理
+moviepy>=1.0.3
+
+# 音频分析
+librosa>=0.10
+
+# AI Agent（阿里百炼 / 通义千问 OpenAI 兼容接口）
+openai>=1.0.0
+
+# TTS 语音合成
+dashscope>=1.17                   # CosyVoice (阿里百炼)
+edge-tts>=6.1                     # Edge-TTS (微软, 免费30+音色, 可选)
+
+# 环境变量 (.env)
+python-dotenv>=1.0
+
+# 数值计算 / 图像处理（函数内延迟导入，运行时必需）
+numpy>=1.24
+opencv-python>=4.8
+pillow>=10.3                      # 10.3 起 Image.Math.eval 默认禁用（CVE-2023-50447）
+
+# HTTP 请求（投放数据 API）
+requests>=2.31
+
+# 可选：CLIP 语义匹配（smart_mixer 需要，无 GPU 环境可跳过安装）
+# torch>=2.1
+# transformers>=4.36

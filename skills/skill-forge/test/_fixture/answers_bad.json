@@ -1,0 +1,10 @@
+{
+ "purpose": "event",
+ "paramsSource": "accountId=固定值, 加预算金额=每次人工给, date=当天",
+ "output": "data/加预算_YYYYMMDD.csv → 投放负责人 + 投放日报",
+ "success": "有回执号且页面提示成功；行数≥1",
+ "onFail": "链路负责人 / 重试 2 次 / IM 通知",
+ "write": "y",
+ "writeLimit": "单账号日累计 ≤500 元；超过先问投放负责人；先 DryRun 再真提交",
+ "event": "到阈值就加"
+}
