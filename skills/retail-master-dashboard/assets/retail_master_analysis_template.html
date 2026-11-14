@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>散户大佬反人性分析仪表盘 · 恒生科技指数（HSTECH）· 2026-08-21</title>
+<style>
+:root{
+  --bg:#0a0f1a; --card:#101828; --card2:#141e33; --line:#22304a; --line2:#2c3d5c;
+  --ink:#e9eff9; --txt:#c6d2e4; --sub:#9dadc6; --muted:#8494ae;
+  --accent:#5da2ff; --accent2:#8fc3ff; --accent-bg:#12233f;
+  --amber:#f6b34d; --amber-d:#e09a2e; --amber-bg:#251d0e;
+  --up:#ff5a6e; --up-bg:#2b1219; --dn:#2bd39c; --dn-bg:#0d251c;
+  --mono:"JetBrains Mono","Cascadia Code",Consolas,monospace;
+  --shadow:0 6px 24px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"PingFang SC","HarmonyOS Sans SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.8}
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px 56px}
+.num{font-family:var(--mono);font-variant-numeric:tabular-nums}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0c1526 0%,#101d36 50%,#132447 130%);border-radius:0 0 28px 28px;padding:44px 40px 38px;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;right:-90px;top:-90px;width:380px;height:380px;border-radius:50%;background:radial-gradient(circle,rgba(93,162,255,.22),transparent 70%)}
+.hero .tag{display:inline-block;background:rgba(93,162,255,.14);border:1px solid rgba(93,162,255,.45);color:#9cc7ff;font-size:13px;padding:3px 16px;border-radius:99px;margin-bottom:16px;letter-spacing:3px}
+.hero h1{font-size:30px;font-weight:800;color:#fff;letter-spacing:1px}
+.hero h1 small{font-size:15px;color:var(--sub);font-weight:400;margin-left:12px}
+.hero .concl{font-size:16.5px;color:#dfe9f8;max-width:860px;border-left:4px solid var(--accent);padding-left:16px;margin:16px 0 6px;line-height:1.7}
+.hero .concl b{color:#fff}
+.verdict-row{display:flex;gap:16px;flex-wrap:wrap;margin-top:22px;align-items:stretch}
+.phasebox{flex:none;background:rgba(93,162,255,.1);border:1px solid #33548a;border-radius:16px;padding:14px 30px;text-align:center}
+.phasebox .lb{font-size:12px;color:var(--sub);letter-spacing:3px}
+.phasebox .ph{font-size:38px;font-weight:800;color:#9cc7ff;letter-spacing:8px;line-height:1.3}
+.phasebox .cf{font-size:13px;color:var(--sub)}
+.cfbar{width:130px;height:7px;background:#0c1626;border-radius:99px;margin:7px auto 0;overflow:hidden}
+.cfbar i{display:block;height:100%;width:65%;background:linear-gradient(90deg,#3d6ea5,#9cc7ff);border-radius:99px}
+.quick{flex:1;min-width:320px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+.qrow{display:flex;gap:14px;align-items:center}
+.qrow .k{flex:none;width:64px;text-align:center;font-size:12px;font-weight:700;letter-spacing:1px;color:#0b1220;background:linear-gradient(135deg,var(--accent),#3d7fd6);border-radius:7px;padding:3px 0}
+.qrow .meter{flex:1;height:9px;background:#0c1626;border-radius:99px;overflow:hidden}
+.qrow .meter i{display:block;height:100%;border-radius:99px}
+.qrow .meter i.pos{background:linear-gradient(90deg,#3d7fd6,#8fc3ff)}
+.qrow .meter i.neg{background:linear-gradient(90deg,#b98218,#f6b34d)}
+.qrow .meter i.mid{background:linear-gradient(90deg,#159068,#2bd39c)}
+.hero .meta{display:flex;flex-wrap:wrap;gap:20px;font-size:12.5px;color:var(--muted);margin-top:22px}
+.hero .meta b{color:#9cc7ff;font-weight:600}
+
+.notice{background:var(--amber-bg);border:1px solid #6b5321;border-left:5px solid var(--amber);border-radius:12px;padding:12px 18px;margin:22px 0;font-size:13.5px;color:#e8cfa0}
+
+/* ── section header ── */
+h2.sec{display:flex;align-items:center;gap:12px;font-size:21px;font-weight:800;margin:48px 0 8px;color:var(--ink)}
+h2.sec .num{display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#3d7fd6,var(--accent));color:#fff;font-size:17px;font-weight:800;flex:none;font-family:var(--mono)}
+.sec-sub{color:var(--muted);font-size:13.5px;margin-bottom:20px;padding-left:48px}
+
+/* ── KPI bento ── */
+.bento{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:24px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px 12px;box-shadow:var(--shadow);text-align:center;position:relative;overflow:hidden}
+.kpi::before{content:"";position:absolute;top:0;left:0;right:0;height:3px}
+.kpi.upk::before{background:linear-gradient(90deg,#c73a4d,var(--up))}
+.kpi.dnk::before{background:linear-gradient(90deg,#159068,var(--dn))}
+.kpi.nn::before{background:linear-gradient(90deg,#3d7fd6,var(--accent))}
+.kpi .v{font-size:24px;font-weight:800}
+.kpi.upk .v{color:var(--up)} .kpi.dnk .v{color:var(--dn)} .kpi.nn .v{color:var(--accent2)}
+.kpi .c{font-size:12.5px;margin-top:2px}
+.kpi .c.u{color:var(--up)} .kpi .c.d{color:var(--dn)} .kpi .c.n{color:var(--sub)}
+.kpi .l{font-size:12.5px;color:var(--muted);margin-top:6px}
+
+/* ── table ── */
+table{width:100%;border-collapse:collapse;background:var(--card);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);font-size:14.5px}
+th{background:#0d1526;color:#a9bbd6;font-size:13px;font-weight:600;text-align:left;padding:12px 16px;border-bottom:1px solid var(--line2);letter-spacing:1px}
+td{padding:12px 16px;border-bottom:1px solid #182238;color:var(--txt);vertical-align:top}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:#131e33}
+td.dim-cell{color:var(--muted);font-size:13px}
+.pill{display:inline-block;font-size:12px;padding:2px 12px;border-radius:99px;font-weight:700;letter-spacing:1px}
+.pill.hot{color:#ff8b98;background:#2b1219;border:1px solid #5c2430}
+.pill.warm{color:#ffd08a;background:#251d0e;border:1px solid #5c4a22}
+.pill.cold{color:#5fddb4;background:#0d251c;border:1px solid #1d5142}
+
+.note{font-size:14px;color:#d3deee;background:var(--card);border:1px solid var(--line);border-left:5px solid var(--accent);border-radius:0 12px 12px 0;padding:13px 18px;margin-top:14px;line-height:1.75}
+.note b{color:#fff}
+
+/* ── modular cards (who / scen) ── */
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden}
+.mgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.c-head{display:flex;align-items:center;gap:12px;padding:16px 20px;border-bottom:1px solid var(--line)}
+.c-head .avatar{font-size:17px;font-weight:800;flex:none;width:46px;height:46px;display:flex;align-items:center;justify-content:center;border-radius:12px}
+.who.m1 .avatar{background:#2b1219;color:var(--up)} .who.m2 .avatar{background:#251d0e;color:var(--amber)} .who.m3 .avatar{background:#0d251c;color:var(--dn)}
+.c-head h3{font-size:16.5px;font-weight:800;color:var(--ink)}
+.c-head .sub{font-size:12px;color:var(--muted);margin-top:1px}
+.acttag{display:inline-block;font-size:12.5px;font-weight:700;border-radius:8px;padding:2px 12px;margin:12px 20px 0}
+.who.m1 .acttag{color:#ff8b98;background:#2b1219;border:1px solid #5c2430}
+.who.m2 .acttag{color:#ffd08a;background:#251d0e;border:1px solid #5c4a22}
+.who.m3 .acttag{color:#5fddb4;background:#0d251c;border:1px solid #1d5142}
+.cbody{padding:12px 20px 16px}
+.lbl{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:1px 10px;margin-bottom:6px;letter-spacing:1px}
+.lbl.b{background:var(--accent-bg);color:#9cc7ff}.lbl.a{background:var(--amber-bg);color:#ffd08a}
+.cbody p{font-size:14px;color:var(--txt);margin-bottom:12px}
+.cbody p b{color:#fff}
+.cfoot{padding:11px 20px;background:#0d1526;border-top:1px solid var(--line);font-size:13px;color:var(--sub)}
+
+/* ── chain ── */
+.chain{display:flex;gap:0;margin:10px 0 16px}
+.cnode{flex:1;position:relative;background:var(--card);border:1px solid var(--line);padding:16px 12px 14px 26px;text-align:left}
+.cnode:first-child{border-radius:14px 0 0 14px;padding-left:16px}
+.cnode:last-child{border-radius:0 14px 14px 0}
+.cnode+.cnode{margin-left:-10px}
+.cnode::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);border:8px solid transparent;border-left-color:var(--line2);border-right:none;z-index:2}
+.cnode .st{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.cnode .tt{font-size:13.5px;color:var(--sub);margin-top:4px;line-height:1.5}
+.cnode.on{background:linear-gradient(180deg,#17253f,#101a30);border-color:#4a7cc0;box-shadow:0 0 20px rgba(93,162,255,.18)}
+.cnode.on .st{color:var(--accent2)} .cnode.on .tt{color:#d8e7fb;font-weight:700}
+.cnode.on::after{content:"当前";position:absolute;top:-10px;right:10px;font-size:11px;color:#0b1220;background:linear-gradient(135deg,var(--accent),#3d7fd6);border-radius:6px;padding:0 8px;font-weight:800;letter-spacing:1px}
+
+/* ── thermo ── */
+.thermos{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.thermo{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow)}
+.thermo .hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px}
+.thermo .hd .nm{font-size:16px;font-weight:800;color:var(--ink)}
+.thermo .hd .tv{font-family:var(--mono);font-size:32px;font-weight:800}
+.t-low .tv{color:var(--dn)}.t-mid .tv{color:var(--amber)}.t-high .tv{color:var(--up)}
+.gauge{position:relative;height:12px;border-radius:99px;background:linear-gradient(90deg,#0f9d74 0%,#2fae8f 25%,#f6b34d 50%,#ff8a5e 75%,#ff5a6e 100%)}
+.gauge .mid{position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:#7d8fae}
+.gauge .dot{position:absolute;top:50%;transform:translate(-50%,-50%);width:19px;height:19px;border-radius:50%;background:#fff;border:4px solid #0d1526;box-shadow:0 0 10px rgba(255,255,255,.45)}
+.gauge-lb{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted);font-family:var(--mono);margin-top:7px}
+.t-items{margin:14px 0 0;font-size:13.5px;color:#c0cbdf}
+.t-items li{list-style:none;padding:4px 0 4px 16px;position:relative}
+.t-items li::before{content:"·";position:absolute;left:3px;font-weight:900;color:var(--muted)}
+.t-concl{margin-top:12px;font-size:13.5px;border-radius:9px;padding:8px 12px;font-weight:600}
+.t-low .t-concl{color:#5fddb4;background:var(--dn-bg)} .t-mid .t-concl{color:#ffd08a;background:var(--amber-bg)} .t-high .t-concl{color:#ff8b98;background:var(--up-bg)}
+
+/* ── phase track ── */
+.track{display:flex;gap:8px}
+.track .pseg{flex:1;text-align:center;padding:12px 2px;border-radius:10px;background:var(--card);border:1px solid var(--line);font-size:14px;color:var(--muted);position:relative}
+.track .pseg.on{background:linear-gradient(180deg,#1a2c4c,#12203a);border-color:#4a7cc0;color:#a8ccff;font-weight:800;box-shadow:0 0 16px rgba(93,162,255,.22)}
+.track .pseg.on::after{content:"";position:absolute;left:50%;bottom:-7px;transform:translateX(-50%);border:6px solid transparent;border-bottom:none;border-top-color:#4a7cc0}
+
+/* ── ladder ── */
+.ladder-wrap{display:grid;grid-template-columns:1fr 270px;gap:20px}
+.ladder{position:relative;height:420px;border:1px solid var(--line);border-radius:16px;margin:12px 0 4px;box-shadow:var(--shadow);background-color:var(--card);
+  background-image:
+    repeating-linear-gradient(to bottom,transparent 0 calc(8.333% - 1px),#26344e calc(8.333% - 1px) 8.333%),
+    repeating-linear-gradient(to bottom,transparent 0 calc(16.666% - 1px),#3b4f70 calc(16.666% - 1px) 16.666%)}
+.zone{position:absolute;left:14px;right:14px;border-radius:8px;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:14.5px;letter-spacing:.5px}
+.zone.res{background:linear-gradient(90deg,rgba(255,90,110,.16),rgba(255,90,110,.03));border:1px dashed #a04050;color:#ffb3bc}
+.zone.sup{background:linear-gradient(90deg,rgba(43,211,156,.13),rgba(43,211,156,.02));border:1px dashed #2a7a5e;color:#7fe6c2}
+.zone .zr{font-family:var(--mono);font-weight:800;font-size:15px}
+.pline{position:absolute;left:0;right:0;border-top:3px solid var(--accent);box-shadow:0 0 12px rgba(93,162,255,.65)}
+.pline .pv{position:absolute;right:12px;top:-28px;background:linear-gradient(135deg,#2a549c,#1a3f7a);color:#eaf3ff;font-family:var(--mono);font-size:13px;font-weight:800;padding:2px 12px;border-radius:7px;border:1px solid #4a7cc0}
+.mark{position:absolute;right:14px;font-family:var(--mono);font-size:12.5px;color:#c3d0e5;transform:translateY(-50%)}
+.mark::before{content:"—";color:var(--muted);margin-right:7px}
+.scale{position:absolute;left:-8px;font-family:var(--mono);font-size:12px;font-weight:600;color:#aab9d2;transform:translateY(-50%)}
+.ladder-side{display:flex;flex-direction:column;gap:12px}
+.sidebox{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 18px;flex:1;box-shadow:var(--shadow)}
+.sidebox h3{font-size:14.5px;margin-bottom:8px;letter-spacing:1px}
+.sidebox.res h3{color:#ff98a4}.sidebox.sup h3{color:#5fddb4}.sidebox.pos h3{color:#9cc7ff}
+.sidebox p{font-size:13.5px;color:#c0cbdf}
+
+/* ── scenario ── */
+.scen{display:flex;flex-direction:column}
+.scen .c-head2{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.scen .sname{font-size:16.5px;font-weight:800;color:var(--ink)}
+.scen .prob{font-size:12px;padding:2px 12px;border-radius:99px;font-weight:700}
+.scen.a .prob{color:#5fddb4;background:var(--dn-bg);border:1px solid #1d5142}
+.scen.b .prob{color:#ffd08a;background:var(--amber-bg);border:1px solid #5c4a22}
+.scen.c .prob{color:#ff8b98;background:var(--up-bg);border:1px solid #5c2430}
+.scen .cond{padding:14px 20px;font-size:14px;color:var(--txt);border-bottom:1px solid var(--line);min-height:96px}
+.scen .cond b{color:#fff}
+.scen .actline{margin:14px 20px 6px;font-size:14px;font-weight:700;color:#ffd08a;background:var(--amber-bg);border:1px solid #5c4a22;border-radius:10px;padding:10px 14px}
+.scen .sig{padding:10px 20px 18px;margin-top:auto}
+.scen .sig .lbl2{display:block;font-size:11.5px;font-weight:800;color:var(--muted);letter-spacing:2px;margin-bottom:6px}
+.scen .sig p{font-size:13.5px;color:#b7c4da}
+
+/* ── risk ── */
+.risks{display:flex;flex-direction:column;gap:10px}
+.risk{display:grid;grid-template-columns:120px 1fr;gap:16px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 18px;box-shadow:var(--shadow)}
+.risk .lv{font-size:13px;font-weight:800;text-align:center;border-radius:8px;padding:5px 0}
+.risk.r1 .lv{color:#ffd08a;background:var(--amber-bg);border:1px solid #5c4a22}
+.risk.r2 .lv{color:#ffab76;background:#291509;border:1px solid #5c3a1e}
+.risk.r3 .lv{color:#ff8b98;background:var(--up-bg);border:1px solid #5c2430}
+.risk.r4 .lv{color:#ff5a6e;background:#33101a;border:1px solid #6e2433}
+.risk .tx{font-size:14.5px;color:var(--txt)}
+.risk .tx b{color:#fff;font-family:var(--mono)}
+
+/* ── summary ── */
+.sumcard{margin-top:24px;border:2px solid #4a7cc0;border-radius:18px;overflow:hidden;background:var(--card)}
+.sumcard .cap{background:linear-gradient(135deg,#2a549c,#3d7fd6);color:#fff;padding:13px 24px;font-size:17px;font-weight:800;display:flex;align-items:center;gap:10px}
+.sumcard .cap small{font-weight:400;font-size:12.5px;opacity:.85}
+.sum-body{padding:22px 24px}
+.verdict{font-size:16.5px;font-weight:800;color:#d8e7fb;line-height:1.65;margin-bottom:18px}
+.frow{display:flex;gap:14px;margin-bottom:14px;align-items:flex-start}
+.frow .fk{flex:none;font-size:12px;font-weight:800;letter-spacing:2px;padding:4px 14px;text-align:center;border-radius:8px;margin-top:2px}
+.fk.k1{color:#9cc7ff;background:var(--accent-bg);border:1px solid #2c4a78}
+.fk.k2{color:#5fddb4;background:var(--dn-bg);border:1px solid #1d5142}
+.fk.k3{color:#ffd08a;background:var(--amber-bg);border:1px solid #5c4a22}
+.fk.k4{color:#d3b8ff;background:#1c1533;border:1px solid #3d2a63}
+.frow .fv{flex:1;font-size:14.5px;color:var(--txt)}
+.frow .fv b{color:#fff}
+
+footer{margin-top:52px;border-top:1px solid var(--line);padding-top:24px;font-size:12.5px;color:var(--muted);line-height:2}
+footer b{color:var(--sub)}
+.law{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 22px;text-align:center;font-size:14px;color:#d3deee;margin-bottom:16px}
+
+@media(max-width:900px){.bento{grid-template-columns:repeat(3,1fr)}.mgrid,.thermos{grid-template-columns:1fr}.ladder-wrap{grid-template-columns:1fr}
+  .chain{flex-direction:column;gap:10px}.cnode+.cnode{margin-left:0}.cnode{border-radius:14px!important;padding-left:16px!important}.cnode::before{display:none}
+  .hero{padding:34px 24px}}
+@media(max-width:560px){.bento{grid-template-columns:repeat(2,1fr)}.track{flex-wrap:wrap}.track .pseg{flex:1 1 22%}.scens{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="wrap">
+    <div class="tag">散户大佬 · RETAIL MASTER DASHBOARD</div>
+    <h1>恒生科技指数<small>HSTECH · 未来12个月反人性相态诊断</small></h1>
+    <div class="concl">暴跌<span class="num">37%</span>后的解冻期。便宜是事实，反转是假设。胜负手：等确认，不等预测。</div>
+    <div class="verdict-row">
+      <div class="phasebox">
+        <div class="lb">当前相态</div>
+        <div class="ph">解冻</div>
+        <div class="cf">置信度 <span class="num">65%</span></div>
+        <div class="cfbar"><i></i></div>
+      </div>
+      <div class="quick">
+        <div class="qrow"><span class="k">估值</span><span class="meter"><i class="pos" style="width:85%"></i></span></div>
+        <div class="qrow"><span class="k">资金</span><span class="meter"><i class="pos" style="width:75%"></i></span></div>
+        <div class="qrow"><span class="k">盈利</span><span class="meter"><i class="neg" style="width:22%"></i></span></div>
+        <div class="qrow"><span class="k">反身性</span><span class="meter"><i class="mid" style="width:60%"></i></span></div>
+      </div>
+    </div>
+    <div class="meta">
+      <span>数据截止 2026/08/21收盘</span><span>行情 腾讯API实测</span><span>资金/情绪 21财经×东财×雪球交叉验证</span><span>标记 〔A〕实测〔D〕推算〔E〕新闻口径</span>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+<div class="notice">⚠️ 结构诊断，不构成买卖指令。投资有风险，决策需谨慎。</div>
+
+<!-- 01 KPI -->
+<h2 class="sec"><span class="num">01</span>关键指标</h2>
+<div class="sec-sub">红＝偏多・绿＝偏空・蓝＝中性。</div>
+<div class="bento">
+  <div class="kpi nn"><div class="v num">4766.16</div><div class="c u num">+1.40%</div><div class="l">指数点位〔A〕</div></div>
+  <div class="kpi dnk"><div class="v num">-13.6%</div><div class="c d">跑输恒指+1.5%</div><div class="l">年初至今〔A〕</div></div>
+  <div class="kpi dnk"><div class="v num">-29%</div><div class="c d">高点6715</div><div class="l">距52周高点〔A〕</div></div>
+  <div class="kpi upk"><div class="v num">+12.7%</div><div class="c u">低点4229</div><div class="l">距52周低点〔A〕</div></div>
+  <div class="kpi nn"><div class="v num">16.5x</div><div class="c n">vs纳指23x</div><div class="l">前瞻PE〔E〕</div></div>
+  <div class="kpi upk"><div class="v num">628亿</div><div class="c u">6月仅271亿</div><div class="l">7月南向净流入〔E〕</div></div>
+</div>
+
+<!-- 02 evidence -->
+<h2 class="sec"><span class="num">02</span>六维现象判据</h2>
+<div class="sec-sub">每个维度附数据水位与来源标记。</div>
+<table>
+  <tr><th style="width:70px">维度</th><th style="width:150px">指标</th><th style="width:220px">当前值</th><th>判读</th><th style="width:76px">倾向</th></tr>
+  <tr><td class="dim-cell">量价</td><td>7月单月涨幅</td><td class="num">+8%（恒指+13%）</td><td>全球踩踏中独涨，相对强度罕见〔E〕</td><td><span class="pill warm">偏多</span></td></tr>
+  <tr><td class="dim-cell">量价</td><td>8月回调幅度</td><td class="num">约-5%（5000→4672）</td><td>获利盘兑现，量能收缩属健康回踩〔D〕</td><td><span class="pill warm">偏多</span></td></tr>
+  <tr><td class="dim-cell">波动</td><td>7月全球环境</td><td class="num">纳指-3.2%・韩国月内4次熔断</td><td>恒科逆波动源走强＝独立定价〔E〕</td><td><span class="pill cold">中性</span></td></tr>
+  <tr><td class="dim-cell">情绪</td><td>南向月净流入</td><td class="num">271亿→628亿 环比翻倍</td><td>内资情绪升温但未至极端〔E〕</td><td><span class="pill warm">偏多</span></td></tr>
+  <tr><td class="dim-cell">资金</td><td>外资7月流入</td><td class="num">仅+3.9亿美元</td><td>外资观望，定价权在内资手中〔E〕</td><td><span class="pill cold">中性</span></td></tr>
+  <tr><td class="dim-cell">伤疤</td><td>上方套牢供给</td><td class="num">5000~6715双重套牢带</td><td>反弹每上一档都需放量消化〔D〕</td><td><span class="pill hot">偏空</span></td></tr>
+  <tr><td class="dim-cell">外场</td><td>信息场密度</td><td class="num">指数修订+模型发布+超级财报周</td><td>催化剂密集，信息面偏多〔E〕</td><td><span class="pill warm">偏多</span></td></tr>
+</table>
+<div class="note">港股口径限制：20日波动率分位与融资余额未取得〔unavailable〕，置信度已压至65%。</div>
+
+<!-- 03 who -->
+<h2 class="sec"><span class="num">03</span>资金行为反推</h2>
+<div class="sec-sub">主力・游资・散户，现象与解读分开。</div>
+<div class="mgrid">
+  <div class="mcard who m1">
+    <div class="c-head"><div class="avatar">主</div><div><h3>主力・公募/险资/南向</h3><div class="sub">估算成本区间 4300~4800〔D〕</div></div></div>
+    <span class="acttag">持续低吸建仓</span>
+    <div class="cbody">
+      <span class="lbl b">现象</span>
+      <p>3月单日净买<span class="num">372亿</span>创纪录〔E〕・7月<span class="num">628亿</span>〔E〕・8月回调仍逢低买〔E〕。</p>
+      <span class="lbl a">动作解读</span>
+      <p>左侧分批、越跌越买。跌不下去＝建仓痕迹。</p>
+    </div>
+    <div class="cfoot">指纹：越跌越买・不追高</div>
+  </div>
+  <div class="mcard who m2">
+    <div class="c-head"><div class="avatar">游</div><div><h3>游资・事件驱动型</h3><div class="sub">催化点火・快进快出</div></div></div>
+    <span class="acttag">点火后兑现</span>
+    <div class="cbody">
+      <span class="lbl b">现象</span>
+      <p>7月借模型发布催化点火〔E〕・8月14日MiniMax单日<span class="num">-12%</span>兑现〔E〕。</p>
+      <span class="lbl a">动作解读</span>
+      <p>快进快出不恋战。题材巨振＝指纹。</p>
+    </div>
+    <div class="cfoot">指纹：急拉・兑现即撤</div>
+  </div>
+  <div class="mcard who m3">
+    <div class="c-head"><div class="avatar">散</div><div><h3>散户・两代仓位分裂</h3><div class="sub">老仓与新钱的人性错误不同</div></div></div>
+    <span class="acttag">回本焦虑 × 错失恐惧</span>
+    <div class="cbody">
+      <span class="lbl b">现象</span>
+      <p>老仓：5000上方深套不敢动〔E〕。新钱：借ETF涌入，龙头ETF规模逼近新高〔E〕。</p>
+      <span class="lbl a">动作解读</span>
+      <p>恐慌抛售已过，错失恐惧升温。</p>
+    </div>
+    <div class="cfoot">指纹：老仓躺平・新钱借ETF追</div>
+  </div>
+</div>
+
+<!-- 04 chain -->
+<h2 class="sec"><span class="num">04</span>反身性链条定位</h2>
+<div class="sec-sub">当前卡在第③环，最容易犯大错的环节。</div>
+<div class="chain">
+  <div class="cnode"><div class="st">01</div><div class="tt">事件<br>AI高切低+指数修订咨询</div></div>
+  <div class="cnode"><div class="st">02</div><div class="tt">推价<br>7月南向628亿推升8%</div></div>
+  <div class="cnode on"><div class="st">03</div><div class="tt">共识<br>「港股科技便宜」成内资共识</div></div>
+  <div class="cnode"><div class="st">04</div><div class="tt">共识变事实<br>盈利兑现待验证（2027预期+43%）</div></div>
+  <div class="cnode"><div class="st">05</div><div class="tt">反噬<br>尚未出现</div></div>
+</div>
+<div class="note">共识已成，事实未至。此环节最危险的动作：把「共识」当「事实」满仓押注。</div>
+
+<!-- 05 thermo -->
+<h2 class="sec"><span class="num">05</span>三大外场情绪温度计</h2>
+<div class="sec-sub">极端值是反向指标，需确认信号才可反向站。</div>
+<div class="thermos">
+  <div class="thermo t-mid">
+    <div class="hd"><span class="nm">信息场</span><span class="tv">62</span></div>
+    <div class="gauge"><span class="mid"></span><span class="dot" style="left:62%"></span></div>
+    <div class="gauge-lb"><span>0 恐慌</span><span>50</span><span>100 亢奋</span></div>
+    <ul class="t-items"><li>指数扩容修订（8/10）＝长期利好</li><li>超级财报周落地＝中性偏多</li><li>明年盈利预期+43%＝最大看点</li></ul>
+    <div class="t-concl">偏暖未极端：利好已知但未定价充分</div>
+  </div>
+  <div class="thermo t-mid">
+    <div class="hd"><span class="nm">情绪场</span><span class="tv">55</span></div>
+    <div class="gauge"><span class="mid"></span><span class="dot" style="left:55%"></span></div>
+    <div class="gauge-lb"><span>0 恐慌</span><span>50</span><span>100 亢奋</span></div>
+    <ul class="t-items"><li>全球恐慌时独涨＝反人性样本</li><li>散户半信半疑：讨论热度不及ETF流入</li><li>套牢盘回本卖压＝情绪天花板</li></ul>
+    <div class="t-concl">中性偏暖：既无恐慌也无亢奋，人群暂无人性大错</div>
+  </div>
+  <div class="thermo t-high">
+    <div class="hd"><span class="nm">资金场</span><span class="tv">68</span></div>
+    <div class="gauge"><span class="mid"></span><span class="dot" style="left:68%"></span></div>
+    <div class="gauge-lb"><span>0 恐慌</span><span>50</span><span>100 亢奋</span></div>
+    <ul class="t-items"><li>南向628亿・环比翻倍</li><li>未破3月峰值＝未至极端</li><li>外资仅3.9亿美元・仍在场外</li></ul>
+    <div class="t-concl">偏热：内资单边买入接近拥挤，警惕自我强化后的反噬</div>
+  </div>
+</div>
+
+<!-- 06 phase -->
+<h2 class="sec"><span class="num">06</span>相态轨道</h2>
+<div class="sec-sub">相态是诊断结论，不是预测。</div>
+<div class="track">
+  <div class="pseg">冻结</div>
+  <div class="pseg on">解冻</div>
+  <div class="pseg">活跃</div>
+  <div class="pseg">沸腾</div>
+  <div class="pseg">崩塌</div>
+  <div class="pseg">阴跌</div>
+  <div class="pseg">虚高</div>
+  <div class="pseg">震荡</div>
+</div>
+<div class="note" style="margin-top:16px">判据：距低点<span class="num">+12.7%</span>・距高点<span class="num">-29%</span>・南向加速流入・盈利未证实。跌破4700且南向转流出→退回「阴跌」重判。</div>
+
+<!-- 07 ladder -->
+<h2 class="sec"><span class="num">07</span>伤疤结构・价格梯</h2>
+<div class="sec-sub">红＝套牢压力・绿＝支撑・蓝线＝现价。</div>
+<div class="ladder-wrap">
+  <div>
+    <div class="ladder">
+      <span class="scale" style="top:0%">7000</span><span class="scale" style="top:15.5%">6500</span><span class="scale" style="top:32.2%">6000</span><span class="scale" style="top:48.8%">5500</span><span class="scale" style="top:65.5%">5000</span><span class="scale" style="top:82.2%">4500</span><span class="scale" style="top:98%">4000</span>
+      <div class="mark" style="top:9.5%">6715 · 52周高点〔A〕</div>
+      <div class="zone res" style="top:10.2%;height:25.6%"><span>深度套牢区・2025年顶部</span><span class="zr">5900~6715</span></div>
+      <div class="zone res" style="top:50%;height:16.5%"><span>密集成交区・南向被套带</span><span class="zr">5000~5500</span></div>
+      <div class="zone sup" style="top:74.3%;height:2.4%;min-height:18px"><span style="font-size:12px">8月回调平台</span><span class="zr">4700</span></div>
+      <div class="zone sup" style="top:80%;height:12.4%"><span>恐慌底・年内低点区</span><span class="zr">4229~4300</span></div>
+      <div class="mark" style="top:92.4%">4229 · 52周低点〔A〕</div>
+      <div class="pline" style="top:74.5%"><span class="pv">现价 4766.16</span></div>
+    </div>
+  </div>
+  <div class="ladder-side">
+    <div class="sidebox res"><h3>上方压力</h3><p>5000~5500＝解套卖压第一重；5900以上＝2025年深度套牢带。每上一档都要放量+盈利验证。</p></div>
+    <div class="sidebox sup"><h3>下方支撑</h3><p>4700＝8月回调平台，破位看4229~4300恐慌底。前低失守，「解冻」作废。</p></div>
+    <div class="sidebox pos"><h3>位置感</h3><p>52周区间<span class="num" style="color:#9cc7ff">31%</span>分位〔D〕。从便宜到值钱，隔一个财报季。</p></div>
+  </div>
+</div>
+
+<!-- 08 scenarios -->
+<h2 class="sec"><span class="num">08</span>反向框架・未来12个月三情景</h2>
+<div class="sec-sub">若X信号出现→考虑Y方向。不是买卖指令。</div>
+<div class="mgrid scens">
+  <div class="mcard scen a">
+    <div class="c-head2"><span class="sname">A · 盈利兑现</span><span class="prob">概率倾向偏高</span></div>
+    <div class="cond">若财报验证AI变现（云增速/广告/利润率），指数<span class="num">站稳5000</span>＋南向持续流入——</div>
+    <div class="actline">→考虑沿「回调分批」参与，仓位留给确认后的趋势段而非预测段</div>
+    <div class="sig"><span class="lbl2">确认信号</span><p>10日收于5000上方＋月净流入400亿+＋PE向20x扩张</p></div>
+  </div>
+  <div class="mcard scen b">
+    <div class="c-head2"><span class="sname">B · 解冻失败</span><span class="prob">概率倾向中性</span></div>
+    <div class="cond">若财报证伪（资本开支吞噬利润・云广告不及预期），<span class="num">跌破4700</span>＋南向持续流出——</div>
+    <div class="actline">→考虑降低暴露，等4229~4300二次探底后的企稳确认，不做裸逆势接刀</div>
+    <div class="sig"><span class="lbl2">确认信号</span><p>单日流出100亿+连续3日＋财报跳空不回补＋PE破15x无承接</p></div>
+  </div>
+  <div class="mcard scen c">
+    <div class="c-head2"><span class="sname">C · 过热虚高</span><span class="prob">反人性重点盯防</span></div>
+    <div class="cond">若快速冲上<span class="num">5500~6000</span>，ETF狂热・开户激增・社媒喊「必上万」——</div>
+    <div class="actline">→「共识变事实」第④~⑤环，考虑分批兑现而非追加，警惕重演2025年6715见顶结构</div>
+    <div class="sig"><span class="lbl2">确认信号</span><p>情绪场80+＋单月流入破1500亿＋量价背离</p></div>
+  </div>
+</div>
+
+<!-- 09 risk -->
+<h2 class="sec"><span class="num">09</span>风控触发点</h2>
+<div class="sec-sub">四级由轻到重。</div>
+<div class="risks">
+  <div class="risk r1"><div class="lv">第一预警</div><div class="tx">跌破 4700（8月平台下沿）→ 检查持仓逻辑是否被财报证伪</div></div>
+  <div class="risk r2"><div class="lv">减仓线</div><div class="tx">跌破 4500 → 解冻假设失效概率上升，系统性降敞口</div></div>
+  <div class="risk r3"><div class="lv">资金预警</div><div class="tx">南向连续3日净流出超100亿 → 无论价格位置先降敞口（资金先于价格）</div></div>
+  <div class="risk r4"><div class="lv">硬止损区</div><div class="tx">4229 前低失守 → 全年「解冻」判断作废，转入阴跌相态重新诊断</div></div>
+</div>
+
+<!-- 全会总结 -->
+<div class="sumcard">
+  <div class="cap">🏁 全会总结<small>没时间看全文，看这一块就够</small></div>
+  <div class="sum-body">
+    <div class="verdict">暴跌37%后的解冻期。便宜是事实，反转是假设。胜负手不在「买不买」，在「等什么」。</div>
+    <div class="frow"><div class="fk k1">核心句</div><div class="fv">PE<span class="num">16.5x</span>＝纳指七成・南向<span class="num">628亿</span>创纪录，但盈利预期今年下调8%。市场投了「便宜」，没投「值钱」。</div></div>
+    <div class="frow"><div class="fk k2">谁在做什么</div><div class="fv">主力低吸（成本4300~4800）・游资已兑现・散户：老仓回本焦虑+新钱错失恐惧。</div></div>
+    <div class="frow"><div class="fk k3">反向框架</div><div class="fv">确认信号前只准备不执行：<span class="num">站稳5000</span>＋南向流入→上仓位；情绪场<span class="num">80+</span>＋量价背离→分批撤退。</div></div>
+    <div class="frow"><div class="fk k4">铁律自检</div><div class="fv">做龙头✓・不追已知信息（7月+8%已定价）✓・警惕共识变事实（第③环）✓</div></div>
+  </div>
+</div>
+
+<footer>
+  <span class="law">本内容仅为信息整理与分析参考，不构成投资建议，投资有风险，决策需谨慎。</span>
+  数据来源：腾讯行情API（2026/08/21收盘实测）・21世纪经济报道2026/08/06・东方财富・雪球・财联社<br>
+  质量标记：〔A〕actual接口实测 ・〔D〕derived由实测推算 ・〔E〕estimated新闻口径转述 ・〔unavailable〕未取得已如实标注<br>
+  <span style="color:#5a6a80">Retail Master Dashboard・八相态诊断・三外场温度计・反身性五环・2026-08-23生成・Asia/Shanghai</span>
+</footer>
+
+</div>
+</body>
+</html>

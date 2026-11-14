@@ -1,0 +1,27 @@
+# 效率模式拦截清单：一行一个域名，子域自动跟着拦，# 开头是注释。
+# 默认只放国际通用的广告/埋点域名——国内投放平台自己的域别放（页面功能可能依赖，出问题先想到这里）。
+# 改完对已跑的档不生效：重启档（再点一次「效率跑」）才带上新清单。
+doubleclick.net
+googlesyndication.com
+google-analytics.com
+googletagmanager.com
+googleadservices.com
+googletagservices.com
+adservice.google.com
+connect.facebook.net
+facebook.net
+scorecardresearch.com
+quantserve.com
+adnxs.com
+criteo.com
+pubmatic.com
+rubiconproject.com
+hotjar.com
+mixpanel.com
+segment.io
+amplitude.com
+fullstory.com
+clarity.ms
+bat.bing.com
+ads-twitter.com
+ads.linkedin.com

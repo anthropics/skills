@@ -1,0 +1,32 @@
+# Pitfalls（血泪前置，做之前先读一遍）
+
+- **CDP evaluate 顶层 return 会静默不执行**——`lib-cdp.mjs` 已强制 IIFE 包裹，自己加代码别绕过它。
+- **录制状态位是 `__SOP.on`，不是 `__SOP.recording`**——2026-11-04 实测：判断写错会让轮询每 0.5 秒 `__SOP_start()` 一次，动作刚记就被清空，录制文件永远 0 条。
+- **injectFile 不能走 evalJs**——evalJs 会再包一层 IIFE，`recorder.js` 开头是注释、结尾带 `;`，包完就语法错、注入静默失败。必须直接 `Runtime.evaluate` 原文。
+- **CDP send 必须带超时 + ws.onclose 兜底**——整页跳转/关标签时连接会断，原来 send 的 Promise 永远挂住，轮询就此卡死、后面全不录。已加 15 秒超时 + 断线 reject。
+- **Chrome 刚拉起时第一个标签的 ws 常常没就绪**——`Page.enable` 会超时（2026-11-06 实测）。`login.mjs` 已做 5 次重试；自己写新脚本照抄这个重试，别一次失败就判定"登不上"。
+- **跟随新标签只跟 http(s)**——2026-11-04 实测：不加过滤会被残留的 `about:blank` 带偏，录制跑在空白页上，`network` 全是 0。
+- **Network.getResponseBody 有时效**——页面跳走后旧请求拿不到响应体；要采证就在请求发生后 ≤1 分钟内收工，别开着页面逛半天。
+- **Chrome 136+ 默认配置开不了调试口**——`ensureChrome` 一律独立 profile（`chrome_profile/`），首次要人登录一次，之后长期有效。
+- **一任务一端口**——录制/执行默认 18801，撞车就 18802，绝不共用。工厂默认用 18802，避开常驻工具占用的 18801。
+- **gbk 的 csv 读不了**（Node 无原生 gbk）——导出用 xlsx，或先另存 UTF-8。
+- **在线表格各家 DOM 都不一样**——`act.js` 合成粘贴是通用路；某家不认就加适配函数放 `assets/adapters/`，别改 `run.mjs` 主干。
+- **body 少一个字段不会报错，只会少数据**——所以有 body 的接口必须走「录制原文模板」（`build_skill` 会拒绝手写 body）。
+- **`evalJs` 传 `{awaitPromise:false}` 拿回来的常常是 `{}`**（2026-11-06 实测）：不带 await 时返回的是 Promise 对象，`returnByValue` 把它序列化成空对象。取页面值一律用默认 `awaitPromise:true`；只有「表达式本身是同步 IIFE、且不等结果」时才关掉。
+- **页面内组件的点击会先被自己的 capture 监听吃掉**：`document` 上的 capture 监听先于浮标自己的 click 触发，所以 `onClick` 里要用 `e.composedPath().indexOf(hud.host) >= 0` 判掉，否则「点暂停」「点结束」会被录成两条假动作。详见 `references/页面浮标规范.md`。
+- **驱动侧每轮 `if (!__SOP.on) __SOP_start()` 会把「暂停」冲掉**（`__SOP_start` 还会清空已录动作）：页面上必须有 `pausedByUser` 位，驱动改成 `!on && !pausedByUser && !stopReq` 才自动拉起。
+- **后台新标签会"假死"在 loading**（2026-11-10 实测）：`/json/new` 开出来的是后台标签，Chrome 推迟解析，`readyState` 一直是 `loading`、`document.documentElement` 是 `null`，浮标根本挂不上。两句都要做：①驱动侧 `readyState==='loading'` 时**先不注入**，等它解析完；②回归测试新开标签后调 `/json/activate/<id>` 切前台（真实场景用户点链接出来的标签本来就是前台）。
+- **`file://` 页面同样会卡在 loading**：本地文件在新标签里 DOM 根节点迟迟不出现，注入的浮标挂不上——跑录制回归一律用本地 http（`node:http` 起页面），别图省事用 file://。
+- **注入早于 DOM 就绪 → 浮标漏挂，但 `__SOP` 已存在**：驱动以为"注入过了"不再重试，用户就看不到「开始录制」。`recorder.js buildHud` 已改成等 `DOMContentLoaded` 再挂；`record.mjs` 每轮还做一次自愈（发现没有 `__sop_hud_host` 就补一次 `__SOP_hudSet({name})`）。
+- **多标签动作合并必须重编号**：每个标签里 `seq` 都从 1 开始，直接拼会重号。驱动按 `tabId#injectedAt#seq` 存，收尾按 `at`(HH:MM:SS) 排序后统一重编，`--drop` 和备注也跟着新序号走。
+- **浮标图标别用 emoji**：`🖱✏️⬇️` 在没有 emoji 字体的环境是豆腐块。用 `▶ ✎ ▤ ⧉ ⬇ ▾ ✔ ⬆ →`（Segoe UI Symbol 稳出）。
+- **测试用的 Chrome profile 必须放系统临时目录**（`os.tmpdir()`），别放技能目录：否则解压副本跑完测试再 grep 脱敏，会把 profile 里的 sqlite 表结构当成个人信息，一次报 89 处假命中。
+- **Windows git-bash 没有 `zip` 命令**：打包用 Python `zipfile` 手写条目（现成脚本：`scripts/pack_check.py`，出包 + 六项验收一条命令），不要写 `zip -qr`（会 `zip: command not found`，而你以为包已经打好了）。
+- **`shutil.make_archive` / `Compress-Archive` 在 Windows 写的 zip 条目是 `\` 分隔**（2026-11-13 实测）：上传平台要求 `/` 分隔、路径 ≤3 段、纯文本（二进制条目被静默丢弃）。`pack_check.py` 已用手写 `zipfile` + `replace(os.sep,'/')`，别图省事换回去。另两个同日坑：make_archive 把 zip 写进被打包目录会自包含；Windows 控制台默认 GBK，打 ✓/✗ 直接崩，开头先 `sys.stdout.reconfigure(encoding='utf-8')`。
+- **写日志前先 `mkdirSync(logs)`**（2026-11-06 实测）：`manage.mjs fail` 在 `logs/` 不存在时先改了台账、再 `appendFileSync` 崩掉 → 台账显示「已记失败」但日志没写、人也看到异常栈。凡是「写台账/写日志/写证据」的脚本，落盘前一律 `fs.mkdirSync(dir, {recursive:true})`。
+- **`logs/`、`evidence/`、`produced/` 都会进包**：忘了排除，包里就带真实链路名和失败记录。打包前先排除这三类目录（外加 `chrome_profile/`、真实 `台账.csv`）再压 zip；`pack_check.py` 已内置排除 + 包内泄漏检查。
+- **写文件必须在 `zipDir()` 之前**（2026-11-07 实测）：`build_skill` 里若先 `zipDir()` 再 `writeFileSync('说明书.md')`，文件落在打包之后 → 包里有 SKILL.md 没说明书，本地却看得到，最容易骗过自己。同理 api 分支的 `version` 是台账段才算出来的，往前面插生成逻辑会 TDZ 报错——要产出带版本号的产物，就挪到 `const version = …` 之后、`zipDir()` 之前。
+- **MSYS `unzip` 会把 UTF-8 中文名解成乱码**（`草稿` → `Þìëþ¿+`）：这不是包坏了。验证解压副本要用 Python `zipfile.extractall()`（认 UTF-8 标志位），否则会误判「配置目录缺失 / 生成失败」去改本来没坏的代码。`pack_check.py` 用的就是 Python 解压——它跑得过而手动 `unzip` 跑不过时，先怀疑解压工具。
+- **ESM 动态 import 不能直接吃 Windows 绝对路径**：`await import('D:/…/lib-heal.mjs')` 报 `ERR_UNSUPPORTED_ESM_URL_SCHEME`（`d:` 被当成协议）。测试里加载 lib 一律 `await import(pathToFileURL(path.join(ROOT,'scripts/lib-x.mjs')).href)`；另外 `await import('./lib-x.mjs')` 是相对**测试文件所在目录**解析的，写错就变成 `test/lib-x.mjs` 找不到。
+- **定位降级这类 DOM 逻辑必须真跑一次浏览器**（2026-11-07）：假 run 的单元测试验不到 `attemptJs` 生成的 JS 在真页面能否点到。最省事的验法：`ensureChrome` 起临时口 → `Cdp.attach` 到 `about:blank` → `Page.navigate` 到 `data:text/html;charset=utf-8,<encodeURIComponent(html)>`（比 `file://` 稳）→ `injectFile(act.js)` → 用「不存在的 best定位 + 存在的 L4_text」跑 `firstHit`，页面里挂 `click` 监听断言 `window.__clicked === true`。验完按端口关浏览器、删临时 profile。
+

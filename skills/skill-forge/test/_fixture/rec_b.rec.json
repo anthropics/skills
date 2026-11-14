@@ -1,0 +1,27 @@
+{
+ "meta": {"name": "demo_报表导出", "url": "https://demo.example.com/report", "finishedAt": "2026-11-06T02:00:00.000Z"},
+ "actions": [
+  {"seq": 1, "type": "click", "text": "数据报表", "page": "https://demo.example.com/home", "locator": {"best": "text=数据报表"}},
+  {"seq": 2, "type": "click", "text": "导出", "page": "https://demo.example.com/report", "locator": {"best": "button:has-text(\"导出\")"}},
+  {"seq": 3, "type": "download", "filename": "报表_1102-1106.xlsx", "page": "https://demo.example.com/report", "locator": {"best": ""}}
+ ],
+ "downloads": [{"filename": "报表_1102-1106.xlsx", "done": true}],
+ "network": [
+  {"id": "1", "at": 1000, "type": "XHR", "method": "GET",
+   "url": "https://demo.example.com/api/report/list?aavid=7000000000000001&start=2026-11-02&end=2026-11-06&page=1&size=20",
+   "body": "", "headers": {"content-type": "application/json", "x-requested-with": "XMLHttpRequest"},
+   "status": 200, "mime": "application/json", "size": 1180, "ms": 210,
+   "respPreview": "{\"data\":{\"list\":[{\"stat_cost\":90}]}}", "fields": ["stat_cost", "show_cnt", "ctr"], "rows": 18},
+  {"id": "2", "at": 1500, "type": "Fetch", "method": "POST",
+   "url": "https://demo.example.com/api/report/sum",
+   "body": "{\"aavid\":\"7000000000000001\",\"start_date\":\"2026-11-02\",\"end_date\":\"2026-11-06\",\"metrics\":[\"cost\"]}",
+   "headers": {"content-type": "application/json"},
+   "status": 200, "mime": "application/json", "size": 300, "ms": 175,
+   "respPreview": "{\"data\":{\"list\":[{\"cost\":90}]}}", "fields": ["cost"], "rows": 1},
+  {"id": "3", "at": 1600, "type": "XHR", "method": "POST",
+   "url": "https://demo.example.com/api/track/ping",
+   "body": "{\"t\":1}", "headers": {"content-type": "application/json"},
+   "status": 200, "mime": "application/json", "size": 20, "ms": 30,
+   "respPreview": "{}", "fields": null, "rows": null}
+ ]
+}

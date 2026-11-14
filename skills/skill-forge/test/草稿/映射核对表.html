@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8"><title>映射核对表 — fixture</title>
+<style>body{font-family:system-ui;margin:24px;font-size:14px}table{border-collapse:collapse;width:100%}td,th{border:1px solid #ccc;padding:5px 8px;text-align:left}th{background:#f5f5f5}button{font-size:16px;padding:8px 24px;margin-top:16px}</style></head><body>
+<h2>映射核对表 — fixture</h2>
+<p><b>唯一键</b>（这条链路的"身份证"列，可用逗号组合）：<label><input type="radio" name="key" value="日期"> 日期</label> <label><input type="radio" name="key" value="视频id"> 视频id</label> <label><input type="radio" name="key" value="日期,视频id" checked> 日期,视频id</label> </p>
+<table id="t"><tr><th>确认</th><th>源列</th><th>源表</th><th>目标表格</th><th>目标列</th><th>依据</th><th>规则</th><th>命中率</th><th>备注/改列名</th></tr><tr><td><input type="radio" name="m0" value="是" checked>是 <input type="radio" name="m0" value="否">否</td><td>名称</td><td>源表.csv</td><td>投放日报-共享表 [docs.qq.com]</td><td>品牌</td><td>分列</td><td>按"-"分列取第1段</td><td>4/4行</td><td><input name="note0" size="24"></td></tr>
+<tr><td><input type="radio" name="m1" value="是" checked>是 <input type="radio" name="m1" value="否">否</td><td>消耗</td><td>源表.csv</td><td>投放日报-共享表 [docs.qq.com]</td><td>花费(元)</td><td>数值/文本逐行命中</td><td></td><td>100%</td><td><input name="note1" size="24"></td></tr>
+<tr><td><input type="radio" name="m2" value="是" checked>是 <input type="radio" name="m2" value="否">否</td><td>消耗,展示次数</td><td>源表.csv</td><td>投放日报-共享表 [docs.qq.com]</td><td>CPM</td><td>公式</td><td>(消耗 ÷ 展示次数) × 100</td><td>≥95%行成立</td><td><input name="note2" size="24"></td></tr></table>
+<button onclick="exp()">✓ 确认完毕，导出 映射核对_确认.csv</button>
+<p id="msg"></p>
+<script>
+function exp(){
+ var rows=[['KEY',document.querySelector('input[name=key]:checked')?document.querySelector('input[name=key]:checked').value:document.querySelector('input[name=key]').value||'日期,视频id']];
+ document.querySelectorAll('#t tr').forEach(function(tr,i){
+  if(i===0)return;
+  var r=tr.querySelector('input[type=radio]:checked'); if(!r)return;
+  var tds=tr.querySelectorAll('td');
+  rows.push(['MAP',tds[1].innerText,tds[4].innerText,r.value,tr.querySelector('input[type=text]')?tr.querySelector('input[type=text]').value:'']);
+ });
+ var csv='\ufeff'+rows.map(function(r){return r.map(function(c){return '"'+String(c).replace(/"/g,'""')+'"'}).join(',')}).join('\r\n');
+ var a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='映射核对_确认.csv';a.click();
+ document.getElementById('msg').innerText='已导出，把它放回草稿目录，然后跑 python -I scripts/analyze.py --confirm 映射核对_确认.csv --out 本目录';
+}
+</script></body></html>

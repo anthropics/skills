@@ -1,0 +1,22 @@
+{
+ "meta": {"name": "demo_报表导出", "url": "https://demo.example.com/report", "finishedAt": "2026-11-05T10:00:00.000Z"},
+ "actions": [
+  {"seq": 1, "type": "click", "text": "数据报表", "page": "https://demo.example.com/home", "locator": {"best": "text=数据报表"}},
+  {"seq": 2, "type": "click", "text": "导出", "page": "https://demo.example.com/report", "locator": {"best": "button:has-text(\"导出\")"}},
+  {"seq": 3, "type": "download", "filename": "报表_1101-1105.xlsx", "page": "https://demo.example.com/report", "locator": {"best": ""}}
+ ],
+ "downloads": [{"filename": "报表_1101-1105.xlsx", "done": true}],
+ "network": [
+  {"id": "1", "at": 1000, "type": "XHR", "method": "GET",
+   "url": "https://demo.example.com/api/report/list?aavid=7000000000000001&start=2026-11-01&end=2026-11-05&page=1&size=20",
+   "body": "", "headers": {"content-type": "application/json", "x-requested-with": "XMLHttpRequest"},
+   "status": 200, "mime": "application/json", "size": 1200, "ms": 220,
+   "respPreview": "{\"data\":{\"list\":[{\"stat_cost\":100}]}}", "fields": ["stat_cost", "show_cnt", "ctr"], "rows": 20},
+  {"id": "2", "at": 1500, "type": "Fetch", "method": "POST",
+   "url": "https://demo.example.com/api/report/sum",
+   "body": "{\"aavid\":\"7000000000000001\",\"start_date\":\"2026-11-01\",\"end_date\":\"2026-11-05\",\"metrics\":[\"cost\"]}",
+   "headers": {"content-type": "application/json"},
+   "status": 200, "mime": "application/json", "size": 300, "ms": 180,
+   "respPreview": "{\"data\":{\"list\":[{\"cost\":100}]}}", "fields": ["cost"], "rows": 1}
+ ]
+}
