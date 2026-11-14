@@ -23,7 +23,12 @@ import defusedxml.ElementTree as ET
 from defusedxml.common import DefusedXmlException
 
 from helpers import OOXML_FAMILY, rezip, safe_extract
-from validators import DOCXSchemaValidator, PPTXSchemaValidator, RedliningValidator
+from validators import (
+    BaseSchemaValidator,
+    DOCXSchemaValidator,
+    PPTXSchemaValidator,
+    RedliningValidator,
+)
 
 WORD_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
@@ -149,6 +154,18 @@ def main():
         case _:
             print(f"Error: Validation not supported for file type {family}")
             sys.exit(1)
+
+    schema_problems = [
+        problem
+        for validator in validators
+        if isinstance(validator, BaseSchemaValidator)
+        for problem in validator.schema_load_problems()
+    ]
+    if schema_problems:
+        _fail(
+            "validator unavailable; schemas could not be loaded:\n  "
+            + "\n  ".join(schema_problems)
+        )
 
     if args.auto_repair:
         total_repairs = sum(v.repair() for v in validators)
