@@ -121,6 +121,47 @@ class BaseSchemaValidator:
     def validate(self):
         raise NotImplementedError("Subclasses must implement the validate method")
 
+    def schema_load_problems(self):
+        """Return schemas that cannot be loaded, before validating any part.
+
+        A missing or unbuildable schema otherwise surfaces as a per-part
+        validation error, which reads as a defect in the document. Report the
+        schema itself instead. Build failures already tolerated through
+        IGNORED_VALIDATION_ERRORS keep their current behaviour.
+        """
+        problems = []
+        checked = set()
+
+        for xml_file in self.xml_files:
+            schema_path = self._get_schema_path(xml_file)
+            if schema_path is None:
+                continue
+            key = str(schema_path)
+            if key in checked:
+                continue
+            checked.add(key)
+
+            try:
+                _load_schema(key)
+            except OSError as e:
+                problems.append(self._schema_problem(schema_path, e))
+            except lxml.etree.LxmlError as e:
+                message = str(e)
+                if not any(
+                    pattern in message
+                    for pattern in self.IGNORED_VALIDATION_ERRORS
+                ):
+                    problems.append(self._schema_problem(schema_path, e))
+
+        return problems
+
+    def _schema_problem(self, schema_path, error):
+        try:
+            label = schema_path.relative_to(self.schemas_dir)
+        except ValueError:
+            label = schema_path
+        return f"{label}: {error}"
+
     def repair(self) -> int:
         return self.repair_whitespace_preservation()
 
