@@ -43,6 +43,14 @@ def _fail(message: str):
     sys.exit(2)
 
 
+def _unpack(package: Path, dest: Path):
+    try:
+        with zipfile.ZipFile(package, "r") as zf:
+            safe_extract(zf, dest)
+    except Exception as e:  
+        _fail(f"cannot unpack {package}: {e}")
+
+
 def _has_tracked_changes(unpacked_dir: Path) -> bool:
     document = unpacked_dir / "word" / "document.xml"
     if not document.is_file():
@@ -105,6 +113,8 @@ def main():
             _fail(f"{original_file} is not a file")
         if original_file.suffix.lower() not in OOXML_FAMILY:
             _fail(f"{original_file} must be one of: {', '.join(sorted(OOXML_FAMILY))}")
+        with tempfile.TemporaryDirectory() as scratch:
+            _unpack(original_file, Path(scratch))
 
     family = OOXML_FAMILY.get((original_file or path).suffix.lower())
     if family is None:
@@ -121,11 +131,7 @@ def main():
         packed_file = path
         temp_dir_ctx = tempfile.TemporaryDirectory()
         unpacked_dir = Path(temp_dir_ctx.name)
-        try:
-            with zipfile.ZipFile(path, "r") as zf:
-                safe_extract(zf, unpacked_dir)
-        except (zipfile.BadZipFile, ValueError, OSError) as e:
-            _fail(f"cannot unpack {path}: {e}")
+        _unpack(path, unpacked_dir)
     else:
         if not path.is_dir():
             _fail(f"{path} is not a directory or Office file")
