@@ -63,6 +63,9 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if not self.validate_master_theme_uniqueness():
             all_valid = False
 
+        if not self.validate_tags():
+            all_valid = False
+
         if not self.validate_charts():
             all_valid = False
 
@@ -87,6 +90,30 @@ class PPTXSchemaValidator(BaseSchemaValidator):
             if p.is_file()
         }
 
+    @staticmethod
+    def _print_line(text: str, limit: int) -> None:
+        from helpers import one_line
+
+        print(one_line(text, limit))
+
+    def _listed_slides(self) -> set[str] | None:
+        import lxml.etree
+
+        from helpers import SLIDE_REL_TYPE
+
+        r_id = f"{{{self.OFFICE_RELATIONSHIPS_NAMESPACE}}}id"
+        try:
+            pres = lxml.etree.parse(str(self.unpacked_dir / "ppt" / "presentation.xml"))
+            rels = lxml.etree.parse(str(self.unpacked_dir / "ppt" / "_rels" / "presentation.xml.rels"))
+            listed = {e.get(r_id) for e in pres.iter(f"{{{self.PRESENTATIONML_NAMESPACE}}}sldId")}
+            return {
+                opc_target(rel.get("Target", ""), "ppt/presentation.xml", rel.get("TargetMode", ""))
+                for rel in rels.getroot()
+                if rel.get("Id") in listed and rel.get("Type") == SLIDE_REL_TYPE
+            }
+        except (OSError, ValueError, lxml.etree.XMLSyntaxError):
+            return None
+
     def validate_master_theme_uniqueness(self):
         from helpers.pptx_theme import _NOTES_MASTERS, live_shared_master_themes
 
@@ -94,7 +121,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if shared:
             print(f"FAILED - Found {len(shared)} master(s) sharing a theme part:")
             for message in shared:
-                print(f"  {message}")
+                self._print_line(f"  {message}", 300)
             if any(m.startswith(_NOTES_MASTERS) for m in shared):
                 print("  Fix: in ppt/presentation.xml, move <p:notesMasterIdLst> back to "
                       "directly after <p:sldIdLst>. PowerPoint reads that happily.")
@@ -106,6 +133,64 @@ class PPTXSchemaValidator(BaseSchemaValidator):
             print("PASSED - No master shares a theme part in a way PowerPoint refuses")
         return True
 
+    def validate_tags(self):
+        from collections import Counter
+
+        import lxml.etree
+
+        ns = {"p": self.PRESENTATIONML_NAMESPACE, "mc": self.MC_NAMESPACE}
+        r_id = f"{{{self.OFFICE_RELATIONSHIPS_NAMESPACE}}}id"
+        errors = []
+        owners: dict[str, list[str]] = {}  
+        listed = self._listed_slides()
+
+        for slide in sorted(self.unpacked_dir.glob("ppt/slides/*.xml")):
+            relative = slide.relative_to(self.unpacked_dir).as_posix()
+            if listed is not None and relative not in listed:
+                continue
+            try:
+                root = lxml.etree.parse(str(slide)).getroot()
+                named = [t.get(r_id) for t in root.xpath(
+                    ".//p:tags[not(ancestor::mc:Fallback) and not(ancestor::mc:Choice[preceding-sibling::mc:Choice])]",
+                    namespaces=ns)]
+                rels_file = slide.parent / "_rels" / f"{slide.name}.rels"
+                targets = {
+                    rel.get("Id"): opc_target(rel.get("Target", ""), relative, rel.get("TargetMode", ""))
+                    for rel in lxml.etree.parse(str(rels_file)).getroot()
+                    if rel.get("Type", "").endswith("/relationships/tags")
+                } if rels_file.is_file() else {}
+            except (lxml.etree.XMLSyntaxError, ValueError):
+                continue  
+            for rid, count in sorted(Counter(r for r in named if r).items()):
+                if count > 1:
+                    errors.append(
+                        f"  {relative[:80]}: {count} <p:tags> elements name the tags relationship "
+                        f"{rid!r:.20}. Fix: a copied shape kept its <p:custDataLst>; delete that "
+                        f"from the copy, or give it a tags part and relationship of its own"
+                    )
+                if targets.get(rid):
+                    owners.setdefault(targets[rid], []).append(relative)
+
+        for part, slides in sorted(owners.items()):
+            if len(slides) > 1:
+                named_from = sorted(set(slides))
+                more = f" and {len(named_from) - 3} more" if len(named_from) > 3 else ""
+                errors.append(
+                    f"  {part[:80]}: {len(slides)} tags relationships name it, from "
+                    f"{', '.join(s[:60] for s in named_from[:3])}{more}. Fix: copy the part under a new name, add "
+                    f"its Override to [Content_Types].xml and point every relationship but one at a copy of its own "
+                    f"(add_slide.py does this when it duplicates a slide)"
+                )
+
+        if errors:
+            print(f"FAILED - Found {len(errors)} tags part(s) with more than one owner; PowerPoint offers to repair the deck:")
+            for error in errors:
+                self._print_line(error, 700)
+            return False
+        if self.verbose:
+            print("PASSED - Every tags part has one owner")
+        return True
+
     def validate_charts(self):
         from helpers.pptx_chart import find_chart_problems
 
@@ -113,7 +198,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if problems:
             print(f"FAILED - Found {len(problems)} chart problem(s) PowerPoint rejects:")
             for message in problems:
-                print(f"  {message}")
+                self._print_line(f"  {message}", 600)
             return False
 
         if self.verbose:
@@ -151,14 +236,18 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         return found
 
     def validate_slides(self):
+        import lxml.etree
+
         from helpers.pptx_slide import (
             SLIDE_PART_RE,
             fatal_slide_errors,
             is_schema_verdict,
+            stranded_animation_targets,
         )
 
         schema = self.schemas_dir / self.SCHEMA_MAPPINGS["ppt"]
         inherited = self._original_slide_defects(schema)
+        listed = self._listed_slides()
         problems: list[str] = []
         broken: list[str] = []
 
@@ -166,6 +255,14 @@ class PPTXSchemaValidator(BaseSchemaValidator):
             relative = xml_file.relative_to(self.unpacked_dir).as_posix()
             if not SLIDE_PART_RE.fullmatch(relative):
                 continue
+            unlisted = relative.startswith("ppt/slides/") and listed is not None and relative not in listed
+            try:
+                root = lxml.etree.parse(str(xml_file)).getroot()
+                stranded = [] if unlisted else stranded_animation_targets(root)
+            except lxml.etree.XMLSyntaxError:
+                stranded = []  
+            problems.extend(f"{relative}: {m}" for m in stranded)
+
             ok, errors = self._validate_single_file_xsd(
                 xml_file.resolve(), self.unpacked_dir.resolve(), schema_path=schema
             )
@@ -187,12 +284,12 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if broken:
             print(f"FAILED - Could not check {len(broken)} slide part(s):")
             for message in sorted(broken):
-                print(f"  {message[:240]}")
+                self._print_line(f"  {message}", 240)
 
         if problems:
             print(f"FAILED - Found {len(problems)} slide problem(s) PowerPoint rejects:")
             for message in sorted(problems):
-                print(f"  {message[:240]}")
+                self._print_line(f"  {message}", 240)
 
         if broken or problems:
             return False
@@ -204,6 +301,17 @@ class PPTXSchemaValidator(BaseSchemaValidator):
     def _get_schema_path(self, xml_file):
         if xml_file.parent.name == "charts" and xml_file.name.startswith("chart"):
             return None
+        if xml_file.parent.name == "ppt" and xml_file.suffix == ".xml":
+            import lxml.etree
+
+            try:
+                root = lxml.etree.parse(str(xml_file)).getroot()
+            except (lxml.etree.XMLSyntaxError, OSError):
+                root = None  
+            if root is not None and (lxml.etree.QName(root).namespace or "").startswith(
+                "http://schemas.microsoft.com/office/"
+            ):
+                return None
         return super()._get_schema_path(xml_file)
 
     def _preprocess_for_schema(self, xml_doc, relative_path):
@@ -256,7 +364,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if errors:
             print(f"FAILED - Found {len(errors)} UUID ID validation errors:")
             for error in errors:
-                print(error)
+                self._print_line(error, 300)
             return False
         else:
             if self.verbose:
@@ -325,7 +433,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if errors:
             print(f"FAILED - Found {len(errors)} slide layout ID validation errors:")
             for error in errors:
-                print(error)
+                self._print_line(error, 300)
             print(
                 "Remove invalid references or add missing slide layouts to the relationships file."
             )
@@ -366,7 +474,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
         if errors:
             print("FAILED - Found slides with duplicate slideLayout references:")
             for error in errors:
-                print(error)
+                self._print_line(error, 300)
             return False
         else:
             if self.verbose:
@@ -428,7 +536,7 @@ class PPTXSchemaValidator(BaseSchemaValidator):
                 f"FAILED - Found {len([e for e in errors if not e.startswith('    ')])} notes slide reference validation errors:"
             )
             for error in errors:
-                print(error)
+                self._print_line(error, 300)
             print("Each slide may optionally have its own slide file.")
             return False
         else:
