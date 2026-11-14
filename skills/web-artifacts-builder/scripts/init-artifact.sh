@@ -270,7 +270,9 @@ EOF
 # Install all shadcn/ui dependencies
 echo "📦 Installing shadcn/ui dependencies..."
 pnpm install @radix-ui/react-accordion @radix-ui/react-aspect-ratio @radix-ui/react-avatar @radix-ui/react-checkbox @radix-ui/react-collapsible @radix-ui/react-context-menu @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-hover-card @radix-ui/react-label @radix-ui/react-menubar @radix-ui/react-navigation-menu @radix-ui/react-popover @radix-ui/react-progress @radix-ui/react-radio-group @radix-ui/react-scroll-area @radix-ui/react-select @radix-ui/react-separator @radix-ui/react-slider @radix-ui/react-slot @radix-ui/react-switch @radix-ui/react-tabs @radix-ui/react-toast @radix-ui/react-toggle @radix-ui/react-toggle-group @radix-ui/react-tooltip
-pnpm install sonner cmdk vaul embla-carousel-react react-day-picker react-resizable-panels date-fns react-hook-form @hookform/resolvers zod
+# major 3 only: the vendored components/ui/resizable.tsx (shadcn-components.tar.gz, extracted below)
+# uses the pre-v4 PanelGroup/PanelResizeHandle exports, which v4 renamed to Group/Separator
+pnpm install sonner cmdk vaul embla-carousel-react react-day-picker react-resizable-panels@^3 date-fns react-hook-form @hookform/resolvers zod
 
 # Extract shadcn components from tarball
 echo "📦 Extracting shadcn/ui components..."
