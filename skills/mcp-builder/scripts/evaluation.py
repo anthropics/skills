@@ -145,7 +145,10 @@ async def agent_loop(
         )
         messages.append({"role": "assistant", "content": response.content})
 
-    if response.stop_reason in ("max_tokens", "refusal"):
+    # Only end_turn responses represent completed answers. Truncated and
+    # refused responses must not be graded.
+    if response.stop_reason != "end_turn":
+        tool_metrics["incomplete_reason"] = response.stop_reason
         print(
             f"Warning: run incomplete, stop_reason={response.stop_reason}; "
             "not scoring as a final answer."
@@ -182,9 +185,16 @@ async def evaluate_single_task(
             "actual": None,
             "score": 0,
             "status": "incomplete",
+            "incomplete_reason": tool_metrics.get("incomplete_reason"),
             "total_duration": duration_seconds,
             "tool_calls": tool_metrics,
-            "num_tool_calls": sum(len(metrics["durations"]) for metrics in tool_metrics.values()),
+            # tool_metrics also carries the string incomplete_reason, so
+            # only count dict entries (one per tool) here.
+            "num_tool_calls": sum(
+                len(metrics["durations"])
+                for metrics in tool_metrics.values()
+                if isinstance(metrics, dict)
+            ),
             "summary": None,
             "feedback": None,
         }

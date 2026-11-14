@@ -152,6 +152,48 @@ def test_pause_turn_continues_loop():
     assert result["status"] == "complete"
 
 
+def test_max_tokens_records_incomplete_reason():
+    """A max_tokens run records incomplete_reason 'max_tokens'."""
+    result = _run(evaluation.evaluate_single_task(
+        _client(_response("max_tokens", [_text_block("<response>Almost...")])),
+        "test-model",
+        {"question": "What is 6x7?", "answer": "42"},
+        [], _connection(), 0))
+    assert result["status"] == "incomplete"
+    assert result["incomplete_reason"] == "max_tokens"
+
+
+def test_refusal_records_incomplete_reason():
+    """A refusal run records incomplete_reason 'refusal'."""
+    result = _run(evaluation.evaluate_single_task(
+        _client(_response("refusal", [])),
+        "test-model",
+        {"question": "What is 6x7?", "answer": "42"},
+        [], _connection(), 0))
+    assert result["status"] == "incomplete"
+    assert result["incomplete_reason"] == "refusal"
+
+
+def test_unknown_stop_reason_is_incomplete_not_scored():
+    """An unknown stop_reason must not be graded as a final answer."""
+    client = _client(_response(
+        "mystery_stop", [_text_block("<response>42</response>")]))
+    text, _metrics = _run(evaluation.agent_loop(
+        client, "test-model", "What is 6x7?", [], _connection()))
+    assert text is None
+
+    result = _run(evaluation.evaluate_single_task(
+        _client(_response(
+            "mystery_stop", [_text_block("<response>42</response>")])),
+        "test-model",
+        {"question": "What is 6x7?", "answer": "42"},
+        [], _connection(), 0))
+    assert result["score"] == 0
+    assert result["status"] == "incomplete"
+    assert result["incomplete_reason"] == "mystery_stop"
+    assert result["actual"] is None
+
+
 def test_max_tokens_uses_raised_limit():
     """Both messages.create calls request max_tokens=16384."""
     client = _client(
