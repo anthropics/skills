@@ -41,6 +41,15 @@ class GIFBuilder:
         if isinstance(frame, Image.Image):
             frame = np.array(frame.convert("RGB"))
 
+        # Normalise numpy frames to RGB, the same way the PIL branch
+        # does: a frame is only RGB when it is 3-D with 3 channels.
+        # RGBA and greyscale arrays (including a 2-D array whose width
+        # happens to be 3) are converted before resizing or storing,
+        # so every stored frame is (height, width, 3). A genuine RGB
+        # array is left untouched — no copy, no aliasing change.
+        if frame.ndim != 3 or frame.shape[-1] != 3:
+            frame = np.array(Image.fromarray(frame).convert("RGB"))
+
         # Ensure frame is correct size
         if frame.shape[:2] != (self.height, self.width):
             pil_frame = Image.fromarray(frame)
