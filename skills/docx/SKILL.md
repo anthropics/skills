@@ -44,6 +44,14 @@ ls page-*.jpg   # then Read the images
 
 `pdftoppm` zero-pads page numbers to the width of the page count (`page-01.jpg`…`page-12.jpg`).
 
+Both tools are external dependencies. Check them before relying on this visual pass:
+
+```bash
+python -c "import shutil; print(shutil.which('soffice'), shutil.which('pdftoppm'))"
+```
+
+If either prints `None`, the render check cannot run as written. Do not report the document as visually verified: state which check was skipped, and fall back to opening the file in Word (or another OOXML viewer) to check page count, headings, tables, and page breaks manually. `python scripts/office/validate.py output.docx` still checks the package structure. Install LibreOffice and Poppler to run the full render check.
+
 ## Editing existing documents
 
 Legacy `.doc` files must be converted first: `python scripts/office/soffice.py --headless --convert-to docx file.doc`.
@@ -88,4 +96,4 @@ The script writes `comments.xml`, `commentsExtended.xml`, `commentsIds.xml`, `co
 
 ## Dependencies
 
-`docx` (npm, preinstalled — install only if `require('docx')` fails) · `pandoc` · LibreOffice (`soffice`) · `pdftoppm` (Poppler)
+`docx` (npm, preinstalled — install only if `require('docx')` fails) · `pandoc` · LibreOffice (`soffice`) · `pdftoppm` (Poppler, required for the render check)
