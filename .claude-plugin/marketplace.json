@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -67,6 +66,15 @@
       "strict": false,
       "skills": [
         "./skills/discernment-nudge"
+      ]
+    },
+    {
+      "name": "paper-review-deck",
+      "description": "Turns one paper or a 2-5 paper bundle into a complete review talk: discovery, lit notes, reproduction of released code, manuscript, HTML/PDF/PPTX deck, visual QA, and a speaker script with stage directions",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/paper-review-deck"
       ]
     }
   ]
