@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "omniroute": {
+      "type": "http",
+      "url": "http://localhost:20128/api/mcp/stream",
+      "headers": {
+        "Authorization": "Bearer ${OMNIROUTE_TOKEN}"
+      }
+    }
+  }
+}
