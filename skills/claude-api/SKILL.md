@@ -551,6 +551,9 @@ After you build a large job, read `tool-use.md`'s top.
 **Function calling / tool use / agents:**
 -> Read `{lang}/claude-api/README.md` + `shared/tool-use-concepts.md` (conceptual foundations: function calling, code execution, memory, structured outputs) + `{lang}/claude-api/tool-use.md` (language-specific code examples: tool runner, manual loop, code execution, memory, structured outputs)
 
+**Claude Agent SDK (batteries-included coding/filesystem agent on your own infra — `query()`, subagents, built-in tools):**
+-> Read `shared/agent-sdk.md` — the SDK is a separate product; this skill does not generate Agent SDK code, and the API Tool Runner is not a substitute for it
+
 **Agent design (tool surface, context management, caching strategy):**
 -> Read `shared/agent-design.md` (bash vs. dedicated tools, programmatic tool calling, tool search/skills, context editing vs. compaction vs. memory, caching principles)
 
