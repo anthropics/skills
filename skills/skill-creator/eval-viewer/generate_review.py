@@ -26,6 +26,7 @@ import webbrowser
 from functools import partial
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
+from urllib.parse import urlparse
 
 # Files to exclude from output listings
 METADATA_FILES = {"transcript.md", "user_notes.md", "metrics.json"}
@@ -329,7 +330,84 @@ class ReviewHandler(BaseHTTPRequestHandler):
         self.benchmark_path = benchmark_path
         super().__init__(*args, **kwargs)
 
+    def _allowed_hosts(self) -> set[str]:
+        # The server only ever binds loopback, so the only legitimate
+        # Host values are the loopback names on the port it actually
+        # listens on (self.server.server_port, not the default 3117).
+        port = self.server.server_port
+        return {f"127.0.0.1:{port}", f"localhost:{port}"}
+
+    def _reject(self, status: int, code: str) -> None:
+        body = json.dumps({"ok": False, "error": code}).encode()
+        self.send_response(status)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _check_host(self) -> bool:
+        """True when the Host header names this server; else reject.
+
+        Exact-match against the loopback allowlist: no substring or
+        suffix matching, and no DNS resolution (so an attacker hostname
+        resolving to loopback still fails). A missing Host is a client
+        error; a present but untrusted Host is forbidden.
+        """
+        host = self.headers.get("Host")
+        if not host:
+            self._reject(400, "invalid_host")
+            return False
+        if host.lower() not in self._allowed_hosts():
+            self._reject(403, "forbidden_host")
+            return False
+        return True
+
+    def _check_origin(self) -> bool:
+        """True when a POST is same-origin (or has no Origin/Referer).
+
+        A missing Origin is allowed: browsers send Origin on a
+        same-origin fetch, but curl and script clients send none. The
+        Host and Content-Type checks still gate those requests, so the
+        missing-Origin case is a compatibility choice — not a claim
+        that arbitrary local processes are trusted. When Origin is
+        absent but Referer is present, the Referer must be same-origin.
+        """
+        host = (self.headers.get("Host") or "").lower()
+        origin = self.headers.get("Origin")
+        if origin is not None:
+            parsed = urlparse(origin)
+            if parsed.scheme != "http" or parsed.netloc.lower() != host:
+                self._reject(403, "forbidden_origin")
+                return False
+            return True
+        referer = self.headers.get("Referer")
+        if referer is not None:
+            parsed = urlparse(referer)
+            if parsed.scheme != "http" or parsed.netloc.lower() != host:
+                self._reject(403, "forbidden_referer")
+                return False
+        return True
+
+    def _check_json_content_type(self) -> bool:
+        """True when the request carries exactly one application/json type.
+
+        Browsers cannot send a cross-origin application/json request
+        without a CORS preflight, and this server grants no cross-origin
+        access — so the text/plain attack in #1982 is blocked here.
+        """
+        values = self.headers.get_all("Content-Type") or []
+        if len(values) != 1:
+            self._reject(415, "unsupported_media_type")
+            return False
+        media_type = values[0].split(";")[0].strip().lower()
+        if media_type != "application/json":
+            self._reject(415, "unsupported_media_type")
+            return False
+        return True
+
     def do_GET(self) -> None:
+        if not self._check_host():
+            return
         if self.path == "/" or self.path == "/index.html":
             # Regenerate HTML on each request (re-scans workspace for new outputs)
             runs = find_runs(self.workspace)
@@ -359,7 +437,15 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self.send_error(404)
 
     def do_POST(self) -> None:
+        # Validation order is deliberate: Host, then Origin/Referer,
+        # then Content-Type — no untrusted feedback reaches the write.
+        if not self._check_host():
+            return
         if self.path == "/api/feedback":
+            if not self._check_origin():
+                return
+            if not self._check_json_content_type():
+                return
             length = int(self.headers.get("Content-Length", 0))
             body = self.rfile.read(length)
             try:
