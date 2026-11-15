@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 1.1.0
+version: 2.0.0
 author: Bernier LLC
 ---
 
@@ -24,6 +24,8 @@ python3 "$(aec path skill review-gate)/scripts/install-workflow.py"
 #   cp …/templates/review-gate.yml .github/workflows/review-gate.yml
 #   cp …/scripts/check-review-gate.py scripts/check-review-gate.py
 ```
+
+Upgrading an existing install: 2.0.0 tightens the fallback rule, and the repo's committed checker is a copy. Re-run `install-workflow.py --force` in each repo to pick it up; until then that repo still accepts the old looser fallback.
 
 Then flip GitHub rulesets (no Actions minutes):
 
@@ -51,10 +53,30 @@ Triggers **only** `pull_request_target` so the workflow YAML always comes from t
 
 Loads `scripts/check-review-gate.py` from the repository **default branch** only (never the PR head or an untrusted PR base) and fails unless all hold:
 
-1. A completed review from the exact Codex bot login `chatgpt-codex-connector` exists on the **current head** (not body text / substring logins), **or** the PR body's `## Review` section names a fallback (`agy` / `superpowers` / `claude` / `antigravity`) **and includes the current `headRefOid`** (full or ≥7-char prefix) so a stale fallback cannot pass after a new push.
+1. A completed review from the exact Codex bot login `chatgpt-codex-connector` exists on the **current head** (not body text / substring logins), **or** the PR body's `## Review` section contains the explicit completed fallback-review attestation below on one line, bound to the current head.
 2. PR body contains a `## Review` section.
 3. Every review thread whose **root** comment matches `\bp2\b` has a reply with a closing token: Notion link, `fixed in <sha>`, or `not-a-finding: …` (all thread/comment pages are fetched).
 4. When `base` is `main`: label `review:high` or `review:ultra` is present.
+
+Fallback attestations use exactly this format (plain text on its own line inside `## Review`):
+
+```text
+Fallback review: <reviewer> on <sha> — verdict: <verdict>
+```
+
+- `reviewer`: `agy`, `antigravity`, `superpowers`, or `claude-sonnet`.
+- `sha`: the current `headRefOid` in full or a prefix of at least 7 hex characters. The entire supplied prefix must match.
+- `verdict`: `clean` or `findings fixed`; attest only after the review completed and any findings were fixed.
+
+Copy-pasteable example (replace `89cda061` with the head actually reviewed):
+
+```text
+## Review
+
+Fallback review: claude-sonnet on 89cda061 — verdict: clean
+```
+
+Reviewer, SHA and verdict must all be on that same line. Lines containing `pending`, `running` or `TODO` (case-insensitive) are rejected. URLs, generated Claude Code footers and keyword-only prose do not count. After every push, rerun the review before replacing the attested SHA; copying the new SHA alone does not attest a review. Earlier free-form fallback summaries no longer satisfy this gate.
 
 `pull_request_target` attaches the Actions job to the **base** SHA, so the job always publishes a Checks API run named `Review Gate` on the PR head (opened / synchronize / label / edit).
 

@@ -62,27 +62,95 @@ running = pr(
     }
 )
 # body still names Codex in ## Review? Our ## Review says "Codex round 1" which
-# does not match FALLBACK_REVIEWER (agy/superpowers/claude). So this should fail.
+# is not a completed fallback attestation. So this should fail.
 assert g.evaluate(running)
 
-# Fallback named in ## Review must also attest the current head SHA
-fallback_stale = pr(
-    body="## Review\n\nagy headless round 1\n",
-    reviews={"nodes": []},
+# Fallback review attestations must bind completion, reviewer and current head.
+head = "89cda0610123456789abcdef0123456789abcdef"
+pending_body = (
+    "## Review\n\n"
+    "Pending: adversarial review on head 89cda061 ...\n\n"
+    "🤖 Generated with [Claude Code](https://claude.com/claude-code)\n"
 )
-assert g.evaluate(fallback_stale), "fallback without head SHA must fail after push"
-fallback = pr(
-    body="## Review\n\nagy headless round 1\nhead: abc1234\n",
-    reviews={"nodes": []},
+assert g.evaluate(pr(body=pending_body, headRefOid=head, reviews={"nodes": []})), (
+    "pending review plus Claude Code footer must never satisfy the gate"
 )
-assert g.evaluate(fallback) == []
-# New head invalidates a fallback attestation for the previous SHA
-fallback_old_head = pr(
-    body="## Review\n\nagy headless round 1\nhead: abc1234\n",
+
+for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
+    for sha in (head, head[:7], head[:8], head[:12]):
+        for verdict in ("clean", "findings fixed"):
+            body = (
+                f"## Review\n\nFallback review: {reviewer} on {sha} "
+                f"— verdict: {verdict}\n"
+            )
+            assert g.evaluate(
+                pr(body=body, headRefOid=head, reviews={"nodes": []})
+            ) == []
+
+invalid_lines = (
+    "agy headless round 1\nhead: 89cda061",  # old independent keyword/SHA format
+    "agy review completed on 89cda061",  # keyword-only, same line
+    "Fallback review: agy on deadbee — verdict: clean",  # stale SHA
+    "Fallback review: agy on 89cda061ffff — verdict: clean",  # shares 7 chars only
+    "Fallback review: agy on 89cda0 — verdict: clean",  # too short
+    f"Fallback review: agy on {head}0 — verdict: clean",  # too long
+    "Fallback review: agy on 89cda061 — verdict: pending",
+    "Fallback review: agy on 89cda061 — verdict: clean (pending)",
+    "Pending: Fallback review: agy on 89cda061 — verdict: clean",
+    "Fallback review: agy on 89cda061 — verdict: clean RUNNING",
+    "TODO Fallback review: agy on 89cda061 — verdict: findings fixed",
+    "Fallback review: agy on\n89cda061 — verdict: clean",  # split line
+    "Fallback review: claude on 89cda061 — verdict: clean",  # ambiguous identity
+    "Fallback review: someone on 89cda061 — verdict: clean",
+    "Fallback review: agy on 89cda061 — verdict: unknown",
+    "https://example.com/Fallback review: agy on 89cda061 — verdict: clean",
+    "[Fallback review: agy on 89cda061 — verdict: clean](https://example.com)",
+)
+for line in invalid_lines:
+    assert g.evaluate(
+        pr(body=f"## Review\n\n{line}\n", headRefOid=head, reviews={"nodes": []})
+    ), line
+
+attestation = "Fallback review: agy on 89cda061 — verdict: clean"
+# Examples that GitHub does not render as prose must not count.
+hidden = (
+    f"<!-- example only\n{attestation}\n-->",
+    f"<!-- example only\n{attestation}",  # unclosed comment
+    f"```\n{attestation}\n```",
+    f"~~~\n{attestation}\n~~~",
+    f"````\n```\n{attestation}\n````",
+    f"    {attestation}",
+    f"\t{attestation}",
+    f"<pre>\n{attestation}\n</pre>",
+    f"<PRE>{attestation}</PRE>",
+    f"```\n{attestation}",  # unclosed fence
+)
+for block in hidden:
+    assert g.evaluate(pr(
+        body=f"## Review\n\nPending\n\n{block}\n", headRefOid=head, reviews={"nodes": []}
+    )), block
+# A heading hidden in a comment is not a Review section.
+assert g.evaluate(pr(
+    body=f"<!--\n## Review\n{attestation}\n-->", headRefOid=head, reviews={"nodes": []}
+))
+# U+2028 must not split a line into a bare attestation.
+assert g.evaluate(pr(
+    body=f"## Review\n\nnote\u2028{attestation}\n", headRefOid=head, reviews={"nodes": []}
+))
+# A real attestation after a closed comment/fence still passes.
+assert not g.evaluate(pr(
+    body=f"## Review\n\n<!-- c -->\n```\nx\n```\n{attestation}\n",
+    headRefOid=head, reviews={"nodes": []},
+))
+assert g.evaluate(pr(
+    body=f"## Review\n\n{attestation}\n",
     headRefOid="dddddddfffffffffff",
     reviews={"nodes": []},
-)
-assert g.evaluate(fallback_old_head)
+)), "new push must invalidate the previous attestation"
+for body in (attestation, f"## Review\nPending\n## Other\n{attestation}"):
+    assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []}))
+for missing_head in (None, "", "89cda0"):
+    assert not g.review_section_names_fallback(f"## Review\n{attestation}", missing_head)
 
 # Dismissed Codex review on head does not count
 dismissed = pr(
