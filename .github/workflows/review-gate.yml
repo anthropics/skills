@@ -1,0 +1,95 @@
+# Review Gate — required check on PR head (trusted workflow code only).
+# Installed from bernierllc/claude-skills skill `review-gate`.
+# Pair with GitHub ruleset pull_request.required_review_thread_resolution: true.
+#
+# Security: only `pull_request_target` so the workflow file always comes from the
+# PR base (never the merge commit). Same-repo `pull_request_review` /
+# `pull_request_review_comment` would run PR-modified workflow YAML with
+# checks/actions write — removed on purpose. Gate jobs never execute PR-head
+# or untrusted-base code; they load scripts/check-review-gate.py exclusively
+# from the repository default branch (a PR base ref can be a contributor-
+# controlled branch when the PR targets a non-default base).
+#
+# Stale-check residual: review/thread events are intentionally not triggers, so
+# a green "Review Gate" on a head SHA can outlive a later P2 thread. Mitigations:
+# (1) PreToolUse merge-guard re-runs the checker live before `gh pr merge`;
+# (2) after any thread change without a push, re-fire via label toggle or PR
+# body edit (agents: adversarial-review). Do not reintroduce review-event
+# workflow triggers.
+#
+# Required-check context is the Checks API check run named "Review Gate"
+# published on pull_request.head.sha (Actions job alone attaches to the base).
+name: Review Gate
+
+on:
+  pull_request_target:
+    types: [opened, reopened, ready_for_review, synchronize, edited, labeled, unlabeled]
+
+permissions:
+  contents: read
+  pull-requests: read
+  checks: write
+
+concurrency:
+  group: review-gate-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    name: Review Gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run trusted review-gate checker
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO: ${{ github.repository }}
+          SHA: ${{ github.event.pull_request.head.sha }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          set -euo pipefail
+          # Invalidate any prior same-head success before reevaluation (edited /
+          # unlabeled / …). Required checks stay pending until we complete below.
+          check_id=$(gh api -X POST "repos/$REPO/check-runs" \
+            -f name="Review Gate" \
+            -f head_sha="$SHA" \
+            -f status="in_progress" \
+            -f "output[title]=review-gate running" \
+            -f "output[summary]=Reevaluating review gate…" \
+            --jq .id)
+          complete_check() {
+            local conclusion="$1" title="$2" summary="$3"
+            gh api -X PATCH "repos/$REPO/check-runs/$check_id" \
+              -f status="completed" \
+              -f conclusion="$conclusion" \
+              -f "output[title]=$title" \
+              -f "output[summary]=$summary"
+          }
+          # Only the default branch is trusted for the checker binary. A PR can
+          # target any same-repo branch; that base SHA is not necessarily protected.
+          ref="$DEFAULT_BRANCH"
+          if meta=$(gh api "repos/$REPO/contents/scripts/check-review-gate.py?ref=$ref" 2>/dev/null); then
+            printf '%s' "$meta" | jq -r '.content' | base64 -d > /tmp/check-review-gate.py
+            echo "Loaded trusted checker from ref=$ref"
+          else
+            msg=$(printf '%s\n%s' \
+              "Missing trusted scripts/check-review-gate.py on default branch $DEFAULT_BRANCH." \
+              "Run install-workflow.py and merge it to the default branch.")
+            printf '%s\n' "$msg"
+            complete_check failure "review-gate failed" "$msg"
+            exit 1
+          fi
+          set +e
+          out=$(python3 /tmp/check-review-gate.py --pr "$PR_NUMBER" --repo "$REPO" 2>&1)
+          rc=$?
+          set -e
+          printf '%s\n' "$out"
+          # pull_request_target attaches the Actions job to the base SHA — always
+          # publish Checks API on the PR head for the required-check context.
+          summary=$(printf '%s' "$out" | head -c 60000)
+          if [ "$rc" -eq 0 ]; then
+            complete_check success "review-gate ok" "$summary"
+          else
+            complete_check failure "review-gate failed" "$summary"
+          fi
+          exit "$rc"
