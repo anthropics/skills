@@ -24,7 +24,12 @@ CLOSING = re.compile(
     r"notion\.(so|com)/|fixed in (commit )?`?[0-9a-f]{7,40}`?|not-a-finding:\s*\S",
     re.I,
 )
-FALLBACK_REVIEWER = re.compile(r"\b(agy|superpowers|claude|antigravity)\b", re.I)
+FALLBACK_ATTESTATION = re.compile(
+    r"Fallback review: (agy|antigravity|superpowers|claude-sonnet) on "
+    r"([0-9a-f]{7,40}) — verdict: (clean|findings fixed)",
+    re.I,
+)
+INCOMPLETE_REVIEW = re.compile(r"\b(pending|running|todo)\b", re.I)
 REVIEW_SECTION = re.compile(r"(?m)^##\s+Review\b")
 MAIN_REVIEW_LABELS = {"review:high"}
 # Exact bot logins only — substring matches like "codex-helper" must not pass the gate.
@@ -479,27 +484,57 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
     return False
 
 
-def review_section_names_fallback(body: str, head: str | None = None) -> bool:
-    """True when ## Review names a fallback *and* attests the current head SHA.
+def _rendered_markdown(body: str) -> str:
+    """Drop what GitHub does not render as prose: HTML comments, <pre>, code.
 
-    Naming `agy`/`claude` alone must not survive a new push; require the current
-    `headRefOid` (full or ≥7-char prefix) inside the ## Review section.
+    An attestation shown as an example (comment, fence, indented code) must not
+    count. Unclosed comments and fences run to the end of the body, as GitHub
+    renders them, so this only ever removes more, never less.
     """
-    m = REVIEW_SECTION.search(body or "")
-    if not m:
-        return False
-    rest = (body or "")[m.end() :]
-    next_h = re.search(r"(?m)^##\s+", rest)
-    section = rest[: next_h.start()] if next_h else rest
-    if not FALLBACK_REVIEWER.search(section):
-        return False
+    text = body.replace("\r\n", "\n")
+    text = re.sub(r"<!--.*?(?:-->|\Z)", "", text, flags=re.S)
+    text = re.sub(r"<pre\b.*?(?:</pre\s*>|\Z)", "", text, flags=re.S | re.I)
+    kept: list[str] = []
+    fence: str | None = None
+    for line in text.split("\n"):
+        marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
+        if fence is not None:
+            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence):
+                fence = None
+            continue
+        if marker:
+            fence = marker.group(1)
+            continue
+        if line.startswith(("    ", "\t")):
+            continue
+        kept.append(line)
+    return "\n".join(kept)
+
+
+def review_section_names_fallback(body: str, head: str | None = None) -> bool:
+    """Require one explicit completed-review line bound to the current head.
+
+    Full-line matching excludes incidental prose, URLs and generated footers.
+    Compare the entire captured SHA prefix so a stale longer SHA cannot pass
+    merely because its first seven characters match.
+    """
     if not head or len(head) < 7:
         return False
-    # Prefer full OID; also accept the conventional short SHA prefix.
-    if head in section:
-        return True
-    short = head[:7]
-    return short in section
+    body = _rendered_markdown(body or "")
+    m = REVIEW_SECTION.search(body)
+    if not m:
+        return False
+    rest = body[m.end() :]
+    next_h = re.search(r"(?m)^##\s+", rest)
+    section = rest[: next_h.start()] if next_h else rest
+    # \n only: str.splitlines() also splits on U+2028 and friends.
+    for line in section.split("\n"):
+        if INCOMPLETE_REVIEW.search(line):
+            continue
+        attestation = FALLBACK_ATTESTATION.fullmatch(line.strip())
+        if attestation and head.lower().startswith(attestation.group(2).lower()):
+            return True
+    return False
 
 
 def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
@@ -528,8 +563,9 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
         reasons.append("PR body missing ## Review section")
     if not (codex_done_on_head(pr) or review_section_names_fallback(body, head)):
         reasons.append(
-            "No completed Codex review on current head, and ## Review does not name a "
-            "fallback (agy/superpowers/claude) bound to this head SHA"
+            "No completed Codex review on current head, and ## Review lacks a completed "
+            "fallback attestation: Fallback review: <agy|antigravity|superpowers|claude-sonnet> "
+            "on <head SHA> — verdict: <clean|findings fixed>"
         )
     reasons.extend(p2_threads_closed(pr))
     if (pr.get("baseRefName") or "") == "main":
