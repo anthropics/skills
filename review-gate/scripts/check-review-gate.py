@@ -25,7 +25,7 @@ P2_ROOT = re.compile(r"\bp2\b", re.I)
 # fenced example does not close the thread.
 CLOSING = re.compile(
     r"(?m)^[ \t]*(?:[-*+][ \t]+)?(?:tracked:?[ \t]+)?"
-    r"(?:\S*notion\.(?:so|com)/|fixed in (?:commit )?`?[0-9a-f]{7,40}\b`?|not-a-finding:[ \t]*\S)",
+    r"(?:(?:\[[^\]\n]*\]\()?<?https?://(?:[a-z0-9-]+\.)?notion\.(?:so|com)/|fixed in (?:commit )?`?[0-9a-f]{7,40}\b`?|not-a-finding:[ \t]*\S)",
     re.I,
 )
 FALLBACK_ATTESTATION = re.compile(
@@ -674,6 +674,22 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
     return False
 
 
+def _unquoted(text: str) -> str:
+    """Drop blockquotes, including lazy continuation lines (a non-blank line
+    after a `>` line stays inside the quote until a blank line)."""
+    kept: list[str] = []
+    in_quote = False
+    for line in text.split("\n"):
+        if re.match(r" {0,3}>", line):
+            in_quote = True
+            continue
+        if in_quote and line.strip():
+            continue
+        in_quote = False
+        kept.append(line)
+    return "\n".join(kept)
+
+
 def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
     failures: list[str] = []
     for i, thread in enumerate(pr.get("reviewThreads", {}).get("nodes") or [], 1):
@@ -684,7 +700,7 @@ def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
         if not P2_ROOT.search(root):
             continue
         replies = comments[1:]
-        if any(CLOSING.search(_rendered_markdown(c.get("body") or "")) for c in replies):
+        if any(CLOSING.search(_unquoted(_rendered_markdown(c.get("body") or ""))) for c in replies):
             continue
         failures.append(
             f"P2 thread #{i} has no closing reply (Notion link / fixed in <sha> / not-a-finding:)"

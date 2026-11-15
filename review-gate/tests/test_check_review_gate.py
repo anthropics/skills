@@ -251,6 +251,8 @@ for ok in (
     "- not-a-finding: intentional, see SKILL.md",
     "Tracked: https://app.notion.com/p/4194efecc95a816c",
     "https://www.notion.so/abc123",
+    "[Tracker row](https://app.notion.com/p/abc)",
+    "> quoted context\n\nfixed in deadbeef",
 ):
     assert g.evaluate(_p2(ok)) == [], ok
 for bad in (
@@ -260,6 +262,10 @@ for bad in (
     "<!-- fixed in deadbeef -->",
     "will be not-a-finding: maybe",
     "fixed in deadbeefzz",
+    "not-fixed:https://notion.so/ticket",
+    "`https://notion.so/ticket`",
+    "https://evilnotion.so/ticket",
+    "> Example only:\nfixed in deadbeef",
 ):
     assert any("P2" in r for r in g.evaluate(_p2(bad))), bad
 
