@@ -76,7 +76,7 @@ assert g.evaluate(pr(body=pending_body, headRefOid=head, reviews={"nodes": []}))
     "pending review plus Claude Code footer must never satisfy the gate"
 )
 
-for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
+for reviewer in ("codex", "agy", "antigravity", "superpowers", "claude-sonnet"):
     for sha in (head, head[:7], head[:8], head[:12]):
         for verdict in ("clean", "findings fixed"):
             body = (
@@ -1575,7 +1575,8 @@ assert "Stale-check residual" in yml
 assert "label toggle" in yml
 
 skill = (Path(__file__).parent.parent / "SKILL.md").read_text()
-assert '$(aec path skill review-gate)/scripts/install-workflow.py' in skill
+assert "aec run-script skill:review-gate install-workflow.py" in skill
+assert "aec path" not in skill
 assert "$(dirname)/scripts/install-workflow.py" not in skill
 assert "scripts/check-review-gate.py" in skill
 assert "default branch" in skill.lower()

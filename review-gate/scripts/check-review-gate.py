@@ -25,7 +25,7 @@ CLOSING = re.compile(
     re.I,
 )
 FALLBACK_ATTESTATION = re.compile(
-    r"Fallback review: (agy|antigravity|superpowers|claude-sonnet) on "
+    r"Fallback review: (codex|agy|antigravity|superpowers|claude-sonnet) on "
     r"([0-9a-f]{7,40}) — verdict: (clean|findings fixed)",
     re.I,
 )
@@ -564,7 +564,7 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     if not (codex_done_on_head(pr) or review_section_names_fallback(body, head)):
         reasons.append(
             "No completed Codex review on current head, and ## Review lacks a completed "
-            "fallback attestation: Fallback review: <agy|antigravity|superpowers|claude-sonnet> "
+            "fallback attestation: Fallback review: <codex|agy|antigravity|superpowers|claude-sonnet> "
             "on <head SHA> — verdict: <clean|findings fixed>"
         )
     reasons.extend(p2_threads_closed(pr))
