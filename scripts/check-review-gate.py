@@ -431,6 +431,42 @@ def _paginate_labels(owner: str, name: str, number: int, hostname: str | None = 
     return labels
 
 
+def _paginate_issue_comments(
+    owner: str, name: str, number: int, hostname: str | None = None
+) -> list[dict[str, Any]]:
+    """Fetch every PR conversation comment (Codex posts clean results here)."""
+    out: list[dict[str, Any]] = []
+    cursor: str | None = None
+    q = """
+    query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
+      repository(owner:$owner, name:$name) {
+        pullRequest(number:$number) {
+          comments(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes { body author { login } }
+          }
+        }
+      }
+    }
+    """
+    while True:
+        variables: dict[str, Any] = {"owner": owner, "name": name, "number": number}
+        if cursor:
+            variables["cursor"] = cursor
+        conn = (
+            _graphql(q, hostname=hostname, **variables)
+            .get("repository", {})
+            .get("pullRequest", {})
+            .get("comments")
+            or {}
+        )
+        out.extend(conn.get("nodes") or [])
+        page = conn.get("pageInfo") or {}
+        cursor = page.get("endCursor")
+        if not page.get("hasNextPage") or not cursor:
+            return out
+
+
 def pr_payload(
     owner: str, name: str, number: int, hostname: str | None = None
 ) -> dict[str, Any]:
@@ -452,6 +488,9 @@ def pr_payload(
         raise RuntimeError(f"PR #{number} not found in {owner}/{name}")
     pr["labels"] = {"nodes": _paginate_labels(owner, name, number, hostname=hostname)}
     pr["reviews"] = {"nodes": _paginate_reviews(owner, name, number, hostname=hostname)}
+    pr["issueComments"] = {
+        "nodes": _paginate_issue_comments(owner, name, number, hostname=hostname)
+    }
     pr["reviewThreads"] = {
         "nodes": _paginate_threads(owner, name, number, hostname=hostname)
     }
@@ -481,7 +520,37 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
         if "running" in body.lower() and len(body) < 400:
             continue
         return True
-    return False
+    return any(
+        _codex_comment_done_on(c, head)
+        for c in (pr.get("issueComments") or {}).get("nodes") or []
+    )
+
+
+CODEX_STATE = re.compile(r"<!--\s*codex-review-state:v1\s*(\{.*?\})\s*-->", re.S)
+CODEX_REVIEWED_COMMIT = re.compile(r"\*\*Reviewed commit:\*\*\s*`([0-9a-fA-F]{7,40})`")
+
+
+def _codex_comment_done_on(comment: dict[str, Any], head: str) -> bool:
+    """A Codex conversation comment reporting a finished review of ``head``.
+
+    Clean results arrive as an issue comment, not a PullRequestReview. Accept
+    the structured state marker (full-SHA match, status completed) or a
+    ``Reviewed commit:`` line whose SHA is a prefix of head. "Running" never counts.
+    """
+    if not is_codex_author((comment.get("author") or {}).get("login")):
+        return False
+    body = comment.get("body") or ""
+    m = CODEX_STATE.search(body)
+    if m:
+        try:
+            cr = (json.loads(m.group(1)).get("code_review") or {})
+        except ValueError:
+            return False
+        return cr.get("commit_sha") == head and cr.get("status") == "completed"
+    m = CODEX_REVIEWED_COMMIT.search(body)
+    if not m or not head.startswith(m.group(1).lower()):
+        return False
+    return "running" not in body.lower() or len(body) >= 400
 
 
 def _rendered_markdown(body: str) -> str:

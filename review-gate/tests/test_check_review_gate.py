@@ -1883,6 +1883,19 @@ assert not _doctor.ruleset_requires_conversation_resolution(
 for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n"):
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
+# Clean Codex result is an issue comment, not a PullRequestReview
+def _cc(body, login="chatgpt-codex-connector"):
+    return pr(reviews={"nodes": []}, issueComments={"nodes": [{"body": body, "author": {"login": login}}]})
+_clean = "Codex Review: Didn't find any major issues.\n**Reviewed commit:** `abc1234`\n"
+assert g.evaluate(_cc(_clean)) == []
+assert g.evaluate(_cc(_clean.replace("abc1234", "dead123")))  # other head
+assert g.evaluate(_cc(_clean, login="someone-else"))
+assert g.evaluate(_cc("Codex is Running\n**Reviewed commit:** `abc1234`"))
+_state = '<!-- codex-review-state:v1 {"code_review":{"commit_sha":"abc1234","status":"%s"}} -->'
+assert g.evaluate(_cc(_state % "completed")) == []
+assert g.evaluate(_cc(_state % "running"))
+assert g.evaluate(_cc(_state.replace("abc1234", "dead123") % "completed"))
+
 # Thread pagination embeds the first comments page (avoid N+1 gh api calls)
 _paginate_src = inspect.getsource(g._paginate_threads)
 assert "comments(first: 50)" in _paginate_src
