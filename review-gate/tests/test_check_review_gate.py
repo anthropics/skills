@@ -1881,7 +1881,8 @@ assert not _doctor.ruleset_requires_conversation_resolution(
 
 # `## Review` only inside an HTML comment or fence is not a visible section
 for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
-               "```\n```not-a-closing-fence\n## Review\n```\n"):  # info-string line does not close
+               "```\n```not-a-closing-fence\n## Review\n```\n",  # info-string line does not close
+               "<table>\n## Review\n</table>\n"):  # raw HTML block, not a heading
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
 # Clean Codex result is an issue comment, not a PullRequestReview

@@ -566,6 +566,9 @@ def _rendered_markdown(body: str) -> str:
     text = body.replace("\r\n", "\n")
     text = re.sub(r"<!--.*?(?:-->|\Z)", "", text, flags=re.S)
     text = re.sub(r"<pre\b.*?(?:</pre\s*>|\Z)", "", text, flags=re.S | re.I)
+    # CommonMark HTML blocks (type 6) run to the next blank line; their inner lines are not headings
+    text = re.sub(r"(?mis)^ {0,3}</?(?:table|div|details|summary|section|blockquote|ul|ol|dl|p|"
+                  r"tr|td|th|thead|tbody|center|article|aside|header|footer|nav|form|h[1-6])\b.*?(?:\n[ \t]*\n|\Z)", "\n", text)
     kept: list[str] = []
     fence: str | None = None
     for line in text.split("\n"):
