@@ -1891,6 +1891,9 @@ assert g.evaluate(_cc(_clean)) == []
 assert g.evaluate(_cc(_clean.replace("abc1234", "dead123")))  # other head
 assert g.evaluate(_cc(_clean, login="someone-else"))
 assert g.evaluate(_cc("Codex is Running\n**Reviewed commit:** `abc1234`"))
+assert g.evaluate(_cc("Running " + "x" * 600 + "\n**Reviewed commit:** `abc1234`"))  # long still Running
+_footer = "<details> <summary>ℹ️ About Codex</summary>\nCodex reacts while any review is running\n</details>"
+assert g.evaluate(_cc(_clean + _footer)) == []  # boilerplate "running" is not a status
 _state = '<!-- codex-review-state:v1 {"code_review":{"commit_sha":"abc1234","status":"%s"}} -->'
 assert g.evaluate(_cc(_state % "completed")) == []
 assert g.evaluate(_cc(_state % "running"))

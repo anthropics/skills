@@ -550,7 +550,10 @@ def _codex_comment_done_on(comment: dict[str, Any], head: str) -> bool:
     m = CODEX_REVIEWED_COMMIT.search(body)
     if not m or not head.startswith(m.group(1).lower()):
         return False
-    return "running" not in body.lower() or len(body) >= 400
+    # The "About Codex" footer says "while any review is running" on every
+    # comment, so strip it before looking for a Running status.
+    status = re.sub(r"<details>\s*<summary>\s*ℹ️.*?</details>", "", body, flags=re.S)
+    return "running" not in status.lower()
 
 
 def _rendered_markdown(body: str) -> str:
