@@ -436,22 +436,37 @@ def _paginate_labels(owner: str, name: str, number: int, hostname: str | None = 
 def _codex_comments(
     owner: str, name: str, number: int, hostname: str | None = None
 ) -> list[dict[str, Any]]:
-    """Last 100 PR conversation comments; Codex keeps one summary comment updated.
-
-    ponytail: last 100 only; paginate if a PR ever buries the summary deeper.
-    """
+    """Every PR conversation comment (Codex keeps one summary comment updated)."""
+    out: list[dict[str, Any]] = []
+    cursor: str | None = None
     q = """
-    query($owner:String!, $name:String!, $number:Int!) {
+    query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
       repository(owner:$owner, name:$name) {
         pullRequest(number:$number) {
-          comments(last: 100) { nodes { author { login } body } }
+          comments(first: 100, after: $cursor) {
+            pageInfo { hasNextPage endCursor }
+            nodes { author { login } body }
+          }
         }
       }
     }
     """
-    data = _graphql(q, hostname=hostname, owner=owner, name=name, number=number)
-    pr = (data.get("repository") or {}).get("pullRequest") or {}
-    return (pr.get("comments") or {}).get("nodes") or []
+    while True:
+        variables: dict[str, Any] = {"owner": owner, "name": name, "number": number}
+        if cursor:
+            variables["cursor"] = cursor
+        conn = (
+            _graphql(q, hostname=hostname, **variables)
+            .get("repository", {})
+            .get("pullRequest", {})
+            .get("comments")
+            or {}
+        )
+        out.extend(conn.get("nodes") or [])
+        page = conn.get("pageInfo") or {}
+        cursor = page.get("endCursor")
+        if not page.get("hasNextPage") or not cursor:
+            return out
 
 
 def codex_clean_comment_on_head(pr: dict[str, Any]) -> bool:
@@ -533,30 +548,100 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
     return False
 
 
-def _rendered_markdown(body: str) -> str:
-    """Drop what GitHub does not render as prose: HTML comments, <pre>, code.
+_BLOCK_TAGS = (
+    "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|"
+    "dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|"
+    "iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|"
+    "summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul"
+)
+# CommonMark html block type 6 (named block tags) ...
+_HTML_BLOCK6 = re.compile(rf" {{0,3}}</?(?:{_BLOCK_TAGS})(?:[\s/>]|$)", re.I)
+# ... and type 7 (one complete tag alone on its line; cannot interrupt a paragraph; quoted attrs may hold <>)
+_HTML_BLOCK7 = re.compile(
+    r" {0,3}(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+(?:[^<>\"']|\"[^\"]*\"|'[^']*')*)?/?>"
+    r"|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$")
+# types 1, 3, 4, 5: (start, end marker); the block runs to the line holding the end marker
+_RAW_BLOCKS = (
+    (re.compile(r" {0,3}<(pre|script|style|textarea)\b", re.I), None),  # closes on its own </tag>
+    (re.compile(r" {0,3}<\?"), re.compile(r"\?>")),
+    (re.compile(r" {0,3}<![A-Za-z]"), re.compile(r">")),
+    (re.compile(r" {0,3}<!\[CDATA\["), re.compile(r"\]\]>")),
+)
+# a backtick fence's info string cannot contain a backtick (CommonMark), or it is not a fence
+_FENCE_OPEN = re.compile(r" {0,3}(?:(`{3,})[^`]*$|(~{3,}))")
 
-    An attestation shown as an example (comment, fence, indented code) must not
-    count. Unclosed comments and fences run to the end of the body, as GitHub
-    renders them, so this only ever removes more, never less.
+
+def _rendered_markdown(body: str) -> str:
+    """Keep only what GitHub renders as prose, in one pass over the lines.
+
+    Dropped: fenced and indented code, HTML comments, raw HTML blocks (a block
+    opened by any tag at line start runs to the next blank line; pre/script/
+    style/textarea run to their closing tag). One state machine, so an example
+    inside a fence can never open a comment or block, and nothing opened is
+    silently closed early. Unclosed constructs run to the end of the body, as
+    GitHub renders them, so this only ever removes more, never less.
     """
-    text = body.replace("\r\n", "\n")
-    text = re.sub(r"<!--.*?(?:-->|\Z)", "", text, flags=re.S)
-    text = re.sub(r"<pre\b.*?(?:</pre\s*>|\Z)", "", text, flags=re.S | re.I)
     kept: list[str] = []
     fence: str | None = None
-    for line in text.split("\n"):
-        marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
+    in_comment = False
+    raw_close: re.Pattern[str] | None = None  # end marker of an open <pre>-style block
+    in_html = False  # inside a blank-line-terminated html block
+    para = False  # previous line was paragraph text (type-7 blocks cannot interrupt it)
+    for line in body.replace("\r\n", "\n").split("\n"):
+        was_para, para = para, False
         if fence is not None:
-            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence):
+            marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
+            # a closing fence is the marker plus optional whitespace only (CommonMark)
+            if (marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence)
+                    and not line[marker.end():].strip()):
                 fence = None
             continue
-        if marker:
-            fence = marker.group(1)
+        if raw_close is not None:
+            if raw_close.search(line):
+                raw_close = None
             continue
-        if line.startswith(("    ", "\t")):
-            continue
-        kept.append(line)
+        if in_html:
+            if line.strip():
+                continue
+            in_html = False
+        if not in_comment:
+            opener = _FENCE_OPEN.match(line)
+            if opener:
+                fence = opener.group(1) or opener.group(2)
+                continue
+            if line.startswith(("    ", "\t")):
+                continue
+            raw = next(((m, c) for st, c in _RAW_BLOCKS if (m := st.match(line))), None)
+            if raw:
+                raw_close = raw[1] or re.compile(rf"</{raw[0].group(1)}\s*>", re.I)
+                if raw_close.search(line[raw[0].end():]):
+                    raw_close = None
+                continue
+            if _HTML_BLOCK6.match(line) or (not was_para and _HTML_BLOCK7.match(line)):
+                in_html = True
+                continue
+        # strip HTML comment spans, which may open or close mid-line
+        out = ""
+        rest = line
+        while rest:
+            if in_comment:
+                end = rest.find("-->")
+                if end < 0:
+                    rest = ""
+                else:
+                    in_comment, rest = False, rest[end + 3 :]
+            else:
+                start = rest.find("<!--")
+                if start < 0:
+                    out += rest
+                    rest = ""
+                else:
+                    out += rest[:start]
+                    in_comment, rest = True, rest[start + 4 :]
+        # a heading or thematic break is a complete block, so a tag on the next line may open an html block
+        para = bool(out.strip()) and not re.match(r" {0,3}(?:#{1,6}(?:\s|$)|(?:[-*_][ \t]*){3,}$)", out)
+        if out.strip() or not line.strip():
+            kept.append(out)
     return "\n".join(kept)
 
 
@@ -608,7 +693,8 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     reasons: list[str] = []
     body = pr.get("body") or ""
     head = pr.get("headRefOid") or ""
-    if not REVIEW_SECTION.search(body):
+    # Rendered view: a heading inside a comment or fence is not visible.
+    if not REVIEW_SECTION.search(_rendered_markdown(body)):
         reasons.append("PR body missing ## Review section")
     if not (
         codex_done_on_head(pr)

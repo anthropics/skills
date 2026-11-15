@@ -1900,6 +1900,34 @@ assert not _doctor.ruleset_requires_conversation_resolution(
     {"rules": [{"type": "pull_request", "parameters": {}}]}
 )
 
+# `## Review` only inside an HTML comment or fence is not a visible section
+for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
+               "```\n```not-a-closing-fence\n## Review\n```\n",  # info-string line does not close
+               "<table>\n## Review\n</table>\n",
+               "<address>\n## Review\n</address>\n", "<fieldset>\n## Review\n</fieldset>\n",
+               "<pre>\n</script>\n## Review\n</pre>\n", "# t\n<mark>\n## Review\n",
+               "<pre>\n## Review\n</pre>\n", "<?xml\n## Review\n?>\n", "<!DOCTYPE x\n## Review\n>\n",
+               "<![CDATA[\n## Review\n]]>\n",
+               '<a title="x>y">\n## Review\n</a>\n', "text <!-- x\n## Review\n--> y\n"):  # raw HTML block, not a heading
+    assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
+
+# a fenced html example must not swallow the closing fence and hide a real section
+assert not any("## Review" in r for r in g.evaluate(pr(body="```\n<table>\n\n```\n\n## Review\nFallback review: agy on abc1234 — verdict: clean\n")))
+
+_real_vis = "## Review\nFallback review: agy on abc1234 — verdict: clean\n"
+# visible headings after inline html or an invalid fence opener still render
+for vis in ("<span>note</span>\n", "text\n<mark>\n", "```python`x\n"):
+    assert not any("## Review" in r for r in g.evaluate(pr(body=vis + _real_vis))), vis
+
+# fenced html/comment markers are code: they must not hide a real section after the fence
+_real = "\n## Review\nFallback review: agy on abc1234 — verdict: clean\n"
+for ex in ("```\n<!-- never closed\n```\n", "```\n<pre>\n```\n", "```\n<div>\n```\n"):
+    assert not any("## Review" in r for r in g.evaluate(pr(body=ex + _real)))
+
+# Codex summary comment is fetched across every page, not only the newest 100
+_cc_src = inspect.getsource(g._codex_comments)
+assert "comments(first: 100, after: $cursor)" in _cc_src and "hasNextPage" in _cc_src
+
 # Thread pagination embeds the first comments page (avoid N+1 gh api calls)
 _paginate_src = inspect.getsource(g._paginate_threads)
 assert "comments(first: 50)" in _paginate_src
