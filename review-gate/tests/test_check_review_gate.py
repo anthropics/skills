@@ -1906,6 +1906,9 @@ for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
                "<table>\n## Review\n</table>\n"):  # raw HTML block, not a heading
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
+# a fenced html example must not swallow the closing fence and hide a real section
+assert not any("## Review" in r for r in g.evaluate(pr(body="```\n<table>\n\n```\n\n## Review\nFallback review: agy on abc1234 — verdict: clean\n")))
+
 # Codex summary comment is fetched across every page, not only the newest 100
 _cc_src = inspect.getsource(g._codex_comments)
 assert "comments(first: 100, after: $cursor)" in _cc_src and "hasNextPage" in _cc_src
