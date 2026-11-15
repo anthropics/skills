@@ -25,7 +25,7 @@ CLOSING = re.compile(
     re.I,
 )
 FALLBACK_ATTESTATION = re.compile(
-    r"Fallback review: (agy|antigravity|superpowers|claude-sonnet) on "
+    r"Fallback review: (codex|agy|antigravity|superpowers|claude-sonnet) on "
     r"([0-9a-f]{7,40}) — verdict: (clean|findings fixed)",
     re.I,
 )
@@ -34,6 +34,8 @@ REVIEW_SECTION = re.compile(r"(?m)^##\s+Review\b")
 MAIN_REVIEW_LABELS = {"review:high"}
 # Exact bot logins only — substring matches like "codex-helper" must not pass the gate.
 CODEX_AUTHORS = frozenset({"chatgpt-codex-connector"})
+# A clean Codex run posts no review, only this state marker in its summary PR comment.
+CODEX_STATE = re.compile(r"<!-- codex-review-state:v1 (\{.*?\}) -->", re.S)
 
 
 DOTCOM_HOSTS = frozenset({"github.com", "www.github.com"})
@@ -431,10 +433,10 @@ def _paginate_labels(owner: str, name: str, number: int, hostname: str | None = 
     return labels
 
 
-def _paginate_issue_comments(
+def _codex_comments(
     owner: str, name: str, number: int, hostname: str | None = None
 ) -> list[dict[str, Any]]:
-    """Fetch every PR conversation comment (Codex posts clean results here)."""
+    """Every PR conversation comment (Codex keeps one summary comment updated)."""
     out: list[dict[str, Any]] = []
     cursor: str | None = None
     q = """
@@ -443,7 +445,7 @@ def _paginate_issue_comments(
         pullRequest(number:$number) {
           comments(first: 100, after: $cursor) {
             pageInfo { hasNextPage endCursor }
-            nodes { body author { login } }
+            nodes { author { login } body }
           }
         }
       }
@@ -467,6 +469,31 @@ def _paginate_issue_comments(
             return out
 
 
+def codex_clean_comment_on_head(pr: dict[str, Any]) -> bool:
+    """True when Codex's summary comment says a code review completed on the
+    current head with no unresolved findings (the clean case posts no review)."""
+    head = pr.get("headRefOid") or ""
+    if not head:
+        return False
+    for c in pr.get("comments", {}).get("nodes") or []:
+        if not is_codex_author((c.get("author") or {}).get("login")):
+            continue
+        m = CODEX_STATE.search(c.get("body") or "")
+        if not m:
+            continue
+        try:
+            review = json.loads(m.group(1)).get("code_review") or {}
+        except (ValueError, AttributeError):
+            continue  # malformed marker: not evidence of a review; fail closed
+        if (
+            review.get("commit_sha") == head
+            and review.get("status") == "completed"
+            and review.get("has_unresolved_findings") is False
+        ):
+            return True
+    return False
+
+
 def pr_payload(
     owner: str, name: str, number: int, hostname: str | None = None
 ) -> dict[str, Any]:
@@ -488,9 +515,7 @@ def pr_payload(
         raise RuntimeError(f"PR #{number} not found in {owner}/{name}")
     pr["labels"] = {"nodes": _paginate_labels(owner, name, number, hostname=hostname)}
     pr["reviews"] = {"nodes": _paginate_reviews(owner, name, number, hostname=hostname)}
-    pr["issueComments"] = {
-        "nodes": _paginate_issue_comments(owner, name, number, hostname=hostname)
-    }
+    pr["comments"] = {"nodes": _codex_comments(owner, name, number, hostname=hostname)}
     pr["reviewThreads"] = {
         "nodes": _paginate_threads(owner, name, number, hostname=hostname)
     }
@@ -520,40 +545,7 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
         if "running" in body.lower() and len(body) < 400:
             continue
         return True
-    return any(
-        _codex_comment_done_on(c, head)
-        for c in (pr.get("issueComments") or {}).get("nodes") or []
-    )
-
-
-CODEX_STATE = re.compile(r"<!--\s*codex-review-state:v1\s*(\{.*?\})\s*-->", re.S)
-CODEX_REVIEWED_COMMIT = re.compile(r"\*\*Reviewed commit:\*\*\s*`([0-9a-fA-F]{7,40})`")
-
-
-def _codex_comment_done_on(comment: dict[str, Any], head: str) -> bool:
-    """A Codex conversation comment reporting a finished review of ``head``.
-
-    Clean results arrive as an issue comment, not a PullRequestReview. Accept
-    the structured state marker (full-SHA match, status completed) or a
-    ``Reviewed commit:`` line whose SHA is a prefix of head. "Running" never counts.
-    """
-    if not is_codex_author((comment.get("author") or {}).get("login")):
-        return False
-    body = comment.get("body") or ""
-    m = CODEX_STATE.search(body)
-    if m:
-        try:
-            cr = (json.loads(m.group(1)).get("code_review") or {})
-        except ValueError:
-            return False
-        return cr.get("commit_sha") == head and cr.get("status") == "completed"
-    m = CODEX_REVIEWED_COMMIT.search(body)
-    if not m or not head.startswith(m.group(1).lower()):
-        return False
-    # The "About Codex" footer says "while any review is running" on every
-    # comment, so strip it before looking for a Running status.
-    status = re.sub(r"<details>\s*<summary>\s*ℹ️.*?</details>", "", body, flags=re.S)
-    return "running" not in status.lower()
+    return False
 
 
 def _rendered_markdown(body: str) -> str:
@@ -639,10 +631,14 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     # Rendered view: a heading inside a comment or fence is not visible.
     if not REVIEW_SECTION.search(_rendered_markdown(body)):
         reasons.append("PR body missing ## Review section")
-    if not (codex_done_on_head(pr) or review_section_names_fallback(body, head)):
+    if not (
+        codex_done_on_head(pr)
+        or codex_clean_comment_on_head(pr)
+        or review_section_names_fallback(body, head)
+    ):
         reasons.append(
             "No completed Codex review on current head, and ## Review lacks a completed "
-            "fallback attestation: Fallback review: <agy|antigravity|superpowers|claude-sonnet> "
+            "fallback attestation: Fallback review: <codex|agy|antigravity|superpowers|claude-sonnet> "
             "on <head SHA> — verdict: <clean|findings fixed>"
         )
     reasons.extend(p2_threads_closed(pr))

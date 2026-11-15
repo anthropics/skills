@@ -76,7 +76,7 @@ assert g.evaluate(pr(body=pending_body, headRefOid=head, reviews={"nodes": []}))
     "pending review plus Claude Code footer must never satisfy the gate"
 )
 
-for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
+for reviewer in ("codex", "agy", "antigravity", "superpowers", "claude-sonnet"):
     for sha in (head, head[:7], head[:8], head[:12]):
         for verdict in ("clean", "findings fixed"):
             body = (
@@ -86,6 +86,26 @@ for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
             assert g.evaluate(
                 pr(body=body, headRefOid=head, reviews={"nodes": []})
             ) == []
+
+# Clean Codex runs post no review, only a state marker in the summary PR comment.
+def codex_comment(sha, status="completed", unresolved=False, login="chatgpt-codex-connector"):
+    state = (
+        '{"code_review":{"commit_sha":"%s","has_any_findings":%s,'
+        '"has_unresolved_findings":%s,"status":"%s"}}'
+        % (sha, str(unresolved).lower(), str(unresolved).lower(), status)
+    )
+    return {"author": {"login": login}, "body": f"<!-- codex-review-state:v1 {state} -->\nsummary"}
+
+no_reviews = {"nodes": []}
+assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [codex_comment(head)]})) == []
+for bad in (
+    codex_comment("deadbeef" + head[8:]),  # other head
+    codex_comment(head, status="running"),
+    codex_comment(head, unresolved=True),
+    codex_comment(head, login="codex-helper"),
+    {"author": {"login": "chatgpt-codex-connector"}, "body": "<!-- codex-review-state:v1 {not json} -->"},
+):
+    assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [bad]})), bad
 
 invalid_lines = (
     "agy headless round 1\nhead: 89cda061",  # old independent keyword/SHA format
@@ -1575,7 +1595,8 @@ assert "Stale-check residual" in yml
 assert "label toggle" in yml
 
 skill = (Path(__file__).parent.parent / "SKILL.md").read_text()
-assert '$(aec path skill review-gate)/scripts/install-workflow.py' in skill
+assert "aec run-script skill:review-gate install-workflow.py" in skill
+assert "aec path" not in skill
 assert "$(dirname)/scripts/install-workflow.py" not in skill
 assert "scripts/check-review-gate.py" in skill
 assert "default branch" in skill.lower()
@@ -1885,21 +1906,9 @@ for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
                "<table>\n## Review\n</table>\n"):  # raw HTML block, not a heading
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
-# Clean Codex result is an issue comment, not a PullRequestReview
-def _cc(body, login="chatgpt-codex-connector"):
-    return pr(reviews={"nodes": []}, issueComments={"nodes": [{"body": body, "author": {"login": login}}]})
-_clean = "Codex Review: Didn't find any major issues.\n**Reviewed commit:** `abc1234`\n"
-assert g.evaluate(_cc(_clean)) == []
-assert g.evaluate(_cc(_clean.replace("abc1234", "dead123")))  # other head
-assert g.evaluate(_cc(_clean, login="someone-else"))
-assert g.evaluate(_cc("Codex is Running\n**Reviewed commit:** `abc1234`"))
-assert g.evaluate(_cc("Running " + "x" * 600 + "\n**Reviewed commit:** `abc1234`"))  # long still Running
-_footer = "<details> <summary>ℹ️ About Codex</summary>\nCodex reacts while any review is running\n</details>"
-assert g.evaluate(_cc(_clean + _footer)) == []  # boilerplate "running" is not a status
-_state = '<!-- codex-review-state:v1 {"code_review":{"commit_sha":"abc1234","status":"%s"}} -->'
-assert g.evaluate(_cc(_state % "completed")) == []
-assert g.evaluate(_cc(_state % "running"))
-assert g.evaluate(_cc(_state.replace("abc1234", "dead123") % "completed"))
+# Codex summary comment is fetched across every page, not only the newest 100
+_cc_src = inspect.getsource(g._codex_comments)
+assert "comments(first: 100, after: $cursor)" in _cc_src and "hasNextPage" in _cc_src
 
 # Thread pagination embeds the first comments page (avoid N+1 gh api calls)
 _paginate_src = inspect.getsource(g._paginate_threads)

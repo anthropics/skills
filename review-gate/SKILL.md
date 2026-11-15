@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 3.0.1
+version: 3.1.1
 author: Bernier LLC
 ---
 
@@ -17,15 +17,16 @@ Programmatic enforcement for the adversarial review loop. Ships:
 ## Install (per repo)
 
 ```bash
+aec setup .                      # only if `aec install` says "Not in a tracked repo"
 aec install skill review-gate
-# copies workflow + trusted checker into the repo (commit both to the default branch):
-python3 "$(aec path skill review-gate)/scripts/install-workflow.py"
+# copies workflow + trusted checker into the repo (run from the repo root; commit both to the default branch):
+aec run-script skill:review-gate install-workflow.py
 # or manually:
 #   cp …/templates/review-gate.yml .github/workflows/review-gate.yml
 #   cp …/scripts/check-review-gate.py scripts/check-review-gate.py
 ```
 
-Upgrading an existing install: 2.0.0 tightens the fallback rule, and the repo's committed checker is a copy. Re-run `install-workflow.py --force` in each repo to pick it up; until then that repo still accepts the old looser fallback.
+Upgrading an existing install: 3.1.0 accepts `codex` (a local Codex review, e.g. T3 Codex high) as an attestation reviewer; 2.0.0 tightened the fallback rule, and the repo's committed checker is a copy. Re-run `install-workflow.py --force` in each repo to pick it up; until then that repo still accepts the old looser fallback.
 
 Then flip GitHub rulesets (no Actions minutes):
 
@@ -64,7 +65,7 @@ Fallback attestations use exactly this format (plain text on its own line inside
 Fallback review: <reviewer> on <sha> — verdict: <verdict>
 ```
 
-- `reviewer`: `agy`, `antigravity`, `superpowers`, or `claude-sonnet`.
+- `reviewer`: `codex` (a local Codex review, such as T3 Codex high, that the GitHub Codex bot did not post), `agy`, `antigravity`, `superpowers`, or `claude-sonnet`.
 - `sha`: the current `headRefOid` in full or a prefix of at least 7 hex characters. The entire supplied prefix must match.
 - `verdict`: `clean` or `findings fixed`; attest only after the review completed and any findings were fixed.
 
