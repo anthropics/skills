@@ -1905,11 +1905,17 @@ for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
                "```\n```not-a-closing-fence\n## Review\n```\n",  # info-string line does not close
                "<table>\n## Review\n</table>\n",
                "<address>\n## Review\n</address>\n", "<fieldset>\n## Review\n</fieldset>\n",
-               "<pre>\n## Review\n</pre>\n", "text <!-- x\n## Review\n--> y\n"):  # raw HTML block, not a heading
+               "<pre>\n## Review\n</pre>\n", "<?xml\n## Review\n?>\n", "<!DOCTYPE x\n## Review\n>\n",
+               "<![CDATA[\n## Review\n]]>\n", "text <!-- x\n## Review\n--> y\n"):  # raw HTML block, not a heading
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
 # a fenced html example must not swallow the closing fence and hide a real section
 assert not any("## Review" in r for r in g.evaluate(pr(body="```\n<table>\n\n```\n\n## Review\nFallback review: agy on abc1234 — verdict: clean\n")))
+
+_real_vis = "## Review\nFallback review: agy on abc1234 — verdict: clean\n"
+# visible headings after inline html or an invalid fence opener still render
+for vis in ("<span>note</span>\n", "```python`x\n"):
+    assert not any("## Review" in r for r in g.evaluate(pr(body=vis + _real_vis))), vis
 
 # fenced html/comment markers are code: they must not hide a real section after the fence
 _real = "\n## Review\nFallback review: agy on abc1234 — verdict: clean\n"

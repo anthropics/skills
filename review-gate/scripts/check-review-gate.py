@@ -548,8 +548,25 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
     return False
 
 
-_HTML_BLOCK_START = re.compile(r" {0,3}</?[A-Za-z][A-Za-z0-9-]*(?:[\s/>]|$)")
-_RAW_TEXT_TAG = re.compile(r" {0,3}<(pre|script|style|textarea)\b", re.I)
+_BLOCK_TAGS = (
+    "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|"
+    "dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|"
+    "iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|"
+    "summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul"
+)
+# CommonMark html block types 6 (named block tags) and 7 (one complete tag alone on its line)
+_HTML_BLOCK_START = re.compile(
+    rf" {{0,3}}(?:</?(?:{_BLOCK_TAGS})(?:[\s/>]|$)"
+    r"|(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+[^<>]*)?/?>|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$)", re.I)
+# types 1, 3, 4, 5: (start, end marker); the block runs to the line holding the end marker
+_RAW_BLOCKS = (
+    (re.compile(r" {0,3}<(?:pre|script|style|textarea)\b", re.I), re.compile(r"</(?:pre|script|style|textarea)\s*>", re.I)),
+    (re.compile(r" {0,3}<\?"), re.compile(r"\?>")),
+    (re.compile(r" {0,3}<![A-Za-z]"), re.compile(r">")),
+    (re.compile(r" {0,3}<!\[CDATA\["), re.compile(r"\]\]>")),
+)
+# a backtick fence's info string cannot contain a backtick (CommonMark), or it is not a fence
+_FENCE_OPEN = re.compile(r" {0,3}(?:(`{3,})[^`]*$|(~{3,}))")
 
 
 def _rendered_markdown(body: str) -> str:
@@ -565,7 +582,7 @@ def _rendered_markdown(body: str) -> str:
     kept: list[str] = []
     fence: str | None = None
     in_comment = False
-    raw_close: str | None = None  # closing tag of an open <pre>-style block
+    raw_close: re.Pattern[str] | None = None  # end marker of an open <pre>-style block
     in_html = False  # inside a blank-line-terminated html block
     for line in body.replace("\r\n", "\n").split("\n"):
         if fence is not None:
@@ -576,7 +593,7 @@ def _rendered_markdown(body: str) -> str:
                 fence = None
             continue
         if raw_close is not None:
-            if re.search(raw_close, line, re.I):
+            if raw_close.search(line):
                 raw_close = None
             continue
         if in_html:
@@ -584,16 +601,16 @@ def _rendered_markdown(body: str) -> str:
                 continue
             in_html = False
         if not in_comment:
-            marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
-            if marker:
-                fence = marker.group(1)
+            opener = _FENCE_OPEN.match(line)
+            if opener:
+                fence = opener.group(1) or opener.group(2)
                 continue
             if line.startswith(("    ", "\t")):
                 continue
-            raw = _RAW_TEXT_TAG.match(line)
+            raw = next(((m, c) for st, c in _RAW_BLOCKS if (m := st.match(line))), None)
             if raw:
-                raw_close = rf"</{raw.group(1)}\s*>"
-                if re.search(raw_close, line[raw.end():], re.I):
+                raw_close = raw[1]
+                if raw_close.search(line[raw[0].end():]):
                     raw_close = None
                 continue
             if _HTML_BLOCK_START.match(line):
