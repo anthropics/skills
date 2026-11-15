@@ -76,7 +76,7 @@ assert g.evaluate(pr(body=pending_body, headRefOid=head, reviews={"nodes": []}))
     "pending review plus Claude Code footer must never satisfy the gate"
 )
 
-for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
+for reviewer in ("codex", "agy", "antigravity", "superpowers", "claude-sonnet"):
     for sha in (head, head[:7], head[:8], head[:12]):
         for verdict in ("clean", "findings fixed"):
             body = (
@@ -86,6 +86,26 @@ for reviewer in ("agy", "antigravity", "superpowers", "claude-sonnet"):
             assert g.evaluate(
                 pr(body=body, headRefOid=head, reviews={"nodes": []})
             ) == []
+
+# Clean Codex runs post no review, only a state marker in the summary PR comment.
+def codex_comment(sha, status="completed", unresolved=False, login="chatgpt-codex-connector"):
+    state = (
+        '{"code_review":{"commit_sha":"%s","has_any_findings":%s,'
+        '"has_unresolved_findings":%s,"status":"%s"}}'
+        % (sha, str(unresolved).lower(), str(unresolved).lower(), status)
+    )
+    return {"author": {"login": login}, "body": f"<!-- codex-review-state:v1 {state} -->\nsummary"}
+
+no_reviews = {"nodes": []}
+assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [codex_comment(head)]})) == []
+for bad in (
+    codex_comment("deadbeef" + head[8:]),  # other head
+    codex_comment(head, status="running"),
+    codex_comment(head, unresolved=True),
+    codex_comment(head, login="codex-helper"),
+    {"author": {"login": "chatgpt-codex-connector"}, "body": "<!-- codex-review-state:v1 {not json} -->"},
+):
+    assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [bad]})), bad
 
 invalid_lines = (
     "agy headless round 1\nhead: 89cda061",  # old independent keyword/SHA format
@@ -1575,7 +1595,8 @@ assert "Stale-check residual" in yml
 assert "label toggle" in yml
 
 skill = (Path(__file__).parent.parent / "SKILL.md").read_text()
-assert '$(aec path skill review-gate)/scripts/install-workflow.py' in skill
+assert "aec run-script skill:review-gate install-workflow.py" in skill
+assert "aec path" not in skill
 assert "$(dirname)/scripts/install-workflow.py" not in skill
 assert "scripts/check-review-gate.py" in skill
 assert "default branch" in skill.lower()
