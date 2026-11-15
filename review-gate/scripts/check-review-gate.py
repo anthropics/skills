@@ -20,8 +20,12 @@ _GH_SUBPROCESS_ENV: ContextVar[dict[str, str] | None] = ContextVar(
 )
 
 P2_ROOT = re.compile(r"\bp2\b", re.I)
+# A closing reply must *say* it: the token starts a rendered line (optionally a
+# list bullet), so "still open; later reply `fixed in abc1234`", a quote, or a
+# fenced example does not close the thread.
 CLOSING = re.compile(
-    r"notion\.(so|com)/|fixed in (commit )?`?[0-9a-f]{7,40}`?|not-a-finding:\s*\S",
+    r"(?m)^[ \t]*(?:[-*+][ \t]+)?(?:tracked:?[ \t]+)?"
+    r"(?:\S*notion\.(?:so|com)/|fixed in (?:commit )?`?[0-9a-f]{7,40}\b`?|not-a-finding:[ \t]*\S)",
     re.I,
 )
 FALLBACK_ATTESTATION = re.compile(
@@ -478,19 +482,18 @@ def codex_clean_comment_on_head(pr: dict[str, Any]) -> bool:
     for c in pr.get("comments", {}).get("nodes") or []:
         if not is_codex_author((c.get("author") or {}).get("login")):
             continue
-        m = CODEX_STATE.search(c.get("body") or "")
-        if not m:
-            continue
-        try:
-            review = json.loads(m.group(1)).get("code_review") or {}
-        except (ValueError, AttributeError):
-            continue  # malformed marker: not evidence of a review; fail closed
-        if (
-            review.get("commit_sha") == head
-            and review.get("status") == "completed"
-            and review.get("has_unresolved_findings") is False
-        ):
-            return True
+        # every marker in the comment, not only the first one
+        for m in CODEX_STATE.finditer(c.get("body") or ""):
+            try:
+                review = json.loads(m.group(1)).get("code_review") or {}
+            except (ValueError, AttributeError):
+                continue  # malformed marker: not evidence of a review; fail closed
+            if (
+                review.get("commit_sha") == head
+                and review.get("status") == "completed"
+                and review.get("has_unresolved_findings") is False
+            ):
+                return True
     return False
 
 
@@ -681,7 +684,7 @@ def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
         if not P2_ROOT.search(root):
             continue
         replies = comments[1:]
-        if any(CLOSING.search(c.get("body") or "") for c in replies):
+        if any(CLOSING.search(_rendered_markdown(c.get("body") or "")) for c in replies):
             continue
         failures.append(
             f"P2 thread #{i} has no closing reply (Notion link / fixed in <sha> / not-a-finding:)"
