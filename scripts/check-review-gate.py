@@ -562,7 +562,7 @@ _HTML_BLOCK7 = re.compile(
     r"|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$")
 # types 1, 3, 4, 5: (start, end marker); the block runs to the line holding the end marker
 _RAW_BLOCKS = (
-    (re.compile(r" {0,3}<(?:pre|script|style|textarea)\b", re.I), re.compile(r"</(?:pre|script|style|textarea)\s*>", re.I)),
+    (re.compile(r" {0,3}<(pre|script|style|textarea)\b", re.I), None),  # closes on its own </tag>
     (re.compile(r" {0,3}<\?"), re.compile(r"\?>")),
     (re.compile(r" {0,3}<![A-Za-z]"), re.compile(r">")),
     (re.compile(r" {0,3}<!\[CDATA\["), re.compile(r"\]\]>")),
@@ -613,7 +613,7 @@ def _rendered_markdown(body: str) -> str:
                 continue
             raw = next(((m, c) for st, c in _RAW_BLOCKS if (m := st.match(line))), None)
             if raw:
-                raw_close = raw[1]
+                raw_close = raw[1] or re.compile(rf"</{raw[0].group(1)}\s*>", re.I)
                 if raw_close.search(line[raw[0].end():]):
                     raw_close = None
                 continue
@@ -638,7 +638,8 @@ def _rendered_markdown(body: str) -> str:
                 else:
                     out += rest[:start]
                     in_comment, rest = True, rest[start + 4 :]
-        para = bool(out.strip())
+        # a heading or thematic break is a complete block, so a tag on the next line may open an html block
+        para = bool(out.strip()) and not re.match(r" {0,3}(?:#{1,6}(?:\s|$)|(?:[-*_][ \t]*){3,}$)", out)
         if out.strip() or not line.strip():
             kept.append(out)
     return "\n".join(kept)

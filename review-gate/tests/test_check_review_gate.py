@@ -1905,6 +1905,7 @@ for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
                "```\n```not-a-closing-fence\n## Review\n```\n",  # info-string line does not close
                "<table>\n## Review\n</table>\n",
                "<address>\n## Review\n</address>\n", "<fieldset>\n## Review\n</fieldset>\n",
+               "<pre>\n</script>\n## Review\n</pre>\n", "# t\n<mark>\n## Review\n",
                "<pre>\n## Review\n</pre>\n", "<?xml\n## Review\n?>\n", "<!DOCTYPE x\n## Review\n>\n",
                "<![CDATA[\n## Review\n]]>\n",
                '<a title="x>y">\n## Review\n</a>\n', "text <!-- x\n## Review\n--> y\n"):  # raw HTML block, not a heading
