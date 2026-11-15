@@ -1903,11 +1903,18 @@ assert not _doctor.ruleset_requires_conversation_resolution(
 # `## Review` only inside an HTML comment or fence is not a visible section
 for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n",
                "```\n```not-a-closing-fence\n## Review\n```\n",  # info-string line does not close
-               "<table>\n## Review\n</table>\n"):  # raw HTML block, not a heading
+               "<table>\n## Review\n</table>\n",
+               "<address>\n## Review\n</address>\n", "<fieldset>\n## Review\n</fieldset>\n",
+               "<pre>\n## Review\n</pre>\n", "text <!-- x\n## Review\n--> y\n"):  # raw HTML block, not a heading
     assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
 
 # a fenced html example must not swallow the closing fence and hide a real section
 assert not any("## Review" in r for r in g.evaluate(pr(body="```\n<table>\n\n```\n\n## Review\nFallback review: agy on abc1234 — verdict: clean\n")))
+
+# fenced html/comment markers are code: they must not hide a real section after the fence
+_real = "\n## Review\nFallback review: agy on abc1234 — verdict: clean\n"
+for ex in ("```\n<!-- never closed\n```\n", "```\n<pre>\n```\n", "```\n<div>\n```\n"):
+    assert not any("## Review" in r for r in g.evaluate(pr(body=ex + _real)))
 
 # Codex summary comment is fetched across every page, not only the newest 100
 _cc_src = inspect.getsource(g._codex_comments)

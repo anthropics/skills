@@ -548,36 +548,78 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
     return False
 
 
-def _rendered_markdown(body: str) -> str:
-    """Drop what GitHub does not render as prose: HTML comments, <pre>, code.
+_HTML_BLOCK_START = re.compile(r" {0,3}</?[A-Za-z][A-Za-z0-9-]*(?:[\s/>]|$)")
+_RAW_TEXT_TAG = re.compile(r" {0,3}<(pre|script|style|textarea)\b", re.I)
 
-    An attestation shown as an example (comment, fence, indented code) must not
-    count. Unclosed comments and fences run to the end of the body, as GitHub
-    renders them, so this only ever removes more, never less.
+
+def _rendered_markdown(body: str) -> str:
+    """Keep only what GitHub renders as prose, in one pass over the lines.
+
+    Dropped: fenced and indented code, HTML comments, raw HTML blocks (a block
+    opened by any tag at line start runs to the next blank line; pre/script/
+    style/textarea run to their closing tag). One state machine, so an example
+    inside a fence can never open a comment or block, and nothing opened is
+    silently closed early. Unclosed constructs run to the end of the body, as
+    GitHub renders them, so this only ever removes more, never less.
     """
-    text = body.replace("\r\n", "\n")
-    text = re.sub(r"<!--.*?(?:-->|\Z)", "", text, flags=re.S)
-    text = re.sub(r"<pre\b.*?(?:</pre\s*>|\Z)", "", text, flags=re.S | re.I)
     kept: list[str] = []
     fence: str | None = None
-    for line in text.split("\n"):
-        marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
+    in_comment = False
+    raw_close: str | None = None  # closing tag of an open <pre>-style block
+    in_html = False  # inside a blank-line-terminated html block
+    for line in body.replace("\r\n", "\n").split("\n"):
         if fence is not None:
+            marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
             # a closing fence is the marker plus optional whitespace only (CommonMark)
             if (marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence)
                     and not line[marker.end():].strip()):
                 fence = None
             continue
-        if marker:
-            fence = marker.group(1)
+        if raw_close is not None:
+            if re.search(raw_close, line, re.I):
+                raw_close = None
             continue
-        if line.startswith(("    ", "\t")):
-            continue
-        kept.append(line)
-    # after the fence pass, so a fenced html example cannot swallow its closing fence
-    # CommonMark HTML blocks (type 6) run to the next blank line; their inner lines are not headings
-    return re.sub(r"(?mis)^ {0,3}</?(?:table|div|details|summary|section|blockquote|ul|ol|dl|p|"
-                  r"tr|td|th|thead|tbody|center|article|aside|header|footer|nav|form|h[1-6])\b.*?(?:\n[ \t]*\n|\Z)", "\n", "\n".join(kept))
+        if in_html:
+            if line.strip():
+                continue
+            in_html = False
+        if not in_comment:
+            marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
+            if marker:
+                fence = marker.group(1)
+                continue
+            if line.startswith(("    ", "\t")):
+                continue
+            raw = _RAW_TEXT_TAG.match(line)
+            if raw:
+                raw_close = rf"</{raw.group(1)}\s*>"
+                if re.search(raw_close, line[raw.end():], re.I):
+                    raw_close = None
+                continue
+            if _HTML_BLOCK_START.match(line):
+                in_html = True
+                continue
+        # strip HTML comment spans, which may open or close mid-line
+        out = ""
+        rest = line
+        while rest:
+            if in_comment:
+                end = rest.find("-->")
+                if end < 0:
+                    rest = ""
+                else:
+                    in_comment, rest = False, rest[end + 3 :]
+            else:
+                start = rest.find("<!--")
+                if start < 0:
+                    out += rest
+                    rest = ""
+                else:
+                    out += rest[:start]
+                    in_comment, rest = True, rest[start + 4 :]
+        if out.strip() or not line.strip():
+            kept.append(out)
+    return "\n".join(kept)
 
 
 def review_section_names_fallback(body: str, head: str | None = None) -> bool:
