@@ -87,6 +87,26 @@ for reviewer in ("codex", "agy", "antigravity", "superpowers", "claude-sonnet"):
                 pr(body=body, headRefOid=head, reviews={"nodes": []})
             ) == []
 
+# Clean Codex runs post no review, only a state marker in the summary PR comment.
+def codex_comment(sha, status="completed", unresolved=False, login="chatgpt-codex-connector"):
+    state = (
+        '{"code_review":{"commit_sha":"%s","has_any_findings":%s,'
+        '"has_unresolved_findings":%s,"status":"%s"}}'
+        % (sha, str(unresolved).lower(), str(unresolved).lower(), status)
+    )
+    return {"author": {"login": login}, "body": f"<!-- codex-review-state:v1 {state} -->\nsummary"}
+
+no_reviews = {"nodes": []}
+assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [codex_comment(head)]})) == []
+for bad in (
+    codex_comment("deadbeef" + head[8:]),  # other head
+    codex_comment(head, status="running"),
+    codex_comment(head, unresolved=True),
+    codex_comment(head, login="codex-helper"),
+    {"author": {"login": "chatgpt-codex-connector"}, "body": "<!-- codex-review-state:v1 {not json} -->"},
+):
+    assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [bad]})), bad
+
 invalid_lines = (
     "agy headless round 1\nhead: 89cda061",  # old independent keyword/SHA format
     "agy review completed on 89cda061",  # keyword-only, same line
