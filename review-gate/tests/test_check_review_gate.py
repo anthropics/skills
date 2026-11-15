@@ -1879,6 +1879,10 @@ assert not _doctor.ruleset_requires_conversation_resolution(
     {"rules": [{"type": "pull_request", "parameters": {}}]}
 )
 
+# `## Review` only inside an HTML comment or fence is not a visible section
+for hidden in ("<!--\n## Review\n-->\n", "```\n## Review\n```\n"):
+    assert any("## Review" in r for r in g.evaluate(pr(body=hidden)))
+
 # Thread pagination embeds the first comments page (avoid N+1 gh api calls)
 _paginate_src = inspect.getsource(g._paginate_threads)
 assert "comments(first: 50)" in _paginate_src

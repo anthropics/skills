@@ -559,7 +559,8 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     reasons: list[str] = []
     body = pr.get("body") or ""
     head = pr.get("headRefOid") or ""
-    if not REVIEW_SECTION.search(body):
+    # Rendered view: a heading inside a comment or fence is not visible.
+    if not REVIEW_SECTION.search(_rendered_markdown(body)):
         reasons.append("PR body missing ## Review section")
     if not (codex_done_on_head(pr) or review_section_names_fallback(body, head)):
         reasons.append(

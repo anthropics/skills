@@ -1,6 +1,6 @@
 {
   "$schema": "https://bernierllc.com/schemas/hooks/v1.json",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "hooks": [
     {
       "id": "rg-merge-guard",

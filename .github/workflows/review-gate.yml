@@ -86,7 +86,7 @@ jobs:
           printf '%s\n' "$out"
           # pull_request_target attaches the Actions job to the base SHA — always
           # publish Checks API on the PR head for the required-check context.
-          summary=$(printf '%s' "$out" | head -c 60000)
+          summary=${out:0:60000}  # no pipe: head closing early SIGPIPEs under pipefail
           if [ "$rc" -eq 0 ]; then
             complete_check success "review-gate ok" "$summary"
           else
