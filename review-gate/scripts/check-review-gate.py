@@ -571,7 +571,9 @@ def _rendered_markdown(body: str) -> str:
     for line in text.split("\n"):
         marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
         if fence is not None:
-            if marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence):
+            # a closing fence is the marker plus optional whitespace only (CommonMark)
+            if (marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence)
+                    and not line[marker.end():].strip()):
                 fence = None
             continue
         if marker:
