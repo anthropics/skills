@@ -224,8 +224,10 @@ assert g.evaluate(p2_ok) == []
 # main without label
 main = pr(baseRefName="main")
 assert any("review:high" in r for r in g.evaluate(main))
-main_ok = pr(baseRefName="main", labels={"nodes": [{"name": "review:ultra"}]})
+main_ok = pr(baseRefName="main", labels={"nodes": [{"name": "review:high"}]})
 assert g.evaluate(main_ok) == []
+# review:ultra is retired: it no longer satisfies the main label requirement
+assert any("review:high" in r for r in g.evaluate(pr(baseRefName="main", labels={"nodes": [{"name": "review:ultra"}]})))
 
 # merge guard parsing — including spaced -R / trailing -R / --repo forms
 assert mg.extract_pr_and_repo("gh pr merge 42 --squash") == (42, None)

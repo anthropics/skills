@@ -1,12 +1,12 @@
 {
   "$schema": "https://bernierllc.com/schemas/hooks/v1.json",
-  "version": "2.0.0",
+  "version": "3.0.0",
   "hooks": [
     {
       "id": "rg-merge-guard",
       "event": "pre_tool_use",
       "command": "aec run-script skill:review-gate merge-guard.py",
-      "description": "Blocks gh pr merge when review-gate checks fail (missing ## Review, unfinished Codex/fallback, unanswered P2 threads, or main without review:high/ultra). Override with # review-gate-ok: <reason>.",
+      "description": "Blocks gh pr merge when review-gate checks fail (missing ## Review, unfinished Codex/fallback, unanswered P2 threads, or main without review:high). Override with # review-gate-ok: <reason>.",
       "blocking": true,
       "timeout_ms": 25000
     }

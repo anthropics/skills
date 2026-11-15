@@ -31,7 +31,7 @@ FALLBACK_ATTESTATION = re.compile(
 )
 INCOMPLETE_REVIEW = re.compile(r"\b(pending|running|todo)\b", re.I)
 REVIEW_SECTION = re.compile(r"(?m)^##\s+Review\b")
-MAIN_REVIEW_LABELS = {"review:high", "review:ultra"}
+MAIN_REVIEW_LABELS = {"review:high"}
 # Exact bot logins only — substring matches like "codex-helper" must not pass the gate.
 CODEX_AUTHORS = frozenset({"chatgpt-codex-connector"})
 
@@ -571,7 +571,7 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     if (pr.get("baseRefName") or "") == "main":
         labels = {n.get("name") for n in (pr.get("labels", {}).get("nodes") or [])}
         if not (labels & MAIN_REVIEW_LABELS):
-            reasons.append("base is main but label review:high or review:ultra is missing")
+            reasons.append("base is main but label review:high is missing")
     return reasons
 
 

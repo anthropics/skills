@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 2.0.0
+version: 3.0.0
 author: Bernier LLC
 ---
 
@@ -56,7 +56,7 @@ Loads `scripts/check-review-gate.py` from the repository **default branch** only
 1. A completed review from the exact Codex bot login `chatgpt-codex-connector` exists on the **current head** (not body text / substring logins), **or** the PR body's `## Review` section contains the explicit completed fallback-review attestation below on one line, bound to the current head.
 2. PR body contains a `## Review` section.
 3. Every review thread whose **root** comment matches `\bp2\b` has a reply with a closing token: Notion link, `fixed in <sha>`, or `not-a-finding: …` (all thread/comment pages are fetched).
-4. When `base` is `main`: label `review:high` or `review:ultra` is present.
+4. When `base` is `main`: label `review:high` is present.
 
 Fallback attestations use exactly this format (plain text on its own line inside `## Review`):
 
