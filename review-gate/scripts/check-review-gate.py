@@ -554,10 +554,12 @@ _BLOCK_TAGS = (
     "iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|"
     "summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul"
 )
-# CommonMark html block types 6 (named block tags) and 7 (one complete tag alone on its line)
-_HTML_BLOCK_START = re.compile(
-    rf" {{0,3}}(?:</?(?:{_BLOCK_TAGS})(?:[\s/>]|$)"
-    r"|(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+[^<>]*)?/?>|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$)", re.I)
+# CommonMark html block type 6 (named block tags) ...
+_HTML_BLOCK6 = re.compile(rf" {{0,3}}</?(?:{_BLOCK_TAGS})(?:[\s/>]|$)", re.I)
+# ... and type 7 (one complete tag alone on its line; cannot interrupt a paragraph; quoted attrs may hold <>)
+_HTML_BLOCK7 = re.compile(
+    r" {0,3}(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+(?:[^<>\"']|\"[^\"]*\"|'[^']*')*)?/?>"
+    r"|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$")
 # types 1, 3, 4, 5: (start, end marker); the block runs to the line holding the end marker
 _RAW_BLOCKS = (
     (re.compile(r" {0,3}<(?:pre|script|style|textarea)\b", re.I), re.compile(r"</(?:pre|script|style|textarea)\s*>", re.I)),
@@ -584,7 +586,9 @@ def _rendered_markdown(body: str) -> str:
     in_comment = False
     raw_close: re.Pattern[str] | None = None  # end marker of an open <pre>-style block
     in_html = False  # inside a blank-line-terminated html block
+    para = False  # previous line was paragraph text (type-7 blocks cannot interrupt it)
     for line in body.replace("\r\n", "\n").split("\n"):
+        was_para, para = para, False
         if fence is not None:
             marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
             # a closing fence is the marker plus optional whitespace only (CommonMark)
@@ -613,7 +617,7 @@ def _rendered_markdown(body: str) -> str:
                 if raw_close.search(line[raw[0].end():]):
                     raw_close = None
                 continue
-            if _HTML_BLOCK_START.match(line):
+            if _HTML_BLOCK6.match(line) or (not was_para and _HTML_BLOCK7.match(line)):
                 in_html = True
                 continue
         # strip HTML comment spans, which may open or close mid-line
@@ -634,6 +638,7 @@ def _rendered_markdown(body: str) -> str:
                 else:
                     out += rest[:start]
                     in_comment, rest = True, rest[start + 4 :]
+        para = bool(out.strip())
         if out.strip() or not line.strip():
             kept.append(out)
     return "\n".join(kept)
