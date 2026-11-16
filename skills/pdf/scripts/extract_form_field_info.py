@@ -54,7 +54,15 @@ def get_field_info(reader: PdfReader):
         if field.get("/Kids"):
             if field.get("/FT") == "/Btn":
                 possible_radio_names.add(field_id)
-            continue
+                continue
+            # Non-button fields may store their widget annotations in
+            # /Kids: /FT is an inherited attribute (ISO 32000-1), so a
+            # field node can carry /T /FT /Kids with separate widget
+            # annotations under /Parent. Only grouping nodes (no /FT)
+            # and unsupported field types (e.g. /Sig) are skipped —
+            # only /Tx and /Ch are retained here.
+            if field.get("/FT") not in ("/Tx", "/Ch"):
+                continue
         field_info_by_id[field_id] = make_field_dict(field, field_id)
 
 
