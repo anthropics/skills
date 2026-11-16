@@ -69,6 +69,15 @@ def validate_skill(skill_path):
         # Check name length (max 64 characters per spec)
         if len(name) > 64:
             return False, f"Name is too long ({len(name)} characters). Maximum is 64 characters."
+        # Name must match the parent directory name (per spec). package_skill
+        # names the .skill file and its root folder after the directory, so a
+        # mismatch would ship a package whose folder disagrees with its name.
+        dir_name = skill_path.resolve().name
+        if name != dir_name:
+            return False, (
+                f"Name '{name}' does not match the skill directory name '{dir_name}'. "
+                f"Rename the directory or change the name so they match."
+            )
 
     # Extract and validate description
     description = frontmatter.get('description', '')
