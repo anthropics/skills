@@ -13,6 +13,8 @@ import textwrap
 import unittest
 from pathlib import Path
 
+import yaml
+
 SKILL = Path(__file__).resolve().parents[1]
 SCRIPTS = SKILL / "scripts"
 TEMPLATE = SKILL / "templates" / "review-gate.yml"
@@ -69,8 +71,9 @@ if path.startswith("repos/o/r/pulls/") and path.rsplit("/", 1)[1].isdigit():
 if "/actions/runs?" in path:  # the gate's suite check: review-gate workflow runs on the head
     if fixture.get("workflow_runs_fail"):
         sys.exit(1)
-    default = [{"path": ".github/workflows/review-gate.yml", "conclusion": None, "check_suite_id": 1,
-                "display_title": "Review Gate - PR #" + os.environ["PR_NUMBER"]}]
+    suite = fixture.get("current_suite", 1)  # the evaluating run itself, titled by the template's run-name
+    default = [{"id": int(os.environ["GITHUB_RUN_ID"]), "path": ".github/workflows/review-gate.yml",
+                "conclusion": None, "check_suite_id": suite, "display_title": os.environ["FAKE_RUN_TITLE"]}]
     print(json.dumps({"workflow_runs": fixture.get("workflow_runs", default)})); sys.exit(0)
 if "/actions/runs/" in path and "head_sha" in " ".join(args):  # the wrapper's provenance lookup
     head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head") or HEAD)
@@ -118,8 +121,19 @@ def api_check(name, check_id, pr=None, suite=1):
             "check_suite": {"id": suite}}
 
 
-def gate_run(suite, conclusion=None, pr=7):
-    return {"path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite, "display_title": f"Review Gate - PR #{pr}"}
+def run_title(pr):
+    """The workflow run title GitHub shows for PR <pr>: the template's run-name as YAML parses it."""
+    return str(yaml.safe_load(TEMPLATE.read_text())["run-name"]).replace(
+        "${{ github.event.pull_request.number }}", str(pr))
+
+
+def run_id(suite, pr):
+    return 100 * suite + int(pr)
+
+
+def gate_run(suite, conclusion=None, pr=7, title=None):
+    return {"id": run_id(suite, pr), "path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite,
+            "display_title": run_title(pr) if title is None else title}
 
 
 RG_PATH = ".github/workflows/review-gate.yml"
@@ -157,8 +171,10 @@ class ForgedGateWorkflow(unittest.TestCase):
             # The block writes the trusted scripts to /tmp/<name>; point that at this test's own dir.
             script = run_block().replace("/tmp/", f"{workdir}/")
             for pr_number, checker_rc in prs:
+                own = run_id((suites or {}).get("current_suite", 1), pr_number)
                 proc = subprocess.run(["bash", "-e", "-c", script], capture_output=True, text=True,
-                                      env=dict(env, PR_NUMBER=pr_number, FAKE_CHECKER_RC=str(checker_rc)))
+                                      env=dict(env, PR_NUMBER=pr_number, FAKE_CHECKER_RC=str(checker_rc),
+                                               GITHUB_RUN_ID=str(own), FAKE_RUN_TITLE=run_title(pr_number)))
             concl = (tmp / "conclusion").read_text() if (tmp / "conclusion").exists() else None
             self.calls = (tmp / "calls.log").read_text().splitlines()
             self.patches = (tmp / "patches.log").read_text().splitlines() if (tmp / "patches.log").exists() else []
@@ -251,6 +267,33 @@ class ForgedGateWorkflow(unittest.TestCase):
         rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)], prs=[("8", 0)],
                                    suites={"workflow_runs": runs, "current_suite": 2})
         self.assertEqual((rc, concl), (0, "success"), out)
+
+    # 3.2.7 P1: 3.2.6's unquoted run-name lost " #<n>" to a YAML comment, the title matched no runs and
+    # the suite check passed with nothing checked (fail-open). Parse the real template, as GitHub does.
+    def test_run_name_resolves_to_the_title_the_suite_check_matches(self):
+        self.assertEqual(run_title(7), "Review Gate - PR #7")
+        block = run_block()
+        self.assertIn('RUN_TITLE="Review Gate - PR #$PR_NUMBER"', block)
+        self.assertIn('--arg title "$RUN_TITLE"', block)
+        for line in TEMPLATE.read_text().split("\njobs:\n", 1)[0].splitlines():  # top-level plain scalars
+            if line and not line[0].isspace() and not line.startswith("#") and ": " in line:
+                value = line.split(": ", 1)[1].strip()
+                self.assertFalse(" #" in value and value[0] not in "\"'", line)
+
+    def test_run_matching_no_title_fails_closed(self):
+        # The 3.2.6 shape: every run titled "Review Gate - PR" (no number), so nothing matches, not even us.
+        runs = [gate_run(1, "success", title="Review Gate - PR"), gate_run(2, title="Review Gate - PR")]
+        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
+                                   suites={"workflow_runs": runs, "current_suite": 2})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertIn("is not among the review-gate runs titled", out)
+
+    def test_own_run_absent_from_listing_fails_closed(self):
+        # Other runs of this PR match, but this evaluation's run does not: the listing is not trustworthy.
+        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
+                                   suites={"workflow_runs": [gate_run(1, "success")], "current_suite": 2})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertIn("this run (207)", out)
 
     def test_suite_lookup_failure_fails_closed(self):
         rc, concl, out = self.gate([], suites={"workflow_runs_fail": True})

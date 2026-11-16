@@ -34,7 +34,9 @@
 name: Review Gate
 # The suite check below attributes a workflow run to its PR by this title (3.2.6): a run's head
 # fields and .pull_requests cannot tell two PRs on one head sha apart, nor a stacked child.
-run-name: Review Gate - PR #${{ github.event.pull_request.number }}
+# Quoted (3.2.7): unquoted, YAML reads " #" as a comment and the title loses the PR number, so
+# 3.2.6 matched no runs and skipped the suite check (fail-open). Keep in step with RUN_TITLE below.
+run-name: "Review Gate - PR #${{ github.event.pull_request.number }}"
 
 on:
   pull_request_target:
@@ -76,6 +78,7 @@ jobs:
           # (.../actions/runs/<n>/job/<m>), are never touched.
           # UNPROVEN until a live run: pull_request_target runs the default branch's copy of this file.
           external_id="review-gate-pr-$PR_NUMBER"
+          RUN_TITLE="Review Gate - PR #$PR_NUMBER"  # = run-name above; a test parses both and compares
           list_runs() {
             gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
               | jq -r --arg ext "$external_id" '.check_runs[]
@@ -106,16 +109,22 @@ jobs:
           # is unresolved and this fails closed. A cancelled duplicate's suite is exempt (nevar-audit #18
           # merged with one). Only THIS PR's workflow runs count (run-name above): two PRs can share a head
           # sha, and each must not see the other's suite as a gap. Runs from a pre-3.2.6 template carry no
-          # such title and are not checked. Prints the uncovered suite ids.
+          # such title and are not checked. This run must itself match (3.2.7): an empty match set is how
+          # 3.2.6's unquoted run-name skipped the check silently. Prints why it failed, else nothing.
           uncovered_suites() {
-            local covered runs
+            local covered runs gap
             covered=$(list_runs | cut -d' ' -f2) || return 1
             runs=$(gh api "repos/$REPO/actions/runs?head_sha=$SHA&event=pull_request_target&per_page=100" --paginate \
-              | jq -r --arg title "Review Gate - PR #$PR_NUMBER" '.workflow_runs[]
+              | jq -r --arg title "$RUN_TITLE" '.workflow_runs[]
                        | select((.path | split("@")[0]) == ".github/workflows/review-gate.yml")
                        | select(.display_title == $title)
-                       | select(.conclusion != "cancelled") | .check_suite_id') || return 1
-            comm -23 <(printf '%s\n' $runs | sort -u) <(printf '%s\n' $covered | sort -u)
+                       | select(.conclusion != "cancelled") | "\(.id) \(.check_suite_id)"') || return 1
+            if ! printf '%s\n' "$runs" | cut -d' ' -f1 | grep -qx "$GITHUB_RUN_ID"; then
+              echo "this run ($GITHUB_RUN_ID) is not among the review-gate runs titled \"$RUN_TITLE\"; check run-name."
+              return 1
+            fi
+            gap=$(comm -23 <(printf '%s\n' "$runs" | cut -d' ' -f2 | sort -u) <(printf '%s\n' $covered | sort -u))
+            [ -z "$gap" ] || echo "review-gate suite(s) without this PR's Review Gate run: $gap."
           }
           # Invalidate any prior same-head success before reevaluation (edited /
           # unlabeled / …): red until we complete below.
@@ -155,8 +164,8 @@ jobs:
           fi
           if ! gap=$(uncovered_suites) || [ -n "$gap" ]; then
             out=$(printf '%s\n%s\n%s' "$out" \
-              "suite check failed: review-gate suite(s) without this PR's Review Gate run: ${gap:-<lookup failed>}." \
-              "3.2.6 POSTs one per evaluation, so this POST did not land in its own suite (evidence for 3.2.7: report it)." \
+              "suite check failed: ${gap:-<lookup failed>}" \
+              "Each evaluation POSTs one run, so a gap means a POST missed its own suite (report it with the run link)." \
               "The required check may read \"expected\" (trigger unresolved). Rerun this run in place; if it stays red, push a new head.")
             [ "$rc" -ne 0 ] || rc=1
           fi
