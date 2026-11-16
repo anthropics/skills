@@ -473,24 +473,26 @@ def not_green(ref, repo="", cwd=None):
     # (body lacked `## Review`) keeps that red run after a newer run goes green. GitHub already
     # collapses re-attempts *within* a run (only the latest attempt is listed), so identity is the
     # run id in detailsUrl (/actions/runs/<run>/job/<job>), not the name. Per (workflow, job name),
-    # the newest run supersedes older runs (by its first startedAt, ISO-8601 UTC, sorts as text), and every
+    # the newest run supersedes older runs (by the run's first startedAt over all its jobs, ISO-8601 UTC), and every
     # same-named job inside that run is a distinct job that must be green on its own: a later green
     # job (e.g. one with `needs:`) never hides an earlier failed sibling. Runs tied on startedAt
     # cannot be ordered, so all of them count (fail closed). Status contexts, third-party check runs
     # and any entry without startedAt are never collapsed and must be green on their own.
-    groups, latest = {}, []
+    groups, latest, run_start = {}, [], {}
     for i, e in enumerate(rollup):
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
             m = RUN_ID.search(e.get("detailsUrl") or "")
             run_key = m.group(1) if m else ("entry", i)  # no run id: the entry is its own run
+            # A run starts when its first job does, across ALL its jobs: a dependency-delayed job
+            # in an older run must not make that run outrank a newer one.
+            run_start[run_key] = min(run_start.get(run_key, e["startedAt"]), e["startedAt"])
             groups.setdefault((e["workflowName"], e.get("name")), {}).setdefault(run_key, []).append(e)
         else:
             latest.append(e)
     for runs in groups.values():
-        started = {k: min(e["startedAt"] for e in es) for k, es in runs.items()}
-        newest = max(started.values())
-        latest += [e for k, es in runs.items() if started[k] == newest for e in es]
+        newest = max(run_start[k] for k in runs)
+        latest += [e for k, es in runs.items() if run_start[k] == newest for e in es]
     bad = [f"{e.get('name') or e.get('context')}: {(e.get('conclusion') or e.get('state') or 'PENDING').upper()}"
            for e in latest if not green(e)]
     return ", ".join(bad)

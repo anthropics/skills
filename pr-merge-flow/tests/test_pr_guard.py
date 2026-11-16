@@ -295,6 +295,15 @@ m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaa
     at_job("SUCCESS", 100, 1, "2026-11-15T10:00:00Z"), at_job("SUCCESS", 101, 5, "2026-11-15T10:10:00Z"),
     at_job("FAILURE", 101, 6, "2026-11-15T10:15:00Z")])
 assert m and "Review Gate: FAILURE" in m, m
+# #88 Codex P1 (r4582093085): a run's start spans ALL its jobs. Run 100 starts 10:00 (build) and its
+# dependency-delayed `gate` goes green at 10:20; run 101 starts 10:10 and its `gate` fails at 10:15.
+def wf_job(name, concl, run_id, job_id, at):
+    return {"name": name, "workflowName": "CI", "conclusion": concl, "startedAt": at,
+            "detailsUrl": f"https://github.com/o/r/actions/runs/{run_id}/job/{job_id}"}
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [
+    wf_job("build", "SUCCESS", 100, 1, "2026-11-15T10:00:00Z"), wf_job("gate", "SUCCESS", 100, 2, "2026-11-15T10:20:00Z"),
+    wf_job("build", "SUCCESS", 101, 3, "2026-11-15T10:10:00Z"), wf_job("gate", "FAILURE", 101, 4, "2026-11-15T10:15:00Z")])
+assert m and "gate: FAILURE" in m, m
 # an older run still in progress does not outrank a newer green run
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
