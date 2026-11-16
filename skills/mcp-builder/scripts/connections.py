@@ -90,6 +90,8 @@ class MCPConnectionSSE(MCPConnection):
 
     def __init__(self, url: str, headers: dict[str, str] = None):
         super().__init__()
+        if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+            raise ValueError(f"URL must start with http:// or https://, got: {url!r}")
         self.url = url
         self.headers = headers or {}
 
@@ -102,6 +104,8 @@ class MCPConnectionHTTP(MCPConnection):
 
     def __init__(self, url: str, headers: dict[str, str] = None):
         super().__init__()
+        if not isinstance(url, str) or not (url.startswith("http://") or url.startswith("https://")):
+            raise ValueError(f"URL must start with http:// or https://, got: {url!r}")
         self.url = url
         self.headers = headers or {}
 
