@@ -151,6 +151,13 @@ m = merge("gh pr merge 5 --squash", rollup=ok + [run("Review Gate", "SUCCESS", "
 assert m and "Review Gate: PENDING" in m, m  # a re-run in flight blocks
 m = merge("gh pr merge 5 --squash", rollup=ok + old_red + [latest_ok, run("pytest", "FAILURE", "2026-11-15T10:00:00Z", "CI")])
 assert m and "pytest: FAILURE" in m and "Review Gate" not in m, m  # other checks stay independent
+# a queued rerun has no startedAt: it still beats the older green run and blocks
+m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
+assert m and "Review Gate: PENDING" in m, m
+# a check run and a same-named status context are separate requirements
+m = merge("gh pr merge 5 --squash", rollup=ok + [{"__typename": "CheckRun", "name": "deploy", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
+                                                   {"__typename": "StatusContext", "context": "deploy", "state": "SUCCESS"}])
+assert m and "deploy: FAILURE" in m, m
 assert "no checks" in merge("gh pr merge 5 --squash", rollup=[])
 assert "no checks" in merge("gh pr merge 5", rollup=None)
 m = merge("gh pr merge 5", rc=1, err="no pull requests found")

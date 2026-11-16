@@ -389,10 +389,16 @@ def not_green(ref):
     # Gate run failed (body lacked `## Review`) keeps that red run after the re-run goes green.
     # Only the latest run of each check counts. startedAt is ISO-8601 UTC, so it sorts as text;
     # entries without it (status contexts) keep rollup order, which gh returns oldest first.
+    # A check run and a status context with the same label are separate requirements, so the
+    # entry kind is part of the key. A run with no conclusion yet (queued/waiting, startedAt may
+    # be null) is in flight and always newer than any finished run.
+    def when(e):
+        return "9" if not (e.get("conclusion") or e.get("state")) else (e.get("startedAt") or "")
+
     latest = {}
     for e in rollup:
-        key = (e.get("workflowName") or "", e.get("name") or e.get("context"))
-        if key not in latest or (e.get("startedAt") or "") >= (latest[key].get("startedAt") or ""):
+        key = (e.get("__typename") or "", e.get("workflowName") or "", e.get("name") or e.get("context"))
+        if key not in latest or when(e) >= when(latest[key]):
             latest[key] = e
     # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
     bad = [f"{e.get('name') or e.get('context')}: {(e.get('conclusion') or e.get('state') or 'PENDING').upper()}"
