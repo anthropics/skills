@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "claude-academy": {
+      "type": "http",
+      "url": "https://academy.claude.com/mcp"
+    }
+  }
+}
