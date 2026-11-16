@@ -126,6 +126,34 @@ def strip_comments_and_heredocs(cmd):
     return "".join(out).translate(UNHIDE) if quote else "".join(out)
 
 
+def shell_tokens(cmd):
+    """Shell words and control-operator runs (`&&`, `|&`, `;`, …) in order, or None when shlex can't parse it."""
+    lex = shlex.shlex(cmd, posix=True, punctuation_chars=";&|\n()")
+    lex.whitespace = " \t\r"
+    lex.whitespace_split = True
+    lex.commenters = ""
+    try:
+        return list(lex)
+    except ValueError:
+        return None
+
+
+def runs_async(cmd):
+    """True when a command joins segments with `&`, `|` or `|&` (a background job or pipeline stage).
+
+    Uses the same tokens as segments(), so quoted text never counts, and `>&`/`&>` redirections
+    (`2>&1`, `&>log`) are not operators. Unparseable input counts as async, so callers fail closed.
+    """
+    toks = shell_tokens(strip_comments_and_heredocs(cmd.replace("\\\n", " ")))
+    if toks is None:
+        return True
+    for i, t in enumerate(toks):
+        redirect = t == "&" and ((i and toks[i - 1].endswith(">")) or toks[i + 1:i + 2] and toks[i + 1].startswith(">"))
+        if t in ("|", "|&") or (t == "&" and not redirect):
+            return True
+    return False
+
+
 def segments(cmd):
     """Split a shell command into argv lists, one per simple command.
 
@@ -133,13 +161,8 @@ def segments(cmd):
     backslash-newline continues the command, as in Bash.
     """
     cmd = strip_comments_and_heredocs(cmd.replace("\\\n", " "))
-    lex = shlex.shlex(cmd, posix=True, punctuation_chars=";&|\n()")
-    lex.whitespace = " \t\r"
-    lex.whitespace_split = True
-    lex.commenters = ""
-    try:
-        tokens = list(lex)
-    except ValueError:
+    tokens = shell_tokens(cmd)
+    if tokens is None:
         # shlex can't parse it (unbalanced or $'..' quotes): split on every operator
         # character, quoted or not. Over-splitting only means more gets checked.
         tokens = [t for part in re.split(r"([;&|()\n])", cmd)
@@ -396,9 +419,9 @@ def merge_args(argv):
 
 def merge_calls(cmd, cwd):
     """Yield (dir, ref, flag tokens, repo) for each `gh pr merge`, dir after any `cd`/`env -C`; see merge_args()."""
-    # A `cd` in a background job or pipeline stage (`cd x & gh …`, `cd x | gh …`) doesn't reach the
-    # merge, but walk() can't see operators: once the dir has moved, a lone & or | makes it unresolved.
-    async_op = re.search(r"(?<![&|>])[&|](?![&|>])", cmd)
+    # A `cd` in a background job or pipeline stage (`cd x & gh …`, `cd x |& gh …`) doesn't reach the
+    # merge, but walk() can't see operators: once the dir has moved, any of them makes it unresolved.
+    async_op = runs_async(cmd)
     for d, argv in walk(cmd, cwd):
         pr = gh_pr(argv)
         if pr and pr[0] == "merge":
