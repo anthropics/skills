@@ -10,23 +10,15 @@
   },
   "plugins": [
     {
-      "name": "document-skills",
-      "description": "Collection of document processing suite including Excel, Word, PowerPoint, and PDF capabilities",
+      "name": "anthropic-skills",
+      "description": "Anthropic skill collection: document processing (Excel, Word, PowerPoint, PDF), visual design, algorithmic art, MCP building, skill creation, web testing, artifact building, Slack GIFs, theme styling, and internal communications",
       "source": "./",
       "strict": false,
       "skills": [
         "./skills/xlsx",
         "./skills/docx",
         "./skills/pptx",
-        "./skills/pdf"
-      ]
-    },
-    {
-      "name": "example-skills",
-      "description": "Collection of example skills demonstrating various capabilities including skill creation, MCP building, visual design, algorithmic art, internal communications, web testing, artifact building, Slack GIFs, and theme styling",
-      "source": "./",
-      "strict": false,
-      "skills": [
+        "./skills/pdf",
         "./skills/algorithmic-art",
         "./skills/brand-guidelines",
         "./skills/canvas-design",
@@ -40,8 +32,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
