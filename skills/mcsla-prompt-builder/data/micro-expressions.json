@@ -1,0 +1,15 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md — performance directions for Soul Cast actors and character prompting",
+  "micro_expressions": [
+    {"name": "Deadpan Neutral", "description": "Flat affect, no visible emotion"},
+    {"name": "Fierce Focus", "description": "Intense locked gaze, total attention"},
+    {"name": "Suppressed Smile", "description": "Fighting back a grin, corner of mouth twitching"},
+    {"name": "Quiet Devastation", "description": "Eyes glassy, jaw tight, holding it together"},
+    {"name": "Cold Calculation", "description": "Eyes scanning, no emotional leakage, clinical"},
+    {"name": "Bitter Amusement", "description": "One-sided smirk, eyes not smiling"},
+    {"name": "Frozen Shock", "description": "Mouth slightly open, eyes fixed, body still"},
+    {"name": "Simmering Rage", "description": "Clenched jaw, flared nostrils, steady stare"},
+    {"name": "Vulnerable Openness", "description": "Soft eyes, slightly parted lips, unguarded"}
+  ]
+}

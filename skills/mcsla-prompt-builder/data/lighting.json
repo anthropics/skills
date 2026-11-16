@@ -1,0 +1,24 @@
+{
+  "schema_version": "1.0",
+  "source": "OSide vocab.md",
+  "lighting_types": [
+    {"name": "Golden hour", "alt": "Magic hour", "description": "warm directional, sun near horizon"},
+    {"name": "Blue hour", "description": "cool, soft, just after sunset"},
+    {"name": "Overcast", "alt": "Softbox", "description": "diffused, soft, no shadows"},
+    {"name": "Neon", "description": "colored artificial from signs/screens"},
+    {"name": "Volumetric", "description": "light rays visible (fog/dust/smoke)"},
+    {"name": "Practical only", "description": "light from sources visible in frame"},
+    {"name": "Side-lit", "description": "single strong source from one side"},
+    {"name": "Backlit", "alt": "Rimlit", "description": "light source behind subject"},
+    {"name": "Motivated", "description": "light that matches a logical source in scene"},
+    {"name": "Hard light", "description": "strong single source, defined shadows"},
+    {"name": "Soft light", "description": "diffused, wrapped, minimal shadows"},
+    {"name": "Rembrandt", "description": "triangle of light on shadowed cheek"},
+    {"name": "Butterfly", "alt": "Paramount", "description": "overhead, shadow under nose (glamour)"},
+    {"name": "Split lighting", "description": "half face lit, half in shadow"},
+    {"name": "Chiaroscuro", "description": "extreme light/dark contrast"},
+    {"name": "High-key", "description": "bright, minimal shadows (comedy, commercial)"},
+    {"name": "Low-key", "description": "deep shadows, moody (noir, horror)"},
+    {"name": "Harsh midday sun", "description": "hard overhead, strong defined shadows"}
+  ]
+}
