@@ -1,0 +1,1216 @@
+{
+  "metadata": {
+    "title": "Synthetic web service estimate",
+    "date": "2026-10-07",
+    "currency": "EUR",
+    "effort_unit": "JH",
+    "notes": "Entirely synthetic public acceptance example, not a quote. Standard selected; Provider A is a provisional illustration. Build JH and Run JH/month are separate. Provider alternatives must not be added. Forecast FinOps savings require measurement. Kubernetes: Non applicable after suitability review; managed runtime selected. Taxes, discounts, FX and growth excluded; non-cloud OPEX assumed zero. Capacity overloads and delivery overload remain open; this is not an approved production design."
+  },
+  "assumptions": [
+    {
+      "key": "scenario_global",
+      "value": "Standard",
+      "unit": "scenario",
+      "status": "Confirme",
+      "source": "SYN-01",
+      "notes": "Global scenario; task overrides take precedence."
+    },
+    {
+      "key": "taux_journalier",
+      "value": 650,
+      "unit": "EUR/JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Illustrative rate; replace before a real estimate."
+    },
+    {
+      "key": "mois_par_an",
+      "value": 12,
+      "unit": "mois/an",
+      "status": "Confirme",
+      "source": "SYN-01",
+      "notes": "Annualisation factor."
+    },
+    {
+      "key": "hours_per_jh",
+      "value": 8,
+      "unit": "h/JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Editable convention; task estimates already in JH."
+    },
+    {
+      "key": "schedule.foundation_available",
+      "value": 6,
+      "unit": "JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Period 1; collective capacity across Foundation roles, not per-role capacity. Owner: delivery lead. Dependency TASK-01 before TASK-02/09/10; individual role availability remains unverified."
+    },
+    {
+      "key": "schedule.foundation_overload",
+      "value": 0,
+      "unit": "JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic formula: Foundation Build minus available JH; positive = overload, DEC-SCHEDULE."
+    },
+    {
+      "key": "capacity.production.Standard.base.cpu",
+      "value": 6,
+      "unit": "vCPU",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Assumed aligned CPU demand; independent service scenario and workload band."
+    },
+    {
+      "key": "capacity.production.Standard.high.cpu",
+      "value": 12,
+      "unit": "vCPU",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Assumed high-band CPU demand, not a benchmark."
+    },
+    {
+      "key": "capacity.production.Standard.base.memory",
+      "value": 8,
+      "unit": "GiB",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Synthetic working-set demand; per runtime unit 8 GiB."
+    },
+    {
+      "key": "capacity.production.Standard.base.storage_gib",
+      "value": 100,
+      "unit": "GiB",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Shared usable data demand; backend capacity 200 GiB, not replica-scaled."
+    },
+    {
+      "key": "capacity.production.Standard.base.iops",
+      "value": 1000,
+      "unit": "operations/s",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Shared backend assumed effective 2000 operations/s; latency/mix unmeasured."
+    },
+    {
+      "key": "capacity.production.Standard.base.bandwidth",
+      "value": 100,
+      "unit": "Mbit/s",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Shared link assumed 200 Mbit/s effective; egress envelope is separate pricing."
+    },
+    {
+      "key": "capacity.production.Standard.base.concurrency",
+      "value": 100,
+      "unit": "requests",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Runtime assumed safe 100 concurrent requests/unit; no throughput inferred."
+    },
+    {
+      "key": "capacity.production.Standard.base.utilisation_target",
+      "value": 0.75,
+      "unit": "ratio",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "CPU/memory/concurrency target, includes headroom; shared backend requires independent checks."
+    },
+    {
+      "key": "capacity.production.Standard.base.scaling_limit",
+      "value": 3,
+      "unit": "instances",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Hypothetical ceiling; does not make high-band demand feasible."
+    },
+    {
+      "key": "capacity.production.Standard.base.failure_domain_reserve",
+      "value": 1,
+      "unit": "instances",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "One runtime loss; does not prove zone/region DR."
+    },
+    {
+      "key": "capacity.production.Standard.cpu_per_unit",
+      "value": 4,
+      "unit": "vCPU/instance",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Effective capacity assumption, not hardware specification."
+    },
+    {
+      "key": "capacity.production.Standard.units",
+      "value": 2,
+      "unit": "instances",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Standard runtime count corresponds to COMP-03 and Provider A Standard cost quantity."
+    },
+    {
+      "key": "capacity.production.Standard.high.overload_ratio",
+      "value": 0,
+      "unit": "ratio",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic: high demand / effective CPU at target; >1 infeasible. Other dimensions and failure event require measurement."
+    },
+    {
+      "key": "contradiction.old_units",
+      "value": 1,
+      "unit": "instances",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "SYN-02 older single-replica statement; same workload scope."
+    },
+    {
+      "key": "contradiction.selected_units",
+      "value": 2,
+      "unit": "instances",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "SYN-03 later resilience requirement; provisional selected branch in DEC-CONFLICT."
+    },
+    {
+      "key": "contradiction.unit_price",
+      "value": 45,
+      "unit": "EUR/instance/month",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Provider A synthetic unit price; not an official tariff."
+    },
+    {
+      "key": "contradiction.cloud_delta",
+      "value": 0,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic selected minus old runtime cost; excludes common envelope/non-production."
+    },
+    {
+      "key": "contradiction.build_old",
+      "value": 1,
+      "unit": "JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Single-replica infrastructure branch; mutually exclusive, not included as another task."
+    },
+    {
+      "key": "contradiction.build_selected",
+      "value": 3,
+      "unit": "JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Selected infrastructure branch equals TASK-01 Standard net JH."
+    },
+    {
+      "key": "contradiction.build_delta",
+      "value": 0,
+      "unit": "JH",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic selected minus old Build."
+    },
+    {
+      "key": "contradiction.run_old",
+      "value": 0.5,
+      "unit": "JH/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Old branch monthly operations forecast."
+    },
+    {
+      "key": "contradiction.run_selected",
+      "value": 1,
+      "unit": "JH/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Selected monthly operations equals TASK-06 Standard."
+    },
+    {
+      "key": "contradiction.run_delta",
+      "value": 0,
+      "unit": "JH/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic selected minus old monthly Run."
+    },
+    {
+      "key": "finops.baseline",
+      "value": 90,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Forecast: Development and Staging always-on, two units at Provider A price. No measured billing."
+    },
+    {
+      "key": "finops.savings_low_fraction",
+      "value": 0.25,
+      "unit": "ratio",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Conservative forecast; retains on-demand wakeup."
+    },
+    {
+      "key": "finops.savings_high_fraction",
+      "value": 0.5,
+      "unit": "ratio",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Selected illustrative schedule; recurring costs already include this schedule, do not subtract savings twice."
+    },
+    {
+      "key": "finops.savings_low",
+      "value": 0,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic baseline times low saving fraction."
+    },
+    {
+      "key": "finops.savings_high",
+      "value": 0,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic baseline times high saving fraction."
+    },
+    {
+      "key": "finops.savings_selected",
+      "value": 0,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic baseline minus scheduled Provider A Standard non-production charges."
+    },
+    {
+      "key": "tco_horizon_years",
+      "value": 3,
+      "unit": "years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Equal scope and constant demand; taxes, FX, discounts and growth excluded."
+    },
+    {
+      "key": "non_cloud_opex",
+      "value": 0,
+      "unit": "EUR/mois",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Explicit synthetic absence, not an unknown represented as zero."
+    },
+    {
+      "key": "comparison_scenario",
+      "value": "Standard",
+      "unit": "scenario",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Same reference scenario for all provider TCOs; independent of scenario_global, task overrides still apply."
+    },
+    {
+      "key": "tco.ProviderA.Standard",
+      "value": 0,
+      "unit": "EUR/3years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic selected Build plus 36 months of human Run, Provider A Standard cloud and non-cloud OPEX; alternatives never added."
+    },
+    {
+      "key": "tco.ProviderB.Standard",
+      "value": 0,
+      "unit": "EUR/3years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic same-perimeter Provider B comparison; Build, human Run, cloud and horizon remain separate in Scenarios."
+    },
+    {
+      "key": "tco.ProviderC.Standard",
+      "value": 0,
+      "unit": "EUR/3years",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Dynamic same-perimeter Provider C comparison; alternatives never added."
+    },
+    {
+      "key": "region_eligibility",
+      "value": "A/B/C: hypothetical single-region eligibility; multi-region DR unverified",
+      "unit": "scope",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "No real provider or regional suitability claim."
+    },
+    {
+      "key": "commercial_policy",
+      "value": "No commitments, same currency, invented prices, no discounts",
+      "unit": "scope",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Runtime quotes and region eligibility required before approval."
+    },
+    {
+      "key": "weighted_criteria",
+      "value": "Operational fit 50%, recovery evidence 30%, TCO 20%; unscored until evidence",
+      "unit": "scope",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "No invented suitability scores."
+    },
+    {
+      "key": "source_write_policy",
+      "value": "owner-only",
+      "unit": "policy",
+      "status": "A confirmer",
+      "source": "SYN-01",
+      "notes": "Synthetic migration; generator performs no source/environment mutations."
+    }
+  ],
+  "inventory": [
+    {
+      "id": "COMP-01",
+      "component": "Web service",
+      "environment": "Development",
+      "quantity": 1,
+      "unit": "service",
+      "notes": "Synthetic development workload."
+    },
+    {
+      "id": "COMP-02",
+      "component": "Web service",
+      "environment": "Staging",
+      "quantity": 1,
+      "unit": "service",
+      "notes": "Synthetic validation workload."
+    },
+    {
+      "id": "COMP-03",
+      "component": "Web service",
+      "environment": "Production",
+      "quantity": 2,
+      "unit": "replica",
+      "notes": "Synthetic runtime workload."
+    },
+    {
+      "id": "COMP-04",
+      "component": "Managed data and platform services",
+      "environment": "Production",
+      "quantity": 1,
+      "unit": "platform envelope",
+      "notes": "Usable data, backups, network/egress, logging, registry/build and support; synthetic envelope pricing, not a SKU quote."
+    }
+  ],
+  "architecture": [
+    {
+      "id": "ARCH-01",
+      "component": "Web service",
+      "type": "Managed application",
+      "environment": "Production",
+      "provider": "Provider A",
+      "decision": "Managed runtime",
+      "notes": "Provisional Standard: two runtime replicas. Economique: one, Resilient: three. High workload overload remains open. See DEC-CONFLICT and capacity assumptions."
+    },
+    {
+      "id": "ARCH-02",
+      "component": "Managed data and platform services",
+      "type": "Managed backend",
+      "environment": "Production",
+      "provider": "Provider A",
+      "decision": "Managed backend, separate shared capacity",
+      "notes": "COMP-04; shared data capacity is not multiplied by runtime replicas. Backup and restore evidence required."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "TASK-01",
+      "lot": "Foundation",
+      "domain": "infrastructure",
+      "task": "Provision isolated environments",
+      "deliverable": "Infrastructure definitions",
+      "environment": "All",
+      "role": "Platform engineer",
+      "prerequisites": "Approved inventory",
+      "dependencies": [],
+      "acceptance_criterion": "Three environments provisioned",
+      "expected_evidence": "Deployment report",
+      "jh_low": 2,
+      "jh_likely": 3,
+      "jh_high": 5,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Partial, evidenced synthetic coverage",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Gross 3/4/6 JH; covered 1/1/1 JH (SYN-02); net 2/3/5 JH. One canonical owner; no aliases."
+    },
+    {
+      "id": "TASK-02",
+      "lot": "Foundation",
+      "domain": "server-hardening",
+      "task": "Apply security baseline",
+      "deliverable": "Baseline policy",
+      "environment": "All",
+      "role": "Security engineer",
+      "prerequisites": "Environments available",
+      "dependencies": [
+        "TASK-01"
+      ],
+      "acceptance_criterion": "Baseline checks pass",
+      "expected_evidence": "Control report",
+      "jh_low": 1,
+      "jh_likely": 2,
+      "jh_high": 4,
+      "scenario_override": "Resilient",
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Explicit task override."
+    },
+    {
+      "id": "TASK-03",
+      "lot": "Delivery",
+      "domain": "cicd-devsecops",
+      "task": "Configure delivery pipeline",
+      "deliverable": "Pipeline definitions",
+      "environment": "All",
+      "role": "Delivery engineer",
+      "prerequisites": "Source repository",
+      "dependencies": [
+        "TASK-01"
+      ],
+      "acceptance_criterion": "Promote and rollback demonstrated",
+      "expected_evidence": "Pipeline run",
+      "jh_low": 2,
+      "jh_likely": 3,
+      "jh_high": 5,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic task."
+    },
+    {
+      "id": "TASK-04",
+      "lot": "Delivery",
+      "domain": "hosting-capacity",
+      "task": "Validate runtime capacity",
+      "deliverable": "Capacity report",
+      "environment": "Staging",
+      "role": "Performance engineer",
+      "prerequisites": "Deployable service",
+      "dependencies": [
+        "TASK-03"
+      ],
+      "acceptance_criterion": "Staging harness records base/high CPU, memory, storage, IOPS, bandwidth and concurrency; verify target and overload before approval",
+      "expected_evidence": "Synthetic load assumptions now; measured traces, latency percentiles and saturation report required for approval",
+      "jh_low": 1,
+      "jh_likely": 2,
+      "jh_high": 3,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Capacity target to confirm."
+    },
+    {
+      "id": "TASK-05",
+      "lot": "Operations",
+      "domain": "cloud-migration",
+      "task": "Rehearse service transition",
+      "deliverable": "Transition runbook",
+      "environment": "Production",
+      "role": "Platform engineer",
+      "prerequisites": "Validation complete",
+      "dependencies": [
+        "TASK-02",
+        "TASK-04"
+      ],
+      "acceptance_criterion": "Recovery demonstrated",
+      "expected_evidence": "Rehearsal record",
+      "jh_low": 1,
+      "jh_likely": 2,
+      "jh_high": 4,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic transition only. Preparation, transfer, integrity, cutover, rollback and owner-only decommissioning in runbook; hypercare is a separate recurring operation. No live source access."
+    },
+    {
+      "id": "TASK-06",
+      "lot": "Operations",
+      "domain": "finops",
+      "task": "Review recurring usage",
+      "deliverable": "Usage review",
+      "environment": "Production",
+      "role": "Operations engineer",
+      "prerequisites": "Usage evidence",
+      "dependencies": [
+        "TASK-05"
+      ],
+      "acceptance_criterion": "Waste actions recorded",
+      "expected_evidence": "Monthly review",
+      "jh_low": 0.5,
+      "jh_likely": 1,
+      "jh_high": 2,
+      "scenario_override": null,
+      "nature": "Run",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Recurring effort in JH/month; kept separate from Build."
+    },
+    {
+      "id": "TASK-07",
+      "lot": "Operations",
+      "domain": "finops",
+      "task": "Schedule non-production runtime",
+      "deliverable": "Reversible schedule",
+      "environment": "All",
+      "role": "Platform engineer",
+      "prerequisites": "Approved inventory",
+      "dependencies": [
+        "TASK-05"
+      ],
+      "acceptance_criterion": "Forecast; compare metered usage before/after at equal scope; restore always-on schedule on validation failure",
+      "expected_evidence": "Reversible schedule with SYN-01 assumptions",
+      "jh_low": 1,
+      "jh_likely": 2,
+      "jh_high": 3,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic net additional Build; one owner and no duplicate deliverable."
+    },
+    {
+      "id": "TASK-08",
+      "lot": "Delivery",
+      "domain": "architecture-diagram",
+      "task": "Reconcile inventory and explicit flows",
+      "deliverable": "Embedded diagram and flow register",
+      "environment": "All",
+      "role": "Platform engineer",
+      "prerequisites": "Approved inventory",
+      "dependencies": [
+        "TASK-03"
+      ],
+      "acceptance_criterion": "Each node matches inventory; HTTPS edge matches SYN-03; no inferred connection",
+      "expected_evidence": "Embedded diagram and flow register with SYN-01 assumptions",
+      "jh_low": 0.5,
+      "jh_likely": 1,
+      "jh_high": 2,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic net additional Build; one owner and no duplicate deliverable."
+    },
+    {
+      "id": "TASK-09",
+      "lot": "Foundation",
+      "domain": "cloud-architecture",
+      "task": "Resolve managed runtime versus cluster suitability",
+      "deliverable": "Architecture decision",
+      "environment": "All",
+      "role": "Platform engineer",
+      "prerequisites": "Approved inventory",
+      "dependencies": [
+        "TASK-01"
+      ],
+      "acceptance_criterion": "Confirm application isolation, backup and recovery evidence; cluster work excluded because no platform requirement",
+      "expected_evidence": "Architecture decision with SYN-01 assumptions",
+      "jh_low": 0.5,
+      "jh_likely": 1,
+      "jh_high": 2,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic net additional Build; one owner and no duplicate deliverable."
+    },
+    {
+      "id": "TASK-10",
+      "lot": "Foundation",
+      "domain": "provider-selection",
+      "task": "Compare equal service scope and three-year TCO",
+      "deliverable": "Provider comparison",
+      "environment": "All",
+      "role": "Platform engineer",
+      "prerequisites": "Approved inventory",
+      "dependencies": [
+        "TASK-01"
+      ],
+      "acceptance_criterion": "Nine equal-scope alternatives, regional eligibility remains hypothetical; do not approve without official dated quotes",
+      "expected_evidence": "Provider comparison with SYN-01 assumptions",
+      "jh_low": 0.5,
+      "jh_likely": 1,
+      "jh_high": 2,
+      "scenario_override": null,
+      "nature": "Build",
+      "coverage": "Full",
+      "source": "SYN-01",
+      "confidence": "Medium",
+      "notes": "Synthetic net additional Build; one owner and no duplicate deliverable."
+    }
+  ],
+  "cloud_costs": [
+    {
+      "id": "COST-01",
+      "provider": "Provider A",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-02",
+      "provider": "Provider A",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-03",
+      "provider": "Provider A",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 24,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-04",
+      "provider": "Provider A",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-05",
+      "provider": "Provider A",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-06",
+      "provider": "Provider A",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 36,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-07",
+      "provider": "Provider A",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 3,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-08",
+      "provider": "Provider A",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 45,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-09",
+      "provider": "Provider A",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 60,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-10",
+      "provider": "Provider B",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-11",
+      "provider": "Provider B",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-12",
+      "provider": "Provider B",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 24,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-13",
+      "provider": "Provider B",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-14",
+      "provider": "Provider B",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-15",
+      "provider": "Provider B",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 36,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-16",
+      "provider": "Provider B",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 3,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-17",
+      "provider": "Provider B",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 50,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-18",
+      "provider": "Provider B",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 60,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-19",
+      "provider": "Provider C",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-20",
+      "provider": "Provider C",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-21",
+      "provider": "Provider C",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Economique",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 24,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-22",
+      "provider": "Provider C",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-23",
+      "provider": "Provider C",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-24",
+      "provider": "Provider C",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Standard",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 36,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-25",
+      "provider": "Provider C",
+      "service": "Managed runtime",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 3,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-26",
+      "provider": "Provider C",
+      "service": "Managed runtime scheduled (Development + Staging)",
+      "environment": "Non-production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 2,
+      "unit_price": 55,
+      "currency": "EUR",
+      "monthly_multiplier": 0.5,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    },
+    {
+      "id": "COST-27",
+      "provider": "Provider C",
+      "service": "Managed data, backups, network/egress, logging, build/registry, support",
+      "environment": "Production",
+      "scenario": "Resilient",
+      "unit": "unit/month",
+      "quantity": 1,
+      "unit_price": 60,
+      "currency": "EUR",
+      "monthly_multiplier": 1,
+      "source": "SYN-01",
+      "confidence": "Low",
+      "notes": "Synthetic forecast only; same service perimeter, alternative provider. Replace envelope by verified SKU breakdown before real use."
+    }
+  ],
+  "scenarios": [
+    {
+      "name": "Economique",
+      "description": "Minimum suitable scope",
+      "notes": "Uses low JH."
+    },
+    {
+      "name": "Standard",
+      "description": "Expected delivery scope",
+      "notes": "Uses likely JH."
+    },
+    {
+      "name": "Resilient",
+      "description": "Higher resilience and uncertainty",
+      "notes": "Uses high JH."
+    }
+  ],
+  "phasing": [
+    {
+      "phase": "Foundation",
+      "sequence": 1,
+      "milestone": "Environments ready",
+      "notes": "Baseline before delivery."
+    },
+    {
+      "phase": "Delivery",
+      "sequence": 2,
+      "milestone": "Service validated",
+      "notes": "Capacity before transition."
+    },
+    {
+      "phase": "Operations",
+      "sequence": 3,
+      "milestone": "Transition complete",
+      "notes": "Run effort displayed separately."
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-01",
+      "risk": "Unknown traffic profile",
+      "impact": "Capacity assumptions may change",
+      "probability": "Medium",
+      "mitigation": "Measure representative load",
+      "owner": "Performance engineer",
+      "status": "Open"
+    },
+    {
+      "id": "RISK-OVERLOAD",
+      "risk": "High workload CPU exceeds Standard target capacity",
+      "impact": "Service target infeasible at high band; limited scaling and failure reserve",
+      "probability": "Assumed",
+      "mitigation": "TASK-04 measurement; revisit replicas, quotas and placement before approval",
+      "owner": "Performance engineer",
+      "status": "Open"
+    },
+    {
+      "id": "RISK-SCHEDULE",
+      "risk": "Foundation delivery overload",
+      "impact": "Dependent delivery cannot meet provisional period",
+      "probability": "Certain under forecast",
+      "mitigation": "DEC-SCHEDULE; role owner replans capacity before approval",
+      "owner": "Platform engineer",
+      "status": "Open"
+    },
+    {
+      "id": "RISK-FINOPS",
+      "risk": "Scheduled runtime unavailable during unplanned testing",
+      "impact": "Wakeup delay",
+      "probability": "Medium",
+      "mitigation": "Retain on-demand wakeup and reversible always-on schedule",
+      "owner": "Operations engineer",
+      "status": "Open"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "DEC-01",
+      "question": "Runtime hosting option",
+      "option": "Managed runtime",
+      "rationale": "Reduce operational burden",
+      "status": "A confirmer",
+      "source": "SYN-01"
+    },
+    {
+      "id": "DEC-CONFLICT",
+      "question": "SYN-02 single replica conflicts with SYN-03 two replicas",
+      "option": "Provisional two-replica branch",
+      "rationale": "Owner: architecture lead; resolve before design approval. See contradiction.* calculation cells for Build, monthly Run and cloud deltas. Single-replica branch accepts outage; only selected branch enters tasks. All three service scenarios keep the same perimeter.",
+      "status": "Provisional",
+      "source": "SYN-02; SYN-03"
+    },
+    {
+      "id": "DEC-FINOPS",
+      "question": "Reduce forecast non-production idle costs",
+      "option": "Reversible 50% runtime scheduling forecast",
+      "rationale": "Savings range and selected saving are dynamic finops.* cells. TASK-07 Build and TASK-06 monthly Run. Roll back schedule if wakeup affects testing; meter usage before/after at equal scope. Savings unvalidated; scheduled cost already reflects them.",
+      "status": "Forecast, unvalidated",
+      "source": "SYN-01"
+    },
+    {
+      "id": "DEC-ARCH",
+      "question": "Managed runtime or Kubernetes platform",
+      "option": "Managed runtime and shared managed backend",
+      "rationale": "No cluster requirement in this synthetic scope; Kubernetes work Non applicable. Retain application isolation and restore evidence; managed runtime reduces platform ownership, operator monthly Run remains explicit.",
+      "status": "Provisional",
+      "source": "SYN-01"
+    },
+    {
+      "id": "DEC-SCHEDULE",
+      "question": "Foundation Build exceeds Period 1 capacity",
+      "option": "Move dependent Foundation work into another period before approval",
+      "rationale": "Dynamic schedule.foundation_overload compares all Foundation Build with collective capacity, not a per-role budget. Delivery lead must confirm collective and individual role availability; subsequent periods cannot start before prerequisites. No approved calendar until overload is resolved.",
+      "status": "Open",
+      "source": "SYN-01"
+    }
+  ],
+  "sources": [
+    {
+      "id": "SYN-01",
+      "title": "Synthetic public assumptions",
+      "type": "Synthetic",
+      "date": "2026-10-07",
+      "url": "",
+      "notes": "No client data and no live tariff claims."
+    },
+    {
+      "id": "SYN-02",
+      "title": "Earlier synthetic single-replica brief and coverage evidence",
+      "type": "Synthetic",
+      "date": "2026-10-01",
+      "url": "",
+      "notes": "Invented conflicting requirement and coverage; no private source."
+    },
+    {
+      "id": "SYN-03",
+      "title": "Later synthetic resilience requirement and flow register",
+      "type": "Synthetic",
+      "date": "2026-10-07",
+      "url": "",
+      "notes": "Invented two-replica requirement; FLOW-01 COMP-03 to COMP-04 HTTPS. No live topology."
+    }
+  ]
+}

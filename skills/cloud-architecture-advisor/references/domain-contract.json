@@ -1,0 +1,159 @@
+{
+  "schema_version": 1,
+  "skill": "cloud-architecture-advisor",
+  "model": "EstimateModel",
+  "effort_unit": "JH",
+  "inputs": [
+    "metadata",
+    "assumptions",
+    "inventory",
+    "architecture",
+    "tasks",
+    "cloud_costs",
+    "scenarios",
+    "phasing",
+    "risks",
+    "decisions",
+    "sources"
+  ],
+  "outputs": {
+    "option": {
+      "section": "architecture",
+      "required_keys": [
+        "id",
+        "component",
+        "type",
+        "environment",
+        "provider",
+        "decision",
+        "notes"
+      ],
+      "workbook_sheet": "03_Architecture"
+    },
+    "decision": {
+      "section": "decisions",
+      "required_keys": [
+        "id",
+        "question",
+        "option",
+        "rationale",
+        "status",
+        "source"
+      ],
+      "workbook_sheet": "09_Arbitrages"
+    },
+    "risk": {
+      "section": "risks",
+      "required_keys": [
+        "id",
+        "risk",
+        "impact",
+        "probability",
+        "mitigation",
+        "owner",
+        "status"
+      ],
+      "workbook_sheet": "08_Risques"
+    },
+    "cost-driver": {
+      "section": "assumptions",
+      "required_keys": [
+        "key",
+        "value",
+        "unit",
+        "status",
+        "source",
+        "notes"
+      ],
+      "workbook_sheet": "01_Hypotheses"
+    },
+    "source": {
+      "section": "sources",
+      "required_keys": [
+        "id",
+        "title",
+        "type",
+        "date",
+        "url",
+        "notes"
+      ],
+      "workbook_sheet": "10_Sources"
+    },
+    "inventory": {
+      "section": "inventory",
+      "required_keys": [
+        "id",
+        "component",
+        "environment",
+        "quantity",
+        "unit",
+        "notes"
+      ],
+      "workbook_sheet": "02_Inventaire"
+    },
+    "task": {
+      "section": "tasks",
+      "required_keys": [
+        "id",
+        "lot",
+        "domain",
+        "task",
+        "deliverable",
+        "environment",
+        "role",
+        "prerequisites",
+        "dependencies",
+        "acceptance_criterion",
+        "expected_evidence",
+        "jh_low",
+        "jh_likely",
+        "jh_high",
+        "scenario_override",
+        "nature",
+        "coverage",
+        "source",
+        "confidence",
+        "notes"
+      ],
+      "workbook_sheet": "04_Taches_JH"
+    },
+    "cloud-cost": {
+      "section": "cloud_costs",
+      "required_keys": [
+        "id",
+        "provider",
+        "service",
+        "environment",
+        "scenario",
+        "unit",
+        "quantity",
+        "unit_price",
+        "currency",
+        "monthly_multiplier",
+        "source",
+        "confidence",
+        "notes"
+      ],
+      "workbook_sheet": "05_Couts_cloud"
+    },
+    "scenario": {
+      "section": "scenarios",
+      "required_keys": [
+        "name",
+        "description",
+        "notes"
+      ],
+      "workbook_sheet": "06_Scenarios"
+    },
+    "phase": {
+      "section": "phasing",
+      "required_keys": [
+        "phase",
+        "sequence",
+        "milestone",
+        "notes"
+      ],
+      "workbook_sheet": "07_Phasage"
+    }
+  }
+}

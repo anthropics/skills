@@ -1,0 +1,57 @@
+{
+  "nodes": [
+    {
+      "id": "COMP-01",
+      "component": "Web service",
+      "environment": "Development",
+      "quantity": 1,
+      "unit": "service",
+      "notes": "Synthetic development workload.",
+      "zone": "Application",
+      "provider": "Provider A",
+      "icon": "neutral"
+    },
+    {
+      "id": "COMP-02",
+      "component": "Web service",
+      "environment": "Staging",
+      "quantity": 1,
+      "unit": "service",
+      "notes": "Synthetic validation workload.",
+      "zone": "Application",
+      "provider": "Provider A",
+      "icon": "neutral"
+    },
+    {
+      "id": "COMP-03",
+      "component": "Web service",
+      "environment": "Production",
+      "quantity": 2,
+      "unit": "replica",
+      "notes": "Synthetic runtime workload.",
+      "zone": "Application",
+      "provider": "Provider A",
+      "icon": "neutral"
+    },
+    {
+      "id": "COMP-04",
+      "component": "Managed data and platform services",
+      "environment": "Production",
+      "quantity": 1,
+      "unit": "platform envelope",
+      "notes": "Usable data, backups, network/egress, logging, registry/build and support; synthetic envelope pricing, not a SKU quote.",
+      "zone": "Data",
+      "provider": "Provider A",
+      "icon": "neutral"
+    }
+  ],
+  "edges": [
+    {
+      "id": "FLOW-01",
+      "source": "COMP-03",
+      "target": "COMP-04",
+      "label": "HTTPS (SYN-03)",
+      "evidence": "SYN-03"
+    }
+  ]
+}

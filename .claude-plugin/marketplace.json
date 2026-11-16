@@ -68,6 +68,25 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "cloud-estimation-skills",
+      "description": "Cloud estimation suite that produces a recalculated Excel estimate covering infrastructure effort, architecture choices, Kubernetes, CI/CD, hardening, capacity, provider comparison, FinOps, migration and architecture diagrams",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/cloud-estimation-orchestrator",
+        "./skills/infra-work-estimator",
+        "./skills/cloud-architecture-advisor",
+        "./skills/kubernetes-architect",
+        "./skills/cicd-devsecops-estimator",
+        "./skills/server-hardening-estimator",
+        "./skills/hosting-capacity-simulator",
+        "./skills/cloud-provider-selector",
+        "./skills/finops-optimizer",
+        "./skills/cloud-migration-estimator",
+        "./skills/cloud-architecture-diagrammer"
+      ]
     }
   ]
 }

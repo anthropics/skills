@@ -1,0 +1,20 @@
+{
+  "family": "Lato",
+  "style": "Regular",
+  "license": "SIL Open Font License 1.1",
+  "source_repository": "google/fonts",
+  "source_commit": "bd8f81ddb5c74d5c8897b36ad88b440266245103",
+  "source_path": "ofl/lato/Lato-Regular.ttf",
+  "metadata_path": "ofl/lato/METADATA.pb",
+  "font_bytes": 656568,
+  "font_sha256": "d636e4683231f931eda222d588e944d082bfd3bdba02f928bee461c0f185b251",
+  "license_path": "ofl/lato/OFL.txt",
+  "license_source_bytes": 4407,
+  "license_source_sha256": "74ba064d03f1f1c4a952da936c3eb71866c34404916734de3cae73b34357e59e",
+  "license_bytes": 4406,
+  "license_sha256": "19e7e97ffc31e58fa0e54919b8189b2ddcc6fd75539f387e2822b107b6a51423",
+  "license_normalization": "Remove the single trailing ASCII space on source line 21; complete copyright and licence text retained",
+  "downloaded_on": "2026-10-10",
+  "font_modified": false,
+  "license_whitespace_normalized": true
+}

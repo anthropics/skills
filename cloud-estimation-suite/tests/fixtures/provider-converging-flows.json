@@ -1,0 +1,17 @@
+{
+  "nodes": [
+    {"id": "BACKUP", "component": "Sauvegardes", "environment": "Production planifiée", "zone": "Région à confirmer"},
+    {"id": "DB", "component": "Base gérée", "environment": "Production planifiée", "zone": "Région à confirmer"},
+    {"id": "EGRESS", "component": "Trafic sortant", "environment": "Production planifiée", "zone": "Région à confirmer"},
+    {"id": "HTTP", "component": "Service HTTP", "environment": "Production planifiée", "zone": "Région à confirmer"},
+    {"id": "OBJ", "component": "Stockage objet", "environment": "Production planifiée", "zone": "Région à confirmer"},
+    {"id": "OBS", "component": "Télémétrie", "environment": "Production planifiée", "zone": "Région à confirmer"}
+  ],
+  "edges": [
+    {"id": "F1", "source": "HTTP", "target": "DB", "label": "Requêtes"},
+    {"id": "F2", "source": "HTTP", "target": "OBJ", "label": "Objets"},
+    {"id": "F3", "source": "DB", "target": "BACKUP", "label": "Sauvegarde"},
+    {"id": "F4", "source": "HTTP", "target": "OBS", "label": "Métriques"},
+    {"id": "F5", "source": "HTTP", "target": "EGRESS", "label": "Sortie"}
+  ]
+}
