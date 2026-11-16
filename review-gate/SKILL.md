@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 3.2.0
+version: 3.2.1
 author: Bernier LLC
 ---
 
@@ -29,6 +29,8 @@ aec run-script skill:review-gate install-workflow.py
 #   cp …/scripts/check-review-gate.py …/scripts/check-forged-gate-names.py \
 #      …/scripts/check-forged-review-gate.py scripts/
 ```
+
+Upgrading to 3.2.1: the workflow now reuses the head's one `Review Gate` check run instead of adding a new one per evaluation (GitHub blocks the PR while any same-named run in the suite is red, so 3.2.0 heads that failed once could never go green). Re-run `install-workflow.py --force` and commit; the next evaluation completes every earlier run on the head.
 
 Upgrading to 3.2.0: re-run `install-workflow.py --force` and commit the workflow together with all three scripts. The new workflow fails closed until the scripts are on the default branch.
 
