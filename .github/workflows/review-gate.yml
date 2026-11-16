@@ -23,8 +23,10 @@
 # Forged-name check (SEC-MVS-01 S5): required checks match by name, so a same-repo
 # PR can add its own job named "Review Gate" with `run: true`. After the checker,
 # scripts/check-forged-review-gate.py (vendored aec detector, scoped to this name)
-# lists the head SHA's check runs and fails the gate when any Actions job other
-# than this workflow under pull_request_target published "Review Gate". Runs for
+# lists the head SHA's check runs and fails the gate when any Actions job published
+# "Review Gate". The real result is only the Checks API run below; this workflow's
+# own job is named review-gate-runner, because under pull_request_target it attaches
+# to the base SHA, and a stacked child PR's base is the outer PR's head. Runs for
 # PRs into every branch. Residual: a PR job with `checks: write` POSTing the name
 # straight to the Checks API is not detectable here (needs a required workflow or a
 # distinct publisher app). A job publishing after this scan is caught by the
@@ -47,7 +49,8 @@ concurrency:
 
 jobs:
   gate:
-    name: Review Gate
+    # Not "Review Gate": this job attaches to the base SHA, which can be a stacked PR's head.
+    name: review-gate-runner
     runs-on: ubuntu-latest
     steps:
       - name: Run trusted review-gate checker

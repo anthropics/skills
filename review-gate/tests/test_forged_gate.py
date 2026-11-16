@@ -103,11 +103,25 @@ class ForgedGateWorkflow(unittest.TestCase):
         self.assertEqual((rc, concl), (1, "failure"), out)
         self.assertIn("forged check 'Review Gate'", out)
 
-    def test_trusted_workflow_job_and_checks_api_run_pass(self):
+    def test_checks_api_run_and_other_jobs_pass(self):
         rc, concl, out = self.gate(
-            [api_check("Review Gate", 41), job("Review Gate", 501), job("CI", 502)],
+            [api_check("Review Gate", 41), job("review-gate-runner", 501), job("CI", 502)],
             runs={"501": TRUSTED_RUN, "502": ".github/workflows/ci.yml\tpull_request"})
         self.assertEqual((rc, concl), (0, "success"), out)
+
+    def test_stacked_child_review_gate_job_on_head_fails_the_gate(self):
+        # H is the outer PR's head and the stacked child's base: the child's pull_request_target job
+        # attaches to H with the trusted path/event pair. It must not count as this PR's gate.
+        rc, concl, out = self.gate([api_check("Review Gate", 41), job("Review Gate", 505)],
+                                   runs={"505": TRUSTED_RUN})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertIn("forged check 'Review Gate'", out)
+
+    def test_gate_job_is_not_named_like_the_required_check(self):
+        # The real result is the Checks API run; an Actions job named "Review Gate" would land on the
+        # base SHA, which is a stacked child's head-or-base. Every Actions-created "Review Gate" is forged.
+        jobs = TEMPLATE.read_text().split("\njobs:\n", 1)[1]
+        self.assertNotIn("name: Review Gate", jobs)
 
     def test_main_via_staging_pull_request_job_is_not_flagged(self):
         # Several repos publish this name from a plain pull_request job; Review Gate must not block them.
@@ -143,8 +157,33 @@ class WrapperReason(unittest.TestCase):
         self.assertEqual(detector.PROTECTED["Review Gate"],
                          {(".github/workflows/review-gate.yml", "pull_request_target")})
         header = (SCRIPTS / "check-forged-review-gate.py").read_text()
+        self.assertIn('detector.PROTECTED = {"Review Gate": set()}', header)
+        self.assertIn("NO TRUSTED ACTIONS PAIR FOR `Review Gate`", header)
         self.assertIn("WHY THIS WRAPPER EXISTS", header)
         self.assertIn("DELETE THIS WRAPPER when Option A or B", header)
+
+
+class WrapperDetector(unittest.TestCase):
+    def wrapper(self, check_runs, runs):
+        with tempfile.TemporaryDirectory() as tmp:
+            bindir = Path(tmp); (bindir / "gh").write_text(FAKE_GH); (bindir / "gh").chmod(0o755)
+            (bindir / "fixture.json").write_text(json.dumps({"scripts": {}, "check_runs": check_runs, "runs": runs}))
+            env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r")
+            stdin = json.dumps({"total_count": len(check_runs), "check_runs": check_runs})
+            proc = subprocess.run([sys.executable, str(SCRIPTS / "check-forged-review-gate.py")], input=stdin,
+                                  env=env, capture_output=True, text=True)
+            return proc.returncode, proc.stderr
+
+    def test_stacked_child_success_beside_failed_outer_gate_exits_1(self):
+        # The cop's merge-time run: outer gate (Checks API) failed, child's trusted-pair job succeeded on H.
+        failed_outer = dict(api_check("Review Gate", 41), conclusion="failure")
+        child = dict(job("Review Gate", 506), conclusion="success")
+        rc, err = self.wrapper([failed_outer, child], {"506": TRUSTED_RUN})
+        self.assertEqual(rc, 1, err)
+
+    def test_checks_api_publication_alone_exits_0(self):
+        rc, err = self.wrapper([api_check("Review Gate", 41)], {})
+        self.assertEqual(rc, 0, err)
 
 
 class CopMergeCommand(unittest.TestCase):

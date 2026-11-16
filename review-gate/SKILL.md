@@ -66,8 +66,10 @@ Loads `scripts/check-review-gate.py` from the repository **default branch** only
 4. When `base` is `main`: label `review:high` is present.
 5. **No forged `Review Gate`** (SEC-MVS-01 S5, PRs into every branch): the head SHA's check runs
    (`check-runs?filter=all`, paginated, under `pipefail`) go through `check-forged-review-gate.py`.
-   Any Actions job named `Review Gate` that is not this workflow under `pull_request_target` fails the
-   gate, and so does an unreadable listing or lookup (exit 2, fails closed). The wrapper checks only
+   Any Actions job named `Review Gate` fails the gate, and so does an unreadable listing or lookup
+   (exit 2, fails closed). The only legitimate `Review Gate` is the Checks API run this workflow publishes;
+   its own job is named `review-gate-runner`, because a `pull_request_target` job attaches to the base SHA,
+   and a stacked child PR's base is the outer PR's head. The wrapper checks only
    `Review Gate`: the vendored map also names `PRs into main must come from staging`, which several
    repos still publish from a plain `pull_request` job; that name stays with each repo's main-via-staging guard.
    Residual: a PR job with `checks: write` POSTing `Review Gate` straight to the Checks API looks the same as

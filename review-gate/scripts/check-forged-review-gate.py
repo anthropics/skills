@@ -9,9 +9,14 @@ Re-vendor it by copying that file unchanged; never edit it here.
 WHY THIS WRAPPER EXISTS: the vendored PROTECTED map also protects "PRs into main must come from
 staging" with no trusted pair (set()). Several downstream repos still publish that name from a plain
 `pull_request` Actions job, so running the detector unscoped would fail every main promotion in those
-repos. The map stays unchanged; this wrapper checks only `Review Gate`, whose one trusted source is
-(.github/workflows/review-gate.yml, pull_request_target). The other name stays the job of each repo's
-own main-via-staging guard.
+repos. The map stays unchanged; this wrapper checks only `Review Gate`. The other name stays the job
+of each repo's own main-via-staging guard.
+
+NO TRUSTED ACTIONS PAIR FOR `Review Gate`: the vendored map trusts (.github/workflows/review-gate.yml,
+pull_request_target), but a pull_request_target job attaches to the base SHA, and a stacked child PR's
+base is the outer PR's head. That child's trusted-pair success would satisfy the outer PR. So the job is
+named review-gate-runner and the real result is only the Checks API run; any Actions job named
+`Review Gate` is forged here.
 
 DELETE THIS WRAPPER when Option A or B of the aec plan lands (a required workflow or a distinct
 publisher app, making the required checks unforgeable through the Checks API). The detector is then
@@ -32,7 +37,8 @@ def main():
         )
         detector = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(detector)
-        detector.PROTECTED = {"Review Gate": detector.PROTECTED["Review Gate"]}
+        detector.PROTECTED["Review Gate"]  # KeyError if a re-vendor drops the name: fail closed
+        detector.PROTECTED = {"Review Gate": set()}
     except (OSError, ImportError, KeyError, SyntaxError) as exc:
         print(f"::error::could not load the forged-check detector, failing closed: {exc}", file=sys.stderr)
         return 2

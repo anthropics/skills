@@ -1624,7 +1624,11 @@ assert 'ref="$DEFAULT_BRANCH"' in yml
 assert "$BASE_SHA" not in yml
 assert "BASE_SHA:" not in yml
 assert "actions/checkout" not in yml
-assert re.search(r"(?m)^\s+name:\s*Review Gate\s*$", yml)
+# The required context "Review Gate" is the Checks API run on the PR head; the Actions job is named
+# differently so a stacked child's pull_request_target job (attached to its base = our head) can't pose as it.
+assert '-f name="Review Gate"' in yml
+assert re.search(r"(?m)^\s+name:\s*review-gate-runner\s*$", yml)
+assert not re.search(r"(?m)^    name:\s*Review Gate\s*$", yml)
 assert "check-runs" in yml
 assert 'status="in_progress"' in yml
 assert "check-runs/$check_id" in yml
