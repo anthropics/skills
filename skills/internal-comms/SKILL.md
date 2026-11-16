@@ -26,7 +26,7 @@ To write any internal communication:
     - `examples/general-comms.md` - For anything else that doesn't explicitly match one of the above
 3. **Follow the specific instructions** in that file for formatting, tone, and content gathering
 
-If the communication type doesn't match any existing guideline, ask for clarification or more context about the desired format.
+If the user has not provided enough information to satisfy the requirements of the selected guideline file, ask for clarification before drafting.
 
 ## Keywords
 3P updates, company newsletter, company comms, weekly update, faqs, common questions, updates, internal comms
