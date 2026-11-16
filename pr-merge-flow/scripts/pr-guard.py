@@ -396,19 +396,25 @@ def merge_args(argv):
 
 def merge_calls(cmd, cwd):
     """Yield (dir, ref, flag tokens, repo) for each `gh pr merge`, dir after any `cd`/`env -C`; see merge_args()."""
+    # A `cd` in a background job or pipeline stage (`cd x & gh …`, `cd x | gh …`) doesn't reach the
+    # merge, but walk() can't see operators: once the dir has moved, a lone & or | makes it unresolved.
+    async_op = re.search(r"(?<![&|>])[&|](?![&|>])", cmd)
     for d, argv in walk(cmd, cwd):
         pr = gh_pr(argv)
         if pr and pr[0] == "merge":
-            yield (d, *merge_args(argv))
+            yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
 
 def not_green(ref, repo="", cwd=None):
     """Return '' when every check on the PR is green, else a description of why not.
 
     cwd is the merge's effective dir: without -R, gh resolves the PR number in that dir's repo.
+    With -R the dir doesn't matter, so an unresolved one is ignored.
     """
-    if cwd and "$" in cwd:
-        return f"can't resolve the merge's working directory ({cwd})"
+    if repo:
+        cwd = None
+    elif cwd and ("$" in cwd or "`" in cwd):
+        return f"can't resolve the merge's working directory ({cwd}); pass -R owner/repo"
     try:
         out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
                               "statusCheckRollup,mergeStateStatus"],

@@ -209,6 +209,20 @@ for c, want in [("cd /other && gh pr merge 5 --squash --match-head-commit aaaaaa
     finally:
         g.subprocess.run = _run
 assert "working directory" in merge("cd $D && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
+# claude-skills#83 Codex: a cd in a background job / pipeline stage doesn't reach the merge: fail closed.
+for c in ["cd /other & gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "cd /other | gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+    assert "working directory" in (merge(c, rollup=ok) or ""), c
+assert merge("cd /other && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2>&1", rollup=ok) is None
+# Backtick dirs are as unresolved as $(…); an explicit -R makes the dir irrelevant.
+assert "working directory" in merge("cd `pwd`/x && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
+g.subprocess.run = _gh_repo("owner/target")
+try:
+    for c in ['cd "$D" && gh pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+              "cd `x` && gh pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+        assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
+finally:
+    g.subprocess.run = _run
 assert merge("gh pr merge https://github.com/o/r/pull/5 -t 'x y' --merge --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCELLED"),
                   ({"name": "pytest", "conclusion": ""}, "pytest: PENDING"),
