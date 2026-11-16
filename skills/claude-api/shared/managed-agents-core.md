@@ -368,7 +368,7 @@ client.beta.sessions.update(
             },
             {"type": "mcp_toolset", "mcp_server_name": "linear"},
         ],
-        "mcp_servers": [{"type": "url", "name": "linear", "url": "https://mcp.linear.app/sse"}],
+        "mcp_servers": [{"type": "url", "name": "linear", "url": "https://mcp.linear.app/mcp"}],
     },
 )
 ```
