@@ -17,7 +17,7 @@ from pathlib import Path
 
 from scripts.generate_report import generate_html
 from scripts.improve_description import improve_description
-from scripts.run_eval import find_project_root, run_eval
+from scripts.run_eval import run_eval
 from scripts.utils import parse_skill_md
 
 
@@ -60,7 +60,6 @@ def run_loop(
     log_dir: Path | None = None,
 ) -> dict:
     """Run the eval + improvement loop."""
-    project_root = find_project_root()
     name, original_description, content = parse_skill_md(skill_path)
     current_description = description_override or original_description
 
@@ -92,7 +91,6 @@ def run_loop(
             description=current_description,
             num_workers=num_workers,
             timeout=timeout,
-            project_root=project_root,
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
@@ -188,7 +186,7 @@ def run_loop(
 
         # Improve the description based on train results
         if verbose:
-            print(f"\nImproving description...", file=sys.stderr)
+            print("\nImproving description...", file=sys.stderr)
 
         t0 = time.time()
         # Strip test scores from history so improvement model can't see them
