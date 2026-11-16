@@ -1616,13 +1616,19 @@ yml = (Path(__file__).parent.parent / "templates" / "review-gate.yml").read_text
 assert "pull_request_target:" in yml
 assert "pull_request_review:" not in yml
 assert "pull_request_review_comment:" not in yml
-assert "contents/scripts/check-review-gate.py?ref=$ref" in yml
+assert "contents/scripts/$name?ref=$ref" in yml
+for _script in ("check-review-gate.py", "check-forged-gate-names.py", "check-forged-review-gate.py"):
+    assert f"load_trusted {_script}" in yml
 assert "DEFAULT_BRANCH" in yml
 assert 'ref="$DEFAULT_BRANCH"' in yml
 assert "$BASE_SHA" not in yml
 assert "BASE_SHA:" not in yml
 assert "actions/checkout" not in yml
-assert re.search(r"(?m)^\s+name:\s*Review Gate\s*$", yml)
+# The required context "Review Gate" is the Checks API run on the PR head; the Actions job is named
+# differently so a stacked child's pull_request_target job (attached to its base = our head) can't pose as it.
+assert '-f name="Review Gate"' in yml
+assert re.search(r"(?m)^\s+name:\s*review-gate-runner\s*$", yml)
+assert not re.search(r"(?m)^    name:\s*Review Gate\s*$", yml)
 assert "check-runs" in yml
 assert 'status="in_progress"' in yml
 assert "check-runs/$check_id" in yml
