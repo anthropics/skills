@@ -1,0 +1,9 @@
+{
+  "name": "xlcalc-xlsx-skill-scripts",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=20.19" },
+  "dependencies": {
+    "xlcalc": "^0.88.1"
+  }
+}
