@@ -62,6 +62,11 @@ if "/check-runs" in path and "/commits/" in path:
     print(json.dumps({"total_count": len(runs), "check_runs": runs})); sys.exit(0)
 if "/actions/runs/" in path:
     run_id = path.rsplit("/", 1)[1]
+    if "--jq" in args and "pull_requests" in args[args.index("--jq") + 1]:  # the run's PR provenance
+        prs = fixture.get("run_prs", {}).get(run_id, "7\tmain")
+        if prs is None:
+            sys.exit(1)
+        print(prs); sys.exit(0)
     if run_id not in fixture["runs"]:
         sys.exit(1)
     print(fixture["runs"][run_id]); sys.exit(0)
@@ -262,12 +267,13 @@ class WrapperReason(unittest.TestCase):
 
 class WrapperDetector(unittest.TestCase):
     def wrapper(self, check_runs, runs, stdin=None, pr_files=(), default_files=(RG_PATH + "?ref=main",),
-                **env_over):
+                run_prs=None, **env_over):
         with tempfile.TemporaryDirectory() as tmp:
             bindir = Path(tmp); (bindir / "gh").write_text(FAKE_GH); (bindir / "gh").chmod(0o755)
             (bindir / "fixture.json").write_text(json.dumps({
                 "scripts": {}, "check_runs": check_runs, "runs": runs,
-                "pr_files": None if pr_files is None else list(pr_files), "default_files": list(default_files)}))
+                "pr_files": None if pr_files is None else list(pr_files), "default_files": list(default_files),
+                "run_prs": run_prs or {}}))
             env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r",
                        PR_NUMBER="7", DEFAULT_BRANCH="main")
             for key, value in env_over.items():
@@ -344,6 +350,23 @@ class WrapperDetector(unittest.TestCase):
                                pr_files=[pr_file(RG_PATH)], default_files=())
         self.assertEqual(rc, 1, err)
         self.assertIn("not on the default branch", err)
+
+    # nevar-plan #51 Codex (r4582461759): a stacked child PR's pull_request_target run executes the outer
+    # PR's edited review-gate.yml (its base) and attaches to the outer head. Path facts all hold for the
+    # outer PR, but the run is not the outer PR's run against the default branch, so it stays forged.
+    def test_bootstrap_stacked_child_run_exits_1(self):
+        legacy = [api_check("Review Gate", 41), job("Review Gate", 515)]
+        for prs in ("8\tfeat/outer", "7\tfeat/outer", "8\tmain", ""):  # child PR; this PR on a non-default base; another PR; fork (none)
+            with self.subTest(prs=prs):
+                rc, err = self.wrapper(legacy, {"515": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)], run_prs={"515": prs})
+                self.assertEqual(rc, 1, err)
+                self.assertNotIn("bootstrap:", err)
+                self.assertIn("is not PR #7's run against main", err)
+
+    def test_bootstrap_run_lookup_failure_exits_2(self):
+        rc, err = self.wrapper([job("Review Gate", 516)], {"516": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
+                               run_prs={"516": None})
+        self.assertEqual(rc, 2, err)
 
     def test_bootstrap_ambiguous_input_exits_2(self):
         legacy = [job("Review Gate", 514)]

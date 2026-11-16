@@ -27,9 +27,12 @@ retired or kept as defence in depth (plan step S4) and review-gate.yml calls it 
 BOOTSTRAP (nevar-integrations #11): the PR that installs 3.2.x is itself evaluated by the default
 branch's legacy workflow, whose job is still named `Review Gate`. Such a job is accepted, with a
 notice, only when ALL hold: it ran from a formerly trusted (path, pull_request_target) pair; that path
-is on the default branch; and this PR (PR_NUMBER) modifies, removes or renames that file. A missing or
-malformed PR_NUMBER, or a failed PR-files or default-branch lookup, exits 2; any other failed condition
-leaves the job forged (exit 1).
+is on the default branch; this PR (PR_NUMBER) modifies, removes or renames that file; and the run itself
+belongs to this PR with the default branch as its base (pull_request_target executes the BASE branch's
+workflow file, so that is the default-branch revision). Path existence alone never grants it: a stacked
+child PR's run executes the outer PR's edited review-gate.yml and attaches to the outer head (nevar-plan
+#51 r4582461759). A missing or malformed PR_NUMBER, or a failed PR-files, default-branch or run lookup,
+exits 2; any other failed condition leaves the job forged (exit 1).
 
 env: REPO (required), PR_NUMBER (needed only to accept a legacy job), DEFAULT_BRANCH (else looked up).
 stdin: `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate`
@@ -78,7 +81,7 @@ def _pr_files(repo, pr):
     return files
 
 
-def bootstrap_refusal(repo, path):
+def bootstrap_refusal(repo, path, run_id):
     """None when the legacy job from `path` is this PR's own bootstrap run; else why it stays forged."""
     pr = os.environ.get("PR_NUMBER", "")
     if not re.fullmatch(r"[1-9][0-9]*", pr):
@@ -95,6 +98,12 @@ def bootstrap_refusal(repo, path):
                        capture_output=True, text=True, check=True)
     except subprocess.CalledProcessError:
         return f"{path} is not on the default branch {branch}"
+    # Provenance: the run must be this PR's, against the default branch. A fork PR's run lists no
+    # pull_requests, so it is refused too (fail closed).
+    prs = {tuple(line.split("\t")) for line in _gh(f"repos/{repo}/actions/runs/{run_id}", "--jq",
+                                                   ".pull_requests[] | [.number, .base.ref] | @tsv").splitlines()}
+    if (pr, branch) not in prs:
+        return f"run {run_id} is not PR #{pr}'s run against {branch} (it ran {sorted(prs) or 'no PR'})"
     return None
 
 
@@ -121,13 +130,13 @@ def main():
             seen = []
 
             def record(run_id):
-                seen.append(lookup(run_id))
-                return seen[-1]
+                seen.append((run_id, lookup(run_id)))
+                return seen[-1][1]
             for name, where in detector.forged([check_run], record, scoped):
-                flagged.append((name, where, seen[-1]))
+                flagged.append((name, where, *seen[-1]))
         bad = []
-        for name, where, pair in flagged:
-            refusal = bootstrap_refusal(repo, pair[0]) if pair in legacy_pairs else "untrusted workflow"
+        for name, where, run_id, pair in flagged:
+            refusal = bootstrap_refusal(repo, pair[0], run_id) if pair in legacy_pairs else "untrusted workflow"
             if refusal is None:
                 print(f"::notice::bootstrap: `{name}` job {where} ran {pair[0]} ({pair[1]}) from the default "
                       "branch, and this PR replaces that file; accepted as the legacy workflow it upgrades.",

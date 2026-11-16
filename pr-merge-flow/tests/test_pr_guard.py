@@ -95,7 +95,7 @@ assert g.draft_violation('gh pr create --title "a\nb" --draft')
 assert g.draft_violation("echo 'unterminated\ngh pr create --draft")
 
 # pr_open_mode: only an explicit "draft" allows drafts; unset, ready and corrupt mean ready.
-import json, tempfile
+import json, re, tempfile
 _prefs = Path(tempfile.mkdtemp()) / "preferences.json"
 assert not g.draft_mode(_prefs)  # missing file
 for body, want in [({}, False), ({"settings": {}}, False), ({"settings": {"pr_open_mode": "ready"}}, False),
@@ -111,11 +111,18 @@ class _R:
         self.returncode, self.stdout, self.stderr = rc, out, err
 
 HEAD_SHA = "a" * 40
-def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0):
+def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0, events=None, forged=()):
     """`gh pr view` returns the rollup; `gh api .../actions/runs` resolves each run id to its workflow
     file. By default a run's path follows its workflowName; `paths` overrides it per run id (None =
-    the API does not list that run)."""
+    the API does not list that run), `events` overrides the event. `.../runs/<id>/jobs` lists every
+    rollup entry's job as real, except entries in `forged` (custom checks with a borrowed detailsUrl)."""
     def run(args, *a, **k):
+        if args[:2] == ["gh", "api"] and "/jobs?" in args[3]:
+            run_id = re.search(r"/runs/(\d+)/jobs", args[3]).group(1)
+            rows = [(m.group(2), e.get("name"), (e.get("conclusion") or "").upper()) for e in rollup or []
+                    if id(e) not in {id(f) for f in forged}
+                    and (m := g.RUN_ID.search(e.get("detailsUrl") or "")) and m.group(1) == run_id]
+            return _R(api_rc, "".join(f"{j}\t{n}\t{c}\n" for j, n, c in rows), "boom" if api_rc else "")
         if args[:2] == ["gh", "api"]:
             assert f"head_sha={HEAD_SHA}" in args[3], args
             rows = {}
@@ -124,7 +131,8 @@ def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0):
                 if m and e.get("workflowName"):
                     rows[m.group(1)] = f".github/workflows/{e['workflowName'].lower().replace(' ', '-')}.yml"
             rows.update(paths or {})
-            return _R(api_rc, "".join(f"{i}\t{pth}\tpull_request\n" for i, pth in rows.items() if pth), "boom" if api_rc else "")
+            return _R(api_rc, "".join(f"{i}\t{pth}\t{(events or {}).get(i, 'pull_request')}\n"
+                                      for i, pth in rows.items() if pth), "boom" if api_rc else "")
         return _R(rc, json.dumps({"statusCheckRollup": rollup, "headRefOid": HEAD_SHA}), err)
     return run
 
@@ -346,6 +354,28 @@ for paths in ({"200": ".github/workflows/ci.yml", "201": ".github/workflows/snea
         assert m is None, (paths, m)  # a true rerun of the same workflow file still supersedes
     else:
         assert m and "Foundation checks: FAILURE" in m, (paths, m)
+# One workflow file, two events: a newer green pull_request run never supersedes an older red
+# pull_request_target run of the same file (identity is (path, event, job name)).
+for events, blocked in (({"200": "pull_request_target", "201": "pull_request"}, True),
+                        ({"200": "pull_request", "201": "pull_request"}, False)):
+    g.subprocess.run = _gh(rollup=ok + [real, fake], paths={"200": ".github/workflows/ci.yml", "201": ".github/workflows/ci.yml"},
+                           events=events)
+    try:
+        m = g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
+    finally:
+        g.subprocess.run = _run
+    assert bool(m) is blocked and (not blocked or "Foundation checks: FAILURE" in m), (events, m)
+# #90 Codex P1 (r4582487271): a custom green check whose writable detailsUrl names a job in a newer
+# legitimate run of the same workflow file is not that run's job, so it supersedes nothing.
+newer_build = wf_job("build", "SUCCESS", 202, 7, "2026-11-15T10:10:00Z")
+custom = wf_job("Foundation checks", "SUCCESS", 202, 7, "2026-11-15T10:11:00Z")  # borrows job 7's URL
+for bad in (dict(custom), dict(custom, detailsUrl="https://github.com/o/r/actions/runs/202/job/99")):
+    g.subprocess.run = _gh(rollup=ok + [real, newer_build, bad], forged=(bad,))
+    try:
+        m = g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
+    finally:
+        g.subprocess.run = _run
+    assert m and "Foundation checks: FAILURE" in m, (bad, m)
 # the Actions API failing resolves nothing, so nothing is superseded (fail closed)
 m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok], api_rc=1)
 assert m and "Review Gate: FAILURE" in m, m

@@ -440,7 +440,7 @@ def merge_calls(cmd, cwd):
         if pr and pr[0] == "merge":
             yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
-RUN_ID = re.compile(r"/actions/runs/(\d+)/job/\d+")
+RUN_ID = re.compile(r"/actions/runs/(\d+)/job/(\d+)")
 
 
 def green(e):
@@ -462,6 +462,25 @@ def run_workflows(sha, repo, cwd):
         return {}
     rows = (line.split("\t") for line in out.stdout.splitlines())
     return {r[0]: (r[1], r[2]) for r in rows if len(r) == 3 and r[1]}
+
+
+def run_jobs(run_id, repo, cwd):
+    """Map each real job of an Actions run (all attempts) to (name, conclusion); {} when unknown.
+
+    detailsUrl is writable by anyone with Checks write access, so a custom check can point at a
+    legitimate run. Only an entry whose job id is a real job of that run, with the same name and
+    conclusion, is that job (claude-skills#90 Codex P1 r4582487271)."""
+    try:
+        out = subprocess.run(["gh", "api", "--paginate",
+                              f"repos/{repo or '{owner}/{repo}'}/actions/runs/{run_id}/jobs?filter=all&per_page=100",
+                              "--jq", '.jobs[] | [.id, .name, (.conclusion // "")] | @tsv'],
+                             cwd=cwd, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError):
+        return {}
+    if out.returncode != 0:
+        return {}
+    rows = (line.split("\t") for line in out.stdout.splitlines())
+    return {r[0]: (r[1], r[2].upper()) for r in rows if len(r) == 3}
 
 
 def not_green(ref, repo="", cwd=None):
@@ -496,15 +515,20 @@ def not_green(ref, repo="", cwd=None):
     # job (e.g. one with `needs:`) never hides an earlier failed sibling. Runs tied on startedAt
     # cannot be ordered, so all of them count (fail closed). The workflow is identified by the run's
     # file path and event from the Actions API, never by the editable `name:` (a PR can add a workflow
-    # named `CI` whose green job would otherwise supersede the real CI failure). Status contexts,
+    # named `CI` whose green job would otherwise supersede the real CI failure), and an entry counts as
+    # that run's job only when the Actions jobs API lists its job id in that run with the same name
+    # and conclusion (detailsUrl is writable, so a custom check could claim any run). Status contexts,
     # third-party check runs and any entry without startedAt or a run id resolved to a workflow path
     # are never collapsed and must be green on their own.
-    groups, latest, run_start = {}, [], {}
+    groups, latest, run_start, jobs = {}, [], {}, {}
     for e in rollup:
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         m = RUN_ID.search(e.get("detailsUrl") or "")
         # No parsable run id: run identity is unknown, so the entry supersedes nothing (fail closed).
-        if m and m.group(1) in workflows and (e.get("startedAt") or "") > "0002":
+        if m and m.group(1) in workflows and m.group(1) not in jobs:
+            jobs[m.group(1)] = run_jobs(m.group(1), repo, cwd)
+        if (m and m.group(1) in workflows and (e.get("startedAt") or "") > "0002"
+                and jobs[m.group(1)].get(m.group(2)) == (e.get("name"), (e.get("conclusion") or "").upper())):
             run_key = m.group(1)
             # A run starts when its first job does, across ALL its jobs: a dependency-delayed job
             # in an older run must not make that run outrank a newer one.
