@@ -169,6 +169,9 @@ assert g.evaluate(pr(
 )), "new push must invalidate the previous attestation"
 for body in (attestation, f"## Review\nPending\n## Other\n{attestation}"):
     assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []}))
+# a quoted example (lazy continuation) or a code span is not an attestation
+for hidden in (f"> Example only:\n{attestation}", f"`example\n{attestation}`"):
+    assert g.evaluate(pr(body=f"## Review\n\n{hidden}\n", headRefOid=head, reviews={"nodes": []})), hidden
 for missing_head in (None, "", "89cda0"):
     assert not g.review_section_names_fallback(f"## Review\n{attestation}", missing_head)
 
@@ -266,8 +269,11 @@ for bad in (
     "`https://notion.so/ticket`",
     "https://evilnotion.so/ticket",
     "> Example only:\nfixed in deadbeef",
+    "`example reply,\nfixed in deadbeef`",
+    "- > Example\n  fixed in deadbeef",
 ):
     assert any("P2" in r for r in g.evaluate(_p2(bad))), bad
+assert g.evaluate(_p2("not-a-finding: `retry` is idempotent")) == []
 
 # a non-matching first marker must not hide a valid later one in the same comment
 _two = codex_comment("deadbeef" + head[8:])

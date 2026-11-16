@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 3.1.2
+version: 3.1.3
 author: Bernier LLC
 ---
 
@@ -56,7 +56,7 @@ Loads `scripts/check-review-gate.py` from the repository **default branch** only
 
 1. A completed review from the exact Codex bot login `chatgpt-codex-connector` exists on the **current head** (not body text / substring logins), **or** the PR body's `## Review` section contains the explicit completed fallback-review attestation below on one line, bound to the current head.
 2. PR body contains a `## Review` section.
-3. Every review thread whose **root** comment matches `\bp2\b` has a reply whose rendered text has a line starting with a closing token (optionally after a list bullet or `Tracked:`): a Notion link, `fixed in <sha>`, or `not-a-finding: …`. Quotes, code, comments and mid-sentence mentions do not count (all thread/comment pages are fetched). A clean Codex run posts no review, only a `codex-review-state:v1` marker in its summary comment; that marker counts when it is `completed` with no unresolved findings on the current head.
+3. Every review thread whose **root** comment matches `\bp2\b` has a reply whose rendered text has a line starting with a closing token (optionally after a list bullet or `Tracked:`): a Notion link, `fixed in <sha>`, or `not-a-finding: …`. Quotes (lazy continuations and quotes inside list items included), code blocks, inline code spans (a span that is only a commit SHA keeps its text), comments and mid-sentence mentions do not count; the same rule applies to the `Fallback review:` line (all thread/comment pages are fetched). A clean Codex run posts no review, only a `codex-review-state:v1` marker in its summary comment; that marker counts when it is `completed` with no unresolved findings on the current head.
 4. When `base` is `main`: label `review:high` is present.
 
 Fallback attestations use exactly this format (plain text on its own line inside `## Review`):
