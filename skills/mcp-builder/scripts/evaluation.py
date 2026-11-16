@@ -83,15 +83,43 @@ def extract_xml_content(text: str, tag: str) -> str | None:
     return matches[-1].strip() if matches else None
 
 
+USAGE_FIELDS = ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens")
+
+
+def add_usage(totals: dict[str, int], response: Any) -> None:
+    """Add one API response's token usage to the running totals."""
+    usage = getattr(response, "usage", None)
+    for field in USAGE_FIELDS:
+        totals[field] += getattr(usage, field, None) or 0
+
+
+async def count_tool_definition_tokens(client: Anthropic, model: str, tools: list[dict[str, Any]]) -> int | None:
+    """Tokens the tool definitions add to every request: count_tokens with the tools minus without them."""
+    messages = [{"role": "user", "content": "Hello"}]
+    try:
+        with_tools = await asyncio.to_thread(
+            client.messages.count_tokens, model=model, system=EVALUATION_PROMPT, messages=messages, tools=tools
+        )
+        without_tools = await asyncio.to_thread(
+            client.messages.count_tokens, model=model, system=EVALUATION_PROMPT, messages=messages
+        )
+    except Exception as e:
+        print(f"Could not count tool definition tokens: {e}")
+        return None
+    return with_tools.input_tokens - without_tools.input_tokens
+
+
 async def agent_loop(
     client: Anthropic,
     model: str,
     question: str,
     tools: list[dict[str, Any]],
     connection: Any,
-) -> tuple[str, dict[str, Any]]:
-    """Run the agent loop with MCP tools."""
+) -> tuple[str, dict[str, Any], dict[str, int]]:
+    """Run the agent loop with MCP tools. Returns the final text, per-tool metrics and token usage."""
     messages = [{"role": "user", "content": question}]
+    usage = dict.fromkeys(USAGE_FIELDS, 0)
+    usage["tool_result_chars"] = 0
 
     response = await asyncio.to_thread(
         client.messages.create,
@@ -101,6 +129,7 @@ async def agent_loop(
         messages=messages,
         tools=tools,
     )
+    add_usage(usage, response)
 
     messages.append({"role": "assistant", "content": response.content})
 
@@ -119,6 +148,7 @@ async def agent_loop(
             tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
             tool_response += traceback.format_exc()
         tool_duration = time.time() - tool_start_ts
+        usage["tool_result_chars"] += len(tool_response)
 
         if tool_name not in tool_metrics:
             tool_metrics[tool_name] = {"count": 0, "durations": []}
@@ -142,13 +172,14 @@ async def agent_loop(
             messages=messages,
             tools=tools,
         )
+        add_usage(usage, response)
         messages.append({"role": "assistant", "content": response.content})
 
     response_text = next(
         (block.text for block in response.content if hasattr(block, "text")),
         None,
     )
-    return response_text, tool_metrics
+    return response_text, tool_metrics, usage
 
 
 async def evaluate_single_task(
@@ -163,7 +194,7 @@ async def evaluate_single_task(
     start_time = time.time()
 
     print(f"Task {task_index + 1}: Running task with question: {qa_pair['question']}")
-    response, tool_metrics = await agent_loop(client, model, qa_pair["question"], tools, connection)
+    response, tool_metrics, usage = await agent_loop(client, model, qa_pair["question"], tools, connection)
 
     response_value = extract_xml_content(response, "response")
     summary = extract_xml_content(response, "summary")
@@ -179,6 +210,7 @@ async def evaluate_single_task(
         "total_duration": duration_seconds,
         "tool_calls": tool_metrics,
         "num_tool_calls": sum(len(metrics["durations"]) for metrics in tool_metrics.values()),
+        "usage": usage,
         "summary": summary,
         "feedback": feedback,
     }
@@ -193,6 +225,10 @@ REPORT_HEADER = """
 - **Average Task Duration**: {average_duration_s:.2f}s
 - **Average Tool Calls per Task**: {average_tool_calls:.2f}
 - **Total Tool Calls**: {total_tool_calls}
+- **Tool Definitions**: {tool_definition_tokens} tokens in every request
+- **Average Tokens per Task**: {average_input_tokens:,.0f} input, {average_output_tokens:,.0f} output
+- **Total Tokens**: {total_input_tokens:,} input ({total_cache_read_tokens:,} read from cache), {total_output_tokens:,} output
+- **Average Tool Result Size per Task**: {average_tool_result_chars:,.0f} characters
 
 ---
 """
@@ -205,6 +241,7 @@ TASK_TEMPLATE = """
 **Actual Answer**: `{actual_answer}`
 **Correct**: {correct_indicator}
 **Duration**: {total_duration:.2f}s
+**Tokens**: {input_tokens:,} input, {output_tokens:,} output; tool results {tool_result_chars:,} characters
 **Tool Calls**: {tool_calls}
 
 **Summary**
@@ -230,6 +267,10 @@ async def run_evaluation(
     tools = await connection.list_tools()
     print(f"📋 Loaded {len(tools)} tools from MCP server")
 
+    tool_definition_tokens = await count_tool_definition_tokens(client, model, tools)
+    if tool_definition_tokens is not None:
+        print(f"📏 Tool definitions add {tool_definition_tokens:,} tokens to every request")
+
     qa_pairs = parse_evaluation_file(eval_path)
     print(f"📋 Loaded {len(qa_pairs)} evaluation tasks")
 
@@ -245,6 +286,15 @@ async def run_evaluation(
     average_tool_calls = sum(r["num_tool_calls"] for r in results) / len(results) if results else 0
     total_tool_calls = sum(r["num_tool_calls"] for r in results)
 
+    def total(field: str) -> int:
+        return sum(r["usage"][field] for r in results)
+
+    def average(field: str) -> float:
+        return total(field) / len(results) if results else 0
+
+    # input_tokens excludes cached tokens, so add both cache fields back for the real input size.
+    total_input_tokens = total("input_tokens") + total("cache_creation_input_tokens") + total("cache_read_input_tokens")
+
     report = REPORT_HEADER.format(
         correct=correct,
         total=len(results),
@@ -252,6 +302,13 @@ async def run_evaluation(
         average_duration_s=average_duration_s,
         average_tool_calls=average_tool_calls,
         total_tool_calls=total_tool_calls,
+        tool_definition_tokens=f"{tool_definition_tokens:,}" if tool_definition_tokens is not None else "unknown",
+        average_input_tokens=total_input_tokens / len(results) if results else 0,
+        average_output_tokens=average("output_tokens"),
+        total_input_tokens=total_input_tokens,
+        total_cache_read_tokens=total("cache_read_input_tokens"),
+        total_output_tokens=total("output_tokens"),
+        average_tool_result_chars=average("tool_result_chars"),
     )
 
     report += "".join([
@@ -262,6 +319,9 @@ async def run_evaluation(
             actual_answer=result["actual"] or "N/A",
             correct_indicator="✅" if result["score"] else "❌",
             total_duration=result["total_duration"],
+            input_tokens=sum(result["usage"][f] for f in USAGE_FIELDS if f != "output_tokens"),
+            output_tokens=result["usage"]["output_tokens"],
+            tool_result_chars=result["usage"]["tool_result_chars"],
             tool_calls=json.dumps(result["tool_calls"], indent=2),
             summary=result["summary"] or "N/A",
             feedback=result["feedback"] or "N/A",
