@@ -191,6 +191,8 @@ def run_eval(
     runs_per_query: int = 1,
     trigger_threshold: float = 0.5,
     model: str | None = None,
+    should_trigger_threshold: float | None = None,
+    should_not_trigger_threshold: float | None = None,
 ) -> dict:
     """Run the full eval set and return results."""
     results = []
@@ -229,9 +231,15 @@ def run_eval(
         trigger_rate = sum(triggers) / len(triggers)
         should_trigger = item["should_trigger"]
         if should_trigger:
-            did_pass = trigger_rate >= trigger_threshold
+            threshold = should_trigger_threshold
+            if threshold is None:
+                threshold = trigger_threshold
+            did_pass = trigger_rate >= threshold
         else:
-            did_pass = trigger_rate < trigger_threshold
+            threshold = should_not_trigger_threshold
+            if threshold is None:
+                threshold = trigger_threshold
+            did_pass = trigger_rate < threshold
         results.append({
             "query": query,
             "should_trigger": should_trigger,
@@ -265,6 +273,18 @@ def main():
     parser.add_argument("--timeout", type=int, default=30, help="Timeout per query in seconds")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
+    parser.add_argument(
+        "--should-trigger-threshold",
+        type=float,
+        default=None,
+        help="Minimum trigger rate for should-trigger queries (defaults to --trigger-threshold)",
+    )
+    parser.add_argument(
+        "--should-not-trigger-threshold",
+        type=float,
+        default=None,
+        help="Maximum trigger rate for should-not-trigger queries (defaults to --trigger-threshold)",
+    )
     parser.add_argument("--model", default=None, help="Model to use for claude -p (default: user's configured model)")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
     args = parser.parse_args()
@@ -293,6 +313,8 @@ def main():
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
         model=args.model,
+        should_trigger_threshold=args.should_trigger_threshold,
+        should_not_trigger_threshold=args.should_not_trigger_threshold,
     )
 
     if args.verbose:

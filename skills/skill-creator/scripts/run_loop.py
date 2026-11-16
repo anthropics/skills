@@ -58,6 +58,8 @@ def run_loop(
     verbose: bool,
     live_report_path: Path | None = None,
     log_dir: Path | None = None,
+    should_trigger_threshold: float | None = None,
+    should_not_trigger_threshold: float | None = None,
 ) -> dict:
     """Run the eval + improvement loop."""
     project_root = find_project_root()
@@ -96,6 +98,8 @@ def run_loop(
             runs_per_query=runs_per_query,
             trigger_threshold=trigger_threshold,
             model=model,
+            should_trigger_threshold=should_trigger_threshold,
+            should_not_trigger_threshold=should_not_trigger_threshold,
         )
         eval_elapsed = time.time() - t0
 
@@ -251,6 +255,18 @@ def main():
     parser.add_argument("--max-iterations", type=int, default=5, help="Max improvement iterations")
     parser.add_argument("--runs-per-query", type=int, default=3, help="Number of runs per query")
     parser.add_argument("--trigger-threshold", type=float, default=0.5, help="Trigger rate threshold")
+    parser.add_argument(
+        "--should-trigger-threshold",
+        type=float,
+        default=None,
+        help="Minimum trigger rate for should-trigger queries (defaults to --trigger-threshold)",
+    )
+    parser.add_argument(
+        "--should-not-trigger-threshold",
+        type=float,
+        default=None,
+        help="Maximum trigger rate for should-not-trigger queries (defaults to --trigger-threshold)",
+    )
     parser.add_argument("--holdout", type=float, default=0.4, help="Fraction of eval set to hold out for testing (0 to disable)")
     parser.add_argument("--model", required=True, help="Model for improvement")
     parser.add_argument("--verbose", action="store_true", help="Print progress to stderr")
@@ -299,6 +315,8 @@ def main():
         max_iterations=args.max_iterations,
         runs_per_query=args.runs_per_query,
         trigger_threshold=args.trigger_threshold,
+        should_trigger_threshold=args.should_trigger_threshold,
+        should_not_trigger_threshold=args.should_not_trigger_threshold,
         holdout=args.holdout,
         model=args.model,
         verbose=args.verbose,
