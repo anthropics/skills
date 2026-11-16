@@ -89,14 +89,14 @@ async def agent_loop(
     question: str,
     tools: list[dict[str, Any]],
     connection: Any,
-) -> tuple[str, dict[str, Any]]:
+) -> tuple[str | None, dict[str, Any]]:
     """Run the agent loop with MCP tools."""
     messages = [{"role": "user", "content": question}]
 
     response = await asyncio.to_thread(
         client.messages.create,
         model=model,
-        max_tokens=4096,
+        max_tokens=16384,
         system=EVALUATION_PROMPT,
         messages=messages,
         tools=tools,
@@ -106,48 +106,58 @@ async def agent_loop(
 
     tool_metrics = {}
 
-    while response.stop_reason == "tool_use":
-        tool_use = next(block for block in response.content if block.type == "tool_use")
-        tool_name = tool_use.name
-        tool_input = tool_use.input
+    while response.stop_reason in ("tool_use", "pause_turn", "stop_sequence"):
+        if response.stop_reason == "tool_use":
+            tool_use = next(block for block in response.content if block.type == "tool_use")
+            tool_name = tool_use.name
+            tool_input = tool_use.input
 
-        tool_start_ts = time.time()
-        try:
-            tool_result = await connection.call_tool(tool_name, tool_input)
-            tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
-        except Exception as e:
-            tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
-            tool_response += traceback.format_exc()
-        tool_duration = time.time() - tool_start_ts
+            tool_start_ts = time.time()
+            try:
+                tool_result = await connection.call_tool(tool_name, tool_input)
+                tool_response = json.dumps(tool_result) if isinstance(tool_result, (dict, list)) else str(tool_result)
+            except Exception as e:
+                tool_response = f"Error executing tool {tool_name}: {str(e)}\n"
+                tool_response += traceback.format_exc()
+            tool_duration = time.time() - tool_start_ts
 
-        if tool_name not in tool_metrics:
-            tool_metrics[tool_name] = {"count": 0, "durations": []}
-        tool_metrics[tool_name]["count"] += 1
-        tool_metrics[tool_name]["durations"].append(tool_duration)
+            if tool_name not in tool_metrics:
+                tool_metrics[tool_name] = {"count": 0, "durations": []}
+            tool_metrics[tool_name]["count"] += 1
+            tool_metrics[tool_name]["durations"].append(tool_duration)
 
-        messages.append({
-            "role": "user",
-            "content": [{
-                "type": "tool_result",
-                "tool_use_id": tool_use.id,
-                "content": tool_response,
-            }]
-        })
+            messages.append({
+                "role": "user",
+                "content": [{
+                    "type": "tool_result",
+                    "tool_use_id": tool_use.id,
+                    "content": tool_response,
+                }]
+            })
 
         response = await asyncio.to_thread(
             client.messages.create,
             model=model,
-            max_tokens=4096,
+            max_tokens=16384,
             system=EVALUATION_PROMPT,
             messages=messages,
             tools=tools,
         )
         messages.append({"role": "assistant", "content": response.content})
 
-    response_text = next(
-        (block.text for block in response.content if hasattr(block, "text")),
-        None,
-    )
+    # Only end_turn responses represent completed answers. Truncated and
+    # refused responses must not be graded.
+    if response.stop_reason != "end_turn":
+        tool_metrics["incomplete_reason"] = response.stop_reason
+        print(
+            f"Warning: run incomplete, stop_reason={response.stop_reason}; "
+            "not scoring as a final answer."
+        )
+        return None, tool_metrics
+
+    response_text = "\n".join(
+        block.text for block in response.content if hasattr(block, "text")
+    ) or None
     return response_text, tool_metrics
 
 
@@ -165,6 +175,30 @@ async def evaluate_single_task(
     print(f"Task {task_index + 1}: Running task with question: {qa_pair['question']}")
     response, tool_metrics = await agent_loop(client, model, qa_pair["question"], tools, connection)
 
+    if response is None:
+        # Incomplete run (max_tokens / refusal): no final answer to score.
+        # Skip extraction so a None response never reaches re.findall.
+        duration_seconds = time.time() - start_time
+        return {
+            "question": qa_pair["question"],
+            "expected": qa_pair["answer"],
+            "actual": None,
+            "score": 0,
+            "status": "incomplete",
+            "incomplete_reason": tool_metrics.get("incomplete_reason"),
+            "total_duration": duration_seconds,
+            "tool_calls": tool_metrics,
+            # tool_metrics also carries the string incomplete_reason, so
+            # only count dict entries (one per tool) here.
+            "num_tool_calls": sum(
+                len(metrics["durations"])
+                for metrics in tool_metrics.values()
+                if isinstance(metrics, dict)
+            ),
+            "summary": None,
+            "feedback": None,
+        }
+
     response_value = extract_xml_content(response, "response")
     summary = extract_xml_content(response, "summary")
     feedback = extract_xml_content(response, "feedback")
@@ -176,6 +210,7 @@ async def evaluate_single_task(
         "expected": qa_pair["answer"],
         "actual": response_value,
         "score": int(response_value == qa_pair["answer"]) if response_value else 0,
+        "status": "complete",
         "total_duration": duration_seconds,
         "tool_calls": tool_metrics,
         "num_tool_calls": sum(len(metrics["durations"]) for metrics in tool_metrics.values()),
@@ -190,6 +225,7 @@ REPORT_HEADER = """
 ## Summary
 
 - **Accuracy**: {correct}/{total} ({accuracy:.1f}%)
+- **Incomplete**: {incomplete}/{total}
 - **Average Task Duration**: {average_duration_s:.2f}s
 - **Average Tool Calls per Task**: {average_tool_calls:.2f}
 - **Total Tool Calls**: {total_tool_calls}
@@ -240,6 +276,7 @@ async def run_evaluation(
         results.append(result)
 
     correct = sum(r["score"] for r in results)
+    incomplete = sum(1 for r in results if r.get("status") == "incomplete")
     accuracy = (correct / len(results)) * 100 if results else 0
     average_duration_s = sum(r["total_duration"] for r in results) / len(results) if results else 0
     average_tool_calls = sum(r["num_tool_calls"] for r in results) / len(results) if results else 0
@@ -247,6 +284,7 @@ async def run_evaluation(
 
     report = REPORT_HEADER.format(
         correct=correct,
+        incomplete=incomplete,
         total=len(results),
         accuracy=accuracy,
         average_duration_s=average_duration_s,
