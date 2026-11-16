@@ -135,6 +135,41 @@ for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCE
                   ({"context": "ci/x", "state": "FAILURE"}, "ci/x: FAILURE")]:
     m = merge("gh pr merge 5 --squash", rollup=ok + [bad])
     assert m and name in m and "--auto --squash" in m, (bad, m)
+# Only the LATEST run per check name counts: a historical red Review Gate run must not block
+# once a newer run of the same check is green (every new PR leaves one, nevar-design#7).
+def run(name, concl, at, wf="Review Gate"):
+    return {"name": name, "workflowName": wf, "conclusion": concl, "startedAt": at}
+old_red = [run("Review Gate", "FAILURE", "2026-11-15T10:00:00Z"), run("Review Gate", "CANCELLED", "2026-11-15T10:05:00Z")]
+latest_ok = run("Review Gate", "SUCCESS", "2026-11-15T10:10:00Z")
+assert merge("gh pr merge 5 --squash", rollup=ok + old_red + [latest_ok]) is None
+assert merge("gh pr merge 5 --squash", rollup=ok + [latest_ok] + old_red) is None  # order-independent
+m = merge("gh pr merge 5 --squash", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
+                                                   run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z")])
+assert m and "Review Gate: FAILURE" in m, m  # newest red still blocks
+m = merge("gh pr merge 5 --squash", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
+                                                   run("Review Gate", "", "2026-11-15T10:10:00Z")])
+assert m and "Review Gate: PENDING" in m, m  # a re-run in flight blocks
+m = merge("gh pr merge 5 --squash", rollup=ok + old_red + [latest_ok, run("pytest", "FAILURE", "2026-11-15T10:00:00Z", "CI")])
+assert m and "pytest: FAILURE" in m and "Review Gate" not in m, m  # other checks stay independent
+# a queued rerun has no startedAt: it still beats the older green run and blocks
+m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
+assert m and "Review Gate: PENDING" in m, m
+# an older run still in progress does not outrank a newer green run
+assert merge("gh pr merge 5 --squash", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
+# an undated completed rerun cannot be ordered, so it fails closed
+m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": None}])
+assert m and "Review Gate: CANCELLED" in m, m
+# gh emits the zero time, not null, for a missing startedAt
+m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": "0001-01-01T00:00:00Z"}])
+assert m and "Review Gate: CANCELLED" in m, m
+# same-named third-party check runs from different apps are never collapsed
+m = merge("gh pr merge 5 --squash", rollup=ok + [{"__typename": "CheckRun", "name": "scan", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
+                                                   {"__typename": "CheckRun", "name": "scan", "conclusion": "SUCCESS", "startedAt": "2026-11-15T10:05:00Z"}])
+assert m and "scan: FAILURE" in m, m
+# a check run and a same-named status context are separate requirements
+m = merge("gh pr merge 5 --squash", rollup=ok + [{"__typename": "CheckRun", "name": "deploy", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
+                                                   {"__typename": "StatusContext", "context": "deploy", "state": "SUCCESS"}])
+assert m and "deploy: FAILURE" in m, m
 assert "no checks" in merge("gh pr merge 5 --squash", rollup=[])
 assert "no checks" in merge("gh pr merge 5", rollup=None)
 m = merge("gh pr merge 5", rc=1, err="no pull requests found")

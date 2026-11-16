@@ -385,9 +385,26 @@ def not_green(ref):
         return f"gh failed: {e}"
     if not rollup:
         return "no checks reported yet"
+    # The rollup lists every run on the head, including superseded ones: a PR whose first Review
+    # Gate run failed (body lacked `## Review`) keeps that red run after the re-run goes green.
+    # Only the latest run of each *workflow* check counts: those are reruns of one job, and they
+    # carry a startedAt (ISO-8601 UTC, sorts as text), so the newest wins, finished or not. Every
+    # other entry (status contexts, third-party check runs, any run without startedAt) is never
+    # collapsed and must be green on its own: same-named entries from different sources are
+    # separate requirements, and an entry we cannot order fails closed.
+    latest = {}
+    for i, e in enumerate(rollup):
+        # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
+        if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
+            key = (e["workflowName"], e.get("name"))
+            if key in latest and e["startedAt"] < latest[key]["startedAt"]:
+                continue
+        else:
+            key = i
+        latest[key] = e
     # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
     bad = [f"{e.get('name') or e.get('context')}: {(e.get('conclusion') or e.get('state') or 'PENDING').upper()}"
-           for e in rollup if (e.get("conclusion") or e.get("state") or "").upper() not in GREEN]
+           for e in latest.values() if (e.get("conclusion") or e.get("state") or "").upper() not in GREEN]
     return ", ".join(bad)
 
 
