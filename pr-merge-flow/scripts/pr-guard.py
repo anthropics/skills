@@ -317,12 +317,16 @@ def gh_pr(argv):
 
 
 def flag_on(argv, names):
-    """A gh (pflag) bool flag is on when bare (`--draft`, `-d`) or given a true value (`--draft=true`, `-d=1`)."""
+    """A gh (pflag) bool flag is on when bare (`--draft`, `-d`) or given a true value (`--draft=true`, `-d=1`).
+
+    pflag is last-wins: `--disable-auto --disable-auto=false` leaves it off, so the last occurrence decides.
+    """
+    on = False
     for a in argv:
         name, eq, value = a.partition("=")
-        if name in names and (not eq or value.lower() in ("true", "t", "1")):
-            return True
-    return False
+        if name in names:
+            on = not eq or value.lower() in ("true", "t", "1")
+    return on
 
 
 def draft_violation(cmd):
@@ -428,6 +432,11 @@ def merge_calls(cmd, cwd):
             yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
 
+def green(e):
+    # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
+    return (e.get("conclusion") or e.get("state") or "").upper() in GREEN
+
+
 def not_green(ref, repo="", cwd=None):
     """Return '' when every check on the PR is green, else a description of why not.
 
@@ -461,14 +470,19 @@ def not_green(ref, repo="", cwd=None):
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
             key = (e["workflowName"], e.get("name"))
-            if key in latest and e["startedAt"] < latest[key]["startedAt"]:
+            prev = latest.get(key)
+            # Same-second ties cannot be ordered: they are sibling jobs or concurrent runs, not a rerun
+            # (a rerun starts after the run it replaces ends), and job/run ids do not prove which
+            # supersedes which. Fail closed: a green entry never replaces its tie, so a SUCCESS cannot
+            # hide a FAILURE whatever the list order.
+            if prev and (e["startedAt"] < prev["startedAt"]
+                         or (e["startedAt"] == prev["startedAt"] and green(e))):
                 continue
         else:
             key = i
         latest[key] = e
-    # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
     bad = [f"{e.get('name') or e.get('context')}: {(e.get('conclusion') or e.get('state') or 'PENDING').upper()}"
-           for e in latest.values() if (e.get("conclusion") or e.get("state") or "").upper() not in GREEN]
+           for e in latest.values() if not green(e)]
     return ", ".join(bad)
 
 
