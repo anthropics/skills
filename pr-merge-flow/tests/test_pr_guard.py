@@ -152,6 +152,16 @@ for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit abc1234",
         assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
     finally:
         g.subprocess.run = _run
+# Codex P1 on #82 (round 3 of repo parsing): clustered short flags carrying R fail closed.
+for c in ["gh pr merge 5 -dR owner/target --squash --match-head-commit abc1234",
+          "gh pr merge 5 -dRowner/target --squash --match-head-commit abc1234",
+          "gh pr merge 5 -Rd --squash --match-head-commit abc1234",
+          "gh pr merge 5 --squash --match-head-commit abc1234 -R"]:
+    g.subprocess.run = _gh_repo("owner/target")
+    try:
+        assert "standalone `-R owner/repo`" in (g.check(c, "/r") or ""), c
+    finally:
+        g.subprocess.run = _run
 g.subprocess.run = _gh_repo("owner/target")
 try:
     assert "Could not resolve" in g.check("gh pr merge 5 --squash --match-head-commit abc1234", "/r")

@@ -354,15 +354,26 @@ STATUS_QUERY = re.compile(r"^gh\b.*\b(pr (checks|view|status)|run (view|watch|li
 
 
 def repo_arg(argv):
-    """The `-R/--repo` value in a gh call (before or after `pr merge`), else ''. Last wins, as in gh."""
-    repo = ""
+    """The `-R/--repo` value in a gh call (before or after `pr merge`), '' when none, None when unsure.
+
+    Last wins, as in gh. Only `-R x`, `--repo x`, `--repo=x` and `-Rowner/repo` are trusted; any other
+    short-flag token carrying an R (`-dR x`, `-dRx`, `-Rd`) returns None so the caller fails closed:
+    pflag clusters are open-ended and the third round of spellings showed parsing them won't converge.
+    """
+    repo, skip = "", False
     for i, a in enumerate(argv):
-        if a in ("-R", "--repo") and i + 1 < len(argv):
-            repo = argv[i + 1]
+        if skip:
+            skip = False
+        elif a in ("-R", "--repo"):
+            if i + 1 >= len(argv):
+                return None
+            repo, skip = argv[i + 1], True
         elif a.startswith("--repo="):
             repo = a[len("--repo="):]
-        elif a.startswith("-R") and len(a) > 2:
+        elif re.fullmatch(r"-R=?[^-/=\s][^/\s]*/[^/\s]+", a):
             repo = a[2:].lstrip("=")
+        elif re.match(r"-[^-]", a) and "R" in a:
+            return None
     return repo
 
 
@@ -435,6 +446,9 @@ def check(cmd, cwd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
                 "and let the harness wake you.")
     for ref, flags, repo in merge_calls(cmd):
+        if repo is None:
+            return ("Blocked: can't tell which repo this merge targets (a short-flag cluster carrying -R, "
+                    "such as `-dR x`). Pass the repo as a standalone `-R owner/repo`.")
         if "--admin" in flags:
             return "Blocked: never bypass required checks with --admin; fix the red check or ask Matt."
         if "--auto" in flags:
