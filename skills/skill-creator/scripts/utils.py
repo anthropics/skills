@@ -35,8 +35,18 @@ def parse_skill_md(skill_path: Path) -> tuple[str, str, str]:
             if value in (">", "|", ">-", "|-"):
                 continuation_lines: list[str] = []
                 i += 1
-                while i < len(frontmatter_lines) and (frontmatter_lines[i].startswith("  ") or frontmatter_lines[i].startswith("\t")):
-                    continuation_lines.append(frontmatter_lines[i].strip())
+                # A folded/literal block scalar continues while lines are
+                # indented. Blank lines within the block are part of the
+                # scalar (they separate paragraphs) and must not terminate
+                # the loop, otherwise multi-paragraph descriptions get
+                # truncated at the first blank line.
+                while i < len(frontmatter_lines) and (
+                    frontmatter_lines[i].startswith("  ")
+                    or frontmatter_lines[i].startswith("\t")
+                    or frontmatter_lines[i].strip() == ""
+                ):
+                    if frontmatter_lines[i].strip():
+                        continuation_lines.append(frontmatter_lines[i].strip())
                     i += 1
                 description = " ".join(continuation_lines)
                 continue
