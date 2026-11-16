@@ -354,15 +354,16 @@ STATUS_QUERY = re.compile(r"^gh\b.*\b(pr (checks|view|status)|run (view|watch|li
 
 
 def repo_arg(argv):
-    """The `-R/--repo` value anywhere in a gh call (it may come before or after `pr merge`), else ''."""
+    """The `-R/--repo` value in a gh call (before or after `pr merge`), else ''. Last wins, as in gh."""
+    repo = ""
     for i, a in enumerate(argv):
         if a in ("-R", "--repo") and i + 1 < len(argv):
-            return argv[i + 1]
-        if a.startswith("--repo="):
-            return a[len("--repo="):]
-        if a.startswith("-R") and len(a) > 2:
-            return a[2:].lstrip("=")
-    return ""
+            repo = argv[i + 1]
+        elif a.startswith("--repo="):
+            repo = a[len("--repo="):]
+        elif a.startswith("-R") and len(a) > 2:
+            repo = a[2:].lstrip("=")
+    return repo
 
 
 def merge_calls(cmd):

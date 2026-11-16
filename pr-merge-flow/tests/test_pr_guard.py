@@ -141,7 +141,12 @@ for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit abc1234",
           "gh pr merge 5 -R owner/target --squash --match-head-commit abc1234",
           "gh pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
           "gh --repo=owner/target pr merge 5 --squash --match-head-commit abc1234",
-          "gh pr merge 5 -Rowner/target --squash --match-head-commit abc1234"]:
+          "gh pr merge 5 -Rowner/target --squash --match-head-commit abc1234",
+          # Codex P2 on #82: repeated repo flags, last wins (as gh does), in every spelling.
+          "gh -R owner/safe pr merge 5 -R owner/target --squash --match-head-commit abc1234",
+          "gh --repo=owner/safe pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
+          "gh -Rowner/safe pr merge 5 --repo=owner/target --squash --match-head-commit abc1234",
+          "gh --repo owner/safe pr merge 5 -Rowner/target --squash --match-head-commit abc1234"]:
     g.subprocess.run = _gh_repo("owner/target")
     try:
         assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
