@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 3.2.2
+version: 3.2.3
 author: Bernier LLC
 ---
 
@@ -31,7 +31,7 @@ aec run-script skill:review-gate install-workflow.py
 #      …/scripts/check-forged-review-gate.py scripts/
 ```
 
-Upgrading to 3.2.2: re-run `install-workflow.py --force` to pick up the fail-closed detector (aec dba592db). A repo whose `scripts/check-forged-gate-names.py` differs from the skill's copy keeps its own and gets a `KEPT` message. The merge guard no longer reads `pr-merge-flow` as `pr … merge`. Also in 3.2.2: a known older vendored detector (3.2.0/3.2.1 or any pre-dba592db aec copy) is now replaced on `--force`; only a newer or custom copy is KEPT, and an identical file is left untouched; each `Review Gate` check run carries `external_id: review-gate-pr-<n>` and is reused only by that PR, so two PRs on one head sha cannot complete each other's runs (pre-3.2.2 unmarked runs are left alone; push a new commit if one stays red); the PR that replaces a legacy review-gate.yml passes the forged-check step when its own legacy `Review Gate` job ran that file from the default branch under pull_request_target (needs `PR_NUMBER`); a `##` line with `Review` on the next line no longer counts as the `## Review` section.
+Upgrading to 3.2.2: re-run `install-workflow.py --force` to pick up the fail-closed detector (aec dba592db). A repo whose `scripts/check-forged-gate-names.py` differs from the skill's copy keeps its own and gets a `KEPT` message. The merge guard no longer reads `pr-merge-flow` as `pr … merge`. Also in 3.2.2: a known older vendored detector (3.2.0/3.2.1 or any pre-dba592db aec copy) is now replaced on `--force`; only a newer or custom copy is KEPT, and an identical file is left untouched; each `Review Gate` check run carries `external_id: review-gate-pr-<n>` and is reused only by that PR, so two PRs on one head sha cannot complete each other's runs (pre-3.2.2 unmarked runs are left alone; push a new commit if one stays red); the PR that replaces a legacy review-gate.yml passes the forged-check step when its own legacy `Review Gate` job ran that file from the default branch under pull_request_target (needs `PR_NUMBER`); a `##` line with `Review` on the next line no longer counts as the `## Review` section. 3.2.3: `## Review-notes`, `## Reviewers` and other headings that only start with `Review` no longer count as the `## Review` section. A heading, list item, fence or thematic break after a `>` quote now ends the quote, so a `## Review` section that follows a quote is seen.
 
 Upgrading to 3.2.1: the workflow now reuses the head's one `Review Gate` check run instead of adding a new one per evaluation (GitHub blocks the PR while any same-named run in the suite is red, so 3.2.0 heads that failed once could never go green). Re-run `install-workflow.py --force` and commit; the next evaluation completes every earlier run on the head.
 

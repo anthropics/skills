@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
 description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.4.4
+version: 1.4.5
 author: Bernier LLC
 ---
 
@@ -63,7 +63,7 @@ hooks dormant). It blocks:
 - `gh pr merge --admin`, always: never bypass required checks; fix the red check or ask Matt;
 - `gh pr merge --auto`, always (see rule 2), and any `gh pr merge` without `--match-head-commit <sha>` naming the full 40-hex SHA;
 - `gh pr merge` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
-  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. Two runs started in the same second cannot be ordered (sibling jobs or concurrent runs; ids do not prove which supersedes which), so the red one wins (fail closed). Boolean flags are last-wins like gh's own parser: `--disable-auto --disable-auto=false` merges and gets the full checks. PR #325 once
+  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the newest workflow run of each check counts, identified by the run id in its details URL (GitHub already lists only a run's latest attempt): an older red run superseded by a newer green run of the same workflow (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. Same-named jobs inside one run are distinct jobs and each must be green, so a later green job never hides a failed sibling. A run's start is its earliest job's start, so a dependency-delayed job never makes an older run look newer. Runs started in the same second cannot be ordered, so all of them count (fail closed). An entry with no parsable run id in its details URL has an unknown run, so it supersedes nothing and must be green on its own (fail closed). Boolean flags are last-wins like gh's own parser: `--disable-auto --disable-auto=false` merges and gets the full checks. PR #325 once
   merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge`
   for promotions into main);
 - a `sleep` plus a status query (`gh pr checks|view|status`, `gh run view|watch|list`) in one

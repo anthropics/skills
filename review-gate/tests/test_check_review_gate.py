@@ -172,10 +172,23 @@ for body in (attestation, f"## Review\nPending\n## Other\n{attestation}"):
 # a quoted example (lazy continuation) or a code span is not an attestation
 for hidden in (f"> Example only:\n{attestation}", f"`example\n{attestation}`"):
     assert g.evaluate(pr(body=f"## Review\n\n{hidden}\n", headRefOid=head, reviews={"nodes": []})), hidden
+# nevar-fund #25 Codex P2 (r4582082329): a heading ends a quote's lazy continuation, so
+# quote -> `## Review` -> attestation passes; so do other paragraph-interrupting lines.
+for after_quote in ("## Review", "- note", "1. note", "---", "***"):
+    body = f"## Review\n> a quoted note\n{after_quote}\n{attestation}\n" if after_quote[0] != "#" else \
+        f"> a quoted note\n{after_quote}\n{attestation}\n"
+    assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []})) == [], after_quote
+# ...while a real lazy continuation line is still part of the quote.
+assert g.evaluate(pr(body=f"## Review\n> a quoted note\n{attestation}\n", headRefOid=head, reviews={"nodes": []}))
 # nevar-fund #24 Codex P2: an empty `##` heading followed by a `Review` paragraph is not a Review section.
 for split in ("##\nReview\n", "##\r\nReview\n", "## \nReview\n"):
     assert g.evaluate(pr(body=f"{split}{attestation}\n", headRefOid=head, reviews={"nodes": []})), repr(split)
 assert g.evaluate(pr(body=f"##\tReview\n{attestation}\n", headRefOid=head, reviews={"nodes": []})) == []
+# nevar-fund #25 Codex P2: `## Review-notes` / `## Reviewers` / `## Review_x` are other sections.
+for other in ("## Review-notes", "## Reviewers", "## Review_x"):
+    assert g.evaluate(pr(body=f"{other}\n{attestation}\n", headRefOid=head, reviews={"nodes": []})), other
+for ok_heading in ("## Review (round 2)", "## Review:", "## Review"):
+    assert g.evaluate(pr(body=f"{ok_heading}\n{attestation}\n", headRefOid=head, reviews={"nodes": []})) == [], ok_heading
 for missing_head in (None, "", "89cda0"):
     assert not g.review_section_names_fallback(f"## Review\n{attestation}", missing_head)
 
