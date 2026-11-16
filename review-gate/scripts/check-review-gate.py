@@ -611,6 +611,7 @@ def _rendered_markdown(body: str) -> str:
             opener = _FENCE_OPEN.match(line)
             if opener:
                 fence = opener.group(1) or opener.group(2)
+                kept.append("")  # the dropped fence still ends a paragraph (and a quote's lazy continuation)
                 continue
             if line.startswith(("    ", "\t")):
                 continue
@@ -674,8 +675,12 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
     return False
 
 
+# What may interrupt a paragraph (CommonMark), so a lazy continuation ends: an ATX heading, a
+# thematic break, a NON-EMPTY list item (ordered ones only when starting at 1), or a real fence
+# (left to _FENCE_OPEN: a ``` line whose info string holds a backtick is not a fence). Anything
+# else, such as `2. note` or an empty `-`, is lazy continuation text and stays inside the quote.
 _INTERRUPTS = re.compile(
-    r" {0,3}(?:#{1,6}(?:[ \t]|$)|```|~~~|([-*_])(?:[ \t]*\1){2,}[ \t]*$|(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$))")
+    r" {0,3}(?:#{1,6}(?:[ \t]|$)|([-*_])(?:[ \t]*\1){2,}[ \t]*$|(?:[-*+]|0{0,8}1[.)])[ \t]+\S)")
 
 
 def _unquoted(text: str) -> str:
@@ -690,7 +695,7 @@ def _unquoted(text: str) -> str:
             continue
         # A lazy continuation is paragraph text only: a line that interrupts a paragraph
         # (ATX heading, fence, thematic break, list item) ends the quote and is kept.
-        if in_quote and line.strip() and not _INTERRUPTS.match(line):
+        if in_quote and line.strip() and not (_INTERRUPTS.match(line) or _FENCE_OPEN.match(line)):
             continue
         in_quote = False
         kept.append(line)
