@@ -394,7 +394,8 @@ def not_green(ref):
     # separate requirements, and an entry we cannot order fails closed.
     latest = {}
     for i, e in enumerate(rollup):
-        if e.get("workflowName") and e.get("startedAt"):
+        # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
+        if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
             key = (e["workflowName"], e.get("name"))
             if key in latest and e["startedAt"] < latest[key]["startedAt"]:
                 continue

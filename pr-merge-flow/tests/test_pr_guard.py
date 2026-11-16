@@ -159,6 +159,9 @@ assert merge("gh pr merge 5 --squash", rollup=ok + [{"name": "Review Gate", "wor
 # an undated completed rerun cannot be ordered, so it fails closed
 m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": None}])
 assert m and "Review Gate: CANCELLED" in m, m
+# gh emits the zero time, not null, for a missing startedAt
+m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": "0001-01-01T00:00:00Z"}])
+assert m and "Review Gate: CANCELLED" in m, m
 # same-named third-party check runs from different apps are never collapsed
 m = merge("gh pr merge 5 --squash", rollup=ok + [{"__typename": "CheckRun", "name": "scan", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
                                                    {"__typename": "CheckRun", "name": "scan", "conclusion": "SUCCESS", "startedAt": "2026-11-15T10:05:00Z"}])

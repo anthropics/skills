@@ -657,7 +657,7 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
     """
     if not head or len(head) < 7:
         return False
-    body = _rendered_markdown(body or "")
+    body = _prose(body)
     m = REVIEW_SECTION.search(body)
     if not m:
         return False
@@ -676,11 +676,12 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
 
 def _unquoted(text: str) -> str:
     """Drop blockquotes, including lazy continuation lines (a non-blank line
-    after a `>` line stays inside the quote until a blank line)."""
+    after a `>` line stays inside the quote until a blank line) and quotes
+    nested in list items (`- > example`)."""
     kept: list[str] = []
     in_quote = False
     for line in text.split("\n"):
-        if re.match(r" {0,3}>", line):
+        if re.match(r"[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)*>", line):
             in_quote = True
             continue
         if in_quote and line.strip():
@@ -688,6 +689,21 @@ def _unquoted(text: str) -> str:
         in_quote = False
         kept.append(line)
     return "\n".join(kept)
+
+
+# a code span: a backtick run closed by a run of the same length, never across a blank line
+_CODE_SPAN = re.compile(r"(?<!`)(`+)(?!`)((?:(?!\n[ \t]*\n).)+?)(?<!`)\1(?!`)", re.S)
+
+
+def _prose(body: str) -> str:
+    """Rendered prose only: no code blocks, comments or HTML blocks, no quotes,
+    and every inline code span collapsed to the word `code`, so an example
+    span (even one wrapping onto its own line) cannot start a line. A span that
+    is only a commit SHA keeps its text, so `fixed in `abc1234`` still reads."""
+    def span(m: re.Match[str]) -> str:
+        inner = m.group(2).strip()
+        return inner if re.fullmatch(r"[0-9a-f]{7,40}", inner, re.I) else "code"
+    return _CODE_SPAN.sub(span, _unquoted(_rendered_markdown(body or "")))
 
 
 def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
@@ -700,7 +716,7 @@ def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
         if not P2_ROOT.search(root):
             continue
         replies = comments[1:]
-        if any(CLOSING.search(_unquoted(_rendered_markdown(c.get("body") or ""))) for c in replies):
+        if any(CLOSING.search(_prose(c.get("body") or "")) for c in replies):
             continue
         failures.append(
             f"P2 thread #{i} has no closing reply (Notion link / fixed in <sha> / not-a-finding:)"
