@@ -333,7 +333,7 @@ session = client.beta.sessions.create(
     agent={
         "type": "agent_with_overrides",
         "id": agent.id,
-        "model": "claude-opus-5-5",   # replace the agent's model for this session
+        "model": {"id": "claude-opus-5-5"},  # replace the agent's model for this session
         "system": None,           # clear the system prompt for this session
     },
     environment_id=environment_id,
