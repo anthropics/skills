@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "generatedAt": "2026-11-16T06:57:08.301670+00:00",
+  "generatedAt": "2026-11-16T07:04:42.982495+00:00",
   "skills": {
     "adversarial-review": {
       "version": "2.1.0",
@@ -109,7 +109,7 @@
       "author": "Bernier LLC"
     },
     "review-gate": {
-      "version": "3.2.6",
+      "version": "3.2.7",
       "description": "Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.",
       "author": "Bernier LLC"
     },
