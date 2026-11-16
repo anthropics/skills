@@ -135,6 +135,8 @@ def _without_outside_links(arg: str, folder: Path) -> str:
 
 
 def _needs_shim() -> bool:
+    if not hasattr(socket, "AF_UNIX"):
+        return True
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
