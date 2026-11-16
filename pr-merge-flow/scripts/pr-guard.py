@@ -441,6 +441,15 @@ def merge_calls(cmd, cwd):
             yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
 RUN_ID = re.compile(r"/actions/runs/(\d+)/job/(\d+)")
+# All gh calls of one merge check share this budget, under the hook's 20 s timeout_ms (hooks.json):
+# a per-run jobs lookup that would overrun it is skipped, and that run supersedes nothing (fail closed).
+GH_BUDGET_S = 15
+
+
+def _left(deadline, cap):
+    """Seconds a gh call may take: at most cap, never past the shared deadline; None when spent."""
+    left = min(cap, deadline - time.monotonic())
+    return left if left >= 1 else None
 
 
 def green(e):
@@ -448,14 +457,15 @@ def green(e):
     return (e.get("conclusion") or e.get("state") or "").upper() in GREEN
 
 
-def run_workflows(sha, repo, cwd):
+def run_workflows(sha, repo, cwd, deadline):
     """Map each Actions run id on the head to (workflow file path, event); {} when unknown (fail closed)."""
-    if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha):
+    timeout = _left(deadline, 15)
+    if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha) or timeout is None:
         return {}
     try:
         out = subprocess.run(["gh", "api", "--paginate", f"repos/{repo or '{owner}/{repo}'}/actions/runs?head_sha={sha}&per_page=100",
                               "--jq", ".workflow_runs[] | [.id, .path, .event] | @tsv"],
-                             cwd=cwd, capture_output=True, text=True, timeout=15)
+                             cwd=cwd, capture_output=True, text=True, timeout=timeout)
     except (OSError, subprocess.SubprocessError):
         return {}  # unresolved runs supersede nothing: every entry must then be green on its own
     if out.returncode != 0:
@@ -464,17 +474,20 @@ def run_workflows(sha, repo, cwd):
     return {r[0]: (r[1], r[2]) for r in rows if len(r) == 3 and r[1]}
 
 
-def run_jobs(run_id, repo, cwd):
+def run_jobs(run_id, repo, cwd, deadline):
     """Map each real job of an Actions run (all attempts) to (name, conclusion); {} when unknown.
 
     detailsUrl is writable by anyone with Checks write access, so a custom check can point at a
     legitimate run. Only an entry whose job id is a real job of that run, with the same name and
     conclusion, is that job (claude-skills#90 Codex P1 r4582487271)."""
+    timeout = _left(deadline, 15)
+    if timeout is None:
+        return {}  # out of budget (claude-skills#90 Codex P2 r4582534724)
     try:
         out = subprocess.run(["gh", "api", "--paginate",
                               f"repos/{repo or '{owner}/{repo}'}/actions/runs/{run_id}/jobs?filter=all&per_page=100",
                               "--jq", '.jobs[] | [.id, .name, (.conclusion // "")] | @tsv'],
-                             cwd=cwd, capture_output=True, text=True, timeout=15)
+                             cwd=cwd, capture_output=True, text=True, timeout=timeout)
     except (OSError, subprocess.SubprocessError):
         return {}
     if out.returncode != 0:
@@ -493,6 +506,7 @@ def not_green(ref, repo="", cwd=None):
         cwd = None
     elif cwd and ("$" in cwd or "`" in cwd):
         return f"can't resolve the merge's working directory ({cwd}); pass -R owner/repo"
+    deadline = time.monotonic() + GH_BUDGET_S
     try:
         out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
                               "statusCheckRollup,mergeStateStatus,headRefOid"],
@@ -505,7 +519,7 @@ def not_green(ref, repo="", cwd=None):
         return f"gh failed: {e}"
     if not rollup:
         return "no checks reported yet"
-    workflows = run_workflows(view.get("headRefOid"), repo, cwd)
+    workflows = run_workflows(view.get("headRefOid"), repo, cwd, deadline)
     # The rollup lists every workflow run on the head: a PR whose first Review Gate run failed
     # (body lacked `## Review`) keeps that red run after a newer run goes green. GitHub already
     # collapses re-attempts *within* a run (only the latest attempt is listed), so identity is the
@@ -526,7 +540,7 @@ def not_green(ref, repo="", cwd=None):
         m = RUN_ID.search(e.get("detailsUrl") or "")
         # No parsable run id: run identity is unknown, so the entry supersedes nothing (fail closed).
         if m and m.group(1) in workflows and m.group(1) not in jobs:
-            jobs[m.group(1)] = run_jobs(m.group(1), repo, cwd)
+            jobs[m.group(1)] = run_jobs(m.group(1), repo, cwd, deadline)
         if (m and m.group(1) in workflows and (e.get("startedAt") or "") > "0002"
                 and jobs[m.group(1)].get(m.group(2)) == (e.get("name"), (e.get("conclusion") or "").upper())):
             run_key = m.group(1)

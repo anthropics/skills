@@ -379,6 +379,21 @@ for bad in (dict(custom), dict(custom, detailsUrl="https://github.com/o/r/action
 # the Actions API failing resolves nothing, so nothing is superseded (fail closed)
 m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok], api_rc=1)
 assert m and "Review Gate: FAILURE" in m, m
+# #90 Codex P2 (r4582534724): every gh call shares one deadline under the hook's 20 s timeout. Each
+# call here "takes" 6 s, so the newer run's jobs lookup is past the 15 s budget: it is skipped, that
+# run supersedes nothing (fail closed), and no call is ever given a timeout past the deadline.
+_clock, _timeouts, _gh_slow = [0.0], [], _gh(rollup=ok + [real, fake], paths={"200": ".github/workflows/ci.yml", "201": ".github/workflows/ci.yml"})
+def _slow(args, *a, **k):
+    _timeouts.append((_clock[0], k["timeout"]))
+    _clock[0] += 6
+    return _gh_slow(args, *a, **k)
+g.subprocess.run, _mono, g.time.monotonic = _slow, g.time.monotonic, lambda: _clock[0]
+try:
+    m = g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
+finally:
+    g.subprocess.run, g.time.monotonic = _run, _mono
+assert m and "Foundation checks: FAILURE" in m, m
+assert len(_timeouts) == 3 and all(t0 + t <= g.GH_BUDGET_S for t0, t in _timeouts), _timeouts
 # an older run still in progress does not outrank a newer green run
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [run("Review Gate", "", "2026-11-15T10:00:00Z"), latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
