@@ -173,6 +173,15 @@ def segments(cmd):
             # Keywords and NAME=value prefixes don't change the command; neither does `env [-i] [-u NAME] [NAME=value]`.
             while argv and (argv[0] in KEYWORDS or ASSIGN.match(argv[0])):
                 argv.pop(0)
+            # `command [-p] [--] cmd …` runs cmd; `command -v/-V cmd` only looks it up.
+            while argv and argv[0] == "command":
+                argv.pop(0)
+                while argv and argv[0].startswith("-"):
+                    opt = argv.pop(0)
+                    if opt == "--":
+                        break
+                    if "v" in opt or "V" in opt:
+                        argv = []
             chdir = None
             if argv and argv[0] == "env":
                 argv.pop(0)

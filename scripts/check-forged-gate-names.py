@@ -96,7 +96,17 @@ def _load_check_runs(text):
         if index >= len(text):
             break
         page, index = decoder.raw_decode(text, index)
-        runs.extend(page["check_runs"])
+        page_runs = page["check_runs"]
+        # Every entry must look like a check run, or a nonempty but garbage listing would pass as "evaluated".
+        if not isinstance(page_runs, list) or not all(
+            isinstance(run, dict) and isinstance(run.get("name"), str) for run in page_runs
+        ):
+            raise ValueError("check_runs holds an entry that is not a named check run")
+        runs.extend(page_runs)
+    # Fail closed: a head always has check runs by merge time (the guard's own, at least), so
+    # empty input (a caller without pipefail, a silent `gh api`) or zero runs is not "no forgery".
+    if not runs:
+        raise ValueError("input contains no check runs")
     return runs
 
 
@@ -107,7 +117,7 @@ def main():
         return 2
     try:
         bad = forged(_load_check_runs(sys.stdin.read()), _gh_run_lookup(repo))
-    except (ValueError, KeyError, subprocess.CalledProcessError) as exc:
+    except (ValueError, KeyError, TypeError, subprocess.CalledProcessError) as exc:
         print(f"::error::could not evaluate check runs, failing closed: {exc}", file=sys.stderr)
         return 2
     for name, where in bad:

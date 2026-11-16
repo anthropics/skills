@@ -34,7 +34,7 @@ FALLBACK_ATTESTATION = re.compile(
     re.I,
 )
 INCOMPLETE_REVIEW = re.compile(r"\b(pending|running|todo)\b", re.I)
-REVIEW_SECTION = re.compile(r"(?m)^##\s+Review\b")
+REVIEW_SECTION = re.compile(r"(?m)^##[ \t]+Review\b")
 MAIN_REVIEW_LABELS = {"review:high"}
 # Exact bot logins only — substring matches like "codex-helper" must not pass the gate.
 CODEX_AUTHORS = frozenset({"chatgpt-codex-connector"})
