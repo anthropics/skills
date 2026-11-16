@@ -1630,8 +1630,10 @@ assert '-f name="Review Gate"' in yml
 assert re.search(r"(?m)^\s+name:\s*review-gate-runner\s*$", yml)
 assert not re.search(r"(?m)^    name:\s*Review Gate\s*$", yml)
 assert "check-runs" in yml
-assert 'status="in_progress"' in yml
-assert "check-runs/$check_id" in yml
+# 3.2.1: one run per head, reused (behavior pinned in test_forged_gate.py); a reevaluation
+# first turns every reused run red so a stale success cannot stand.
+assert 'complete_check failure "review-gate running"' in yml
+assert "check-runs/$id" in yml
 assert "cancel-ci-on-finding" not in yml
 assert "gate-refresh-on-comment" not in yml
 assert "actions: write" not in yml

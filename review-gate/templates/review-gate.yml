@@ -62,23 +62,36 @@ jobs:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          # Invalidate any prior same-head success before reevaluation (edited /
-          # unlabeled / …). Required checks stay pending until we complete below.
-          check_id=$(gh api -X POST "repos/$REPO/check-runs" \
-            -f name="Review Gate" \
-            -f head_sha="$SHA" \
-            -f status="in_progress" \
-            -f "output[title]=review-gate running" \
-            -f "output[summary]=Reevaluating review gate…" \
-            --jq .id)
+          # One `Review Gate` check run per head, reused on every evaluation (3.2.1).
+          # GitHub keeps the PR blocked while ANY run of that name in the suite is red,
+          # so POSTing a fresh run each time left the first (Codex-pending) failure
+          # standing forever. Reuse every run this app published on the head (API runs
+          # have a .../runs/<id> URL; Actions jobs have .../actions/runs/<n>/job/<m>,
+          # so a same-named job is never touched); POST only when none exists.
+          if ! check_ids=$(gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
+              | jq -r '.check_runs[] | select(.name == "Review Gate" and .app.slug == "github-actions")
+                       | select((.details_url // "") | test("/actions/runs/[0-9]+/job/") | not) | .id'); then
+            # Fail closed: without the listing we cannot reuse, so a new red run keeps the PR
+            # blocked until the next evaluation that can list them completes every run.
+            echo "::warning::could not list existing Review Gate check runs on $SHA; publishing a new one"
+            check_ids=""
+          fi
+          if [ -z "$check_ids" ]; then
+            check_ids=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" --jq .id)
+          fi
           complete_check() {
-            local conclusion="$1" title="$2" summary="$3"
-            gh api -X PATCH "repos/$REPO/check-runs/$check_id" \
-              -f status="completed" \
-              -f conclusion="$conclusion" \
-              -f "output[title]=$title" \
-              -f "output[summary]=$summary"
+            local conclusion="$1" title="$2" summary="$3" id
+            for id in $check_ids; do
+              gh api -X PATCH "repos/$REPO/check-runs/$id" \
+                -f status="completed" \
+                -f conclusion="$conclusion" \
+                -f "output[title]=$title" \
+                -f "output[summary]=$summary" >/dev/null
+            done
           }
+          # Invalidate any prior same-head success before reevaluation (edited /
+          # unlabeled / …): red until we complete below.
+          complete_check failure "review-gate running" "Reevaluating review gate…"
           # Only the default branch is trusted for the checker binary. A PR can
           # target any same-repo branch; that base SHA is not necessarily protected.
           ref="$DEFAULT_BRANCH"
