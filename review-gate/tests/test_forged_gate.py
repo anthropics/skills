@@ -26,10 +26,17 @@ with open(os.path.join(state, "calls.log"), "a") as log:
     log.write(" ".join(args) + "\n")
 fixture = json.load(open(os.path.join(state, "fixture.json")))
 path = next(a for a in args if a.startswith("repos/"))
+created_path = os.path.join(state, "created.json")
+created = json.load(open(created_path)) if os.path.exists(created_path) else []
 if "-X" in args and "POST" in args:
-    print(41); sys.exit(0)
+    check_id = 900 + len(created)
+    created.append({"id": check_id, "name": "Review Gate", "app": {"slug": "github-actions"},
+                    "details_url": f"https://github.com/o/r/runs/{check_id}"})
+    json.dump(created, open(created_path, "w")); print(check_id); sys.exit(0)
 if "-X" in args and "PATCH" in args:
     concl = next(a.split("=", 1)[1] for a in args if a.startswith("conclusion="))
+    with open(os.path.join(state, "patches.log"), "a") as patches:
+        patches.write(f"{path.rsplit('/', 1)[1]} {concl}\n")
     open(os.path.join(state, "conclusion"), "w").write(concl); sys.exit(0)
 if "/contents/scripts/" in path:
     name = path.split("/contents/scripts/")[1].split("?")[0]
@@ -40,7 +47,8 @@ if "/contents/scripts/" in path:
 if "/check-runs" in path and "/commits/" in path:
     if fixture.get("listing_fails"):
         sys.exit(1)
-    print(json.dumps({"total_count": len(fixture["check_runs"]), "check_runs": fixture["check_runs"]})); sys.exit(0)
+    runs = fixture["check_runs"] + created
+    print(json.dumps({"total_count": len(runs), "check_runs": runs})); sys.exit(0)
 if "/actions/runs/" in path:
     run_id = path.rsplit("/", 1)[1]
     if run_id not in fixture["runs"]:
@@ -63,17 +71,17 @@ def run_block():
 
 
 def job(name, run_id):
-    return {"name": name, "details_url": f"https://github.com/o/r/actions/runs/{run_id}/job/9{run_id}",
+    return {"id": 9000 + run_id, "name": name, "app": {"slug": "github-actions"}, "details_url": f"https://github.com/o/r/actions/runs/{run_id}/job/9{run_id}",
             "html_url": f"https://github.com/o/r/actions/runs/{run_id}/job/9{run_id}"}
 
 
 def api_check(name, check_id):
-    return {"name": name, "details_url": f"https://github.com/o/r/runs/{check_id}",
+    return {"id": check_id, "name": name, "app": {"slug": "github-actions"}, "details_url": f"https://github.com/o/r/runs/{check_id}",
             "html_url": f"https://github.com/o/r/runs/{check_id}"}
 
 
 class ForgedGateWorkflow(unittest.TestCase):
-    def gate(self, check_runs, runs=None, listing_fails=False, missing=()):
+    def gate(self, check_runs, runs=None, listing_fails=False, missing=(), evaluations=1):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
             bindir = tmp / "bin"; bindir.mkdir()
@@ -92,8 +100,12 @@ class ForgedGateWorkflow(unittest.TestCase):
                        PR_NUMBER="7", REPO="o/r", SHA="a" * 40, DEFAULT_BRANCH="main")
             # The block writes the trusted scripts to /tmp/<name>; point that at this test's own dir.
             script = run_block().replace("/tmp/", f"{workdir}/")
-            proc = subprocess.run(["bash", "-e", "-c", script], env=env, capture_output=True, text=True)
+            for _ in range(evaluations):
+                proc = subprocess.run(["bash", "-e", "-c", script], env=env, capture_output=True, text=True)
             concl = (tmp / "conclusion").read_text() if (tmp / "conclusion").exists() else None
+            self.calls = (tmp / "calls.log").read_text().splitlines()
+            self.patches = (tmp / "patches.log").read_text().splitlines() if (tmp / "patches.log").exists() else []
+            self.created = json.loads((tmp / "created.json").read_text()) if (tmp / "created.json").exists() else []
             return proc.returncode, concl, proc.stdout + proc.stderr
 
     def test_forged_same_repo_review_gate_job_fails_the_gate(self):
@@ -129,6 +141,32 @@ class ForgedGateWorkflow(unittest.TestCase):
             [job("PRs into main must come from staging", 503)],
             runs={"503": ".github/workflows/main-via-staging.yml\tpull_request"})
         self.assertEqual((rc, concl), (0, "success"), out)
+
+    # 3.2.1: GitHub blocks the PR while any `Review Gate` run in the suite is red, so each
+    # evaluation must reuse the head's run instead of POSTing another next to an old failure.
+    def test_two_publishes_leave_exactly_one_run(self):
+        rc, concl, out = self.gate([job("CI", 502)], runs={"502": ".github/workflows/ci.yml\tpull_request"},
+                                   evaluations=2)
+        self.assertEqual((rc, concl), (0, "success"), out)
+        self.assertEqual([c["id"] for c in self.created], [900], self.calls)
+        self.assertEqual(sum(1 for c in self.calls if "-X POST" in c), 1, self.calls)
+        self.assertEqual(self.patches[-1], "900 success")
+
+    def test_every_existing_api_run_is_completed_and_none_is_added(self):
+        # #85's head: three API runs in one suite, two red from evaluations before Codex finished.
+        rc, concl, out = self.gate([api_check("Review Gate", 41), api_check("Review Gate", 42),
+                                    api_check("Review Gate", 43)])
+        self.assertEqual((rc, concl), (0, "success"), out)
+        self.assertEqual(self.created, [])
+        self.assertEqual(self.patches[-3:], ["41 success", "42 success", "43 success"])
+
+    def test_same_named_actions_job_is_never_reused(self):
+        # A PR job named "Review Gate" is forged; the gate must not adopt or PATCH it.
+        rc, concl, out = self.gate([job("Review Gate", 500)],
+                                   runs={"500": ".github/workflows/forge.yml\tpull_request"})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertEqual([c["id"] for c in self.created], [900])
+        self.assertEqual({p.split()[0] for p in self.patches}, {"900"})
 
     def test_failed_listing_fails_closed(self):
         rc, concl, out = self.gate([], listing_fails=True)
