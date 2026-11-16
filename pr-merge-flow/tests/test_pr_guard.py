@@ -245,8 +245,10 @@ for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCE
     assert m and name in m and "--watch --fail-fast" in m, (bad, m)
 # Only the LATEST run per check name counts: a historical red Review Gate run must not block
 # once a newer run of the same check is green (every new PR leaves one, nevar-design#7).
-def run(name, concl, at, wf="Review Gate"):
-    return {"name": name, "workflowName": wf, "conclusion": concl, "startedAt": at}
+_run_ids = iter(range(1000, 10**6))
+def run(name, concl, at, wf="Review Gate"):  # each call is its own workflow run, as gh reports it
+    return {"name": name, "workflowName": wf, "conclusion": concl, "startedAt": at,
+            "detailsUrl": f"https://github.com/o/r/actions/runs/{next(_run_ids)}/job/1"}
 old_red = [run("Review Gate", "FAILURE", "2026-11-15T10:00:00Z"), run("Review Gate", "CANCELLED", "2026-11-15T10:05:00Z")]
 latest_ok = run("Review Gate", "SUCCESS", "2026-11-15T10:10:00Z")
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok]) is None
@@ -304,8 +306,15 @@ m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaa
     wf_job("build", "SUCCESS", 100, 1, "2026-11-15T10:00:00Z"), wf_job("gate", "SUCCESS", 100, 2, "2026-11-15T10:20:00Z"),
     wf_job("build", "SUCCESS", 101, 3, "2026-11-15T10:10:00Z"), wf_job("gate", "FAILURE", 101, 4, "2026-11-15T10:15:00Z")])
 assert m and "gate: FAILURE" in m, m
+# #88 Codex P1 (r4582226134): without a parsable run id the run identity is unknown, so a later
+# green job must not supersede an earlier failed one (missing or unrecognized detailsUrl alike).
+for url in (None, "https://example.com/not-a-job"):
+    m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [
+        {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z", "detailsUrl": url},
+        {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "SUCCESS", "startedAt": "2026-11-15T10:10:00Z", "detailsUrl": url}])
+    assert m and "Review Gate: FAILURE" in m, (url, m)
 # an older run still in progress does not outrank a newer green run
-assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [run("Review Gate", "", "2026-11-15T10:00:00Z"), latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
 m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": None}])
 assert m and "Review Gate: CANCELLED" in m, m

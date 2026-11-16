@@ -477,13 +477,14 @@ def not_green(ref, repo="", cwd=None):
     # same-named job inside that run is a distinct job that must be green on its own: a later green
     # job (e.g. one with `needs:`) never hides an earlier failed sibling. Runs tied on startedAt
     # cannot be ordered, so all of them count (fail closed). Status contexts, third-party check runs
-    # and any entry without startedAt are never collapsed and must be green on their own.
+    # and any entry without startedAt or a run id are never collapsed and must be green on their own.
     groups, latest, run_start = {}, [], {}
-    for i, e in enumerate(rollup):
+    for e in rollup:
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
-        if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
-            m = RUN_ID.search(e.get("detailsUrl") or "")
-            run_key = m.group(1) if m else ("entry", i)  # no run id: the entry is its own run
+        m = RUN_ID.search(e.get("detailsUrl") or "")
+        # No parsable run id: run identity is unknown, so the entry supersedes nothing (fail closed).
+        if m and e.get("workflowName") and (e.get("startedAt") or "") > "0002":
+            run_key = m.group(1)
             # A run starts when its first job does, across ALL its jobs: a dependency-delayed job
             # in an older run must not make that run outrank a newer one.
             run_start[run_key] = min(run_start.get(run_key, e["startedAt"]), e["startedAt"])
