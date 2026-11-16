@@ -130,6 +130,18 @@ The `ant` CLI provides terminal access to the Claude API. Every API resource is 
 | Authentication overview | `https://platform.claude.com/docs/en/manage-claude/authentication.md` | "Extract the credential options (API keys, interactive OAuth login, Workload Identity Federation) and when to use each" |
 | WIF reference | `https://platform.claude.com/docs/en/manage-claude/wif-reference.md` | "Extract credential precedence order, the profile configuration file schema, and the configuration directory layout" |
 
+### Claude Agent SDK
+
+The Agent SDK is a separate product from the Claude API (see
+`shared/agent-sdk.md` for the boundary and the pinned package).
+Fetch the Markdown versions, not the HTML pages — the HTML overview
+is ~240 KB, too large for one read; the `.md` overview is ~7 KB.
+
+| Topic | URL | Extraction Prompt |
+| --- | --- | --- |
+| Agent SDK overview | `https://code.claude.com/docs/en/agent-sdk.md` | "Extract the Agent SDK overview: query() entry point, Options, AgentDefinition, built-in tools, subagents, hooks, and permissions" |
+| Documentation index | `https://code.claude.com/docs/llms.txt` | "Discover the available Agent SDK / Claude Code documentation pages before fetching a specific one" |
+
 ---
 
 ## Claude API SDK Repositories
