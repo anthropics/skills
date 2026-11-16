@@ -26,13 +26,15 @@ with open(os.path.join(state, "calls.log"), "a") as log:
     log.write(" ".join(args) + "\n")
 fixture = json.load(open(os.path.join(state, "fixture.json")))
 path = next(a for a in args if a.startswith("repos/"))
+HEAD, BASE = "a" * 40 + "\tfeat/x\to/r", "b" * 40
 created_path = os.path.join(state, "created.json")
 created = json.load(open(created_path)) if os.path.exists(created_path) else []
 if "-X" in args and "POST" in args:
     check_id = 900 + len(created)
     ext = next((a.split("=", 1)[1] for a in args if a.startswith("external_id=")), None)
     created.append({"id": check_id, "name": "Review Gate", "app": {"slug": "github-actions"},
-                    "external_id": ext, "details_url": f"https://github.com/o/r/runs/{check_id}"})
+                    "external_id": ext, "details_url": f"https://github.com/o/r/runs/{check_id}",
+                    "check_suite": {"id": fixture.get("current_suite", 1)}})
     json.dump(created, open(created_path, "w")); print(check_id); sys.exit(0)
 if "-X" in args and "PATCH" in args:
     concl = next(a.split("=", 1)[1] for a in args if a.startswith("conclusion="))
@@ -45,21 +47,32 @@ if "/contents/scripts/" in path:
     if src is None:
         sys.exit(1)
     print(json.dumps({"content": base64.b64encode(open(src, "rb").read()).decode()})); sys.exit(0)
-if "/contents/" in path:
-    sys.exit(0 if path.split("/contents/")[1] in fixture.get("default_files", []) else 1)
+if "/contents/" in path:  # blob of a file at a ref; the PR's base ref answers like main unless overridden
+    file, ref = path.split("/contents/")[1].split("?ref=")
+    if ref == BASE and "base_blob" in fixture:
+        if fixture["base_blob"] is None:
+            sys.exit(1)
+        print(fixture["base_blob"]); sys.exit(0)
+    if f"{file}?ref={'main' if ref == BASE else ref}" not in fixture.get("default_files", []):
+        sys.exit(1)
+    print("blob-1"); sys.exit(0)
 if path.split("?")[0].endswith("/files") and "/pulls/" in path:
     if fixture.get("pr_files") is None:
         sys.exit(1)
     for i in range(0, max(len(fixture["pr_files"]), 1), 2):  # two per page, like --paginate's concatenation
         print(json.dumps(fixture["pr_files"][i:i + 2]))
     sys.exit(0)
-HEAD = "a" * 40 + "\tfeat/x\to/r"
 if path.startswith("repos/o/r/pulls/") and path.rsplit("/", 1)[1].isdigit():
     if fixture.get("pr_head", HEAD) is None:
         sys.exit(1)
-    print(fixture.get("pr_head", HEAD)); sys.exit(0)
+    print(fixture.get("pr_head", HEAD) + "\t" + BASE); sys.exit(0)
+if "/actions/runs?" in path:  # the gate's suite check: review-gate workflow runs on the head
+    if fixture.get("workflow_runs_fail"):
+        sys.exit(1)
+    default = [{"path": ".github/workflows/review-gate.yml", "conclusion": None, "check_suite_id": 1}]
+    print(json.dumps({"workflow_runs": fixture.get("workflow_runs", default)})); sys.exit(0)
 if "/actions/runs/" in path and "head_sha" in " ".join(args):  # the wrapper's provenance lookup
-    head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head", HEAD))
+    head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head") or HEAD)
     if head is None:
         sys.exit(1)
     print(head); sys.exit(0)
@@ -98,9 +111,14 @@ def job(name, run_id):
             "html_url": f"https://github.com/o/r/actions/runs/{run_id}/job/9{run_id}"}
 
 
-def api_check(name, check_id, pr=None):
+def api_check(name, check_id, pr=None, suite=1):
     return {"id": check_id, "name": name, "app": {"slug": "github-actions"}, "details_url": f"https://github.com/o/r/runs/{check_id}",
-            "html_url": f"https://github.com/o/r/runs/{check_id}", "external_id": f"review-gate-pr-{pr}" if pr else None}
+            "html_url": f"https://github.com/o/r/runs/{check_id}", "external_id": f"review-gate-pr-{pr}" if pr else None,
+            "check_suite": {"id": suite}}
+
+
+def gate_run(suite, conclusion=None):
+    return {"path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite}
 
 
 RG_PATH = ".github/workflows/review-gate.yml"
@@ -115,7 +133,7 @@ def pr_file(filename, status="modified", previous=None):
 
 class ForgedGateWorkflow(unittest.TestCase):
     def gate(self, check_runs, runs=None, listing_fails=False, missing=(), evaluations=1, prs=None,
-             pr_files=(), default_files=()):
+             pr_files=(), default_files=(), suites=None):
         """prs: [(pr_number, checker_rc)] evaluations on the same head sha (default PR 7 passing)."""
         prs = prs or [("7", 0)] * evaluations
         with tempfile.TemporaryDirectory() as tmp:
@@ -131,7 +149,7 @@ class ForgedGateWorkflow(unittest.TestCase):
                 scripts.pop(name)
             (tmp / "fixture.json").write_text(json.dumps(
                 {"scripts": scripts, "check_runs": check_runs, "runs": runs or {}, "listing_fails": listing_fails,
-                 "pr_files": list(pr_files), "default_files": list(default_files)}))
+                 "pr_files": list(pr_files), "default_files": list(default_files), **(suites or {})}))
             workdir = tmp / "job"; workdir.mkdir()
             env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=str(tmp), GH_TOKEN="x",
                        PR_NUMBER="7", REPO="o/r", SHA="a" * 40, DEFAULT_BRANCH="main")
@@ -180,23 +198,53 @@ class ForgedGateWorkflow(unittest.TestCase):
             runs={"503": ".github/workflows/main-via-staging.yml\tpull_request"})
         self.assertEqual((rc, concl), (0, "success"), out)
 
-    # 3.2.1: GitHub blocks the PR while any `Review Gate` run in the suite is red, so each
-    # evaluation must reuse the head's run instead of POSTing another next to an old failure.
-    def test_two_publishes_leave_exactly_one_run(self):
+    # 3.2.6: a new run on every evaluation, so the newest suite carries one (the Checks API cannot pick a
+    # suite). 3.2.1 still holds: GitHub blocks while any `Review Gate` run is red, so every evaluation
+    # completes ALL of this PR's runs with its result and no earlier failure stays standing.
+    def test_each_evaluation_publishes_and_completes_every_run(self):
         rc, concl, out = self.gate([job("CI", 502)], runs={"502": ".github/workflows/ci.yml\tpull_request"},
-                                   evaluations=2)
+                                   prs=[("7", 1), ("7", 0)])
         self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertEqual([c["id"] for c in self.created], [900], self.calls)
-        self.assertEqual(sum(1 for c in self.calls if "-X POST" in c), 1, self.calls)
-        self.assertEqual(self.patches[-1], "900 success")
+        self.assertEqual([c["id"] for c in self.created], [900, 901], self.calls)
+        self.assertEqual(sorted(self.patches[-2:]), ["900 success", "901 success"])
 
-    def test_every_existing_api_run_of_this_pr_is_completed_and_none_is_added(self):
+    def test_every_existing_api_run_of_this_pr_is_completed(self):
         # #85's head: three API runs in one suite, two red from evaluations before Codex finished.
         rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7), api_check("Review Gate", 42, pr=7),
                                     api_check("Review Gate", 43, pr=7)])
         self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertEqual(self.created, [])
-        self.assertEqual(self.patches[-3:], ["41 success", "42 success", "43 success"])
+        self.assertEqual([c["id"] for c in self.created], [900])
+        self.assertEqual(sorted(self.patches[-4:]), ["41 success", "42 success", "43 success", "900 success"])
+
+    # 3.2.6 regression: every non-cancelled review-gate suite on the head must carry this PR's Review Gate
+    # run, else the required check can read "expected" (nevar-audit #17): fail closed with the fix named.
+    def test_older_suite_without_a_review_gate_run_fails_closed(self):
+        rc, concl, out = self.gate([], suites={"workflow_runs": [gate_run(1, "failure"), gate_run(2)],
+                                               "current_suite": 2})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertIn("suite check failed", out)
+        self.assertIn("push a new head", out)
+
+    def test_every_suite_covered_passes(self):
+        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
+                                   suites={"workflow_runs": [gate_run(1, "success"), gate_run(2)], "current_suite": 2})
+        self.assertEqual((rc, concl), (0, "success"), out)
+
+    def test_cancelled_duplicate_suite_with_run_in_surviving_suite_passes(self):
+        # nevar-audit #18 (96d2ff2f): label at PR-open cancelled a duplicate runner; merge was not blocked.
+        rc, concl, out = self.gate([], suites={"workflow_runs": [gate_run(1, "cancelled"), gate_run(2)],
+                                               "current_suite": 2})
+        self.assertEqual((rc, concl), (0, "success"), out)
+
+    def test_another_prs_run_does_not_cover_a_suite(self):
+        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=8, suite=1)],
+                                   suites={"workflow_runs": [gate_run(1, "success"), gate_run(2)], "current_suite": 2})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+
+    def test_suite_lookup_failure_fails_closed(self):
+        rc, concl, out = self.gate([], suites={"workflow_runs_fail": True})
+        self.assertEqual((rc, concl), (1, "failure"), out)
+        self.assertIn("<lookup failed>", out)
 
     # nevar-content Codex P1: two PRs on one head sha must not complete each other's runs.
     def test_shared_head_pr_b_passing_never_flips_pr_a_failure(self):
@@ -383,11 +431,23 @@ class WrapperDetector(unittest.TestCase):
                                        pr_files=[pr_file(RG_PATH)], provenance={"run_heads": {"516": other}})
                 self.assertEqual(rc, 1, err)
 
-    def test_bootstrap_head_shared_with_another_open_pr_exits_1(self):
+    def test_bootstrap_head_shared_with_another_pr_exits_1(self):
+        # Open or closed: a child closed after its run fired still matches every head field.
         rc, err = self.wrapper([job("Review Gate", 517)], {"517": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
                                provenance={"shared_prs": ["8"]})
         self.assertEqual(rc, 1, err)
         self.assertIn("#8 share head", err)
+
+    # aec #163 Codex P1: the run must have executed the default branch's workflow revision. A stacked
+    # child targeting a contributor branch whose review-gate.yml publishes a `Review Gate` job, while the
+    # outer PR also modifies that path, must be refused: the base copy differs from the default copy.
+    def test_bootstrap_base_copy_differs_from_default_exits_1(self):
+        for base_blob in ("blob-contributor", None):
+            with self.subTest(base_blob=base_blob):
+                rc, err = self.wrapper([job("Review Gate", 519)], {"519": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
+                                       provenance={"base_blob": base_blob})
+                self.assertEqual(rc, 1, err)
+                self.assertIn("differs from the default branch", err)
 
     def test_bootstrap_provenance_lookup_failure_exits_2(self):
         for provenance in ({"pr_head": None}, {"run_heads": {"518": None}}, {"pr_head": "garbage"}):

@@ -62,38 +62,52 @@ jobs:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          # One `Review Gate` check run per PR per head, reused on every evaluation (3.2.1).
-          # GitHub keeps the PR blocked while ANY run of that name in the suite is red,
-          # so POSTing a fresh run each time left the first (Codex-pending) failure
-          # standing forever. Reuse only the API runs this app published for THIS PR
-          # (external_id review-gate-pr-<n>, 3.2.2): two PRs can share a head sha, and
-          # completing the other PR's run with our result would flip its failure to
-          # success. Unmarked (pre-3.2.2) or other-PR runs are never touched; a
-          # same-named Actions job (.../actions/runs/<n>/job/<m>) is never touched.
-          # POST only when this PR has none.
+          # A NEW `Review Gate` check run on every evaluation (3.2.6), and every evaluation completes ALL
+          # of this PR's runs on the head with the same result. GitHub reads the required check from the
+          # newest Actions check suite for the head, and the Checks API cannot choose a suite: reusing
+          # one run per head (3.2.1-3.2.5) left it in an older suite, so a later edit-triggered suite held
+          # only review-gate-runner and the check read "expected" (nevar-audit #17, nevar-research #15).
+          # Completing all runs keeps the 3.2.1 fix: no earlier red run stays standing. Only the API runs
+          # this app published for THIS PR (external_id review-gate-pr-<n>, 3.2.2) are touched: two PRs
+          # can share a head sha. Unmarked (pre-3.2.2) or other-PR runs, and a same-named Actions job
+          # (.../actions/runs/<n>/job/<m>), are never touched.
+          # UNPROVEN until a live run: pull_request_target runs the default branch's copy of this file.
           external_id="review-gate-pr-$PR_NUMBER"
-          if ! check_ids=$(gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
+          list_runs() {
+            gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
               | jq -r --arg ext "$external_id" '.check_runs[]
                        | select(.name == "Review Gate" and .app.slug == "github-actions" and .external_id == $ext)
-                       | select((.details_url // "") | test("/actions/runs/[0-9]+/job/") | not) | .id'); then
-            # Fail closed: without the listing we cannot reuse, so a new red run keeps the PR
-            # blocked until the next evaluation that can list them completes every run.
-            echo "::warning::could not list existing Review Gate check runs on $SHA; publishing a new one"
-            check_ids=""
-          fi
-          if [ -z "$check_ids" ]; then
-            check_ids=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" \
-              -f external_id="$external_id" --jq .id)
-          fi
+                       | select((.details_url // "") | test("/actions/runs/[0-9]+/job/") | not)
+                       | "\(.id) \(.check_suite.id)"'
+          }
+          new_id=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" \
+            -f external_id="$external_id" --jq .id)
           complete_check() {
-            local conclusion="$1" title="$2" summary="$3" id
-            for id in $check_ids; do
+            local conclusion="$1" title="$2" summary="$3" listed id
+            # Re-list each time, so a run a cancelled evaluation POSTed after our start is completed too.
+            if ! listed=$(list_runs); then
+              echo "::warning::could not list Review Gate check runs on $SHA; completing only this run"
+              listed=""
+            fi
+            for id in $(printf '%s\n' "$new_id" $(printf '%s\n' "$listed" | cut -d' ' -f1) | sort -u); do
               gh api -X PATCH "repos/$REPO/check-runs/$id" \
                 -f status="completed" \
                 -f conclusion="$conclusion" \
                 -f "output[title]=$title" \
                 -f "output[summary]=$summary" >/dev/null
             done
+          }
+          # Every review-gate workflow run on this head that was not cancelled must have a Review Gate run
+          # of this PR in its suite, or the required check can read "expected". A cancelled duplicate's
+          # suite is exempt (nevar-audit #18 merged with one). Prints the uncovered suite ids.
+          uncovered_suites() {
+            local covered runs
+            covered=$(list_runs | cut -d' ' -f2) || return 1
+            runs=$(gh api "repos/$REPO/actions/runs?head_sha=$SHA&event=pull_request_target&per_page=100" --paginate \
+              | jq -r '.workflow_runs[]
+                       | select((.path | split("@")[0]) == ".github/workflows/review-gate.yml")
+                       | select(.conclusion != "cancelled") | .check_suite_id') || return 1
+            comm -23 <(printf '%s\n' $runs | sort -u) <(printf '%s\n' $covered | sort -u)
           }
           # Invalidate any prior same-head success before reevaluation (edited /
           # unlabeled / …): red until we complete below.
@@ -129,6 +143,12 @@ jobs:
           set -e
           if [ "$frc" -ne 0 ]; then
             out=$(printf '%s\n%s\n%s' "$out" "forged-check step failed (exit $frc):" "$forged")
+            [ "$rc" -ne 0 ] || rc=1
+          fi
+          if ! gap=$(uncovered_suites) || [ -n "$gap" ]; then
+            out=$(printf '%s\n%s\n%s' "$out" \
+              "suite check failed: review-gate suite(s) without this PR's Review Gate run: ${gap:-<lookup failed>}." \
+              "The required check can read \"expected\" there. Rerun this run in place; if it stays red, push a new head.")
             [ "$rc" -ne 0 ] || rc=1
           fi
           printf '%s\n' "$out"
