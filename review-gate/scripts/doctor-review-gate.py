@@ -17,6 +17,9 @@ REVIEW_GATE_CONTEXT = "Review Gate"
 MERGE_BRANCHES = ("main", "staging")
 
 
+MAIN_REVIEW_LABEL = "review:high"  # must stay in check-review-gate.py MAIN_REVIEW_LABELS (pinned by a test)
+
+
 def gh_json(args: list[str]) -> object | None:
     proc = subprocess.run(["gh", *args], capture_output=True, text=True)
     if proc.returncode != 0:
@@ -199,6 +202,14 @@ def main() -> int:
         print("WARN could not resolve repo via gh; skip ruleset check")
         return 0
     full = repo.stdout.strip()
+    labels = gh_json(["label", "list", "-R", full, "--search", MAIN_REVIEW_LABEL, "--json", "name"])
+    if isinstance(labels, list) and any(lb.get("name") == MAIN_REVIEW_LABEL for lb in labels):
+        print(f"OK label {MAIN_REVIEW_LABEL!r} exists")
+    else:
+        print(
+            f"WARN label {MAIN_REVIEW_LABEL!r} missing (or unreadable): every PR into main fails the gate; "
+            f"gh label create {MAIN_REVIEW_LABEL} -R {full}"
+        )
     default_branch_proc = subprocess.run(
         [
             "gh",

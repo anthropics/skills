@@ -1781,6 +1781,7 @@ _doctor_spec = importlib.util.spec_from_file_location("doctor_review_gate", _doc
 _doctor = importlib.util.module_from_spec(_doctor_spec)
 assert _doctor_spec.loader is not None
 _doctor_spec.loader.exec_module(_doctor)
+assert {_doctor.MAIN_REVIEW_LABEL} == g.MAIN_REVIEW_LABELS  # doctor checks the label the gate requires
 assert _doctor.ruleset_requires_review_gate(
     {
         "rules": [
