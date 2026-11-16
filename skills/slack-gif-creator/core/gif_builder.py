@@ -220,8 +220,11 @@ class GIFBuilder:
         # Optimize colors with global palette
         optimized_frames = self.optimize_colors(num_colors, use_global_palette=True)
 
-        # Calculate frame duration in milliseconds
-        frame_duration = 1000 / self.fps
+        # Calculate frame duration in milliseconds snapped to the nearest centisecond (10ms).
+        # GIF delays are stored in 1/100s and Pillow converts via int(duration / 10), so rounding
+        # prevents systematic truncation and fast playback across non-multiple-of-10 fps values.
+        centiseconds = max(1, round(100 / self.fps))
+        frame_duration = centiseconds * 10
 
         # Save GIF
         imageio.imwrite(
@@ -234,6 +237,7 @@ class GIFBuilder:
         # Get file info
         file_size_kb = output_path.stat().st_size / 1024
         file_size_mb = file_size_kb / 1024
+        actual_duration = (len(optimized_frames) * frame_duration) / 1000
 
         info = {
             "path": str(output_path),
@@ -242,7 +246,7 @@ class GIFBuilder:
             "dimensions": f"{self.width}x{self.height}",
             "frame_count": len(optimized_frames),
             "fps": self.fps,
-            "duration_seconds": len(optimized_frames) / self.fps,
+            "duration_seconds": actual_duration,
             "colors": num_colors,
         }
 
