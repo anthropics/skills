@@ -1,12 +1,12 @@
 {
   "$schema": "https://bernierllc.com/schemas/hooks/v1.json",
-  "version": "1.3.1",
+  "version": "1.4.0",
   "hooks": [
     {
       "id": "pmf-pr-guard",
       "event": "pre_tool_use",
       "command": "aec run-script skill:pr-merge-flow pr-guard.py",
-      "description": "Blocks merging/rebasing the base branch into a PR GitHub already reports as mergeable (restarts CI and review for nothing), blocks opening PRs as drafts, blocks `gh pr merge --admin` and merges whose checks are not all green (use --auto), and blocks sleep-polling loops over gh status queries.",
+      "description": "Blocks merging/rebasing the base branch into a PR GitHub already reports as mergeable (restarts CI and review for nothing), blocks opening PRs as drafts, blocks `gh pr merge --admin` and `gh pr merge --auto`, merges without `--match-head-commit` and merges whose checks are not all green, and blocks sleep-polling loops over gh status queries.",
       "blocking": true,
       "timeout_ms": 20000
     }

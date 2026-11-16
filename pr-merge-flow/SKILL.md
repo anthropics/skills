@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
-description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to GitHub auto-merge, wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.3.1
+description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
+version: 1.4.0
 author: Bernier LLC
 ---
 
@@ -23,11 +23,11 @@ rebuild. This skill stops that.
      base, and the base's own push CI catches anything that breaks once changes combine.
    - A base change to CI config or `.gitignore` is **not** a reason to sync: the PR picks
      up the new workflow on its next push anyway.
-2. **Hand the merge to GitHub.** When the review loop is done:
-   `gh pr merge <n> --auto --squash` (use `--merge` for long-lived-branch promotions, e.g.
-   staging → main), then stop. GitHub merges it once the required checks pass. Nobody
-   watches. If the repo has auto-merge disabled, enable it:
-   `gh api -X PATCH repos/<owner>/<repo> -F allow_auto_merge=true`.
+2. **Hand the merge to the traffic cop.** When the review loop is done, the repo's
+   `Traffic Cop · <repo>` thread merges after a live recheck of reviews and threads:
+   `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge` for long-lived-branch promotions, e.g.
+   staging → main). Never `--auto` or `--admin`: Review Gate does not re-run on late
+   review or thread events, so auto-merge can land a PR a late P2 should have stopped.
 3. **Wait for free.** Watch checks with `gh pr checks <n> --watch --fail-fast` run in the
    background (Claude Code: `run_in_background`). It costs nothing until it exits, and the
    harness wakes you. Never write a `sleep`/poll loop.
@@ -50,13 +50,14 @@ hooks dormant). It blocks:
   the PR on the upstream repo).
 
 - `gh pr merge --admin`, always: never bypass required checks; fix the red check or ask Matt;
-- `gh pr merge` without `--auto` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
+- `gh pr merge --auto`, always (see rule 2), and any `gh pr merge` without `--match-head-commit <sha>` naming the full 40-hex SHA;
+- `gh pr merge` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
   `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. PR #325 once
-  merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --auto --squash` (`--merge`
-  for promotions into main): GitHub merges when checks pass and nobody watches;
+  merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge`
+  for promotions into main);
 - a `sleep` plus a status query (`gh pr checks|view|status`, `gh run view|watch|list`) in one
   command, loop or not. The wanted shape is `gh pr checks <n> --watch --fail-fast` run in the
-  background, or `--auto`.
+  background.
 
 The sync and draft rules fail open when there's no open PR, `gh` is unavailable, or GitHub reports `UNKNOWN`.
 

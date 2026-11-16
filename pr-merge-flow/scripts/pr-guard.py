@@ -16,9 +16,10 @@ text is what the agent sees.
    targets the UPSTREAM repo (a claude-skills PR landed on anthropics/skills
    this way, 2026-09-28). Blocked until the target is explicit.
 
-4. No ungated merge. `gh pr merge --admin` is always blocked; without `--auto` the merge
-   needs every check SUCCESS/SKIPPED/NEUTRAL (PR #325 merged on a CANCELLED check). The
-   wanted shape is `--auto`: GitHub merges when checks pass and nobody watches. Fails closed.
+4. No ungated merge. `gh pr merge --admin` and `--auto` are always blocked (Review Gate does not
+   re-run on late review/thread events, so auto-merge can land a PR a late P2 should have
+   stopped). Every merge pins the reviewed head with `--match-head-commit <sha>` and needs every
+   check SUCCESS/SKIPPED/NEUTRAL (PR #325 merged on a CANCELLED check). Fails closed.
 5. No polling: `sleep` plus a `gh pr checks|view|status` / `gh run view|watch|list` query in
    one command. Use `gh pr checks <n> --watch --fail-fast` in the background instead.
 
@@ -352,30 +353,59 @@ MERGE_FLAGS_WITH_VALUE = {"-t", "-b", "-F", "-A", "-R", "--subject", "--body", "
 STATUS_QUERY = re.compile(r"^gh\b.*\b(pr (checks|view|status)|run (view|watch|list))\b")
 
 
+def merge_args(argv):
+    """Tokenize a `gh ... pr merge` call once, the way gh does: (ref, flag tokens, repo).
+
+    Every reader of a merge call goes through here, so a value is never read as a flag. Value flags
+    (MERGE_FLAGS_WITH_VALUE) consume the next token whatever it looks like (`--body --repo=x` is a body).
+    Flag tokens keep their `=value` so callers can test them with flag_on(). repo is the last
+    `-R/--repo` value (as in gh), '' when none, None when unsure: only `-R x`, `--repo x`, `--repo=x`
+    and `-Rowner/repo` are trusted; any other short-flag token carrying an R (`-dR x`, `-dRx`, `-Rd`)
+    or a trailing `-R` returns None so the caller fails closed (pflag clusters are open-ended).
+    """
+    ref, toks, repo, past_merge, value_of = "", [], "", False, None
+    for a in argv[1:]:
+        if value_of:
+            if value_of in ("-R", "--repo"):
+                repo = a
+            elif value_of == "--match-head-commit":
+                toks[-1] = f"--match-head-commit={a}"
+            value_of = None
+        elif a in MERGE_FLAGS_WITH_VALUE:
+            toks.append(a)
+            value_of = a
+        elif a.startswith("--repo="):
+            toks.append("--repo")
+            repo = a[len("--repo="):]
+        elif re.fullmatch(r"-R=?[^-/=\s][^/\s]*/[^/\s]+", a):
+            toks.append("-R")
+            repo = a[2:].lstrip("=")
+        elif re.match(r"-[^-]", a) and "R" in a:
+            repo = None
+            break
+        elif a.startswith("-"):
+            toks.append(a)
+        elif not past_merge:
+            past_merge = a == "merge"
+        elif not ref:
+            ref = a
+    if value_of in ("-R", "--repo"):
+        repo = None
+    return ref, toks, repo
+
+
 def merge_calls(cmd):
-    """Yield (ref, flags) for each `gh pr merge`; ref is '' when none is named."""
+    """Yield (ref, flag tokens, repo) for each `gh pr merge`; see merge_args()."""
     for argv in segments(cmd):
         pr = gh_pr(argv)
-        if not pr or pr[0] != "merge":
-            continue
-        rest = argv[argv.index("merge") + 1:]
-        ref, flags, skip = "", set(), False
-        for a in rest:
-            if skip:
-                skip = False
-            elif a in MERGE_FLAGS_WITH_VALUE:
-                skip = True
-            elif a.startswith("-"):
-                flags.add(a.split("=")[0])
-            elif not ref:
-                ref = a
-        yield ref, flags
+        if pr and pr[0] == "merge":
+            yield merge_args(argv)
 
 
-def not_green(ref):
+def not_green(ref, repo=""):
     """Return '' when every check on the PR is green, else a description of why not."""
     try:
-        out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), "--json",
+        out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
                               "statusCheckRollup,mergeStateStatus"],
                              capture_output=True, text=True, timeout=8)
         if out.returncode != 0:
@@ -418,17 +448,32 @@ def check(cmd, cwd):
     """Return a block message, or None to allow."""
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
-                "and let the harness wake you, or `gh pr merge <n> --auto` and stop watching.")
-    for ref, flags in merge_calls(cmd):
+                "and let the harness wake you.")
+    for ref, toks, repo in merge_calls(cmd):
+        flags = {t.partition("=")[0] for t in toks}
+        if repo is None:
+            return ("Blocked: can't tell which repo this merge targets (a short-flag cluster carrying -R, "
+                    "such as `-dR x`). Pass the repo as a standalone `-R owner/repo`.")
         if "--admin" in flags:
             return "Blocked: never bypass required checks with --admin; fix the red check or ask Matt."
         if "--auto" in flags:
+            return ("Blocked: never `--auto`: Review Gate does not re-run on late review or thread events, "
+                    "so auto-merge can land a PR a late P2 should have stopped. Hand the PR to the repo's "
+                    f"traffic cop, which merges with `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
+                    "(`--merge` for promotions into main).")
+        # merges nothing: cancels an enabled auto-merge (--admin/--auto blocked above). Only when on:
+        # `--disable-auto=false` leaves the option off, so that call merges and takes the full checks.
+        if flag_on(toks, ("--disable-auto",)):
             continue
-        why = not_green(ref)
+        heads = [t.partition("=")[2] for t in toks if t.partition("=")[0] == "--match-head-commit"]
+        if not heads or not re.fullmatch(r"[0-9a-f]{40}", heads[-1]):
+            return (f"Blocked: pin the reviewed head with its full 40-hex SHA: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
+                    "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")
+        why = not_green(ref, repo)
         if why:
-            return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): hand the merge "
-                    f"to GitHub with `gh pr merge {ref or '<n>'} --auto --squash` (promotions into main: "
-                    "`--merge`) and stop watching.")
+            return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): "
+                    "wait for them (`gh pr checks <n> --watch --fail-fast` in the background) or fix the red "
+                    "check, then merge.")
     if draft_violation(cmd) and not draft_mode():
         return ("Blocked: PRs open ready for review, never as drafts. Drop --draft / --undo. "
                 "If the user explicitly asked for a draft, ask them to run it with `! gh pr create --draft ...`, "
@@ -457,7 +502,7 @@ def check(cmd, cwd):
             return (f"Blocked: this branch's PR into `{base}` is {status}, so GitHub can already merge it. "
                     f"Pulling `{base}` in restarts CI and review for nothing. Sync only when "
                     "`gh pr view --json mergeStateStatus` says DIRTY (a conflict). To land the PR: "
-                    "`gh pr merge <n> --auto --squash` (or `--merge` for promotions). If you truly need "
+                    "hand it to the repo's traffic cop: `gh pr merge <n> --squash --match-head-commit <sha>` (or `--merge` for promotions). If you truly need "
                     f"a commit from `{base}` (a fix your tests depend on), add `# sync-base: <reason>`.")
     return None
 

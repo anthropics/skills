@@ -1,6 +1,6 @@
 {
   "manifestVersion": 1,
-  "generatedAt": "2026-11-16T01:24:27.368992+00:00",
+  "generatedAt": "2026-11-16T01:58:29.941289+00:00",
   "skills": {
     "adversarial-review": {
       "version": "2.1.0",
@@ -99,8 +99,8 @@
       "description": "Autonomous Playwright test execution, environment management, profiling, and bug-fixing loop. Spins up isolated test environments (database, server), executes test suites, profiles performance, diagnoses failures, implements fixes, cleans up all test artifacts, and tears down the environment. Companion to playwright-test-generator. Use when running Playwright test suites, when tests are failing and need diagnosis/fixing, when validating a feature branch before merge, or when the test suite needs a full pass with autonomous repair. Triggered by test failures, CI red builds, pre-merge validation, or explicit user request to run and fix tests."
     },
     "pr-merge-flow": {
-      "version": "1.3.1",
-      "description": "Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to GitHub auto-merge, wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.",
+      "version": "1.4.0",
+      "description": "Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.",
       "author": "Bernier LLC"
     },
     "resume": {
