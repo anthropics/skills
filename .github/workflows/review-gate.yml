@@ -97,9 +97,11 @@ jobs:
                 -f "output[summary]=$summary" >/dev/null
             done
           }
-          # Every review-gate workflow run on this head that was not cancelled must have a Review Gate run
-          # of this PR in its suite, or the required check can read "expected". A cancelled duplicate's
-          # suite is exempt (nevar-audit #18 merged with one). Prints the uncovered suite ids.
+          # 3.2.6 invariant: every review-gate workflow run on this head that was not cancelled has a Review
+          # Gate run of this PR in its suite. A gap means a POST missed its own suite; a runner-only suite
+          # blocked nevar-logs #12 and nevar-audit #17 but not nevar-content #12, so the exact BLOCKED trigger
+          # is unresolved and this fails closed. A cancelled duplicate's suite is exempt (nevar-audit #18
+          # merged with one). Prints the uncovered suite ids.
           uncovered_suites() {
             local covered runs
             covered=$(list_runs | cut -d' ' -f2) || return 1
@@ -148,7 +150,8 @@ jobs:
           if ! gap=$(uncovered_suites) || [ -n "$gap" ]; then
             out=$(printf '%s\n%s\n%s' "$out" \
               "suite check failed: review-gate suite(s) without this PR's Review Gate run: ${gap:-<lookup failed>}." \
-              "The required check can read \"expected\" there. Rerun this run in place; if it stays red, push a new head.")
+              "3.2.6 POSTs one per evaluation, so this POST did not land in its own suite (evidence for 3.2.7: report it)." \
+              "The required check may read \"expected\" (trigger unresolved). Rerun this run in place; if it stays red, push a new head.")
             [ "$rc" -ne 0 ] || rc=1
           fi
           printf '%s\n' "$out"
