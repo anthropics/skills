@@ -1616,7 +1616,9 @@ yml = (Path(__file__).parent.parent / "templates" / "review-gate.yml").read_text
 assert "pull_request_target:" in yml
 assert "pull_request_review:" not in yml
 assert "pull_request_review_comment:" not in yml
-assert "contents/scripts/check-review-gate.py?ref=$ref" in yml
+assert "contents/scripts/$name?ref=$ref" in yml
+for _script in ("check-review-gate.py", "check-forged-gate-names.py", "check-forged-review-gate.py"):
+    assert f"load_trusted {_script}" in yml
 assert "DEFAULT_BRANCH" in yml
 assert 'ref="$DEFAULT_BRANCH"' in yml
 assert "$BASE_SHA" not in yml

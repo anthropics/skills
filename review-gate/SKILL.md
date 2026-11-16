@@ -1,7 +1,7 @@
 ---
 name: review-gate
 description: Enforce adversarial review before merge via a trusted pull_request_target gate and PreToolUse merge guard. Use when installing review gates on nevar* repos, when merge must wait for unresolved threads or unanswered P2s, or when doctoring whether a repo's ruleset and review-gate.yml are configured. Companion to adversarial-review and pr-merge-flow.
-version: 3.1.4
+version: 3.2.0
 author: Bernier LLC
 ---
 
@@ -11,6 +11,9 @@ Programmatic enforcement for the adversarial review loop. Ships:
 
 1. **Workflow template** — `.github/workflows/review-gate.yml` (`pull_request_target`)
 2. **Trusted checker** — `scripts/check-review-gate.py` (loaded only from the repo **default branch**)
+   plus the **forged-check detector** `scripts/check-forged-gate-names.py` (vendored byte-identical from
+   `bernierllc/agents-environment-config@46580faae5150afbe7707987295b5bdaf8a9d884`, never edited here) and
+   its wrapper `scripts/check-forged-review-gate.py`, also loaded from the default branch
 3. **Doctor** — warns when the workflow, checker, ruleset conversation-resolution flag, or required `Review Gate` status check is missing
 4. **PreToolUse merge guard** — blocks `gh pr merge` when the local gate check fails
 
@@ -23,8 +26,11 @@ aec install skill review-gate
 aec run-script skill:review-gate install-workflow.py
 # or manually:
 #   cp …/templates/review-gate.yml .github/workflows/review-gate.yml
-#   cp …/scripts/check-review-gate.py scripts/check-review-gate.py
+#   cp …/scripts/check-review-gate.py …/scripts/check-forged-gate-names.py \
+#      …/scripts/check-forged-review-gate.py scripts/
 ```
+
+Upgrading to 3.2.0: re-run `install-workflow.py --force` and commit the workflow together with all three scripts. The new workflow fails closed until the scripts are on the default branch.
 
 Upgrading an existing install: 3.1.0 accepts `codex` (a local Codex review, e.g. T3 Codex high) as an attestation reviewer; 2.0.0 tightened the fallback rule, and the repo's committed checker is a copy. Re-run `install-workflow.py --force` in each repo to pick it up; until then that repo still accepts the old looser fallback.
 
@@ -58,6 +64,15 @@ Loads `scripts/check-review-gate.py` from the repository **default branch** only
 2. PR body contains a `## Review` section.
 3. Every review thread whose **root** comment matches `\bp2\b` has a reply whose rendered text has a line starting with a closing token (optionally after a list bullet or `Tracked:`): a Notion link, `fixed in <sha>`, or `not-a-finding: …`. Quotes (lazy continuations and quotes inside list items included), code blocks, inline code spans (a span that is only a commit SHA keeps its text), comments and mid-sentence mentions do not count; the same rule applies to the `Fallback review:` line (all thread/comment pages are fetched). A clean Codex run posts no review, only a `codex-review-state:v1` marker in its summary comment; that marker counts when it is `completed` with no unresolved findings on the current head.
 4. When `base` is `main`: label `review:high` is present.
+5. **No forged `Review Gate`** (SEC-MVS-01 S5, PRs into every branch): the head SHA's check runs
+   (`check-runs?filter=all`, paginated, under `pipefail`) go through `check-forged-review-gate.py`.
+   Any Actions job named `Review Gate` that is not this workflow under `pull_request_target` fails the
+   gate, and so does an unreadable listing or lookup (exit 2, fails closed). The wrapper checks only
+   `Review Gate`: the vendored map also names `PRs into main must come from staging`, which several
+   repos still publish from a plain `pull_request` job; that name stays with each repo's main-via-staging guard.
+   Residual: a PR job with `checks: write` POSTing `Review Gate` straight to the Checks API looks the same as
+   this workflow's own run and is not detected (plan options A/B in aec). A job publishing after the scan is
+   caught by the cop's pre-merge run (pr-merge-flow rule 2).
 
 Fallback attestations use exactly this format (plain text on its own line inside `## Review`):
 

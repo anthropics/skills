@@ -85,6 +85,9 @@ jobs:
       - name: review-gate tests
         run: python3 review-gate/tests/test_check_review_gate.py
 
+      - name: review-gate forged-check tests
+        run: python3 review-gate/tests/test_forged_gate.py
+
       - name: Changed skills bump their version
         if: github.event_name == 'pull_request'
         env:

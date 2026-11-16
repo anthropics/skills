@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
 description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.4.1
+version: 1.4.2
 author: Bernier LLC
 ---
 
@@ -28,6 +28,14 @@ rebuild. This skill stops that.
    `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge` for long-lived-branch promotions, e.g.
    staging → main). Never `--auto` or `--admin`: Review Gate does not re-run on late
    review or thread events, so auto-merge can land a PR a late P2 should have stopped.
+   **Forged-check step (SEC-MVS-01):** required checks match by name, so a PR can publish
+   its own `Review Gate`. Immediately before every `gh pr merge` into `staging` or `main`, the
+   cop runs the detector on the head it is about to merge and requires exit 0
+   (1 = forged, 2 = could not evaluate; both block):
+   `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate | REPO=$REPO python3 scripts/check-forged-review-gate.py`.
+   This stays required after review-gate 3.2.0 reaches a repo: the workflow scans once, and
+   a PR job that publishes after that scan is caught only by this merge-time run. Until then
+   the repo has no such script; run `python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py` instead.
 3. **Wait for free.** Watch checks with `gh pr checks <n> --watch --fail-fast` run in the
    background (Claude Code: `run_in_background`). It costs nothing until it exits, and the
    harness wakes you. Never write a `sleep`/poll loop.

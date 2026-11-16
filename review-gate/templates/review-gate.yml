@@ -19,6 +19,16 @@
 #
 # Required-check context is the Checks API check run named "Review Gate"
 # published on pull_request.head.sha (Actions job alone attaches to the base).
+#
+# Forged-name check (SEC-MVS-01 S5): required checks match by name, so a same-repo
+# PR can add its own job named "Review Gate" with `run: true`. After the checker,
+# scripts/check-forged-review-gate.py (vendored aec detector, scoped to this name)
+# lists the head SHA's check runs and fails the gate when any Actions job other
+# than this workflow under pull_request_target published "Review Gate". Runs for
+# PRs into every branch. Residual: a PR job with `checks: write` POSTing the name
+# straight to the Checks API is not detectable here (needs a required workflow or a
+# distinct publisher app). A job publishing after this scan is caught by the
+# merger's own pre-merge run of the detector.
 name: Review Gate
 
 on:
@@ -29,6 +39,7 @@ permissions:
   contents: read
   pull-requests: read
   checks: write
+  actions: read  # forged-check step looks up which workflow/event ran a job
 
 concurrency:
   group: review-gate-${{ github.event.pull_request.number || github.ref }}
@@ -68,21 +79,36 @@ jobs:
           # Only the default branch is trusted for the checker binary. A PR can
           # target any same-repo branch; that base SHA is not necessarily protected.
           ref="$DEFAULT_BRANCH"
-          if meta=$(gh api "repos/$REPO/contents/scripts/check-review-gate.py?ref=$ref" 2>/dev/null); then
-            printf '%s' "$meta" | jq -r '.content' | base64 -d > /tmp/check-review-gate.py
-            echo "Loaded trusted checker from ref=$ref"
-          else
-            msg=$(printf '%s\n%s' \
-              "Missing trusted scripts/check-review-gate.py on default branch $DEFAULT_BRANCH." \
-              "Run install-workflow.py and merge it to the default branch.")
-            printf '%s\n' "$msg"
-            complete_check failure "review-gate failed" "$msg"
-            exit 1
-          fi
+          load_trusted() {
+            local name="$1" meta msg
+            if meta=$(gh api "repos/$REPO/contents/scripts/$name?ref=$ref" 2>/dev/null); then
+              printf '%s' "$meta" | jq -r '.content' | base64 -d > "/tmp/$name"
+              echo "Loaded trusted $name from ref=$ref"
+            else
+              msg=$(printf '%s\n%s' \
+                "Missing trusted scripts/$name on default branch $DEFAULT_BRANCH." \
+                "Run install-workflow.py and merge it to the default branch.")
+              printf '%s\n' "$msg"
+              complete_check failure "review-gate failed" "$msg"
+              exit 1
+            fi
+          }
+          load_trusted check-review-gate.py
+          load_trusted check-forged-gate-names.py
+          load_trusted check-forged-review-gate.py
           set +e
           out=$(python3 /tmp/check-review-gate.py --pr "$PR_NUMBER" --repo "$REPO" 2>&1)
           rc=$?
+          # pipefail (set above) keeps a failed or truncated listing from reaching
+          # the detector as empty input. Any non-zero result fails the gate.
+          forged=$(gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate \
+            | REPO="$REPO" python3 /tmp/check-forged-review-gate.py 2>&1)
+          frc=$?
           set -e
+          if [ "$frc" -ne 0 ]; then
+            out=$(printf '%s\n%s\n%s' "$out" "forged-check step failed (exit $frc):" "$forged")
+            [ "$rc" -ne 0 ] || rc=1
+          fi
           printf '%s\n' "$out"
           # pull_request_target attaches the Actions job to the base SHA — always
           # publish Checks API on the PR head for the required-check context.
