@@ -1,0 +1,13 @@
+{
+  "name": "browser-farm",
+  "version": "0.1.23",
+  "description": "给 AI agent 用的多账号浏览器农场：一账号一档一端口，数据隔离+登录保持+录制回放+效率模式",
+  "license": "MIT",
+  "scripts": {
+    "start": "node supervisor.js",
+    "test": "node test-farm.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

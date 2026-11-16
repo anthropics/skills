@@ -1,0 +1,10 @@
+{
+ "purpose": "cron",
+ "cron": "0 9 * * *",
+ "paramsSource": "date=昨天, accountId=固定值",
+ "outputKind": "本地文件",
+ "output": "data/日报_YYYYMMDD.csv，给投放群",
+ "success": "行数≥1 且日期=昨天",
+ "onFail": "链路负责人 / 重试 2 次 / IM 通知",
+ "write": "n"
+}

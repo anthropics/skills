@@ -1,0 +1,17 @@
+{
+ "name": "demo_报表导出",
+ "verdict": "能接口化：GET /api/report/list 直接返回列表（含 stat_cost/show_cnt/ctr），页面只是渲染；POST /api/report/sum 为汇总口径",
+ "request": {
+  "method": "POST",
+  "url": "https://demo.example.com/api/report/sum",
+  "body": "{\"aavid\":\"7000000000000001\",\"start_date\":\"2026-11-01\",\"end_date\":\"2026-11-05\",\"metrics\":[\"cost\"]}",
+  "bodyTemplate": "{\"aavid\":\"7000000000000001\",\"start_date\":\"2026-11-01\",\"end_date\":\"2026-11-05\",\"metrics\":[\"cost\"]}",
+  "bodySource": "recording"
+ },
+ "dataPath": "data.list",
+ "fields": ["cost"],
+ "params": {},
+ "queryParams": [],
+ "requiredParams": [],
+ "sourceRecording": "rec_a.rec.json"
+}

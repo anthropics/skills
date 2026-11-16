@@ -1,0 +1,11 @@
+{
+ "purpose": "event",
+ "event": "每小时看投放账户当日消耗，达到日预算 90% 就加 100 元；单账号日累计加不超过 500 元；超 500 元先问投放负责人",
+ "paramsSource": "accountId=固定值, 加预算金额=每次人工给, date=当天",
+ "outputKind": "在线表格,本地文件",
+ "output": "先落 data/加预算_YYYYMMDD.csv，再粘贴到「投放预算台账」在线表，给投放负责人",
+ "success": "有回执号且页面提示成功；行数≥1",
+ "onFail": "链路负责人 / 重试 2 次 / IM 通知",
+ "write": "y",
+ "writeLimit": "单账号日累计 ≤500 元；超过先问投放负责人；先 DryRun 再真提交"
+}

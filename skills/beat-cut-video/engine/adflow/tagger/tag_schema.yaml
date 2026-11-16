@@ -1,0 +1,194 @@
+# ============================================================
+# AdFlow 素材标签体系定义
+# 每个素材导入后，auto_tagger 据此打标
+# 人工也可以在 GUI 中修改标签
+# ============================================================
+
+version: "1.0"
+
+dimensions:
+
+  # ---- 维度1: 场景 ----
+  scene:
+    label: "场景"
+    description: "拍摄环境"
+    required: true
+    values:
+      - indoor_studio     # 室内摄影棚/白背景
+      - indoor_home       # 家庭环境
+      - indoor_office     # 办公室
+      - indoor_kitchen    # 厨房
+      - indoor_bathroom   # 浴室
+      - indoor_store      # 门店/商场
+      - indoor_gym        # 健身房
+      - indoor_other      # 其他室内
+      - outdoor_street    # 街道
+      - outdoor_nature    # 自然环境
+      - outdoor_urban     # 城市景观
+      - green_screen      # 绿幕/纯色背景
+
+  # ---- 维度2: 景别 ----
+  shot_type:
+    label: "景别"
+    description: "镜头取景范围"
+    required: true
+    values:
+      - extreme_closeup   # 大特写
+      - closeup           # 特写
+      - medium_closeup    # 近景
+      - medium            # 中景
+      - medium_wide       # 中全景
+      - wide              # 全景
+      - extreme_wide      # 远景
+
+  # ---- 维度3: 运镜 ----
+  camera_movement:
+    label: "运镜"
+    description: "镜头运动方式"
+    required: true
+    values:
+      - static            # 固定
+      - pan               # 左右摇
+      - tilt              # 上下摇
+      - zoom_in           # 推近
+      - zoom_out          # 拉远
+      - tracking          # 跟随
+      - handheld          # 手持晃动
+      - aerial            # 航拍
+
+  # ---- 维度4: 情绪 ----
+  emotion:
+    label: "情绪基调"
+    description: "画面传递的情绪氛围"
+    required: true
+    values:
+      - excited           # 兴奋
+      - happy             # 开心
+      - calm              # 平静
+      - serious           # 严肃
+      - urgent            # 紧迫
+      - curious           # 好奇
+      - trust             # 信任感
+      - surprise          # 惊讶
+      - anxious           # 焦虑
+      - neutral           # 中性
+
+  # ---- 维度5: 产品露出 ----
+  product_visibility:
+    label: "产品露出"
+    description: "产品在画面中的呈现方式"
+    required: true
+    values:
+      - none              # 无产品
+      - partial           # 部分出现
+      - full              # 完整展示
+      - packaging         # 包装展示
+      - usage             # 使用过程
+      - before_after      # 使用前后对比
+      - text_logo         # 只有LOGO/文字
+
+  # ---- 维度6: 人物 ----
+  person:
+    label: "人物"
+    description: "画面中的人物信息"
+    required: true
+    has_person:
+      values: [true, false]
+    person_count:
+      values: [0, 1, 2, "3-5", "6-10", "10+"]
+    person_role:
+      values:
+        - host             # 主持人/博主
+        - customer         # 顾客/用户
+        - expert           # 专家/KOL
+        - actor            # 演员
+        - no_person        # 无人
+    person_feature:
+      values:
+        - face_visible     # 面部可见
+        - hands_visible    # 手部特写
+        - full_body        # 全身
+        - group            # 多人
+        - single           # 单人
+
+  # ---- 维度7: 对白 ----
+  audio:
+    label: "音频"
+    description: "原始音频特征"
+    required: false
+    values:
+      - has_dialogue      # 有对白
+      - no_dialogue       # 无对白
+      - has_bgm           # 含背景音乐
+      - silent            # 完全静音
+
+  # ---- 维度8: 光线 ----
+  lighting:
+    label: "光线"
+    description: "光线条件"
+    required: false
+    values:
+      - natural           # 自然光
+      - studio            # 摄影棚灯光
+      - bright            # 明亮
+      - dim               # 昏暗
+      - backlit           # 逆光
+      - warm              # 暖色调
+      - cool              # 冷色调
+      - high_contrast     # 高对比度
+
+  # ---- 维度9: 节奏 ----
+  pace:
+    label: "节奏"
+    description: "画面内在节奏感"
+    required: false
+    values:
+      - fast              # 快速
+      - medium            # 中等
+      - slow              # 慢速
+
+  # ---- 维度10: 质量标记 ----
+  quality_flags:
+    label: "质量标记"
+    description: "画面质量问题"
+    required: false
+    values:
+      - clean             # 干净
+      - blurry            # 模糊
+      - shaky             # 抖动
+      - overexposed       # 过曝
+      - underexposed      # 欠曝
+      - noisy             # 噪点
+      - watermark         # 有水印
+
+  # ---- 维度11: 素材类型 ----
+  material_category:
+    label: "素材类型"
+    description: "素材功能分类"
+    required: true
+    values:
+      - product_shoot     # 产品拍摄
+      - scenario_shoot    # 情景拍摄
+      - ugc_style         # UGC风格（手机自拍感）
+      - stock_footage     # 素材库素材
+      - screen_record     # 录屏
+      - animation         # 动画
+      - text_card         # 文字卡片
+
+# ---- 默认标签（导入时未打标之前） ----
+defaults:
+  scene: ""
+  shot_type: ""
+  camera_movement: ""
+  emotion: "neutral"
+  product_visibility: "none"
+  has_person: false
+  person_count: 0
+  person_role: "no_person"
+  person_feature: ""
+  has_dialogue: false
+  has_bgm: false
+  lighting: ""
+  pace: "medium"
+  quality_flags: "clean"
+  material_category: ""

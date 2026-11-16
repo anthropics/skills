@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>专家团报告 {{关键词}}</title>
+<style>
+/* ============ 专家团报告模板 · 暖橙×墨蓝 ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --orange:#F59E0B;--orange-soft:#FEF3C7;
+  --blue:#3B82F6;--blue-soft:#DBEAFE;
+  --bg:#FAFAFC;--bg-soft:#F4F4F8;
+  --surface:#fff;--border:#E5E7EB;--border-soft:#F1F2F6;
+  --text:#0F172A;--text2:#475569;--text3:#94A3B8;
+  --success:#10B981;--success-soft:#D1FAE5;
+  --danger:#FE2C55;--danger-soft:#FFE5EC;
+  --shadow-sm:0 1px 2px rgba(15,23,42,.04);
+  --shadow-md:0 4px 12px rgba(15,23,42,.06),0 2px 4px rgba(15,23,42,.04);
+  --shadow-lg:0 20px 40px rgba(245,158,11,.12),0 8px 16px rgba(15,23,42,.04);
+}
+body{font-family:-apple-system,"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;background:var(--bg);
+  background-image:radial-gradient(ellipse 80% 60% at 10% 0%,rgba(245,158,11,.07),transparent 60%),
+  radial-gradient(ellipse 60% 50% at 95% 30%,rgba(59,130,246,.07),transparent 60%);
+  background-attachment:fixed;color:var(--text);line-height:1.65;padding:32px 24px 80px;-webkit-font-smoothing:antialiased}
+.container{max-width:1180px;margin:0 auto}
+
+/* Hero */
+.hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(135deg,#F59E0B 0%,#F97316 45%,#3B82F6 120%);
+  border-radius:28px;padding:40px 44px;margin-bottom:24px;box-shadow:var(--shadow-lg)}
+.hero::before{content:'';position:absolute;top:-120px;right:-100px;width:400px;height:400px;
+  background:radial-gradient(circle,rgba(255,255,255,.3),transparent 70%);border-radius:50%;filter:blur(40px)}
+.hero::after{content:'👥';position:absolute;bottom:-50px;right:-10px;font-size:200px;line-height:1;opacity:.14}
+.hero-content{position:relative;z-index:2}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;background:rgba(255,255,255,.2);
+  backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.3);border-radius:100px;font-size:12px;font-weight:600;margin-bottom:14px}
+.hero h1{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:12px;line-height:1.25}
+.hero-meta{display:flex;gap:18px;flex-wrap:wrap;font-size:13px;opacity:.92;margin-bottom:22px}
+.hero-verdict{background:rgba(255,255,255,.18);backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,.3);
+  border-radius:16px;padding:18px 22px;box-shadow:0 8px 30px rgba(0,0,0,.1),inset 0 1px 0 rgba(255,255,255,.4);font-size:15px;line-height:1.7}
+
+/* Bento KPI */
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px}
+@media(max-width:720px){.bento{grid-template-columns:repeat(2,1fr)}}
+.b-card{background:var(--surface);border:1px solid var(--border-soft);border-radius:20px;padding:22px 24px;
+  box-shadow:var(--shadow-sm);transition:220ms cubic-bezier(.4,0,.2,1);position:relative;overflow:hidden}
+.b-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md)}
+.b-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--orange),var(--blue))}
+.b-label{font-size:12px;font-weight:500;color:var(--text3);letter-spacing:.06em;margin-bottom:10px}
+.b-value{font-family:Consolas,"Courier New",monospace;font-size:34px;font-weight:800;line-height:1.1;
+  background:linear-gradient(135deg,var(--orange),var(--blue));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.b-sub{font-size:12px;color:var(--text3);margin-top:6px}
+
+/* Section */
+section{background:var(--surface);border:1px solid var(--border-soft);border-radius:24px;padding:30px 32px;margin-bottom:20px;box-shadow:var(--shadow-sm)}
+.sec-head{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.sec-icon{width:40px;height:40px;background:linear-gradient(135deg,var(--orange-soft),var(--blue-soft));border-radius:12px;
+  display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.sec-head h2{font-size:20px;font-weight:700}
+.sec-head .sub{color:var(--text3);font-size:13px;font-weight:400;margin-top:2px}
+
+/* 聚合区 */
+.zone{border-radius:16px;padding:18px 22px;margin-bottom:14px;font-size:14.5px;color:var(--text2);line-height:1.8}
+.zone h3{font-size:14.5px;font-weight:800;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.zone.consensus{background:linear-gradient(135deg,var(--success-soft),#fff);border:1px solid rgba(16,185,129,.3)}
+.zone.consensus h3{color:#15803D}
+.zone.divergence{background:linear-gradient(135deg,var(--orange-soft),#fff);border:1px solid rgba(245,158,11,.35)}
+.zone.divergence h3{color:#B45309}
+.zone.conditional{background:linear-gradient(135deg,var(--blue-soft),#fff);border:1px solid rgba(59,130,246,.3)}
+.zone.conditional h3{color:#1E40AF}
+.ifthen{display:flex;gap:10px;align-items:baseline;margin:8px 0;flex-wrap:wrap}
+.ifthen .if{color:#92400E;background:#fff;border:1px solid rgba(245,158,11,.5);padding:2px 12px;border-radius:100px;font-size:13px;white-space:nowrap;font-weight:600}
+.ifthen .then{color:#1D4ED8;font-weight:700}
+
+/* 专家卡 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.arg-card{border:1px solid var(--border-soft);border-radius:18px;overflow:hidden;background:var(--surface);transition:200ms;display:flex;flex-direction:column}
+.arg-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px)}
+.arg-head{display:flex;align-items:center;gap:12px;padding:14px 20px;border-bottom:1px solid var(--border-soft)}
+.arg-avatar{flex:none;width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,var(--orange-soft),var(--blue-soft));
+  display:flex;align-items:center;justify-content:center;font-size:26px}
+.arg-name{font-size:16.5px;font-weight:800}
+.arg-cred{font-size:11.5px;color:var(--text3);margin-top:2px}
+.arg-score{margin-left:auto;text-align:right;flex:none}
+.arg-score b{font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--orange),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.arg-score span{display:block;font-size:11px;color:var(--text3)}
+.arg-body{padding:0 20px 16px;display:flex;flex-direction:column;gap:10px}
+.lens{font-size:12.5px;color:#4b5563;background:linear-gradient(135deg,#fffbeb,#fff);border-left:3px solid #f59e0b;
+  padding:7px 12px;border-radius:0 8px 8px 0}
+.core{font-size:16.5px;font-weight:800;color:#92400E;line-height:1.5;
+  background:linear-gradient(90deg,var(--orange-soft) 0%,#fff 80%);padding:10px 14px;border-radius:12px}
+.pc{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px}
+.pc .pro{background:var(--success-soft);border:1px solid #A7F3D0;color:#166534;border-radius:10px;padding:8px 12px}
+.pc .con{background:var(--danger-soft);border:1px solid #FECDD3;color:#991B1B;border-radius:10px;padding:8px 12px}
+.pc b{display:block;margin-bottom:4px}
+.conf{height:8px;background:var(--bg-soft);border-radius:99px;overflow:hidden}
+.conf i{display:block;height:100%;background:linear-gradient(90deg,var(--orange),var(--blue));border-radius:99px}
+.conflabel{font-size:12px;color:var(--text3);display:flex;justify-content:space-between;margin-bottom:4px}
+.version{white-space:pre-wrap;font-size:14px;background:var(--bg-soft);border-radius:10px;padding:14px 16px;color:var(--text2)}
+
+/* 落地段 */
+.play-block{border:1px solid var(--border-soft);border-radius:16px;padding:18px 22px;margin-bottom:14px;background:var(--surface)}
+.play-block .pb-t{font-size:14.5px;font-weight:800;color:#B45309;margin-bottom:10px}
+.play-day{display:flex;gap:12px;padding:10px 0;border-bottom:1px dashed var(--border-soft);font-size:13.5px;color:var(--text2);line-height:1.8}
+.play-day:last-child{border-bottom:none}
+.play-day .d{flex:none;width:82px;font-weight:800;color:var(--blue);font-size:12.5px;padding-top:2px}
+.play-tag{display:inline-block;font-size:10.5px;font-weight:700;border-radius:100px;padding:1px 8px;margin-left:6px;white-space:nowrap}
+.play-tag.kpi{background:var(--blue-soft);color:#1E40AF}
+.play-stop{background:linear-gradient(135deg,var(--danger-soft),#fff);border:1px solid rgba(254,44,85,.3);border-radius:16px;padding:18px 22px;font-size:13.5px;color:var(--text2);line-height:1.9}
+.play-stop .k{font-weight:800;color:#B91C1C;margin-bottom:8px;font-size:14px}
+
+/* 表格（版本对照 / 改进清单） */
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{background:var(--bg-soft);font-weight:700;text-align:left;padding:10px 14px;color:var(--text2);font-size:12.5px;letter-spacing:.03em}
+td{padding:11px 14px;border-bottom:1px solid var(--border-soft);color:var(--text2);vertical-align:top}
+tr:hover td{background:#FFFBEB}
+.star{color:var(--orange);font-weight:800;white-space:nowrap}
+.p-chip{display:inline-block;font-size:11px;font-weight:700;border-radius:100px;padding:1px 10px}
+.p-chip.grow{background:var(--success-soft);color:#15803D}
+.p-chip.ux{background:var(--blue-soft);color:#1E40AF}
+.p-chip.cost{background:var(--orange-soft);color:#B45309}
+.p-chip.risk{background:var(--danger-soft);color:#B91C1C}
+.p-chip.diff{background:#EDE9FE;color:#6D28D9}
+
+/* 僵局票 */
+.vote{display:flex;gap:10px;align-items:baseline;padding:8px 0;border-bottom:1px dashed var(--border-soft);font-size:13.5px;color:var(--text2)}
+.vote:last-child{border:none}
+.vote .who{flex:none;font-weight:700;color:var(--text);width:110px}
+.vote .side{flex:none;font-size:11px;font-weight:700;border-radius:100px;padding:1px 10px}
+.vote .side.a{background:var(--blue-soft);color:#1E40AF}
+.vote .side.b{background:var(--orange-soft);color:#B45309}
+
+footer{margin-top:40px;text-align:center;font-size:12px;color:var(--text3);line-height:1.9}
+@media print{body{background:#fff;padding:0}section,.arg-card{box-shadow:none}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- 1. Hero：问题/会诊对象 + 一句话结论（结论前置） -->
+<div class="hero">
+  <div class="hero-content">
+    <div class="hero-eyebrow">🔬 EXPERT TEAM · 专家团 · {{模式：圆桌/会诊}}</div>
+    <h1>{{问题原文 / 会诊对象}}</h1>
+    <div class="hero-meta"><span>👥 {{N}} 位专家</span><span>📅 {{日期}}</span><span>{{模式}}</span></div>
+    <div class="hero-verdict"><strong>秘书长结论：</strong>{{一句话结论}}</div>
+  </div>
+</div>
+
+<!-- 2. Bento KPI：四个数字 -->
+<div class="bento">
+  <div class="b-card"><div class="b-label">专家席位</div><div class="b-value">{{N}}</div><div class="b-sub">{{席位构成}}</div></div>
+  <div class="b-card"><div class="b-label">共识度</div><div class="b-value">{{X}}</div><div class="b-sub">{{一句说明}}</div></div>
+  <div class="b-card"><div class="b-label">分歧</div><div class="b-value">{{K}}</div><div class="b-sub">{{最强对立}}</div></div>
+  <div class="b-card"><div class="b-label">关键产出</div><div class="b-value">{{M}}</div><div class="b-sub">{{结论/版本/改动}}</div></div>
+</div>
+
+<!-- 3. 聚合区 -->
+<section>
+  <div class="sec-head"><div class="sec-icon">📊</div><h2>聚合<span class="sub">共识、分歧、条件式结论——不许和稀泥</span></h2></div>
+  <div class="zone consensus"><h3>✓ 共识</h3>{{每条一行：谁 + 同意什么}}</div>
+  <div class="zone divergence"><h3>⚡ 分歧</h3>{{各派只留最强一句}}</div>
+  <div class="zone conditional"><h3>↝ 条件式结论</h3>
+    <div class="ifthen"><span class="if">若 {{情况A}}</span><span class="then">→ {{做法A}}</span></div>
+    <div class="ifthen"><span class="if">若 {{情况B}}</span><span class="then">→ {{做法B}}</span></div>
+  </div>
+</section>
+
+<!-- 4. 专家卡：每席位复制一张。文案模式把 .pc 利弊块换成 .version 版本全文 -->
+<section>
+  <div class="sec-head"><div class="sec-icon">🎯</div><h2>专家意见<span class="sub">盲写产出，互相未见</span></h2></div>
+  <div class="grid">
+    <div class="arg-card">
+      <div class="arg-head">
+        <div class="arg-avatar">{{emoji}}</div>
+        <div><div class="arg-name">{{席位名：专家/模型/范式}}</div><div class="arg-cred">{{资质或范式一句}}</div></div>
+        <div class="arg-score"><b>{{N}}%</b><span>信心度</span></div>
+      </div>
+      <div class="arg-body">
+        <div class="lens">🔭 {{重定义：这个问题其实是……}}</div>
+        <div class="core">{{核心主张（市面通行答案漏了什么）}}</div>
+        <div class="pc"><div class="pro"><b>利</b>{{利，两行内}}</div><div class="con"><b>弊</b>{{弊，两行内}}</div></div>
+        <div><div class="conflabel"><span>信心度</span><span>{{N}}%</span></div><div class="conf"><i style="width:{{N}}%"></i></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 文案模式追加：版本对照
+<section>
+  <div class="sec-head"><div class="sec-icon">✍️</div><h2>版本对照<span class="sub">什么场合用哪版</span></h2></div>
+  <table><tr><th>版本</th><th>风格/受众</th><th>适用场合</th><th>怎么验 ROI</th></tr>
+  <tr><td>A</td><td>{{}}</td><td>{{}}</td></tr></table>
+</section>
+-->
+
+<!-- 5. 落地段：方法型问题（怎么做X）必填，纯判断题整节删掉 -->
+<section>
+  <div class="sec-head"><div class="sec-icon">🚀</div><h2>落地<span class="sub">今天能做、有验收、有止损</span></h2></div>
+  <div class="play-block">
+    <div class="pb-t">▸ 72 小时启动</div>
+    <div class="play-day"><span class="d">今天</span><span>{{动作}}<span class="play-tag kpi">验收：{{标准}}</span></span></div>
+    <div class="play-day"><span class="d">明天</span><span>{{动作}}<span class="play-tag kpi">验收：{{标准}}</span></span></div>
+    <div class="play-day"><span class="d">后天</span><span>{{动作}}<span class="play-tag kpi">验收：{{标准}}</span></span></div>
+  </div>
+  <div class="play-stop"><div class="k">▸ 3 个月验证信号 / 止损线</div>{{达没到怎么判断；出现什么信号就停或换打法}}</div>
+</section>
+
+<!-- 6. 会诊模式：改进清单（圆桌模式整节删掉） -->
+<section>
+  <div class="sec-head"><div class="sec-icon">📋</div><h2>改进清单<span class="sub">按影响×代价排序</span></h2></div>
+  <table>
+    <tr><th>优先</th><th>改动</th><th>方向</th><th>预期效果</th><th>动静</th></tr>
+    <!-- chip 取值：增长=grow 体验=ux 成本=cost 风险=risk 差异化=diff -->
+    <tr><td class="star">⭐1</td><td>{{改什么}}</td><td><span class="p-chip {{chip}}">{{方向}}</span></td><td>{{效果}}</td><td>{{工时量级}}</td></tr>
+    <tr><td class="star">⭐2</td><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr>
+    <tr><td class="star">⭐3</td><td>{{}}</td><td>{{}}</td><td>{{}}</td><td>{{}}</td></tr>
+  </table>
+  <div class="zone conditional" style="margin-top:14px"><h3>为什么先做 Top3</h3>{{各一句：影响×代价的账}}</div>
+</section>
+
+<!-- 7. 僵局加票：没发生僵局就整节删除 -->
+<section>
+  <div class="sec-head"><div class="sec-icon">⚖️</div><h2>僵局加票<span class="sub">全新隔离 agent 对分歧点盲投</span></h2></div>
+  <div class="zone divergence"><h3>{{分歧点一句话}}</h3></div>
+  <div class="vote"><span class="who">{{投票人视角}}</span><span class="side a">{{倾向A}}</span><span>{{一句理由}}</span></div>
+  <div class="vote"><span class="who">{{投票人视角}}</span><span class="side b">{{倾向B}}</span><span>{{一句理由}}</span></div>
+</section>
+
+<footer>专家视角模拟 · 非真人观点<br>expert-team skill 生成 · skillhub 搜索 expert-team 获取 · {{日期}}</footer>
+</div>
+</body>
+</html>

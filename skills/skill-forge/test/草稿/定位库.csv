@@ -1,0 +1,3 @@
+﻿步骤,动作,标签,值,best定位,L1_id,L4_text,页面
+1,fill,日期,2026-10-30,#date-start,#date-start,,https://agent.example.com/list
+2,download,,,"a[href=""/export.csv""]",,,https://agent.example.com/list

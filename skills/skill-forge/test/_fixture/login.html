@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><title>本地登录测试页</title>
+<style>body{font-family:sans-serif;padding:40px}input,button{display:block;margin:8px 0;padding:6px 10px;width:240px}#err{color:#c00}</style>
+</head><body>
+<h3>本地登录测试页（不联网，仅供 login.mjs 联调）</h3>
+<form id="f">
+  <input id="username" type="text" placeholder="账号" autocomplete="off">
+  <input id="password" type="password" placeholder="密码">
+  <button type="submit">登录</button>
+</form>
+<div id="err"></div>
+<script>
+document.getElementById('f').addEventListener('submit', function (e) {
+  e.preventDefault();
+  var u = document.getElementById('username').value;
+  var p = document.getElementById('password').value;
+  if (u === 'demo' && p === 'demo') {
+    document.body.innerHTML = '<h3 id="ok">登录成功</h3>';
+  } else {
+    document.getElementById('err').textContent = '账号或密码错误';
+  }
+});
+</script>
+</body></html>
