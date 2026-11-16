@@ -35,10 +35,19 @@ def make_field_dict(field, field_id):
     elif ft == "/Ch":
         field_dict["type"] = "choice"
         states = field.get("/_States_", [])
-        field_dict["choice_options"] = [{
-            "value": state[0],
-            "text": state[1],
-        } for state in states]
+        # PDF /Opt entries are either an export/display pair or a single string
+        # used for both. Indexing a string as state[0]/state[1] would keep only
+        # its first two characters.
+        # PDF /Opt entries are either an export/display pair or a single string
+        # used for both. Indexing a string as state[0]/state[1] would keep only
+        # its first two characters.
+        options = []
+        for state in states:
+            if isinstance(state, (list, tuple)) and len(state) >= 2:
+                options.append({"value": state[0], "text": state[1]})
+            else:
+                options.append({"value": state, "text": state})
+        field_dict["choice_options"] = options
     else:
         field_dict["type"] = f"unknown ({ft})"
     return field_dict
