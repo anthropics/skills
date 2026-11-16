@@ -391,9 +391,9 @@ def not_green(ref):
     # entries without it (status contexts) keep rollup order, which gh returns oldest first.
     # A check run and a status context with the same label are separate requirements, so the
     # entry kind is part of the key. A run with no conclusion yet (queued/waiting, startedAt may
-    # be null) is in flight and always newer than any finished run.
+    # be null) is newer than any finished run; one with a start time is ordered by it.
     def when(e):
-        return "9" if not (e.get("conclusion") or e.get("state")) else (e.get("startedAt") or "")
+        return e.get("startedAt") or ("9" if not (e.get("conclusion") or e.get("state")) else "")
 
     latest = {}
     for e in rollup:

@@ -154,6 +154,8 @@ assert m and "pytest: FAILURE" in m and "Review Gate" not in m, m  # other check
 # a queued rerun has no startedAt: it still beats the older green run and blocks
 m = merge("gh pr merge 5 --squash", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
 assert m and "Review Gate: PENDING" in m, m
+# an older run still in progress does not outrank a newer green run
+assert merge("gh pr merge 5 --squash", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
 # a check run and a same-named status context are separate requirements
 m = merge("gh pr merge 5 --squash", rollup=ok + [{"__typename": "CheckRun", "name": "deploy", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
                                                    {"__typename": "StatusContext", "context": "deploy", "state": "SUCCESS"}])
