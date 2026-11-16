@@ -440,6 +440,8 @@ def merge_calls(cmd, cwd):
         if pr and pr[0] == "merge":
             yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
+RUN_ID = re.compile(r"/actions/runs/(\d+)/job/\d+")
+
 
 def green(e):
     # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
@@ -467,31 +469,30 @@ def not_green(ref, repo="", cwd=None):
         return f"gh failed: {e}"
     if not rollup:
         return "no checks reported yet"
-    # The rollup lists every run on the head, including superseded ones: a PR whose first Review
-    # Gate run failed (body lacked `## Review`) keeps that red run after the re-run goes green.
-    # Only the latest run of each *workflow* check counts: those are reruns of one job, and they
-    # carry a startedAt (ISO-8601 UTC, sorts as text), so the newest wins, finished or not. Every
-    # other entry (status contexts, third-party check runs, any run without startedAt) is never
-    # collapsed and must be green on its own: same-named entries from different sources are
-    # separate requirements, and an entry we cannot order fails closed.
-    latest = {}
+    # The rollup lists every workflow run on the head: a PR whose first Review Gate run failed
+    # (body lacked `## Review`) keeps that red run after a newer run goes green. GitHub already
+    # collapses re-attempts *within* a run (only the latest attempt is listed), so identity is the
+    # run id in detailsUrl (/actions/runs/<run>/job/<job>), not the name. Per (workflow, job name),
+    # the newest run supersedes older runs (by its first startedAt, ISO-8601 UTC, sorts as text), and every
+    # same-named job inside that run is a distinct job that must be green on its own: a later green
+    # job (e.g. one with `needs:`) never hides an earlier failed sibling. Runs tied on startedAt
+    # cannot be ordered, so all of them count (fail closed). Status contexts, third-party check runs
+    # and any entry without startedAt are never collapsed and must be green on their own.
+    groups, latest = {}, []
     for i, e in enumerate(rollup):
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
-            key = (e["workflowName"], e.get("name"))
-            prev = latest.get(key)
-            # Same-second ties cannot be ordered: they are sibling jobs or concurrent runs, not a rerun
-            # (a rerun starts after the run it replaces ends), and job/run ids do not prove which
-            # supersedes which. Fail closed: a green entry never replaces its tie, so a SUCCESS cannot
-            # hide a FAILURE whatever the list order.
-            if prev and (e["startedAt"] < prev["startedAt"]
-                         or (e["startedAt"] == prev["startedAt"] and green(e))):
-                continue
+            m = RUN_ID.search(e.get("detailsUrl") or "")
+            run_key = m.group(1) if m else ("entry", i)  # no run id: the entry is its own run
+            groups.setdefault((e["workflowName"], e.get("name")), {}).setdefault(run_key, []).append(e)
         else:
-            key = i
-        latest[key] = e
+            latest.append(e)
+    for runs in groups.values():
+        started = {k: min(e["startedAt"] for e in es) for k, es in runs.items()}
+        newest = max(started.values())
+        latest += [e for k, es in runs.items() if started[k] == newest for e in es]
     bad = [f"{e.get('name') or e.get('context')}: {(e.get('conclusion') or e.get('state') or 'PENDING').upper()}"
-           for e in latest.values() if not green(e)]
+           for e in latest if not green(e)]
     return ", ".join(bad)
 
 

@@ -176,6 +176,11 @@ for hidden in (f"> Example only:\n{attestation}", f"`example\n{attestation}`"):
 for split in ("##\nReview\n", "##\r\nReview\n", "## \nReview\n"):
     assert g.evaluate(pr(body=f"{split}{attestation}\n", headRefOid=head, reviews={"nodes": []})), repr(split)
 assert g.evaluate(pr(body=f"##\tReview\n{attestation}\n", headRefOid=head, reviews={"nodes": []})) == []
+# nevar-fund #25 Codex P2: `## Review-notes` / `## Reviewers` / `## Review_x` are other sections.
+for other in ("## Review-notes", "## Reviewers", "## Review_x"):
+    assert g.evaluate(pr(body=f"{other}\n{attestation}\n", headRefOid=head, reviews={"nodes": []})), other
+for ok_heading in ("## Review (round 2)", "## Review:", "## Review"):
+    assert g.evaluate(pr(body=f"{ok_heading}\n{attestation}\n", headRefOid=head, reviews={"nodes": []})) == [], ok_heading
 for missing_head in (None, "", "89cda0"):
     assert not g.review_section_names_fallback(f"## Review\n{attestation}", missing_head)
 

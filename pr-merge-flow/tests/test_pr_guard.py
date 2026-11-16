@@ -275,6 +275,26 @@ for pair in ([job_run("FAILURE", 100, 1), job_run("SUCCESS", 100, 2)], [job_run(
              [job_run("FAILURE", 100, 1), job_run("SUCCESS", 101, 2)], [job_run("SUCCESS", 101, 2), job_run("FAILURE", 100, 1)]):
     m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
     assert m and "Review Gate: FAILURE" in m, (pair, m)
+# 1.4.5 (nevar-fund #25 Codex P1): identity is the run id, not the name. A distinct same-named job
+# in the SAME run (e.g. one with `needs:`) that starts later and is green must not hide a failed one.
+def at_job(concl, run_id, job_id, at):
+    return dict(run("Review Gate", concl, at), detailsUrl=f"https://github.com/o/r/actions/runs/{run_id}/job/{job_id}")
+for pair in ([at_job("FAILURE", 100, 1, "2026-11-15T10:00:00Z"), at_job("SUCCESS", 100, 2, "2026-11-15T10:10:00Z")],
+             [at_job("SUCCESS", 100, 2, "2026-11-15T10:10:00Z"), at_job("FAILURE", 100, 1, "2026-11-15T10:00:00Z")]):
+    m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
+    assert m and "Review Gate: FAILURE" in m, (pair, m)
+# ...while a newer run of the workflow (a true rerun) still supersedes the older run's failure,
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [
+    at_job("FAILURE", 100, 1, "2026-11-15T10:00:00Z"), at_job("SUCCESS", 101, 5, "2026-11-15T10:10:00Z")]) is None
+# even when the old run's own later sibling job started after the new run did,
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [
+    at_job("FAILURE", 100, 1, "2026-11-15T10:00:00Z"), at_job("SUCCESS", 100, 2, "2026-11-15T10:20:00Z"),
+    at_job("SUCCESS", 101, 5, "2026-11-15T10:10:00Z")]) is None
+# and every same-named job of that newest run must be green.
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [
+    at_job("SUCCESS", 100, 1, "2026-11-15T10:00:00Z"), at_job("SUCCESS", 101, 5, "2026-11-15T10:10:00Z"),
+    at_job("FAILURE", 101, 6, "2026-11-15T10:15:00Z")])
+assert m and "Review Gate: FAILURE" in m, m
 # an older run still in progress does not outrank a newer green run
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
