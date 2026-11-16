@@ -10,7 +10,8 @@ details_url is `.../runs/<id>`, no `/actions/`) or comes from one pinned trusted
 (path + event). Any other Actions-job check run bearing a protected name is forged.
 
 This is DETECTION, not prevention: the forged success still sits beside our result. The
-unforgeable fix is a required workflow or a distinct publisher app (plans/2026-11-16-unforgeable-required-checks.md).
+unforgeable fix is a required workflow or a distinct publisher app (plan `plans/2026-11-16-unforgeable-required-checks.md` in the aec repo; copies of this
+script elsewhere do not carry it).
 It exists so the guard, and the merge step of whoever merges, fail loudly instead of trusting a name.
 
 KNOWN LIMIT: a PR workflow with `checks: write` can also POST the name straight to the Checks API. That
@@ -20,7 +21,7 @@ provenance (required workflow or a distinct publisher app) closes it. Pinned by
 test_api_published_guard_check_is_not_forged_known_limit.
 
 SCOPE: the only invoker in this repo is main-via-staging.yml, which runs for PRs into main. PRs into other
-branches are covered only by the merger's merge-time run of this script; review-gate.yml invoking it is plan step S5.
+branches are covered only by the merger's merge-time run of this script; review-gate.yml invoking it is plan step S5 (in the aec repo plan named above).
 
 TIMING: the guard workflow runs this once. A PR job that publishes its forged name after that scan is
 not seen by it, so whoever merges runs this again immediately before the merge.
