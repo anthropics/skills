@@ -49,7 +49,7 @@ class GIFBuilder:
             )
             frame = np.array(pil_frame)
 
-        self.frames.append(frame)
+        self.frames.append(frame.copy())
 
     def add_frames(self, frames: list[np.ndarray | Image.Image]):
         """Add multiple frames at once."""
