@@ -153,9 +153,11 @@ function easeInOutCubic(t) {
 
 // Constrain to bounds
 function wrapAround(value, max) {
-    if (value < 0) return max;
-    if (value > max) return 0;
-    return value;
+    // Proper modular wrap-around: handles values that fall outside [0, max]
+    // by more than one step (e.g. wrapAround(-5, 10) -> 5, wrapAround(25, 10) -> 5).
+    // The previous version only handled the immediate boundary and returned
+    // max for any negative value and 0 for any value above max.
+    return ((value % max) + max) % max;
 }
 
 // ============================================================================
