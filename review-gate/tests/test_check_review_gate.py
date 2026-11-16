@@ -172,6 +172,10 @@ for body in (attestation, f"## Review\nPending\n## Other\n{attestation}"):
 # a quoted example (lazy continuation) or a code span is not an attestation
 for hidden in (f"> Example only:\n{attestation}", f"`example\n{attestation}`"):
     assert g.evaluate(pr(body=f"## Review\n\n{hidden}\n", headRefOid=head, reviews={"nodes": []})), hidden
+# nevar-fund #24 Codex P2: an empty `##` heading followed by a `Review` paragraph is not a Review section.
+for split in ("##\nReview\n", "##\r\nReview\n", "## \nReview\n"):
+    assert g.evaluate(pr(body=f"{split}{attestation}\n", headRefOid=head, reviews={"nodes": []})), repr(split)
+assert g.evaluate(pr(body=f"##\tReview\n{attestation}\n", headRefOid=head, reviews={"nodes": []})) == []
 for missing_head in (None, "", "89cda0"):
     assert not g.review_section_names_fallback(f"## Review\n{attestation}", missing_head)
 

@@ -2,22 +2,38 @@
 """Copy the review-gate workflow + trusted checker into the current repo."""
 from __future__ import annotations
 
+import hashlib
 import shutil
 import sys
 from pathlib import Path
 
 
-# Vendored byte-identical from agents-environment-config. A repo may already hold a newer (or
-# otherwise different) aec copy, so the installer never replaces a differing one, even with --force.
+# Vendored byte-identical from agents-environment-config. A differing repo copy is replaced (with
+# --force) only when it is a known older aec version; a newer or custom one is KEPT.
 VENDORED = "check-forged-gate-names.py"
+# sha256 of every aec scripts/check-forged-gate-names.py before dba592db (aec #154). 7dff1b48 is
+# aec 46580fa/7561972, the copy review-gate 3.2.0/3.2.1 bundled. Add the old hash on each re-vendor.
+KNOWN_OLD = frozenset({
+    "7dff1b48f058d0e1d6a0089e0376b768ce44d276a5929a9eb2e1b166d1c32f74",  # aec 46580fa, 7561972
+    "f71a599eba2d177c59ac5990a6291475eb48cb2cb6dba730327ba70ed7c5d2db",  # aec b84feda
+    "6524947e719fc820bf371527880cab689c65fe71fe84108e1a4e88e3a8c97330",  # aec 9abcdae
+    "f4b52a7ed9e44a6921ed17dcc8c99076f0baf4734d7f42879c72cff0abdb4932",  # aec bd3b923
+    "38ff18b9ea81d5d952ff7a040207f57308d0610d1882489a8e522e9cd76efcb7",  # aec aa2bbb3
+    "9c9bb27b42012952bfb74f82f17e804bf49b6afdc0a21b7d5471513a200438f5",  # aec a9be4dd
+    "33315bb0adb6e535ff98ee7105e3fe91fec9797a7d67446c634ab94c814163ce",  # aec 5054ef7
+})
 
 
 def _copy(src: Path, dest: Path, force: bool) -> bool:
-    """Return True if written. Skip existing unless force; never replace a differing vendored detector."""
-    if src.name == VENDORED and dest.is_file() and dest.read_bytes() != src.read_bytes():
-        print(f"KEPT {dest}: it differs from this skill's copy (vendored from aec), so it was not "
-              f"overwritten. If yours is older, copy scripts/{VENDORED} from the newest "
-              "agents-environment-config by hand.", file=sys.stderr)
+    """Return True if written. Skip existing unless force; never replace a newer or custom vendored detector."""
+    if dest.is_file() and dest.read_bytes() == src.read_bytes():
+        print(f"unchanged: {dest}")
+        return False
+    if (src.name == VENDORED and dest.is_file()
+            and hashlib.sha256(dest.read_bytes()).hexdigest() not in KNOWN_OLD):
+        print(f"KEPT {dest}: it differs from this skill's copy (vendored from aec) and is not a known "
+              f"older version, so it was not overwritten. If yours is older, copy scripts/{VENDORED} "
+              "from the newest agents-environment-config by hand.", file=sys.stderr)
         return False
     if dest.exists() and not force:
         print(f"already exists: {dest} (pass --force to overwrite)")

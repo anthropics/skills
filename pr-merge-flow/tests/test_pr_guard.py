@@ -341,6 +341,15 @@ assert not g.draft_violation("gh pr create --draft=false") and not g.draft_viola
 assert g.check("git commit -m 'document sync-base: behavior' && git -C wt/$w merge origin/staging", "/r") is not None
 assert g.check("git -C wt/$w merge origin/staging # sync-base: need abc123", "/r") is None
 
+# nevar-fund #24 Codex P1: the `command` builtin runs its operand, so `command [-p] [--] gh …` is `gh …`.
+for pre in ("command ", "command -p ", "command -- ", "command -p -- "):
+    assert "--admin" in merge(pre + "gh pr merge 5 --admin --squash", rollup=ok), pre
+    assert g.draft_violation(pre + "gh pr create --draft"), pre
+    assert calls(pre + "git merge origin/main") == [("/r", "merge", ["origin/main"])], pre
+# `command -v`/`-V` only look the name up; nothing runs.
+assert calls("command -v git merge origin/main") == []
+assert not g.draft_violation("command -V gh pr create --draft")
+
 
 def test_pr_guard():
     """pytest entry point: the asserts above run at import, so a failure is a collection error."""

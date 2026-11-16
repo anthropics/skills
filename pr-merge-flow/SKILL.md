@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
 description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.4.3
+version: 1.4.4
 author: Bernier LLC
 ---
 
@@ -32,7 +32,9 @@ rebuild. This skill stops that.
    its own `Review Gate`. Immediately before every `gh pr merge` into `staging` or `main`, the
    cop runs the detector on the head it is about to merge and requires exit 0
    (1 = forged, 2 = could not evaluate; both block):
-   `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate | REPO=$REPO python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py`.
+   `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate | REPO=$REPO PR_NUMBER=<n> python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py`.
+   `PR_NUMBER` lets the detector accept the bootstrap PR that replaces a legacy review-gate.yml
+   (review-gate 3.2.2); without it such a job exits 2.
    Always run the copy in the installed `review-gate` skill, never `scripts/…` from a checkout:
    a PR controls its own checkout's scripts and could swap in one that exits 0.
    This stays required after review-gate 3.2.0 reaches a repo: the workflow scans once, and

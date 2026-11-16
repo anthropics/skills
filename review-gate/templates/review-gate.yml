@@ -62,14 +62,19 @@ jobs:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          # One `Review Gate` check run per head, reused on every evaluation (3.2.1).
+          # One `Review Gate` check run per PR per head, reused on every evaluation (3.2.1).
           # GitHub keeps the PR blocked while ANY run of that name in the suite is red,
           # so POSTing a fresh run each time left the first (Codex-pending) failure
-          # standing forever. Reuse every run this app published on the head (API runs
-          # have a .../runs/<id> URL; Actions jobs have .../actions/runs/<n>/job/<m>,
-          # so a same-named job is never touched); POST only when none exists.
+          # standing forever. Reuse only the API runs this app published for THIS PR
+          # (external_id review-gate-pr-<n>, 3.2.2): two PRs can share a head sha, and
+          # completing the other PR's run with our result would flip its failure to
+          # success. Unmarked (pre-3.2.2) or other-PR runs are never touched; a
+          # same-named Actions job (.../actions/runs/<n>/job/<m>) is never touched.
+          # POST only when this PR has none.
+          external_id="review-gate-pr-$PR_NUMBER"
           if ! check_ids=$(gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
-              | jq -r '.check_runs[] | select(.name == "Review Gate" and .app.slug == "github-actions")
+              | jq -r --arg ext "$external_id" '.check_runs[]
+                       | select(.name == "Review Gate" and .app.slug == "github-actions" and .external_id == $ext)
                        | select((.details_url // "") | test("/actions/runs/[0-9]+/job/") | not) | .id'); then
             # Fail closed: without the listing we cannot reuse, so a new red run keeps the PR
             # blocked until the next evaluation that can list them completes every run.
@@ -77,7 +82,8 @@ jobs:
             check_ids=""
           fi
           if [ -z "$check_ids" ]; then
-            check_ids=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" --jq .id)
+            check_ids=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" \
+              -f external_id="$external_id" --jq .id)
           fi
           complete_check() {
             local conclusion="$1" title="$2" summary="$3" id
