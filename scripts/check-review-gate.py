@@ -674,17 +674,23 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
     return False
 
 
+_INTERRUPTS = re.compile(
+    r" {0,3}(?:#{1,6}(?:[ \t]|$)|```|~~~|([-*_])(?:[ \t]*\1){2,}[ \t]*$|(?:[-*+]|\d{1,9}[.)])(?:[ \t]|$))")
+
+
 def _unquoted(text: str) -> str:
     """Drop blockquotes, including lazy continuation lines (a non-blank line
-    after a `>` line stays inside the quote until a blank line) and quotes
-    nested in list items (`- > example`)."""
+    after a `>` line stays inside the quote until a blank line or a line that
+    interrupts a paragraph) and quotes nested in list items (`- > example`)."""
     kept: list[str] = []
     in_quote = False
     for line in text.split("\n"):
         if re.match(r"[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)*>", line):
             in_quote = True
             continue
-        if in_quote and line.strip():
+        # A lazy continuation is paragraph text only: a line that interrupts a paragraph
+        # (ATX heading, fence, thematic break, list item) ends the quote and is kept.
+        if in_quote and line.strip() and not _INTERRUPTS.match(line):
             continue
         in_quote = False
         kept.append(line)
