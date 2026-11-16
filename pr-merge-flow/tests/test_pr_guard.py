@@ -140,6 +140,11 @@ assert "never bypass" in merge("gh pr merge 5 --disable-auto --admin", rollup=ok
 assert "pin the reviewed head" in merge("gh pr merge 5 --disable-auto=false --squash", rollup=ok)
 assert merge("gh pr merge 5 --disable-auto=true", rollup=[]) is None
 assert "pin the reviewed head" in merge("gh pr merge 5 --body --disable-auto --squash", rollup=ok)
+# 1.4.3: pflag bool flags are last-wins. `--disable-auto --disable-auto=false` merges: full checks.
+assert "pin the reviewed head" in merge("gh pr merge 5 --disable-auto --disable-auto=false --squash", rollup=ok)
+assert merge("gh pr merge 5 --disable-auto=false --disable-auto", rollup=[]) is None
+assert "never `--auto`" in merge("gh pr merge 5 --auto=false --auto --squash", rollup=ok)
+assert "never bypass" in merge("gh pr merge 5 --admin=0 --admin=1 --squash", rollup=ok)
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 assert merge("gh pr merge 5 --squash --match-head-commit=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 # Codex P1 on #82: the status lookup must target the -R/--repo repo, not the cwd repo.
@@ -257,6 +262,22 @@ assert m and "pytest: FAILURE" in m and "Review Gate" not in m, m  # other check
 # a queued rerun has no startedAt: it still beats the older green run and blocks
 m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
 assert m and "Review Gate: PENDING" in m, m
+# 1.4.3: same-second reruns: a SUCCESS must not hide a FAILURE, in either list order
+for pair in ([run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z"), latest_ok],
+             [latest_ok, run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z")]):
+    m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
+    assert m and "Review Gate: FAILURE" in m, (pair, m)
+# ...unless the details URL proves which run is newer (higher run id, then job id): that one wins
+def job_run(concl, run_id, job_id):
+    return dict(run("Review Gate", concl, "2026-11-15T10:10:00Z"),
+                detailsUrl=f"https://github.com/o/r/actions/runs/{run_id}/job/{job_id}")
+for pair in ([job_run("FAILURE", 100, 1), job_run("SUCCESS", 101, 2)], [job_run("SUCCESS", 101, 2), job_run("FAILURE", 100, 1)],
+             [job_run("FAILURE", 100, 1), job_run("SUCCESS", 100, 2)]):  # same run, later attempt's job
+    assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair) is None, pair
+for pair in ([job_run("FAILURE", 101, 2), job_run("SUCCESS", 100, 1)], [job_run("SUCCESS", 100, 1), job_run("FAILURE", 101, 2)],
+             [job_run("FAILURE", 100, 1), dict(run("Review Gate", "SUCCESS", "2026-11-15T10:10:00Z"), detailsUrl="https://x/runs/9")]):
+    m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
+    assert m and "Review Gate: FAILURE" in m, (pair, m)
 # an older run still in progress does not outrank a newer green run
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
@@ -322,3 +343,7 @@ assert g.draft_violation("gh pr ready 5 --undo=true")
 assert not g.draft_violation("gh pr create --draft=false") and not g.draft_violation("gh pr ready 5 --undo=false")
 assert g.check("git commit -m 'document sync-base: behavior' && git -C wt/$w merge origin/staging", "/r") is not None
 assert g.check("git -C wt/$w merge origin/staging # sync-base: need abc123", "/r") is None
+
+
+def test_pr_guard():
+    """pytest entry point: the asserts above run at import, so a failure is a collection error."""
