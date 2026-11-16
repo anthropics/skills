@@ -23,7 +23,8 @@ _spec.loader.exec_module(gate)
 
 OVERRIDE = re.compile(r"#\s*review-gate-ok:\s*\S")
 # Loose detector; `is_gh_pr_merge` confirms token order (allows `gh pr -R … merge`).
-MERGE_RE = re.compile(r"\bgh\b.*\bpr\b.*\bmerge\b", re.S)
+# Hyphen-aware word edges: `pr-merge-flow` is a skill name, not `pr … merge`.
+MERGE_RE = re.compile(r"(?<![\w-])gh(?![\w-]).*(?<![\w-])pr(?![\w-]).*(?<![\w-])merge(?![\w-])", re.S)
 # Quote-smashed executable: Bash concatenates `g''h` / `g"h"` into `gh`.
 QUOTE_SMASHED_GH_RE = re.compile(r"g['\"]+h", re.I)
 # ``NAME=value``, ``NAME+=value``, and indexed ``NAME[0]=value`` / ``PATH[0]=…``.
@@ -1471,7 +1472,7 @@ def quote_smashed_merge(cmd: str) -> bool:
     if collapsed != cmd and MERGE_RE.search(collapsed):
         return True
     if QUOTE_SMASHED_GH_RE.search(cmd) and re.search(
-        r"\bpr\b.*\bmerge\b", cmd, re.S | re.I
+        r"(?<![\w-])pr(?![\w-]).*(?<![\w-])merge(?![\w-])", cmd, re.S | re.I
     ):
         return True
     return False
@@ -1479,7 +1480,7 @@ def quote_smashed_merge(cmd: str) -> bool:
 
 _ARRAY_ASSIGN_RE = re.compile(r"[A-Za-z_][A-Za-z0-9_]*\+?=\(")
 _ARRAY_EXPAND_TOKEN_RE = re.compile(r"^\$\{[A-Za-z_][A-Za-z0-9_]*\[(@|\*)\]\}$")
-_PR_MERGE_LOOSE_RE = re.compile(r"\bpr\b.*\bmerge\b", re.S | re.I)
+_PR_MERGE_LOOSE_RE = re.compile(r"(?<![\w-])pr(?![\w-]).*(?<![\w-])merge(?![\w-])", re.S | re.I)
 
 
 def _part_array_assign_has_merge(part: str) -> bool:

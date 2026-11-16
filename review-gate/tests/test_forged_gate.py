@@ -168,6 +168,13 @@ class ForgedGateWorkflow(unittest.TestCase):
         self.assertEqual([c["id"] for c in self.created], [900])
         self.assertEqual({p.split()[0] for p in self.patches}, {"900"})
 
+    def test_gate_own_run_keeps_listing_nonempty(self):
+        # The detector exits 2 on an empty listing; the gate publishes its own run before listing,
+        # so a head with no other checks still evaluates (and passes).
+        rc, concl, out = self.gate([])
+        self.assertEqual((rc, concl), (0, "success"), out)
+        self.assertNotIn("forged-check step failed", out)
+
     def test_failed_listing_fails_closed(self):
         rc, concl, out = self.gate([], listing_fails=True)
         self.assertEqual((rc, concl), (1, "failure"), out)
@@ -202,12 +209,13 @@ class WrapperReason(unittest.TestCase):
 
 
 class WrapperDetector(unittest.TestCase):
-    def wrapper(self, check_runs, runs):
+    def wrapper(self, check_runs, runs, stdin=None):
         with tempfile.TemporaryDirectory() as tmp:
             bindir = Path(tmp); (bindir / "gh").write_text(FAKE_GH); (bindir / "gh").chmod(0o755)
             (bindir / "fixture.json").write_text(json.dumps({"scripts": {}, "check_runs": check_runs, "runs": runs}))
             env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r")
-            stdin = json.dumps({"total_count": len(check_runs), "check_runs": check_runs})
+            if stdin is None:
+                stdin = json.dumps({"total_count": len(check_runs), "check_runs": check_runs})
             proc = subprocess.run([sys.executable, str(SCRIPTS / "check-forged-review-gate.py")], input=stdin,
                                   env=env, capture_output=True, text=True)
             return proc.returncode, proc.stderr
@@ -223,11 +231,37 @@ class WrapperDetector(unittest.TestCase):
         rc, err = self.wrapper([api_check("Review Gate", 41)], {})
         self.assertEqual(rc, 0, err)
 
+    # S6: the wrapper's {"Review Gate": set()} scoping never flags a 3.2.0+ run's own output...
+    def test_3_2_0_run_exits_0(self):
+        rc, err = self.wrapper([api_check("Review Gate", 41), job("review-gate-runner", 501)], {"501": TRUSTED_RUN})
+        self.assertEqual(rc, 0, err)
+
+    # ...and names the fix when the forged job is a legacy (pre-3.2.0) workflow's `Review Gate` job.
+    def test_legacy_review_gate_job_exits_1_with_reinstall_hint(self):
+        rc, err = self.wrapper([api_check("Review Gate", 41), job("Review Gate", 507)], {"507": TRUSTED_RUN})
+        self.assertEqual(rc, 1, err)
+        self.assertIn("Reinstall the 3.2.0+ workflow", err)
+
+    def test_untrusted_forged_job_gets_no_reinstall_hint(self):
+        rc, err = self.wrapper([job("Review Gate", 508)], {"508": ".github/workflows/forge.yml\tpull_request"})
+        self.assertEqual(rc, 1, err)
+        self.assertNotIn("Reinstall", err)
+
+    # aec #154 (dba592db): empty or runless input cannot be evaluated, so it fails closed.
+    def test_empty_listing_exits_2(self):
+        for stdin in ("", json.dumps({"total_count": 0, "check_runs": []})):
+            with self.subTest(stdin=stdin):
+                rc, err = self.wrapper([], {}, stdin=stdin)
+                self.assertEqual(rc, 2, err)
+
 
 class CopMergeCommand(unittest.TestCase):
     def test_documented_command_never_runs_the_pr_checkout(self):
         # A PR controls its checkout's scripts/, so the cop's merge-time run must use the installed skill.
-        doc = (SKILL.parent / "pr-merge-flow" / "SKILL.md").read_text()
+        doc_path = SKILL.parent / "pr-merge-flow" / "SKILL.md"
+        if not doc_path.exists():
+            self.skipTest("pr-merge-flow is not installed beside review-gate (vendored layout)")
+        doc = doc_path.read_text()
         runs = [l for l in doc.splitlines() if "python3" in l and "check-forged-review-gate.py" in l]
         self.assertTrue(runs)
         for line in runs:
@@ -238,7 +272,10 @@ class CopMergeCommand(unittest.TestCase):
 class InstalledCopies(unittest.TestCase):
     def test_repo_copies_match_skill_copies(self):
         # This repo's own gate loads scripts/ and .github/workflows/ from main; keep them the skill's copies.
-        root = SKILL.parent
+        # The repo that installed the gate: SKILL.parent here; the repo root when vendored under .claude/skills.
+        root = next((d for d in SKILL.parents if (d / ".github/workflows/review-gate.yml").is_file()), None)
+        if root is None:
+            self.skipTest("review-gate is not installed into a repo above this skill")
         for name in ("check-forged-gate-names.py", "check-forged-review-gate.py"):
             self.assertEqual((root / "scripts" / name).read_bytes(), (SCRIPTS / name).read_bytes(), name)
         self.assertEqual((root / ".github/workflows/review-gate.yml").read_bytes(), TEMPLATE.read_bytes())

@@ -7,8 +7,18 @@ import sys
 from pathlib import Path
 
 
+# Vendored byte-identical from agents-environment-config. A repo may already hold a newer (or
+# otherwise different) aec copy, so the installer never replaces a differing one, even with --force.
+VENDORED = "check-forged-gate-names.py"
+
+
 def _copy(src: Path, dest: Path, force: bool) -> bool:
-    """Return True if written. Skip existing unless force."""
+    """Return True if written. Skip existing unless force; never replace a differing vendored detector."""
+    if src.name == VENDORED and dest.is_file() and dest.read_bytes() != src.read_bytes():
+        print(f"KEPT {dest}: it differs from this skill's copy (vendored from aec), so it was not "
+              f"overwritten. If yours is older, copy scripts/{VENDORED} from the newest "
+              "agents-environment-config by hand.", file=sys.stderr)
+        return False
     if dest.exists() and not force:
         print(f"already exists: {dest} (pass --force to overwrite)")
         return False
