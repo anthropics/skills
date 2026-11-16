@@ -267,15 +267,12 @@ for pair in ([run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z"), latest_ok],
              [latest_ok, run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z")]):
     m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
     assert m and "Review Gate: FAILURE" in m, (pair, m)
-# ...unless the details URL proves which run is newer (higher run id, then job id): that one wins
+# ...and ids do not order them either: same-run sibling jobs (higher job id) and different runs alike
 def job_run(concl, run_id, job_id):
     return dict(run("Review Gate", concl, "2026-11-15T10:10:00Z"),
                 detailsUrl=f"https://github.com/o/r/actions/runs/{run_id}/job/{job_id}")
-for pair in ([job_run("FAILURE", 100, 1), job_run("SUCCESS", 101, 2)], [job_run("SUCCESS", 101, 2), job_run("FAILURE", 100, 1)],
-             [job_run("FAILURE", 100, 1), job_run("SUCCESS", 100, 2)]):  # same run, later attempt's job
-    assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair) is None, pair
-for pair in ([job_run("FAILURE", 101, 2), job_run("SUCCESS", 100, 1)], [job_run("SUCCESS", 100, 1), job_run("FAILURE", 101, 2)],
-             [job_run("FAILURE", 100, 1), dict(run("Review Gate", "SUCCESS", "2026-11-15T10:10:00Z"), detailsUrl="https://x/runs/9")]):
+for pair in ([job_run("FAILURE", 100, 1), job_run("SUCCESS", 100, 2)], [job_run("SUCCESS", 100, 2), job_run("FAILURE", 100, 1)],
+             [job_run("FAILURE", 100, 1), job_run("SUCCESS", 101, 2)], [job_run("SUCCESS", 101, 2), job_run("FAILURE", 100, 1)]):
     m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + pair)
     assert m and "Review Gate: FAILURE" in m, (pair, m)
 # an older run still in progress does not outrank a newer green run

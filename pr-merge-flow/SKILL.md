@@ -61,7 +61,7 @@ hooks dormant). It blocks:
 - `gh pr merge --admin`, always: never bypass required checks; fix the red check or ask Matt;
 - `gh pr merge --auto`, always (see rule 2), and any `gh pr merge` without `--match-head-commit <sha>` naming the full 40-hex SHA;
 - `gh pr merge` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
-  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. Two runs started in the same second are ordered by the run and job ids in their details URLs; when that cannot tell them apart the red one wins (fail closed). Boolean flags are last-wins like gh's own parser: `--disable-auto --disable-auto=false` merges and gets the full checks. PR #325 once
+  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. Two runs started in the same second cannot be ordered (sibling jobs or concurrent runs; ids do not prove which supersedes which), so the red one wins (fail closed). Boolean flags are last-wins like gh's own parser: `--disable-auto --disable-auto=false` merges and gets the full checks. PR #325 once
   merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge`
   for promotions into main);
 - a `sleep` plus a status query (`gh pr checks|view|status`, `gh run view|watch|list`) in one

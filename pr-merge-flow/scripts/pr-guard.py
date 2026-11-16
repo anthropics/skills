@@ -432,11 +432,6 @@ def merge_calls(cmd, cwd):
             yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
 
-def run_order(e):
-    m = re.search(r"/actions/runs/(\d+)/job/(\d+)", e.get("detailsUrl") or "")
-    return (int(m[1]), int(m[2])) if m else None
-
-
 def green(e):
     # Check runs carry `conclusion` (empty while running); status contexts carry `state`.
     return (e.get("conclusion") or e.get("state") or "").upper() in GREEN
@@ -476,15 +471,13 @@ def not_green(ref, repo="", cwd=None):
         if e.get("workflowName") and (e.get("startedAt") or "") > "0002":
             key = (e["workflowName"], e.get("name"))
             prev = latest.get(key)
-            if prev and e["startedAt"] < prev["startedAt"]:
+            # Same-second ties cannot be ordered: they are sibling jobs or concurrent runs, not a rerun
+            # (a rerun starts after the run it replaces ends), and job/run ids do not prove which
+            # supersedes which. Fail closed: a green entry never replaces its tie, so a SUCCESS cannot
+            # hide a FAILURE whatever the list order.
+            if prev and (e["startedAt"] < prev["startedAt"]
+                         or (e["startedAt"] == prev["startedAt"] and green(e))):
                 continue
-            if prev and e["startedAt"] == prev["startedAt"]:
-                # Same second: the details URL's (run id, job id) orders them when both parse and
-                # differ. Otherwise fail closed: a green entry never replaces its tie, so a SUCCESS
-                # cannot hide a FAILURE whatever the list order.
-                a, b = run_order(e), run_order(prev)
-                if (a < b) if (a and b and a != b) else green(e):
-                    continue
         else:
             key = i
         latest[key] = e
