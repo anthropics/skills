@@ -11,7 +11,7 @@ from pathlib import Path
 
 def validate_skill(skill_path):
     """Basic validation of a skill"""
-    skill_path = Path(skill_path)
+    skill_path = Path(skill_path).resolve()
 
     # Check SKILL.md exists
     skill_md = skill_path / 'SKILL.md'
@@ -69,6 +69,8 @@ def validate_skill(skill_path):
         # Check name length (max 64 characters per spec)
         if len(name) > 64:
             return False, f"Name is too long ({len(name)} characters). Maximum is 64 characters."
+        if name != skill_path.name:
+            return False, f"Name '{name}' must match skill directory name '{skill_path.name}'"
 
     # Extract and validate description
     description = frontmatter.get('description', '')
