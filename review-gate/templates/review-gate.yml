@@ -32,6 +32,9 @@
 # distinct publisher app). A job publishing after this scan is caught by the
 # merger's own pre-merge run of the detector.
 name: Review Gate
+# The suite check below attributes a workflow run to its PR by this title (3.2.6): a run's head
+# fields and .pull_requests cannot tell two PRs on one head sha apart, nor a stacked child.
+run-name: Review Gate - PR #${{ github.event.pull_request.number }}
 
 on:
   pull_request_target:
@@ -101,13 +104,16 @@ jobs:
           # Gate run of this PR in its suite. A gap means a POST missed its own suite; a runner-only suite
           # blocked nevar-logs #12 and nevar-audit #17 but not nevar-content #12, so the exact BLOCKED trigger
           # is unresolved and this fails closed. A cancelled duplicate's suite is exempt (nevar-audit #18
-          # merged with one). Prints the uncovered suite ids.
+          # merged with one). Only THIS PR's workflow runs count (run-name above): two PRs can share a head
+          # sha, and each must not see the other's suite as a gap. Runs from a pre-3.2.6 template carry no
+          # such title and are not checked. Prints the uncovered suite ids.
           uncovered_suites() {
             local covered runs
             covered=$(list_runs | cut -d' ' -f2) || return 1
             runs=$(gh api "repos/$REPO/actions/runs?head_sha=$SHA&event=pull_request_target&per_page=100" --paginate \
-              | jq -r '.workflow_runs[]
+              | jq -r --arg title "Review Gate - PR #$PR_NUMBER" '.workflow_runs[]
                        | select((.path | split("@")[0]) == ".github/workflows/review-gate.yml")
+                       | select(.display_title == $title)
                        | select(.conclusion != "cancelled") | .check_suite_id') || return 1
             comm -23 <(printf '%s\n' $runs | sort -u) <(printf '%s\n' $covered | sort -u)
           }

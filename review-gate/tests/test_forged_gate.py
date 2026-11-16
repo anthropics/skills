@@ -69,7 +69,8 @@ if path.startswith("repos/o/r/pulls/") and path.rsplit("/", 1)[1].isdigit():
 if "/actions/runs?" in path:  # the gate's suite check: review-gate workflow runs on the head
     if fixture.get("workflow_runs_fail"):
         sys.exit(1)
-    default = [{"path": ".github/workflows/review-gate.yml", "conclusion": None, "check_suite_id": 1}]
+    default = [{"path": ".github/workflows/review-gate.yml", "conclusion": None, "check_suite_id": 1,
+                "display_title": "Review Gate - PR #" + os.environ["PR_NUMBER"]}]
     print(json.dumps({"workflow_runs": fixture.get("workflow_runs", default)})); sys.exit(0)
 if "/actions/runs/" in path and "head_sha" in " ".join(args):  # the wrapper's provenance lookup
     head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head") or HEAD)
@@ -117,8 +118,8 @@ def api_check(name, check_id, pr=None, suite=1):
             "check_suite": {"id": suite}}
 
 
-def gate_run(suite, conclusion=None):
-    return {"path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite}
+def gate_run(suite, conclusion=None, pr=7):
+    return {"path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite, "display_title": f"Review Gate - PR #{pr}"}
 
 
 RG_PATH = ".github/workflows/review-gate.yml"
@@ -240,6 +241,16 @@ class ForgedGateWorkflow(unittest.TestCase):
         rc, concl, out = self.gate([api_check("Review Gate", 41, pr=8, suite=1)],
                                    suites={"workflow_runs": [gate_run(1, "success"), gate_run(2)], "current_suite": 2})
         self.assertEqual((rc, concl), (1, "failure"), out)
+
+    def test_two_prs_on_one_head_each_pass_with_their_own_suite(self):
+        # Codex P1 on #102: one branch into staging and main; each PR's suite must not be the other's gap.
+        runs = [gate_run(1, pr=7), gate_run(2, pr=8)]
+        rc, concl, out = self.gate([api_check("Review Gate", 42, pr=8, suite=2)],
+                                   suites={"workflow_runs": runs, "current_suite": 1})
+        self.assertEqual((rc, concl), (0, "success"), out)
+        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)], prs=[("8", 0)],
+                                   suites={"workflow_runs": runs, "current_suite": 2})
+        self.assertEqual((rc, concl), (0, "success"), out)
 
     def test_suite_lookup_failure_fails_closed(self):
         rc, concl, out = self.gate([], suites={"workflow_runs_fail": True})
