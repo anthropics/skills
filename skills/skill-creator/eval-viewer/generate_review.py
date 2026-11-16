@@ -87,8 +87,12 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     prompt = ""
     eval_id = None
 
-    # Try eval_metadata.json
-    for candidate in [run_dir / "eval_metadata.json", run_dir.parent / "eval_metadata.json"]:
+    # Try eval_metadata.json — walk up to eval-N/ level
+    for candidate in [
+        run_dir / "eval_metadata.json",
+        run_dir.parent / "eval_metadata.json",
+        run_dir.parent.parent / "eval_metadata.json",
+    ]:
         if candidate.exists():
             try:
                 metadata = json.loads(candidate.read_text())
