@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "delivery-verification",
+      "description": "Specify a turn-end delivery gate and a two-sided JSONL gate log so block rates are computable",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/delivery-verification"
+      ]
     }
   ]
 }
