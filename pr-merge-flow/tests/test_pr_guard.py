@@ -129,6 +129,29 @@ assert "never `--auto`" in merge("gh pr merge 5 --auto --squash --match-head-com
 assert "pin the reviewed head" in merge("gh pr merge 5 --squash", rollup=ok)
 assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok) is None
 assert merge("gh pr merge 5 --squash --match-head-commit=abc1234", rollup=ok) is None
+# Codex P1 on #82: the status lookup must target the -R/--repo repo, not the cwd repo.
+def _gh_repo(want):
+    def run(args, *a, **k):
+        i = args.index("-R") if "-R" in args else -1
+        if i < 0 or args[i + 1] != want:  # gh resolved the PR in the cwd repo: the live failure
+            return _R(1, "", "Could not resolve to a PullRequest")
+        return _R(0, json.dumps({"statusCheckRollup": ok}))
+    return run
+for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit abc1234",
+          "gh pr merge 5 -R owner/target --squash --match-head-commit abc1234",
+          "gh pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
+          "gh --repo=owner/target pr merge 5 --squash --match-head-commit abc1234",
+          "gh pr merge 5 -Rowner/target --squash --match-head-commit abc1234"]:
+    g.subprocess.run = _gh_repo("owner/target")
+    try:
+        assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
+    finally:
+        g.subprocess.run = _run
+g.subprocess.run = _gh_repo("owner/target")
+try:
+    assert "Could not resolve" in g.check("gh pr merge 5 --squash --match-head-commit abc1234", "/r")
+finally:
+    g.subprocess.run = _run
 assert merge("gh pr merge https://github.com/o/r/pull/5 -t 'x y' --merge --match-head-commit abc1234", rollup=ok) is None
 for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCELLED"),
                   ({"name": "pytest", "conclusion": ""}, "pytest: PENDING"),

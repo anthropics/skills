@@ -353,8 +353,20 @@ MERGE_FLAGS_WITH_VALUE = {"-t", "-b", "-F", "-A", "-R", "--subject", "--body", "
 STATUS_QUERY = re.compile(r"^gh\b.*\b(pr (checks|view|status)|run (view|watch|list))\b")
 
 
+def repo_arg(argv):
+    """The `-R/--repo` value anywhere in a gh call (it may come before or after `pr merge`), else ''."""
+    for i, a in enumerate(argv):
+        if a in ("-R", "--repo") and i + 1 < len(argv):
+            return argv[i + 1]
+        if a.startswith("--repo="):
+            return a[len("--repo="):]
+        if a.startswith("-R") and len(a) > 2:
+            return a[2:].lstrip("=")
+    return ""
+
+
 def merge_calls(cmd):
-    """Yield (ref, flags) for each `gh pr merge`; ref is '' when none is named."""
+    """Yield (ref, flags, repo) for each `gh pr merge`; ref/repo are '' when none is named."""
     for argv in segments(cmd):
         pr = gh_pr(argv)
         if not pr or pr[0] != "merge":
@@ -371,13 +383,13 @@ def merge_calls(cmd):
                 flags.add(a.split("=")[0])
             elif not ref:
                 ref = a
-        yield ref, flags
+        yield ref, flags, repo_arg(argv)
 
 
-def not_green(ref):
+def not_green(ref, repo=""):
     """Return '' when every check on the PR is green, else a description of why not."""
     try:
-        out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), "--json",
+        out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
                               "statusCheckRollup,mergeStateStatus"],
                              capture_output=True, text=True, timeout=8)
         if out.returncode != 0:
@@ -421,7 +433,7 @@ def check(cmd, cwd):
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
                 "and let the harness wake you.")
-    for ref, flags in merge_calls(cmd):
+    for ref, flags, repo in merge_calls(cmd):
         if "--admin" in flags:
             return "Blocked: never bypass required checks with --admin; fix the red check or ask Matt."
         if "--auto" in flags:
@@ -432,7 +444,7 @@ def check(cmd, cwd):
         if "--match-head-commit" not in flags:
             return (f"Blocked: pin the reviewed head: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")
-        why = not_green(ref)
+        why = not_green(ref, repo)
         if why:
             return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): "
                     "wait for them (`gh pr checks <n> --watch --fail-fast` in the background) or fix the red "
