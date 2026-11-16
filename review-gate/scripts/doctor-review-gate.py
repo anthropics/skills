@@ -175,7 +175,15 @@ def ruleset_requires_conversation_resolution(detail: dict) -> bool:
 def main() -> int:
     root = Path.cwd()
     wf = root / ".github" / "workflows" / "review-gate.yml"
-    if wf.is_file():
+    template = Path(__file__).resolve().parents[1] / "templates" / "review-gate.yml"
+    if wf.is_file() and template.is_file() and wf.read_bytes() != template.read_bytes():
+        # 3.2.6: an older copy reuses one check run per head, so an edit-triggered suite can leave
+        # the required check "expected" (BLOCKED with every check green).
+        print(
+            f"WARN {wf.relative_to(root)} differs from this skill's template; re-run "
+            "install-workflow.py --force and merge it to the default branch"
+        )
+    elif wf.is_file():
         print(f"OK workflow {wf.relative_to(root)}")
     else:
         print(

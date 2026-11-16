@@ -27,9 +27,16 @@ retired or kept as defence in depth (plan step S4) and review-gate.yml calls it 
 BOOTSTRAP (nevar-integrations #11): the PR that installs 3.2.x is itself evaluated by the default
 branch's legacy workflow, whose job is still named `Review Gate`. Such a job is accepted, with a
 notice, only when ALL hold: it ran from a formerly trusted (path, pull_request_target) pair; that path
-is on the default branch; and this PR (PR_NUMBER) modifies, removes or renames that file. A missing or
-malformed PR_NUMBER, or a failed PR-files or default-branch lookup, exits 2; any other failed condition
-leaves the job forged (exit 1).
+is on the default branch; this PR (PR_NUMBER) modifies, removes or renames that file; and the run was
+triggered for THIS PR and executed the default branch's file (3.2.6, Codex r4582534712 and aec #163).
+The PR is checked on the run's immutable head fields (head_sha, head_branch, head_repository: for
+pull_request_target they name the triggering PR's head, seen on nevar-integrations #11 run 43817384199),
+never on the run's `.pull_requests` array, which GitHub derives from the commit and can list an outer PR
+for a stacked child's run. Those fields cannot tell apart two PRs on the same head, so any other PR (open
+or closed) whose head is that sha refuses the bootstrap. The revision is checked as: the file at this PR's
+base sha equals the default branch's copy (no API field names the revision a run executed). A missing or
+malformed PR_NUMBER, or a failed PR, PR-files, run or default-branch lookup, exits 2; any other failed
+condition leaves the job forged (exit 1).
 
 env: REPO (required), PR_NUMBER (needed only to accept a legacy job), DEFAULT_BRANCH (else looked up).
 stdin: `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate`
@@ -78,11 +85,35 @@ def _pr_files(repo, pr):
     return files
 
 
-def bootstrap_refusal(repo, path):
+def _blob(repo, path, ref):
+    """The file's blob sha at `ref`, or None when it is not there."""
+    try:
+        return subprocess.run(["gh", "api", f"repos/{repo}/contents/{path}?ref={ref}", "--jq", ".sha"],
+                              capture_output=True, text=True, check=True).stdout.strip() or None
+    except subprocess.CalledProcessError:
+        return None
+
+
+def bootstrap_refusal(repo, path, run_id):
     """None when the legacy job from `path` is this PR's own bootstrap run; else why it stays forged."""
     pr = os.environ.get("PR_NUMBER", "")
     if not re.fullmatch(r"[1-9][0-9]*", pr):
         raise Ambiguous(f"PR_NUMBER is missing or malformed ({pr!r}); it is needed to accept a legacy job")
+    fields = _gh(f"repos/{repo}/pulls/{pr}", "--jq",
+                 "[.head.sha, .head.ref, .head.repo.full_name, .base.sha] | @tsv").strip("\n").split("\t")
+    if len(fields) != 4 or not all(fields):
+        raise Ambiguous(f"could not read PR #{pr}'s head and base ({fields!r})")
+    pr_head, base_sha = "\t".join(fields[:3]), fields[3]
+    run_head = _gh(f"repos/{repo}/actions/runs/{run_id}", "--jq",
+                   "[.head_sha, .head_branch, .head_repository.full_name] | @tsv").strip("\n")
+    if run_head != pr_head:
+        return f"run {run_id} was triggered for {run_head!r}, not PR #{pr}'s head {pr_head!r}"
+    sha = fields[0]
+    # Any other PR on this head, open or closed: a child closed after its run would otherwise match.
+    shared = _gh(f"repos/{repo}/commits/{sha}/pulls?per_page=100", "--paginate", "--jq",
+                 f'.[] | select(.head.sha == "{sha}" and .number != {pr}) | .number').split()
+    if shared:
+        return f"PR(s) #{', #'.join(shared)} share head {sha}, so run {run_id} cannot be attributed to PR #{pr}"
     touched = any((f["filename"] == path and f.get("status") != "added") or f.get("previous_filename") == path
                   for f in _pr_files(repo, pr))
     if not touched:
@@ -90,11 +121,14 @@ def bootstrap_refusal(repo, path):
     branch = os.environ.get("DEFAULT_BRANCH") or _gh(f"repos/{repo}", "--jq", ".default_branch").strip()
     if not branch:
         raise Ambiguous("could not determine the default branch")
-    try:
-        subprocess.run(["gh", "api", f"repos/{repo}/contents/{path}?ref={branch}"],
-                       capture_output=True, text=True, check=True)
-    except subprocess.CalledProcessError:
+    default_blob = _blob(repo, path, branch)
+    if default_blob is None:
         return f"{path} is not on the default branch {branch}"
+    # No API field names the workflow revision a run executed. pull_request_target runs the default
+    # branch's file (or, on older GitHub semantics, the base branch's): requiring the base copy to equal the
+    # default copy means the run executed the default-branch revision either way (aec #163 Codex P1).
+    if _blob(repo, path, base_sha) != default_blob:
+        return f"{path} at PR #{pr}'s base {base_sha} differs from the default branch {branch}'s copy"
     return None
 
 
@@ -121,13 +155,13 @@ def main():
             seen = []
 
             def record(run_id):
-                seen.append(lookup(run_id))
-                return seen[-1]
+                seen.append((run_id, lookup(run_id)))
+                return seen[-1][1]
             for name, where in detector.forged([check_run], record, scoped):
-                flagged.append((name, where, seen[-1]))
+                flagged.append((name, where, *seen[-1]))
         bad = []
-        for name, where, pair in flagged:
-            refusal = bootstrap_refusal(repo, pair[0]) if pair in legacy_pairs else "untrusted workflow"
+        for name, where, run_id, pair in flagged:
+            refusal = bootstrap_refusal(repo, pair[0], run_id) if pair in legacy_pairs else "untrusted workflow"
             if refusal is None:
                 print(f"::notice::bootstrap: `{name}` job {where} ran {pair[0]} ({pair[1]}) from the default "
                       "branch, and this PR replaces that file; accepted as the legacy workflow it upgrades.",

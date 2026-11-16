@@ -690,8 +690,11 @@ def _unquoted(text: str) -> str:
     kept: list[str] = []
     in_quote = False
     for line in text.split("\n"):
-        if re.match(r"[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)*>", line):
-            in_quote = True
+        marker = re.match(r"[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)*>", line)
+        if marker:
+            # A marker-only line (`>`, `> >`) is a blank line inside the quote: it ends the quoted
+            # paragraph, so no lazy continuation follows it (aec #163 Codex P2).
+            in_quote = bool(line[marker.end():].strip(" \t>"))
             continue
         # A lazy continuation is paragraph text only: a line that interrupts a paragraph
         # (ATX heading, fence, thematic break, list item) ends the quote and is kept.
