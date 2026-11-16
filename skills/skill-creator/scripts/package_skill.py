@@ -14,7 +14,14 @@ import fnmatch
 import sys
 import zipfile
 from pathlib import Path
-from scripts.quick_validate import validate_skill
+
+# Support both invocation styles: `python -m scripts.package_skill` (the
+# `scripts` package is importable) and `python scripts/package_skill.py`
+# (only the scripts/ directory is on sys.path, so the package import fails).
+try:
+    from scripts.quick_validate import validate_skill
+except ImportError:
+    from quick_validate import validate_skill
 
 # Patterns to exclude when packaging skills.
 EXCLUDE_DIRS = {"__pycache__", "node_modules"}
