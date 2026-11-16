@@ -1,7 +1,7 @@
 ---
 name: orchata
 description: Use when the user wants a task or project planned and executed end-to-end with multi-agent orchestration — "orchestrate this", "/orchata", "plan and build this", "run this with subagents", or any request to take a feature/project from intake through planning, parallel implementation, and verification while only involving the human for items that genuinely need their hands. Encodes intake questions, model-tier selection, escalation punch lists, and a self-improvement friction loop (through the feedback-loop skill).
-version: 2.0.0
+version: 2.1.0
 author: Bernier LLC
 ---
 
@@ -83,6 +83,8 @@ Friction is no longer kept here: it goes to the `feedback-loop` skill as subject
 still exists and `feedback-loop` is installed, run its `scripts/feedback.py import-orchata` once:
 it moves every entry, the review date, the source repo and an opt-out into the shared store and
 renames the old file to `friction.json.migrated`.
+If that register exists and `feedback-loop` is not installed, nothing reads its entries: say
+so once in the retro, with the install command (`aec install skill feedback-loop`).
 
 `capabilities.json` is keyed by absolute project path (installed agents/skills differ per
 project). Refresh this project's entry when missing, older than 7 days, `aec` errors, or a
@@ -157,6 +159,12 @@ the actual work as possible:
   stalling at once is a usage limit — see Supervisor resilience),
   confirm it stopped (cancel it) before re-running it at lower parallelism — never
   hand-triage its raw finder output, and never run the replacement alongside it.
+- A long local verification run (a full gate, a browser suite: anything over ~5 minutes) is
+  fan-out too. Start it only after the independent review has returned and its fixes are
+  applied, because a fix invalidates the run. Check host load first (`uptime`, or the host's
+  equivalent) and wait while it is above the core count. Run one at a time, never beside
+  another suite or a worker wave. A run that dies on timeouts under load is a host problem:
+  re-run it only once the load has dropped.
 
 ### Shared-worktree mode
 
@@ -247,6 +255,10 @@ Fan-out runs assume workers die. Rules:
   states any contract its files must honor with files it doesn't own (e.g. "CI assumes a
   `packageManager` field in package.json") — or a smoke stage runs the consumer's setup
   after integration. Ownership splits hide exactly these seams.
+- **Pinned output needs the whole suite:** when a change alters output that other tests may
+  pin exactly (rendered markup, serialised bytes, snapshots, size budgets), the worker runs
+  the owning package's whole suite once before returning, not a hand-picked set of related
+  tests. Pins live in files that share no name with the change.
 
 ### Integration & shipping
 
@@ -315,6 +327,10 @@ legitimate mid-run stop. One blocker never stops the run while other work can pr
      concurrency 1 before diagnosing a timeout as a code defect.
    - Before waiting on bot reviews for a PR, check `.github/workflows` is non-empty or the
      repo has known review bots — if neither, skip the wait.
+   - A gate that chains its steps (`a && b && c`) stops at the first failure and hides the
+     rest. When it stops on a failure the diff did not cause, read the chain, run each
+     remaining step on its own, and report every step's exit code. "The gate failed on a
+     pre-existing test" says nothing about the steps after it.
 2. **Report:** what shipped, what's on the punch list (inline summary + file path), what was
    assumed at intake.
 3. **Feedback** — make sure this run's friction is logged (see the Feedback section), then
