@@ -456,6 +456,8 @@ def check(cmd, cwd):
                     "so auto-merge can land a PR a late P2 should have stopped. Hand the PR to the repo's "
                     f"traffic cop, which merges with `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main).")
+        if "--disable-auto" in flags:  # merges nothing: cancels an enabled auto-merge (--admin/--auto blocked above)
+            continue
         if "--match-head-commit" not in flags:
             return (f"Blocked: pin the reviewed head: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")

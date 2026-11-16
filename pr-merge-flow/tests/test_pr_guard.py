@@ -127,6 +127,11 @@ assert "--admin" in merge("gh pr merge 5 --admin --squash", rollup=ok)
 assert "never bypass" in merge("gh pr merge 5 --admin --auto", rollup=ok)
 assert "never `--auto`" in merge("gh pr merge 5 --auto --squash --match-head-commit abc1234", rollup=ok)
 assert "pin the reviewed head" in merge("gh pr merge 5 --squash", rollup=ok)
+# Codex P2 on #82: --disable-auto merges nothing, so it needs no head pin or green checks.
+assert merge("gh pr merge 5 --disable-auto", rollup=[]) is None
+assert merge("gh -R o/r pr merge 5 --disable-auto", rollup=[]) is None
+assert "never `--auto`" in merge("gh pr merge 5 --disable-auto --auto", rollup=ok)
+assert "never bypass" in merge("gh pr merge 5 --disable-auto --admin", rollup=ok)
 assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok) is None
 assert merge("gh pr merge 5 --squash --match-head-commit=abc1234", rollup=ok) is None
 # Codex P1 on #82: the status lookup must target the -R/--repo repo, not the cwd repo.
