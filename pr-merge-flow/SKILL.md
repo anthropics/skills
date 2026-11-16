@@ -32,10 +32,11 @@ rebuild. This skill stops that.
    its own `Review Gate`. Immediately before every `gh pr merge` into `staging` or `main`, the
    cop runs the detector on the head it is about to merge and requires exit 0
    (1 = forged, 2 = could not evaluate; both block):
-   `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate | REPO=$REPO python3 scripts/check-forged-review-gate.py`.
+   `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate | REPO=$REPO python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py`.
+   Always run the copy in the installed `review-gate` skill, never `scripts/…` from a checkout:
+   a PR controls its own checkout's scripts and could swap in one that exits 0.
    This stays required after review-gate 3.2.0 reaches a repo: the workflow scans once, and
-   a PR job that publishes after that scan is caught only by this merge-time run. Until then
-   the repo has no such script; run `python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py` instead.
+   a PR job that publishes after that scan is caught only by this merge-time run.
 3. **Wait for free.** Watch checks with `gh pr checks <n> --watch --fail-fast` run in the
    background (Claude Code: `run_in_background`). It costs nothing until it exits, and the
    harness wakes you. Never write a `sleep`/poll loop.

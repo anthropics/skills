@@ -6,11 +6,16 @@ bernierllc/agents-environment-config@46580faae5150afbe7707987295b5bdaf8a9d884
 (scripts/check-forged-gate-names.py; plan plans/2026-11-16-unforgeable-required-checks.md, step S5).
 Re-vendor it by copying that file unchanged; never edit it here.
 
-Its PROTECTED map also lists "PRs into main must come from staging" with no trusted Actions pair.
-Several downstream repos still publish that name from a plain `pull_request` Actions job, so
-checking it here would fail every main promotion in those repos. That name stays the job of the
-repo's own main-via-staging guard; this step checks only `Review Gate`, whose one trusted source is
-(.github/workflows/review-gate.yml, pull_request_target).
+WHY THIS WRAPPER EXISTS: the vendored PROTECTED map also protects "PRs into main must come from
+staging" with no trusted pair (set()). Several downstream repos still publish that name from a plain
+`pull_request` Actions job, so running the detector unscoped would fail every main promotion in those
+repos. The map stays unchanged; this wrapper checks only `Review Gate`, whose one trusted source is
+(.github/workflows/review-gate.yml, pull_request_target). The other name stays the job of each repo's
+own main-via-staging guard.
+
+DELETE THIS WRAPPER when Option A or B of the aec plan lands (a required workflow or a distinct
+publisher app, making the required checks unforgeable through the Checks API). The detector is then
+retired or kept as defence in depth (plan step S4) and review-gate.yml calls it directly or not at all.
 
 stdin: `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate`
 Exit 0: none forged. 1: forged (listed on stderr). 2: could not evaluate (fails closed).

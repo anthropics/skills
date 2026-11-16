@@ -131,6 +131,33 @@ class ForgedGateWorkflow(unittest.TestCase):
         self.assertIn("Missing trusted scripts/check-forged-gate-names.py", out)
 
 
+class WrapperReason(unittest.TestCase):
+    def test_wrapper_reason_still_holds(self):
+        # The wrapper exists only because the vendored map protects this name with no trusted pair.
+        # If a re-vendor changes that, revisit (or delete) the wrapper.
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("cfgn", SCRIPTS / "check-forged-gate-names.py")
+        detector = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(detector)
+        self.assertEqual(detector.PROTECTED["PRs into main must come from staging"], set())
+        self.assertEqual(detector.PROTECTED["Review Gate"],
+                         {(".github/workflows/review-gate.yml", "pull_request_target")})
+        header = (SCRIPTS / "check-forged-review-gate.py").read_text()
+        self.assertIn("WHY THIS WRAPPER EXISTS", header)
+        self.assertIn("DELETE THIS WRAPPER when Option A or B", header)
+
+
+class CopMergeCommand(unittest.TestCase):
+    def test_documented_command_never_runs_the_pr_checkout(self):
+        # A PR controls its checkout's scripts/, so the cop's merge-time run must use the installed skill.
+        doc = (SKILL.parent / "pr-merge-flow" / "SKILL.md").read_text()
+        runs = [l for l in doc.splitlines() if "python3" in l and "check-forged-review-gate.py" in l]
+        self.assertTrue(runs)
+        for line in runs:
+            self.assertIn("python3 ~/.claude/skills/review-gate/scripts/check-forged-review-gate.py", line)
+            self.assertNotRegex(line, r"python3 (\./)?scripts/")
+
+
 class InstalledCopies(unittest.TestCase):
     def test_repo_copies_match_skill_copies(self):
         # This repo's own gate loads scripts/ and .github/workflows/ from main; keep them the skill's copies.
