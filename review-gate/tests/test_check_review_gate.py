@@ -285,6 +285,8 @@ for ok in (
     "https://www.notion.so/abc123",
     "[Tracker row](https://app.notion.com/p/abc)",
     "> quoted context\n\nfixed in deadbeef",
+    "> quoted context\n>\nfixed in deadbeef",  # aec #163 Codex P2: a marker-only line is a blank line
+    "> quoted context\n> > \nfixed in deadbeef",
 ):
     assert g.evaluate(_p2(ok)) == [], ok
 for bad in (
@@ -303,6 +305,7 @@ for bad in (
     "> Example\n```x`y\nfixed in deadbeef",
     "> Example\n2. note\nfixed in deadbeef",
     "> Example\n-\nfixed in deadbeef",
+    "> Example\n>more\nfixed in deadbeef",
 ):
     assert any("P2" in r for r in g.evaluate(_p2(bad))), bad
 assert g.evaluate(_p2("not-a-finding: `retry` is idempotent")) == []
