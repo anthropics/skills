@@ -203,10 +203,13 @@ def generate_html(data: dict, auto_refresh: bool = False, skill_name: str = "") 
 """)
 
     # Find best iteration for highlighting
-    if test_queries:
-        best_iter = max(history, key=lambda h: h.get("test_passed") or 0).get("iteration")
+    if history:
+        if test_queries:
+            best_iter = max(history, key=lambda h: h.get("test_passed") or 0).get("iteration")
+        else:
+            best_iter = max(history, key=lambda h: h.get("train_passed", h.get("passed", 0))).get("iteration")
     else:
-        best_iter = max(history, key=lambda h: h.get("train_passed", h.get("passed", 0))).get("iteration")
+        best_iter = None
 
     # Add rows for each iteration
     for h in history:
