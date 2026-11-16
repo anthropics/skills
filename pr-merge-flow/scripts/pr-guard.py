@@ -16,9 +16,10 @@ text is what the agent sees.
    targets the UPSTREAM repo (a claude-skills PR landed on anthropics/skills
    this way, 2026-09-28). Blocked until the target is explicit.
 
-4. No ungated merge. `gh pr merge --admin` is always blocked; without `--auto` the merge
-   needs every check SUCCESS/SKIPPED/NEUTRAL (PR #325 merged on a CANCELLED check). The
-   wanted shape is `--auto`: GitHub merges when checks pass and nobody watches. Fails closed.
+4. No ungated merge. `gh pr merge --admin` and `--auto` are always blocked (Review Gate does not
+   re-run on late review/thread events, so auto-merge can land a PR a late P2 should have
+   stopped). Every merge pins the reviewed head with `--match-head-commit <sha>` and needs every
+   check SUCCESS/SKIPPED/NEUTRAL (PR #325 merged on a CANCELLED check). Fails closed.
 5. No polling: `sleep` plus a `gh pr checks|view|status` / `gh run view|watch|list` query in
    one command. Use `gh pr checks <n> --watch --fail-fast` in the background instead.
 
@@ -364,6 +365,7 @@ def merge_calls(cmd):
             if skip:
                 skip = False
             elif a in MERGE_FLAGS_WITH_VALUE:
+                flags.add(a)
                 skip = True
             elif a.startswith("-"):
                 flags.add(a.split("=")[0])
@@ -418,17 +420,23 @@ def check(cmd, cwd):
     """Return a block message, or None to allow."""
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
-                "and let the harness wake you, or `gh pr merge <n> --auto` and stop watching.")
+                "and let the harness wake you.")
     for ref, flags in merge_calls(cmd):
         if "--admin" in flags:
             return "Blocked: never bypass required checks with --admin; fix the red check or ask Matt."
         if "--auto" in flags:
-            continue
+            return ("Blocked: never `--auto`: Review Gate does not re-run on late review or thread events, "
+                    "so auto-merge can land a PR a late P2 should have stopped. Hand the PR to the repo's "
+                    f"traffic cop, which merges with `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
+                    "(`--merge` for promotions into main).")
+        if "--match-head-commit" not in flags:
+            return (f"Blocked: pin the reviewed head: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
+                    "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")
         why = not_green(ref)
         if why:
-            return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): hand the merge "
-                    f"to GitHub with `gh pr merge {ref or '<n>'} --auto --squash` (promotions into main: "
-                    "`--merge`) and stop watching.")
+            return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): "
+                    "wait for them (`gh pr checks <n> --watch --fail-fast` in the background) or fix the red "
+                    "check, then merge.")
     if draft_violation(cmd) and not draft_mode():
         return ("Blocked: PRs open ready for review, never as drafts. Drop --draft / --undo. "
                 "If the user explicitly asked for a draft, ask them to run it with `! gh pr create --draft ...`, "
@@ -457,7 +465,7 @@ def check(cmd, cwd):
             return (f"Blocked: this branch's PR into `{base}` is {status}, so GitHub can already merge it. "
                     f"Pulling `{base}` in restarts CI and review for nothing. Sync only when "
                     "`gh pr view --json mergeStateStatus` says DIRTY (a conflict). To land the PR: "
-                    "`gh pr merge <n> --auto --squash` (or `--merge` for promotions). If you truly need "
+                    "hand it to the repo's traffic cop: `gh pr merge <n> --squash --match-head-commit <sha>` (or `--merge` for promotions). If you truly need "
                     f"a commit from `{base}` (a fix your tests depend on), add `# sync-base: <reason>`.")
     return None
 
