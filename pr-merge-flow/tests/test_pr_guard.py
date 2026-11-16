@@ -125,8 +125,12 @@ ok = [{"name": "pytest", "conclusion": "SUCCESS"}, {"name": "lint", "conclusion"
       {"context": "ci/x", "state": "SUCCESS"}, {"name": "n", "conclusion": "NEUTRAL"}]
 assert "--admin" in merge("gh pr merge 5 --admin --squash", rollup=ok)
 assert "never bypass" in merge("gh pr merge 5 --admin --auto", rollup=ok)
-assert "never `--auto`" in merge("gh pr merge 5 --auto --squash --match-head-commit abc1234", rollup=ok)
+assert "never `--auto`" in merge("gh pr merge 5 --auto --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
 assert "pin the reviewed head" in merge("gh pr merge 5 --squash", rollup=ok)
+# Codex P1 on #82 (round 7): an unset $SHA expands to an empty value; a short SHA is not a pin either.
+assert "pin the reviewed head" in merge('gh pr merge 5 --squash --match-head-commit ""', rollup=ok)
+assert "pin the reviewed head" in merge("gh pr merge 5 --squash --match-head-commit=", rollup=ok)
+assert "pin the reviewed head" in merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok)
 # Codex P2 on #82: --disable-auto merges nothing, so it needs no head pin or green checks.
 assert merge("gh pr merge 5 --disable-auto", rollup=[]) is None
 assert merge("gh -R o/r pr merge 5 --disable-auto", rollup=[]) is None
@@ -136,8 +140,8 @@ assert "never bypass" in merge("gh pr merge 5 --disable-auto --admin", rollup=ok
 assert "pin the reviewed head" in merge("gh pr merge 5 --disable-auto=false --squash", rollup=ok)
 assert merge("gh pr merge 5 --disable-auto=true", rollup=[]) is None
 assert "pin the reviewed head" in merge("gh pr merge 5 --body --disable-auto --squash", rollup=ok)
-assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok) is None
-assert merge("gh pr merge 5 --squash --match-head-commit=abc1234", rollup=ok) is None
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
+assert merge("gh pr merge 5 --squash --match-head-commit=aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 # Codex P1 on #82: the status lookup must target the -R/--repo repo, not the cwd repo.
 def _gh_repo(want):
     def run(args, *a, **k):
@@ -146,31 +150,31 @@ def _gh_repo(want):
             return _R(1, "", "Could not resolve to a PullRequest")
         return _R(0, json.dumps({"statusCheckRollup": ok}))
     return run
-for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit abc1234",
-          "gh pr merge 5 -R owner/target --squash --match-head-commit abc1234",
-          "gh pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
-          "gh --repo=owner/target pr merge 5 --squash --match-head-commit abc1234",
-          "gh pr merge 5 -Rowner/target --squash --match-head-commit abc1234",
+for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 --repo owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh --repo=owner/target pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -Rowner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           # Codex P2 on #82: repeated repo flags, last wins (as gh does), in every spelling.
-          "gh -R owner/safe pr merge 5 -R owner/target --squash --match-head-commit abc1234",
-          "gh --repo=owner/safe pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
-          "gh -Rowner/safe pr merge 5 --repo=owner/target --squash --match-head-commit abc1234",
-          "gh --repo owner/safe pr merge 5 -Rowner/target --squash --match-head-commit abc1234",
+          "gh -R owner/safe pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh --repo=owner/safe pr merge 5 --repo owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh -Rowner/safe pr merge 5 --repo=owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh --repo owner/safe pr merge 5 -Rowner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
           # Codex P2 on #82 (round 6): a value flag consumes the next token, so a repo-looking
           # --body/-t value is text, not a repo, and a value-looking --disable-auto is not a flag.
-          "gh -R owner/target pr merge 5 --body --repo=owner/green --squash --match-head-commit abc1234",
-          "gh -R owner/target pr merge 5 -t -Rowner/green --squash --match-head-commit abc1234",
-          "gh pr merge 5 -R owner/target --body -R --squash --match-head-commit abc1234"]:
+          "gh -R owner/target pr merge 5 --body --repo=owner/green --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh -R owner/target pr merge 5 -t -Rowner/green --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -R owner/target --body -R --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
     g.subprocess.run = _gh_repo("owner/target")
     try:
         assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
     finally:
         g.subprocess.run = _run
 # Codex P1 on #82 (round 3 of repo parsing): clustered short flags carrying R fail closed.
-for c in ["gh pr merge 5 -dR owner/target --squash --match-head-commit abc1234",
-          "gh pr merge 5 -dRowner/target --squash --match-head-commit abc1234",
-          "gh pr merge 5 -Rd --squash --match-head-commit abc1234",
-          "gh pr merge 5 --squash --match-head-commit abc1234 -R"]:
+for c in ["gh pr merge 5 -dR owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -dRowner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -Rd --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa -R"]:
     g.subprocess.run = _gh_repo("owner/target")
     try:
         assert "standalone `-R owner/repo`" in (g.check(c, "/r") or ""), c
@@ -178,16 +182,16 @@ for c in ["gh pr merge 5 -dR owner/target --squash --match-head-commit abc1234",
         g.subprocess.run = _run
 g.subprocess.run = _gh_repo("owner/target")
 try:
-    assert "Could not resolve" in g.check("gh pr merge 5 --squash --match-head-commit abc1234", "/r")
+    assert "Could not resolve" in g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
 finally:
     g.subprocess.run = _run
-assert merge("gh pr merge https://github.com/o/r/pull/5 -t 'x y' --merge --match-head-commit abc1234", rollup=ok) is None
+assert merge("gh pr merge https://github.com/o/r/pull/5 -t 'x y' --merge --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCELLED"),
                   ({"name": "pytest", "conclusion": ""}, "pytest: PENDING"),
                   ({"name": "pytest", "conclusion": "FAILURE"}, "pytest: FAILURE"),
                   ({"context": "ci/x", "state": "PENDING"}, "ci/x: PENDING"),
                   ({"context": "ci/x", "state": "FAILURE"}, "ci/x: FAILURE")]:
-    m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [bad])
+    m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [bad])
     assert m and name in m and "--watch --fail-fast" in m, (bad, m)
 # Only the LATEST run per check name counts: a historical red Review Gate run must not block
 # once a newer run of the same check is green (every new PR leaves one, nevar-design#7).
@@ -195,38 +199,38 @@ def run(name, concl, at, wf="Review Gate"):
     return {"name": name, "workflowName": wf, "conclusion": concl, "startedAt": at}
 old_red = [run("Review Gate", "FAILURE", "2026-11-15T10:00:00Z"), run("Review Gate", "CANCELLED", "2026-11-15T10:05:00Z")]
 latest_ok = run("Review Gate", "SUCCESS", "2026-11-15T10:10:00Z")
-assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + old_red + [latest_ok]) is None
-assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [latest_ok] + old_red) is None  # order-independent
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok]) is None
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok] + old_red) is None  # order-independent
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
                                                    run("Review Gate", "FAILURE", "2026-11-15T10:10:00Z")])
 assert m and "Review Gate: FAILURE" in m, m  # newest red still blocks
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [run("Review Gate", "SUCCESS", "2026-11-15T10:00:00Z"),
                                                    run("Review Gate", "", "2026-11-15T10:10:00Z")])
 assert m and "Review Gate: PENDING" in m, m  # a re-run in flight blocks
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + old_red + [latest_ok, run("pytest", "FAILURE", "2026-11-15T10:00:00Z", "CI")])
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok, run("pytest", "FAILURE", "2026-11-15T10:00:00Z", "CI")])
 assert m and "pytest: FAILURE" in m and "Review Gate" not in m, m  # other checks stay independent
 # a queued rerun has no startedAt: it still beats the older green run and blocks
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "status": "QUEUED", "startedAt": None}])
 assert m and "Review Gate: PENDING" in m, m
 # an older run still in progress does not outrank a newer green run
-assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
+assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "", "startedAt": "2026-11-15T10:00:00Z"}, latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": None}])
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": None}])
 assert m and "Review Gate: CANCELLED" in m, m
 # gh emits the zero time, not null, for a missing startedAt
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": "0001-01-01T00:00:00Z"}])
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [latest_ok, {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "CANCELLED", "startedAt": "0001-01-01T00:00:00Z"}])
 assert m and "Review Gate: CANCELLED" in m, m
 # same-named third-party check runs from different apps are never collapsed
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [{"__typename": "CheckRun", "name": "scan", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"__typename": "CheckRun", "name": "scan", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
                                                    {"__typename": "CheckRun", "name": "scan", "conclusion": "SUCCESS", "startedAt": "2026-11-15T10:05:00Z"}])
 assert m and "scan: FAILURE" in m, m
 # a check run and a same-named status context are separate requirements
-m = merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok + [{"__typename": "CheckRun", "name": "deploy", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [{"__typename": "CheckRun", "name": "deploy", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z"},
                                                    {"__typename": "StatusContext", "context": "deploy", "state": "SUCCESS"}])
 assert m and "deploy: FAILURE" in m, m
-assert "no checks" in merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=[])
-assert "no checks" in merge("gh pr merge 5 --match-head-commit abc1234", rollup=None)
-m = merge("gh pr merge 5 --match-head-commit abc1234", rc=1, err="no pull requests found")
+assert "no checks" in merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=[])
+assert "no checks" in merge("gh pr merge 5 --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=None)
+m = merge("gh pr merge 5 --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rc=1, err="no pull requests found")
 assert m and "no pull requests found" in m
 assert merge("gh pr view 5 && echo done", rollup=[]) is None
 

@@ -368,6 +368,8 @@ def merge_args(argv):
         if value_of:
             if value_of in ("-R", "--repo"):
                 repo = a
+            elif value_of == "--match-head-commit":
+                toks[-1] = f"--match-head-commit={a}"
             value_of = None
         elif a in MERGE_FLAGS_WITH_VALUE:
             toks.append(a)
@@ -463,8 +465,9 @@ def check(cmd, cwd):
         # `--disable-auto=false` leaves the option off, so that call merges and takes the full checks.
         if flag_on(toks, ("--disable-auto",)):
             continue
-        if "--match-head-commit" not in flags:
-            return (f"Blocked: pin the reviewed head: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
+        heads = [t.partition("=")[2] for t in toks if t.partition("=")[0] == "--match-head-commit"]
+        if not heads or not re.fullmatch(r"[0-9a-f]{40}", heads[-1]):
+            return (f"Blocked: pin the reviewed head with its full 40-hex SHA: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")
         why = not_green(ref, repo)
         if why:

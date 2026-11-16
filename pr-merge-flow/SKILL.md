@@ -50,7 +50,7 @@ hooks dormant). It blocks:
   the PR on the upstream repo).
 
 - `gh pr merge --admin`, always: never bypass required checks; fix the red check or ask Matt;
-- `gh pr merge --auto`, always (see rule 2), and any `gh pr merge` without `--match-head-commit <sha>`;
+- `gh pr merge --auto`, always (see rule 2), and any `gh pr merge` without `--match-head-commit <sha>` naming the full 40-hex SHA;
 - `gh pr merge` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
   `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. PR #325 once
   merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge`
