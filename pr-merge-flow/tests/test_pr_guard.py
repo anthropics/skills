@@ -185,6 +185,51 @@ try:
     assert "Could not resolve" in g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
 finally:
     g.subprocess.run = _run
+# prevost#379 P2: `--admin=false` / `--auto=false` turn the option off, so the call takes the normal checks.
+assert merge("gh pr merge 5 --admin=false --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
+assert merge("gh pr merge 5 --auto=false --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
+assert "never bypass" in merge("gh pr merge 5 --admin=true --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
+# prevost#379 P1: any short-flag cluster fails closed (`-st 5 6`: gh merges 6 with title 5).
+for c in ["gh pr merge -st 5 6 --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "gh pr merge 6 -sd --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+    assert "can't parse this merge" in merge(c, rollup=ok), c
+# prevost#379 P1: the status lookup runs in the merge's effective dir (`cd`, `env -C`), not the hook's cwd.
+def _gh_cwd(want):
+    def run(args, *a, cwd=None, **k):
+        rollup = ok if cwd == want else [{"name": "pytest", "conclusion": "FAILURE"}]
+        return _R(0, json.dumps({"statusCheckRollup": rollup}))
+    return run
+for c, want in [("cd /other && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/other"),
+                ("env -C /other gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/other"),
+                ("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")]:
+    g.subprocess.run = _gh_cwd(want)
+    try:
+        assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
+        g.subprocess.run = _gh_cwd("/r" if want != "/r" else "/x")
+        assert "not all green" in (g.check(c, "/r") or ""), c
+    finally:
+        g.subprocess.run = _run
+assert "working directory" in merge("cd $D && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
+# claude-skills#83 Codex: a cd in a background job / pipeline stage doesn't reach the merge: fail closed.
+for c in ["cd /other & gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "cd /other | gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "cd /other |& gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "cd /other &>/dev/null & gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+    assert "working directory" in (merge(c, rollup=ok) or ""), c
+assert merge("cd /other && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa 2>&1", rollup=ok) is None
+# Redirections and quoted operators are not pipeline boundaries.
+for c in ["cd /other && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa &>/dev/null",
+          "cd /other && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa >&2",
+          "cd /other && gh pr merge 5 -b 'a | b & c' --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+    assert merge(c, rollup=ok) is None, (c, merge(c, rollup=ok))
+# Backtick dirs are as unresolved as $(…); an explicit -R makes the dir irrelevant.
+assert "working directory" in merge("cd `pwd`/x && gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok)
+g.subprocess.run = _gh_repo("owner/target")
+try:
+    for c in ['cd "$D" && gh pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+              "cd `x` && gh pr merge 5 -R owner/target --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+        assert g.check(c, "/r") is None, (c, g.check(c, "/r"))
+finally:
+    g.subprocess.run = _run
 assert merge("gh pr merge https://github.com/o/r/pull/5 -t 'x y' --merge --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok) is None
 for bad, name in [({"name": "pytest", "conclusion": "CANCELLED"}, "pytest: CANCELLED"),
                   ({"name": "pytest", "conclusion": ""}, "pytest: PENDING"),

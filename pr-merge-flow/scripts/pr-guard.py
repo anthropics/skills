@@ -126,6 +126,34 @@ def strip_comments_and_heredocs(cmd):
     return "".join(out).translate(UNHIDE) if quote else "".join(out)
 
 
+def shell_tokens(cmd):
+    """Shell words and control-operator runs (`&&`, `|&`, `;`, …) in order, or None when shlex can't parse it."""
+    lex = shlex.shlex(cmd, posix=True, punctuation_chars=";&|\n()")
+    lex.whitespace = " \t\r"
+    lex.whitespace_split = True
+    lex.commenters = ""
+    try:
+        return list(lex)
+    except ValueError:
+        return None
+
+
+def runs_async(cmd):
+    """True when a command joins segments with `&`, `|` or `|&` (a background job or pipeline stage).
+
+    Uses the same tokens as segments(), so quoted text never counts, and `>&`/`&>` redirections
+    (`2>&1`, `&>log`) are not operators. Unparseable input counts as async, so callers fail closed.
+    """
+    toks = shell_tokens(strip_comments_and_heredocs(cmd.replace("\\\n", " ")))
+    if toks is None:
+        return True
+    for i, t in enumerate(toks):
+        redirect = t == "&" and ((i and toks[i - 1].endswith(">")) or toks[i + 1:i + 2] and toks[i + 1].startswith(">"))
+        if t in ("|", "|&") or (t == "&" and not redirect):
+            return True
+    return False
+
+
 def segments(cmd):
     """Split a shell command into argv lists, one per simple command.
 
@@ -133,13 +161,8 @@ def segments(cmd):
     backslash-newline continues the command, as in Bash.
     """
     cmd = strip_comments_and_heredocs(cmd.replace("\\\n", " "))
-    lex = shlex.shlex(cmd, posix=True, punctuation_chars=";&|\n()")
-    lex.whitespace = " \t\r"
-    lex.whitespace_split = True
-    lex.commenters = ""
-    try:
-        tokens = list(lex)
-    except ValueError:
+    tokens = shell_tokens(cmd)
+    if tokens is None:
         # shlex can't parse it (unbalanced or $'..' quotes): split on every operator
         # character, quoted or not. Over-splitting only means more gets checked.
         tokens = [t for part in re.split(r"([;&|()\n])", cmd)
@@ -360,7 +383,7 @@ def merge_args(argv):
     (MERGE_FLAGS_WITH_VALUE) consume the next token whatever it looks like (`--body --repo=x` is a body).
     Flag tokens keep their `=value` so callers can test them with flag_on(). repo is the last
     `-R/--repo` value (as in gh), '' when none, None when unsure: only `-R x`, `--repo x`, `--repo=x`
-    and `-Rowner/repo` are trusted; any other short-flag token carrying an R (`-dR x`, `-dRx`, `-Rd`)
+    and `-Rowner/repo` are trusted; any other multi-letter short-flag token (`-dR x`, `-st 5 6`, `-Rd`)
     or a trailing `-R` returns None so the caller fails closed (pflag clusters are open-ended).
     """
     ref, toks, repo, past_merge, value_of = "", [], "", False, None
@@ -380,7 +403,7 @@ def merge_args(argv):
         elif re.fullmatch(r"-R=?[^-/=\s][^/\s]*/[^/\s]+", a):
             toks.append("-R")
             repo = a[2:].lstrip("=")
-        elif re.match(r"-[^-]", a) and "R" in a:
+        elif re.match(r"-[^-]", a) and len(a) > 2:
             repo = None
             break
         elif a.startswith("-"):
@@ -394,20 +417,31 @@ def merge_args(argv):
     return ref, toks, repo
 
 
-def merge_calls(cmd):
-    """Yield (ref, flag tokens, repo) for each `gh pr merge`; see merge_args()."""
-    for argv in segments(cmd):
+def merge_calls(cmd, cwd):
+    """Yield (dir, ref, flag tokens, repo) for each `gh pr merge`, dir after any `cd`/`env -C`; see merge_args()."""
+    # A `cd` in a background job or pipeline stage (`cd x & gh …`, `cd x |& gh …`) doesn't reach the
+    # merge, but walk() can't see operators: once the dir has moved, any of them makes it unresolved.
+    async_op = runs_async(cmd)
+    for d, argv in walk(cmd, cwd):
         pr = gh_pr(argv)
         if pr and pr[0] == "merge":
-            yield merge_args(argv)
+            yield ("$UNRESOLVED" if async_op and d != cwd else d, *merge_args(argv))
 
 
-def not_green(ref, repo=""):
-    """Return '' when every check on the PR is green, else a description of why not."""
+def not_green(ref, repo="", cwd=None):
+    """Return '' when every check on the PR is green, else a description of why not.
+
+    cwd is the merge's effective dir: without -R, gh resolves the PR number in that dir's repo.
+    With -R the dir doesn't matter, so an unresolved one is ignored.
+    """
+    if repo:
+        cwd = None
+    elif cwd and ("$" in cwd or "`" in cwd):
+        return f"can't resolve the merge's working directory ({cwd}); pass -R owner/repo"
     try:
         out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
                               "statusCheckRollup,mergeStateStatus"],
-                             capture_output=True, text=True, timeout=8)
+                             cwd=cwd, capture_output=True, text=True, timeout=8)
         if out.returncode != 0:
             return f"gh failed: {out.stderr.strip()}"
         rollup = json.loads(out.stdout).get("statusCheckRollup") or []
@@ -449,14 +483,13 @@ def check(cmd, cwd):
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
                 "and let the harness wake you.")
-    for ref, toks, repo in merge_calls(cmd):
-        flags = {t.partition("=")[0] for t in toks}
+    for d, ref, toks, repo in merge_calls(cmd, cwd):
         if repo is None:
-            return ("Blocked: can't tell which repo this merge targets (a short-flag cluster carrying -R, "
-                    "such as `-dR x`). Pass the repo as a standalone `-R owner/repo`.")
-        if "--admin" in flags:
+            return ("Blocked: can't parse this merge (a short-flag cluster such as `-dR x` or `-st 5`). "
+                    "Spell each flag separately and pass the repo as a standalone `-R owner/repo`.")
+        if flag_on(toks, ("--admin",)):
             return "Blocked: never bypass required checks with --admin; fix the red check or ask Matt."
-        if "--auto" in flags:
+        if flag_on(toks, ("--auto",)):
             return ("Blocked: never `--auto`: Review Gate does not re-run on late review or thread events, "
                     "so auto-merge can land a PR a late P2 should have stopped. Hand the PR to the repo's "
                     f"traffic cop, which merges with `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
@@ -469,7 +502,7 @@ def check(cmd, cwd):
         if not heads or not re.fullmatch(r"[0-9a-f]{40}", heads[-1]):
             return (f"Blocked: pin the reviewed head with its full 40-hex SHA: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main), so a push after review cannot be merged unreviewed.")
-        why = not_green(ref, repo)
+        why = not_green(ref, repo, d)
         if why:
             return (f"Blocked: checks are not all green for {ref or 'this branch'} ({why}): "
                     "wait for them (`gh pr checks <n> --watch --fail-fast` in the background) or fix the red "
