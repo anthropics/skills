@@ -132,6 +132,10 @@ assert merge("gh pr merge 5 --disable-auto", rollup=[]) is None
 assert merge("gh -R o/r pr merge 5 --disable-auto", rollup=[]) is None
 assert "never `--auto`" in merge("gh pr merge 5 --disable-auto --auto", rollup=ok)
 assert "never bypass" in merge("gh pr merge 5 --disable-auto --admin", rollup=ok)
+# Codex P1 on #82 (round 6): `--disable-auto=false` leaves the option off, so it merges: full checks.
+assert "pin the reviewed head" in merge("gh pr merge 5 --disable-auto=false --squash", rollup=ok)
+assert merge("gh pr merge 5 --disable-auto=true", rollup=[]) is None
+assert "pin the reviewed head" in merge("gh pr merge 5 --body --disable-auto --squash", rollup=ok)
 assert merge("gh pr merge 5 --squash --match-head-commit abc1234", rollup=ok) is None
 assert merge("gh pr merge 5 --squash --match-head-commit=abc1234", rollup=ok) is None
 # Codex P1 on #82: the status lookup must target the -R/--repo repo, not the cwd repo.
@@ -151,7 +155,12 @@ for c in ["gh -R owner/target pr merge 5 --squash --match-head-commit abc1234",
           "gh -R owner/safe pr merge 5 -R owner/target --squash --match-head-commit abc1234",
           "gh --repo=owner/safe pr merge 5 --repo owner/target --squash --match-head-commit abc1234",
           "gh -Rowner/safe pr merge 5 --repo=owner/target --squash --match-head-commit abc1234",
-          "gh --repo owner/safe pr merge 5 -Rowner/target --squash --match-head-commit abc1234"]:
+          "gh --repo owner/safe pr merge 5 -Rowner/target --squash --match-head-commit abc1234",
+          # Codex P2 on #82 (round 6): a value flag consumes the next token, so a repo-looking
+          # --body/-t value is text, not a repo, and a value-looking --disable-auto is not a flag.
+          "gh -R owner/target pr merge 5 --body --repo=owner/green --squash --match-head-commit abc1234",
+          "gh -R owner/target pr merge 5 -t -Rowner/green --squash --match-head-commit abc1234",
+          "gh pr merge 5 -R owner/target --body -R --squash --match-head-commit abc1234"]:
     g.subprocess.run = _gh_repo("owner/target")
     try:
         assert g.check(c, "/r") is None, (c, g.check(c, "/r"))

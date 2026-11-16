@@ -353,49 +353,51 @@ MERGE_FLAGS_WITH_VALUE = {"-t", "-b", "-F", "-A", "-R", "--subject", "--body", "
 STATUS_QUERY = re.compile(r"^gh\b.*\b(pr (checks|view|status)|run (view|watch|list))\b")
 
 
-def repo_arg(argv):
-    """The `-R/--repo` value in a gh call (before or after `pr merge`), '' when none, None when unsure.
+def merge_args(argv):
+    """Tokenize a `gh ... pr merge` call once, the way gh does: (ref, flag tokens, repo).
 
-    Last wins, as in gh. Only `-R x`, `--repo x`, `--repo=x` and `-Rowner/repo` are trusted; any other
-    short-flag token carrying an R (`-dR x`, `-dRx`, `-Rd`) returns None so the caller fails closed:
-    pflag clusters are open-ended and the third round of spellings showed parsing them won't converge.
+    Every reader of a merge call goes through here, so a value is never read as a flag. Value flags
+    (MERGE_FLAGS_WITH_VALUE) consume the next token whatever it looks like (`--body --repo=x` is a body).
+    Flag tokens keep their `=value` so callers can test them with flag_on(). repo is the last
+    `-R/--repo` value (as in gh), '' when none, None when unsure: only `-R x`, `--repo x`, `--repo=x`
+    and `-Rowner/repo` are trusted; any other short-flag token carrying an R (`-dR x`, `-dRx`, `-Rd`)
+    or a trailing `-R` returns None so the caller fails closed (pflag clusters are open-ended).
     """
-    repo, skip = "", False
-    for i, a in enumerate(argv):
-        if skip:
-            skip = False
-        elif a in ("-R", "--repo"):
-            if i + 1 >= len(argv):
-                return None
-            repo, skip = argv[i + 1], True
+    ref, toks, repo, past_merge, value_of = "", [], "", False, None
+    for a in argv[1:]:
+        if value_of:
+            if value_of in ("-R", "--repo"):
+                repo = a
+            value_of = None
+        elif a in MERGE_FLAGS_WITH_VALUE:
+            toks.append(a)
+            value_of = a
         elif a.startswith("--repo="):
+            toks.append("--repo")
             repo = a[len("--repo="):]
         elif re.fullmatch(r"-R=?[^-/=\s][^/\s]*/[^/\s]+", a):
+            toks.append("-R")
             repo = a[2:].lstrip("=")
         elif re.match(r"-[^-]", a) and "R" in a:
-            return None
-    return repo
+            repo = None
+            break
+        elif a.startswith("-"):
+            toks.append(a)
+        elif not past_merge:
+            past_merge = a == "merge"
+        elif not ref:
+            ref = a
+    if value_of in ("-R", "--repo"):
+        repo = None
+    return ref, toks, repo
 
 
 def merge_calls(cmd):
-    """Yield (ref, flags, repo) for each `gh pr merge`; ref/repo are '' when none is named."""
+    """Yield (ref, flag tokens, repo) for each `gh pr merge`; see merge_args()."""
     for argv in segments(cmd):
         pr = gh_pr(argv)
-        if not pr or pr[0] != "merge":
-            continue
-        rest = argv[argv.index("merge") + 1:]
-        ref, flags, skip = "", set(), False
-        for a in rest:
-            if skip:
-                skip = False
-            elif a in MERGE_FLAGS_WITH_VALUE:
-                flags.add(a)
-                skip = True
-            elif a.startswith("-"):
-                flags.add(a.split("=")[0])
-            elif not ref:
-                ref = a
-        yield ref, flags, repo_arg(argv)
+        if pr and pr[0] == "merge":
+            yield merge_args(argv)
 
 
 def not_green(ref, repo=""):
@@ -445,7 +447,8 @@ def check(cmd, cwd):
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
                 "and let the harness wake you.")
-    for ref, flags, repo in merge_calls(cmd):
+    for ref, toks, repo in merge_calls(cmd):
+        flags = {t.partition("=")[0] for t in toks}
         if repo is None:
             return ("Blocked: can't tell which repo this merge targets (a short-flag cluster carrying -R, "
                     "such as `-dR x`). Pass the repo as a standalone `-R owner/repo`.")
@@ -456,7 +459,9 @@ def check(cmd, cwd):
                     "so auto-merge can land a PR a late P2 should have stopped. Hand the PR to the repo's "
                     f"traffic cop, which merges with `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
                     "(`--merge` for promotions into main).")
-        if "--disable-auto" in flags:  # merges nothing: cancels an enabled auto-merge (--admin/--auto blocked above)
+        # merges nothing: cancels an enabled auto-merge (--admin/--auto blocked above). Only when on:
+        # `--disable-auto=false` leaves the option off, so that call merges and takes the full checks.
+        if flag_on(toks, ("--disable-auto",)):
             continue
         if "--match-head-commit" not in flags:
             return (f"Blocked: pin the reviewed head: `gh pr merge {ref or '<n>'} --squash --match-head-commit <sha>` "
