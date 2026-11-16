@@ -457,43 +457,59 @@ def green(e):
     return (e.get("conclusion") or e.get("state") or "").upper() in GREEN
 
 
-def run_workflows(sha, repo, cwd, deadline):
-    """Map each Actions run id on the head to (workflow file path, event); {} when unknown (fail closed)."""
+PR_URL = re.compile(r"https?://([^/]+)/([^/]+/[^/]+)/pull/\d+")
+GATE_TITLE = re.compile(r"Review Gate - PR #(\d+)")  # review-gate 3.2.6+ run-name
+
+
+def _api_lines(pr, path, jq, cwd, deadline):
+    """`gh api --paginate` against the selected PR's own host and repo, parsed from its URL, so a URL
+    selector or an Enterprise -R never falls back to the cwd's repo (#90 Codex P2). One JSON value per
+    line, never @tsv, whose escapes would not match the rollup's names (#90 Codex P2). None = unknown."""
+    m = PR_URL.fullmatch(pr.get("url") or "")
     timeout = _left(deadline, 15)
-    if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha) or timeout is None:
-        return {}
+    if not m or timeout is None:
+        return None
     try:
-        out = subprocess.run(["gh", "api", "--paginate", f"repos/{repo or '{owner}/{repo}'}/actions/runs?head_sha={sha}&per_page=100",
-                              "--jq", ".workflow_runs[] | [.id, .path, .event] | @tsv"],
-                             cwd=cwd, capture_output=True, text=True, timeout=timeout)
-    except (OSError, subprocess.SubprocessError):
-        return {}  # unresolved runs supersede nothing: every entry must then be green on its own
-    if out.returncode != 0:
+        out = subprocess.run(["gh", "api", "--hostname", m.group(1), "--paginate", f"repos/{m.group(2)}/{path}",
+                              "--jq", f"{jq} | tojson"], cwd=cwd, capture_output=True, text=True, timeout=timeout)
+        return [json.loads(line) for line in out.stdout.splitlines()] if out.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError, ValueError):
+        return None
+
+
+def run_workflows(pr, cwd, deadline):
+    """Map each Actions run id on the head that belongs to THIS PR to (workflow file path, event);
+    {} when unknown (fail closed: unresolved runs supersede nothing, so every entry must be green).
+
+    Two PRs can share a head sha (one branch into staging and main), and every run on that sha is in
+    the rollup. A run belongs to this PR only when its pull_requests list is exactly this PR, its head
+    branch and repo are this PR's, and a review-gate run-name names no other PR. A run listing several
+    PRs, or none (forks), is ambiguous and supersedes nothing (nevar-fund#27 Codex P1 r4582757746)."""
+    sha, number = pr.get("headRefOid") or "", pr.get("number")
+    if not re.fullmatch(r"[0-9a-f]{40}", sha):
         return {}
-    rows = (line.split("\t") for line in out.stdout.splitlines())
-    return {r[0]: (r[1], r[2]) for r in rows if len(r) == 3 and r[1]}
+    rows = _api_lines(pr, f"actions/runs?head_sha={sha}&per_page=100",
+                      '.workflow_runs[] | [.id, .path, .event, [.pull_requests[].number], .display_title, .head_branch,'
+                      ' (.head_repository.full_name // "")]', cwd, deadline)
+    head = [pr.get("headRefName"), (pr.get("headRepository") or {}).get("nameWithOwner")]
+    mine = {}
+    for run_id, path, event, prs, title, branch, repo in (r for r in rows or [] if len(r) == 7):
+        gate = GATE_TITLE.fullmatch(title or "")
+        if path and prs == [number] and [branch, repo] == head and not (gate and int(gate.group(1)) != number):
+            mine[str(run_id)] = (path, event)
+    return mine
 
 
-def run_jobs(run_id, repo, cwd, deadline):
+def run_jobs(run_id, pr, cwd, deadline):
     """Map each real job of an Actions run (all attempts) to (name, conclusion); {} when unknown.
 
     detailsUrl is writable by anyone with Checks write access, so a custom check can point at a
     legitimate run. Only an entry whose job id is a real job of that run, with the same name and
-    conclusion, is that job (claude-skills#90 Codex P1 r4582487271)."""
-    timeout = _left(deadline, 15)
-    if timeout is None:
-        return {}  # out of budget (claude-skills#90 Codex P2 r4582534724)
-    try:
-        out = subprocess.run(["gh", "api", "--paginate",
-                              f"repos/{repo or '{owner}/{repo}'}/actions/runs/{run_id}/jobs?filter=all&per_page=100",
-                              "--jq", '.jobs[] | [.id, .name, (.conclusion // "")] | @tsv'],
-                             cwd=cwd, capture_output=True, text=True, timeout=timeout)
-    except (OSError, subprocess.SubprocessError):
-        return {}
-    if out.returncode != 0:
-        return {}
-    rows = (line.split("\t") for line in out.stdout.splitlines())
-    return {r[0]: (r[1], r[2].upper()) for r in rows if len(r) == 3}
+    conclusion, is that job (claude-skills#90 Codex P1 r4582487271). Out of budget (#90 Codex P2
+    r4582534724) or a failed call resolves nothing."""
+    rows = _api_lines(pr, f"actions/runs/{run_id}/jobs?filter=all&per_page=100",
+                      '.jobs[] | [.id, .name, (.conclusion // "")]', cwd, deadline)
+    return {str(r[0]): (r[1], (r[2] or "").upper()) for r in rows or [] if len(r) == 3}
 
 
 def not_green(ref, repo="", cwd=None):
@@ -509,7 +525,7 @@ def not_green(ref, repo="", cwd=None):
     deadline = time.monotonic() + GH_BUDGET_S
     try:
         out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
-                              "statusCheckRollup,mergeStateStatus,headRefOid"],
+                              "statusCheckRollup,mergeStateStatus,headRefOid,number,url,headRefName,headRepository"],
                              cwd=cwd, capture_output=True, text=True, timeout=8)
         if out.returncode != 0:
             return f"gh failed: {out.stderr.strip()}"
@@ -519,7 +535,7 @@ def not_green(ref, repo="", cwd=None):
         return f"gh failed: {e}"
     if not rollup:
         return "no checks reported yet"
-    workflows = run_workflows(view.get("headRefOid"), repo, cwd, deadline)
+    workflows = run_workflows(view, cwd, deadline)
     # The rollup lists every workflow run on the head: a PR whose first Review Gate run failed
     # (body lacked `## Review`) keeps that red run after a newer run goes green. GitHub already
     # collapses re-attempts *within* a run (only the latest attempt is listed), so identity is the
@@ -532,15 +548,15 @@ def not_green(ref, repo="", cwd=None):
     # named `CI` whose green job would otherwise supersede the real CI failure), and an entry counts as
     # that run's job only when the Actions jobs API lists its job id in that run with the same name
     # and conclusion (detailsUrl is writable, so a custom check could claim any run). Status contexts,
-    # third-party check runs and any entry without startedAt or a run id resolved to a workflow path
-    # are never collapsed and must be green on their own.
+    # third-party check runs, another PR's runs on a shared head sha, and any entry without startedAt
+    # or a run id resolved to a workflow path of THIS PR are never collapsed and must be green on their own.
     groups, latest, run_start, jobs = {}, [], {}, {}
     for e in rollup:
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         m = RUN_ID.search(e.get("detailsUrl") or "")
         # No parsable run id: run identity is unknown, so the entry supersedes nothing (fail closed).
         if m and m.group(1) in workflows and m.group(1) not in jobs:
-            jobs[m.group(1)] = run_jobs(m.group(1), repo, cwd, deadline)
+            jobs[m.group(1)] = run_jobs(m.group(1), view, cwd, deadline)
         if (m and m.group(1) in workflows and (e.get("startedAt") or "") > "0002"
                 and jobs[m.group(1)].get(m.group(2)) == (e.get("name"), (e.get("conclusion") or "").upper())):
             run_key = m.group(1)

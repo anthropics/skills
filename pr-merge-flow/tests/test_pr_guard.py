@@ -111,29 +111,51 @@ class _R:
         self.returncode, self.stdout, self.stderr = rc, out, err
 
 HEAD_SHA = "a" * 40
-def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0, events=None, forged=()):
-    """`gh pr view` returns the rollup; `gh api .../actions/runs` resolves each run id to its workflow
-    file. By default a run's path follows its workflowName; `paths` overrides it per run id (None =
-    the API does not list that run), `events` overrides the event. `.../runs/<id>/jobs` lists every
-    rollup entry's job as real, except entries in `forged` (custom checks with a borrowed detailsUrl)."""
+def _jq(args, body, api_rc):
+    """Apply the guard's own --jq expression to an API-shaped body with real jq, as gh does."""
+    if api_rc:
+        return _R(api_rc, "", "boom")
+    out = _run(["jq", "-r", args[args.index("--jq") + 1]], input=json.dumps(body), capture_output=True, text=True)
+    assert out.returncode == 0, out.stderr
+    return _R(0, out.stdout)
+
+def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0, events=None, forged=(), owners=None, titles=None,
+        branches=None, host="github.com", calls=None):
+    """`gh pr view` returns the rollup for PR o/r#5 (head branch feat); `gh api .../actions/runs` resolves
+    each run id to its workflow file. By default a run's path follows its workflowName; `paths` overrides
+    it per run id (None = the API does not list that run), `events` the event, `owners` its pull_requests
+    numbers (default [5]), `titles` its display_title, `branches` its head branch. `.../runs/<id>/jobs`
+    lists every rollup entry's job as real, except entries in `forged` (custom checks with a borrowed
+    detailsUrl). Every gh api call must target the PR's own host and repo; `calls` collects them."""
     def run(args, *a, **k):
-        if args[:2] == ["gh", "api"] and "/jobs?" in args[3]:
-            run_id = re.search(r"/runs/(\d+)/jobs", args[3]).group(1)
-            rows = [(m.group(2), e.get("name"), (e.get("conclusion") or "").upper()) for e in rollup or []
-                    if id(e) not in {id(f) for f in forged}
-                    and (m := g.RUN_ID.search(e.get("detailsUrl") or "")) and m.group(1) == run_id]
-            return _R(api_rc, "".join(f"{j}\t{n}\t{c}\n" for j, n, c in rows), "boom" if api_rc else "")
         if args[:2] == ["gh", "api"]:
-            assert f"head_sha={HEAD_SHA}" in args[3], args
+            assert args[args.index("--hostname") + 1] == host, args
+            path = next(x for x in args if x.startswith("repos/"))
+            assert path.startswith("repos/o/r/"), args
+            if calls is not None:
+                calls.append(args)
+        if args[:2] == ["gh", "api"] and "/jobs?" in path:
+            run_id = re.search(r"/runs/(\d+)/jobs", path).group(1)
+            jobs = [{"id": int(m.group(2)), "name": e.get("name"), "conclusion": e.get("conclusion") or None}
+                    for e in rollup or [] if id(e) not in {id(f) for f in forged}
+                    and (m := g.RUN_ID.search(e.get("detailsUrl") or "")) and m.group(1) == run_id]
+            return _jq(args, {"jobs": jobs}, api_rc)
+        if args[:2] == ["gh", "api"]:
+            assert f"head_sha={HEAD_SHA}" in path, args
             rows = {}
             for e in rollup or []:
                 m = g.RUN_ID.search(e.get("detailsUrl") or "")
                 if m and e.get("workflowName"):
                     rows[m.group(1)] = f".github/workflows/{e['workflowName'].lower().replace(' ', '-')}.yml"
             rows.update(paths or {})
-            return _R(api_rc, "".join(f"{i}\t{pth}\t{(events or {}).get(i, 'pull_request')}\n"
-                                      for i, pth in rows.items() if pth), "boom" if api_rc else "")
-        return _R(rc, json.dumps({"statusCheckRollup": rollup, "headRefOid": HEAD_SHA}), err)
+            out = [{"id": int(i) if i.isdigit() else i, "path": pth, "event": (events or {}).get(i, "pull_request"),
+                    "pull_requests": [{"number": n} for n in (owners or {}).get(i, [5])],
+                    "display_title": (titles or {}).get(i, "feat: x"), "head_branch": (branches or {}).get(i, "feat"),
+                    "head_repository": {"full_name": "o/r"}} for i, pth in rows.items() if pth]
+            return _jq(args, {"workflow_runs": out}, api_rc)
+        return _R(rc, json.dumps({"statusCheckRollup": rollup, "headRefOid": HEAD_SHA, "number": 5,
+                                  "url": f"https://{host}/o/r/pull/5", "headRefName": "feat",
+                                  "headRepository": {"nameWithOwner": "o/r"}}), err)
     return run
 
 _run = g.subprocess.run
@@ -376,6 +398,46 @@ for bad in (dict(custom), dict(custom, detailsUrl="https://github.com/o/r/action
     finally:
         g.subprocess.run = _run
     assert m and "Foundation checks: FAILURE" in m, (bad, m)
+# 1.4.7 (nevar-fund#27 Codex P1 r4582757746): two PRs share a head sha (one branch into staging and
+# main), so the rollup holds both PRs' runs. PR 6's newer green run must not supersede PR 5's failed run.
+def guarded(**kw):
+    g.subprocess.run = _gh(rollup=ok + [real, fake], paths={"200": ".github/workflows/ci.yml", "201": ".github/workflows/ci.yml"}, **kw)
+    try:
+        return g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r")
+    finally:
+        g.subprocess.run = _run
+for kw in ({"owners": {"201": [6]}},  # the other PR's run
+           {"owners": {"201": [5, 6]}},  # GitHub lists both PRs: ambiguous
+           {"owners": {"201": []}},  # no PR association (fork): unresolved
+           {"branches": {"201": "other"}},  # another branch's run
+           {"titles": {"201": "Review Gate - PR #6"}}):  # review-gate 3.2.6 run-name names PR 6
+    m = guarded(**kw)
+    assert m and "Foundation checks: FAILURE" in m, (kw, m)
+assert guarded(titles={"201": "Review Gate - PR #5"}) is None  # this PR's own rerun still supersedes
+# ...and an attributed older run of another PR does not get superseded by this PR's run either: it
+# was never this PR's, so it stays in the rollup and must be green on its own.
+m = guarded(owners={"200": [6]})
+assert m and "Foundation checks: FAILURE" in m, m
+# 1.4.7 (#90 Codex P2, Tracker 41a4efecc95a81c19402cec8c8b9606d): lookups return JSON, not @tsv, so a
+# job name with a backslash or a tab matches its rollup entry and a newer run still supersedes.
+odd = "build\\x\ty"
+g.subprocess.run = _gh(rollup=ok + [wf_job(odd, "FAILURE", 210, 1, "2026-11-15T10:00:00Z"),
+                                    wf_job(odd, "SUCCESS", 211, 2, "2026-11-15T10:10:00Z")])
+try:
+    assert g.check("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "/r") is None
+finally:
+    g.subprocess.run = _run
+# 1.4.7 (#90 Codex P2, Tracker 41a4efecc95a811eb3d3f532769d9091): a URL selector or an Enterprise
+# `-R HOST/OWNER/REPO` makes the lookups use the PR's own host and repo, never the cwd's.
+for c in ["gh pr merge https://ghe.example.com/o/r/pull/5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          "gh pr merge 5 -R ghe.example.com/o/r --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"]:
+    _calls = []
+    g.subprocess.run = _gh(rollup=ok + old_red + [latest_ok], host="ghe.example.com", calls=_calls)
+    try:
+        assert g.check(c, "/other-checkout") is None, (c, g.check(c, "/other-checkout"))
+    finally:
+        g.subprocess.run = _run
+    assert _calls, c
 # the Actions API failing resolves nothing, so nothing is superseded (fail closed)
 m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok], api_rc=1)
 assert m and "Review Gate: FAILURE" in m, m
