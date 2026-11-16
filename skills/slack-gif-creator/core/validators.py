@@ -39,19 +39,20 @@ def validate_gif(
         with Image.open(gif_path) as img:
             width, height = img.size
 
-            # Count frames
+            # Count frames and accumulate duration across all frames
             frame_count = 0
+            total_duration_ms = 0
             try:
                 while True:
                     img.seek(frame_count)
+                    total_duration_ms += img.info.get("duration", 100)
                     frame_count += 1
             except EOFError:
                 pass
 
             # Get duration
             try:
-                duration_ms = img.info.get("duration", 100)
-                total_duration = (duration_ms * frame_count) / 1000
+                total_duration = total_duration_ms / 1000
                 fps = frame_count / total_duration if total_duration > 0 else 0
             except:
                 total_duration = None
