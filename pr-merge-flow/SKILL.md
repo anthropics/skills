@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
 description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to GitHub auto-merge, wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.3.0
+version: 1.3.1
 author: Bernier LLC
 ---
 
@@ -51,7 +51,7 @@ hooks dormant). It blocks:
 
 - `gh pr merge --admin`, always: never bypass required checks; fix the red check or ask Matt;
 - `gh pr merge` without `--auto` unless every check is SUCCESS/SKIPPED/NEUTRAL (it asks
-  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). PR #325 once
+  `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the latest run of each check counts: an older red run superseded by a green re-run of the same check (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. PR #325 once
   merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --auto --squash` (`--merge`
   for promotions into main): GitHub merges when checks pass and nobody watches;
 - a `sleep` plus a status query (`gh pr checks|view|status`, `gh run view|watch|list`) in one
