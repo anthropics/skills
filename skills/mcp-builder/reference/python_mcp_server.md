@@ -1,5 +1,7 @@
 # Python MCP Server Implementation Guide
 
+> **This guide covers v1 of the Python SDK (`mcp<2`, `FastMCP`).** Use it only for projects that already depend on v1. For new servers, use the [v2 guide](./python_mcp_server_v2.md).
+
 ## Overview
 
 This document provides Python-specific best practices and examples for implementing MCP servers using the MCP Python SDK. It covers server setup, tool registration patterns, input validation with Pydantic, error handling, and complete working examples.
