@@ -53,6 +53,18 @@ if path.split("?")[0].endswith("/files") and "/pulls/" in path:
     for i in range(0, max(len(fixture["pr_files"]), 1), 2):  # two per page, like --paginate's concatenation
         print(json.dumps(fixture["pr_files"][i:i + 2]))
     sys.exit(0)
+HEAD = "a" * 40 + "\tfeat/x\to/r"
+if path.startswith("repos/o/r/pulls/") and path.rsplit("/", 1)[1].isdigit():
+    if fixture.get("pr_head", HEAD) is None:
+        sys.exit(1)
+    print(fixture.get("pr_head", HEAD)); sys.exit(0)
+if "/actions/runs/" in path and "head_sha" in " ".join(args):  # the wrapper's provenance lookup
+    head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head", HEAD))
+    if head is None:
+        sys.exit(1)
+    print(head); sys.exit(0)
+if "/commits/" in path and path.split("?")[0].endswith("/pulls"):
+    print("\n".join(fixture.get("shared_prs", []))); sys.exit(0)
 if path == "repos/o/r":
     print(fixture.get("default_branch", "main")); sys.exit(0)
 if "/check-runs" in path and "/commits/" in path:
@@ -262,12 +274,13 @@ class WrapperReason(unittest.TestCase):
 
 class WrapperDetector(unittest.TestCase):
     def wrapper(self, check_runs, runs, stdin=None, pr_files=(), default_files=(RG_PATH + "?ref=main",),
-                **env_over):
+                provenance=None, **env_over):
         with tempfile.TemporaryDirectory() as tmp:
             bindir = Path(tmp); (bindir / "gh").write_text(FAKE_GH); (bindir / "gh").chmod(0o755)
             (bindir / "fixture.json").write_text(json.dumps({
                 "scripts": {}, "check_runs": check_runs, "runs": runs,
-                "pr_files": None if pr_files is None else list(pr_files), "default_files": list(default_files)}))
+                "pr_files": None if pr_files is None else list(pr_files), "default_files": list(default_files),
+                **(provenance or {})}))
             env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r",
                        PR_NUMBER="7", DEFAULT_BRANCH="main")
             for key, value in env_over.items():
@@ -350,6 +363,37 @@ class WrapperDetector(unittest.TestCase):
         for kwargs in ({"PR_NUMBER": None}, {"PR_NUMBER": "7abc"}, {"pr_files": None}):
             with self.subTest(**{k: str(v) for k, v in kwargs.items()}):
                 rc, err = self.wrapper(legacy, {"514": TRUSTED_RUN}, **{"pr_files": [pr_file(RG_PATH)], **kwargs})
+                self.assertEqual(rc, 2, err)
+
+    # 3.2.6 (Codex r4582534712): the run must have been triggered for THIS PR, judged on the run's own
+    # head fields, never on its `.pull_requests` association.
+    def test_bootstrap_stacked_child_run_listing_outer_pr_exits_1(self):
+        # Child #8's run: GitHub's association array may list outer #7, but its head is the child's.
+        child_head = "c" * 40 + "\tfeat/child\to/r"
+        rc, err = self.wrapper([job("Review Gate", 515)], {"515": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
+                               provenance={"run_heads": {"515": child_head}})
+        self.assertEqual(rc, 1, err)
+        self.assertIn("not PR #7's head", err)
+        self.assertNotIn("bootstrap", err)
+
+    def test_bootstrap_same_sha_other_branch_or_fork_exits_1(self):
+        for other in ("a" * 40 + "\tfeat/other\to/r", "a" * 40 + "\tfeat/x\tfork/r"):
+            with self.subTest(other=other):
+                rc, err = self.wrapper([job("Review Gate", 516)], {"516": TRUSTED_RUN},
+                                       pr_files=[pr_file(RG_PATH)], provenance={"run_heads": {"516": other}})
+                self.assertEqual(rc, 1, err)
+
+    def test_bootstrap_head_shared_with_another_open_pr_exits_1(self):
+        rc, err = self.wrapper([job("Review Gate", 517)], {"517": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
+                               provenance={"shared_prs": ["8"]})
+        self.assertEqual(rc, 1, err)
+        self.assertIn("#8 share head", err)
+
+    def test_bootstrap_provenance_lookup_failure_exits_2(self):
+        for provenance in ({"pr_head": None}, {"run_heads": {"518": None}}, {"pr_head": "garbage"}):
+            with self.subTest(provenance=provenance):
+                rc, err = self.wrapper([job("Review Gate", 518)], {"518": TRUSTED_RUN},
+                                       pr_files=[pr_file(RG_PATH)], provenance=provenance)
                 self.assertEqual(rc, 2, err)
 
     # aec #154 (dba592db): empty or runless input cannot be evaluated, so it fails closed.
