@@ -38,7 +38,6 @@ class BaseSchemaValidator:
         "sldid": ("id", "file"),  
         "sldmasterid": ("id", "global"),  
         "sldlayoutid": ("id", "global"),  
-        "cm": ("authorid", "file"),  
         "sheet": ("sheetid", "file"),  
         "definedname": ("id", "file"),  
         "cxnsp": ("id", "file"),  
@@ -219,6 +218,7 @@ class BaseSchemaValidator:
     def validate_unique_ids(self):
         errors = []
         global_ids = {}  
+        comment_ids = {}
 
         for xml_file in self.xml_files:
             try:
@@ -239,6 +239,29 @@ class BaseSchemaValidator:
                         if "}" in elem.tag
                         else elem.tag.lower()
                     )
+
+                    # PresentationML comment indices are unique per author across
+                    # the presentation, not per author within a comments part.
+                    if elem.tag == (
+                        "{http://schemas.openxmlformats.org/presentationml/2006/main}cm"
+                    ):
+                        author_id = elem.get("authorId")
+                        index = elem.get("idx")
+                        if author_id is not None and index is not None:
+                            key = (author_id, index)
+                            if key in comment_ids:
+                                prev_file, prev_line = comment_ids[key]
+                                errors.append(
+                                    f"  {xml_file.relative_to(self.unpacked_dir)}: "
+                                    f"Line {elem.sourceline}: Duplicate comment "
+                                    f"authorId='{author_id}', idx='{index}' "
+                                    f"(first occurrence in {prev_file} at line {prev_line})"
+                                )
+                            else:
+                                comment_ids[key] = (
+                                    xml_file.relative_to(self.unpacked_dir),
+                                    elem.sourceline,
+                                )
 
                     if tag in self.UNIQUE_ID_REQUIREMENTS:
                         in_excluded_container = any(
