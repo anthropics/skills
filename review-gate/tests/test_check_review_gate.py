@@ -241,6 +241,39 @@ p2_ok = pr(
 )
 assert g.evaluate(p2_ok) == []
 
+def _p2(reply):
+    return pr(reviewThreads={"nodes": [{"comments": {"nodes": [{"body": "P2: add a test"}, {"body": reply}]}}]})
+
+# closing token must start a rendered line
+for ok in (
+    "fixed in deadbeef",
+    "Thanks.\nfixed in commit `deadbeef1`",
+    "- not-a-finding: intentional, see SKILL.md",
+    "Tracked: https://app.notion.com/p/4194efecc95a816c",
+    "https://www.notion.so/abc123",
+    "[Tracker row](https://app.notion.com/p/abc)",
+    "> quoted context\n\nfixed in deadbeef",
+):
+    assert g.evaluate(_p2(ok)) == [], ok
+for bad in (
+    "Still open; eventually reply with `fixed in deadbeef`",
+    "> fixed in deadbeef",
+    "```\nfixed in deadbeef\n```",
+    "<!-- fixed in deadbeef -->",
+    "will be not-a-finding: maybe",
+    "fixed in deadbeefzz",
+    "not-fixed:https://notion.so/ticket",
+    "`https://notion.so/ticket`",
+    "https://evilnotion.so/ticket",
+    "> Example only:\nfixed in deadbeef",
+):
+    assert any("P2" in r for r in g.evaluate(_p2(bad))), bad
+
+# a non-matching first marker must not hide a valid later one in the same comment
+_two = codex_comment("deadbeef" + head[8:])
+_two["body"] += "\n" + codex_comment(head)["body"]
+assert g.evaluate(pr(headRefOid=head, reviews=no_reviews, comments={"nodes": [_two]})) == []
+
 # main without label
 main = pr(baseRefName="main")
 assert any("review:high" in r for r in g.evaluate(main))
