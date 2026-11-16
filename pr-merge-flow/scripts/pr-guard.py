@@ -448,6 +448,22 @@ def green(e):
     return (e.get("conclusion") or e.get("state") or "").upper() in GREEN
 
 
+def run_workflows(sha, repo, cwd):
+    """Map each Actions run id on the head to (workflow file path, event); {} when unknown (fail closed)."""
+    if not sha or not re.fullmatch(r"[0-9a-f]{40}", sha):
+        return {}
+    try:
+        out = subprocess.run(["gh", "api", "--paginate", f"repos/{repo or '{owner}/{repo}'}/actions/runs?head_sha={sha}&per_page=100",
+                              "--jq", ".workflow_runs[] | [.id, .path, .event] | @tsv"],
+                             cwd=cwd, capture_output=True, text=True, timeout=15)
+    except (OSError, subprocess.SubprocessError):
+        return {}  # unresolved runs supersede nothing: every entry must then be green on its own
+    if out.returncode != 0:
+        return {}
+    rows = (line.split("\t") for line in out.stdout.splitlines())
+    return {r[0]: (r[1], r[2]) for r in rows if len(r) == 3 and r[1]}
+
+
 def not_green(ref, repo="", cwd=None):
     """Return '' when every check on the PR is green, else a description of why not.
 
@@ -460,15 +476,17 @@ def not_green(ref, repo="", cwd=None):
         return f"can't resolve the merge's working directory ({cwd}); pass -R owner/repo"
     try:
         out = subprocess.run(["gh", "pr", "view", *([ref] if ref else []), *(["-R", repo] if repo else []), "--json",
-                              "statusCheckRollup,mergeStateStatus"],
+                              "statusCheckRollup,mergeStateStatus,headRefOid"],
                              cwd=cwd, capture_output=True, text=True, timeout=8)
         if out.returncode != 0:
             return f"gh failed: {out.stderr.strip()}"
-        rollup = json.loads(out.stdout).get("statusCheckRollup") or []
+        view = json.loads(out.stdout)
+        rollup = view.get("statusCheckRollup") or []
     except (OSError, subprocess.SubprocessError, ValueError, AttributeError) as e:
         return f"gh failed: {e}"
     if not rollup:
         return "no checks reported yet"
+    workflows = run_workflows(view.get("headRefOid"), repo, cwd)
     # The rollup lists every workflow run on the head: a PR whose first Review Gate run failed
     # (body lacked `## Review`) keeps that red run after a newer run goes green. GitHub already
     # collapses re-attempts *within* a run (only the latest attempt is listed), so identity is the
@@ -476,19 +494,22 @@ def not_green(ref, repo="", cwd=None):
     # the newest run supersedes older runs (by the run's first startedAt over all its jobs, ISO-8601 UTC), and every
     # same-named job inside that run is a distinct job that must be green on its own: a later green
     # job (e.g. one with `needs:`) never hides an earlier failed sibling. Runs tied on startedAt
-    # cannot be ordered, so all of them count (fail closed). Status contexts, third-party check runs
-    # and any entry without startedAt or a run id are never collapsed and must be green on their own.
+    # cannot be ordered, so all of them count (fail closed). The workflow is identified by the run's
+    # file path and event from the Actions API, never by the editable `name:` (a PR can add a workflow
+    # named `CI` whose green job would otherwise supersede the real CI failure). Status contexts,
+    # third-party check runs and any entry without startedAt or a run id resolved to a workflow path
+    # are never collapsed and must be green on their own.
     groups, latest, run_start = {}, [], {}
     for e in rollup:
         # gh serializes a missing startedAt as the zero time "0001-01-01T00:00:00Z", not null
         m = RUN_ID.search(e.get("detailsUrl") or "")
         # No parsable run id: run identity is unknown, so the entry supersedes nothing (fail closed).
-        if m and e.get("workflowName") and (e.get("startedAt") or "") > "0002":
+        if m and m.group(1) in workflows and (e.get("startedAt") or "") > "0002":
             run_key = m.group(1)
             # A run starts when its first job does, across ALL its jobs: a dependency-delayed job
             # in an older run must not make that run outrank a newer one.
             run_start[run_key] = min(run_start.get(run_key, e["startedAt"]), e["startedAt"])
-            groups.setdefault((e["workflowName"], e.get("name")), {}).setdefault(run_key, []).append(e)
+            groups.setdefault((workflows[run_key], e.get("name")), {}).setdefault(run_key, []).append(e)
         else:
             latest.append(e)
     for runs in groups.values():

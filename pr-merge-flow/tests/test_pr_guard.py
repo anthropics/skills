@@ -110,8 +110,23 @@ class _R:
     def __init__(self, rc, out="", err=""):
         self.returncode, self.stdout, self.stderr = rc, out, err
 
-def _gh(rc=0, rollup=None, err=""):
-    return lambda *a, **k: _R(rc, json.dumps({"statusCheckRollup": rollup}), err)
+HEAD_SHA = "a" * 40
+def _gh(rc=0, rollup=None, err="", paths=None, api_rc=0):
+    """`gh pr view` returns the rollup; `gh api .../actions/runs` resolves each run id to its workflow
+    file. By default a run's path follows its workflowName; `paths` overrides it per run id (None =
+    the API does not list that run)."""
+    def run(args, *a, **k):
+        if args[:2] == ["gh", "api"]:
+            assert f"head_sha={HEAD_SHA}" in args[3], args
+            rows = {}
+            for e in rollup or []:
+                m = g.RUN_ID.search(e.get("detailsUrl") or "")
+                if m and e.get("workflowName"):
+                    rows[m.group(1)] = f".github/workflows/{e['workflowName'].lower().replace(' ', '-')}.yml"
+            rows.update(paths or {})
+            return _R(api_rc, "".join(f"{i}\t{pth}\tpull_request\n" for i, pth in rows.items() if pth), "boom" if api_rc else "")
+        return _R(rc, json.dumps({"statusCheckRollup": rollup, "headRefOid": HEAD_SHA}), err)
+    return run
 
 _run = g.subprocess.run
 def merge(cmd, **kw):
@@ -313,6 +328,27 @@ for url in (None, "https://example.com/not-a-job"):
         {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "FAILURE", "startedAt": "2026-11-15T10:00:00Z", "detailsUrl": url},
         {"name": "Review Gate", "workflowName": "Review Gate", "conclusion": "SUCCESS", "startedAt": "2026-11-15T10:10:00Z", "detailsUrl": url}])
     assert m and "Review Gate: FAILURE" in m, (url, m)
+# 1.4.6 (nevar-integrations#11 Codex P1 r4582423865): workflow identity is the run's file path, not
+# its editable `name:`. A PR-added workflow also named `CI` with a later green `Foundation checks` job
+# must not supersede the real CI run's failed `Foundation checks`.
+real = wf_job("Foundation checks", "FAILURE", 200, 1, "2026-11-15T10:00:00Z")
+fake = wf_job("Foundation checks", "SUCCESS", 201, 2, "2026-11-15T10:10:00Z")
+for paths in ({"200": ".github/workflows/ci.yml", "201": ".github/workflows/sneaky.yml"},  # two paths, one name
+              {"201": None},  # the API does not list the newer run: unresolved, supersedes nothing
+              {"200": ".github/workflows/ci.yml", "201": ".github/workflows/ci.yml", "x": "y"}):
+    pr_merge = "gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    g.subprocess.run = _gh(rollup=ok + [real, fake], paths=paths)
+    try:
+        m = g.check(pr_merge, "/r")
+    finally:
+        g.subprocess.run = _run
+    if paths["201"] == ".github/workflows/ci.yml":
+        assert m is None, (paths, m)  # a true rerun of the same workflow file still supersedes
+    else:
+        assert m and "Foundation checks: FAILURE" in m, (paths, m)
+# the Actions API failing resolves nothing, so nothing is superseded (fail closed)
+m = merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + old_red + [latest_ok], api_rc=1)
+assert m and "Review Gate: FAILURE" in m, m
 # an older run still in progress does not outrank a newer green run
 assert merge("gh pr merge 5 --squash --match-head-commit aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", rollup=ok + [run("Review Gate", "", "2026-11-15T10:00:00Z"), latest_ok]) is None
 # an undated completed rerun cannot be ordered, so it fails closed

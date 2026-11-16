@@ -180,6 +180,18 @@ for after_quote in ("## Review", "- note", "1. note", "---", "***"):
     assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []})) == [], after_quote
 # ...while a real lazy continuation line is still part of the quote.
 assert g.evaluate(pr(body=f"## Review\n> a quoted note\n{attestation}\n", headRefOid=head, reviews={"nodes": []}))
+# 3.2.5 (nevar-content b14ad4d Codex P1; claude-skills empty-marker and fence rows): only what
+# CommonMark lets interrupt a paragraph ends a lazy continuation. An ordered item not starting at 1,
+# an empty list marker, or a ``` line that is not a fence stays inside the quote.
+for lazy in ("2. note", "2) note", "10. note", "-", "- ", "*", "1.", "1. ", "```x`y", "~~~x", "    ```"):
+    body = f"## Review\n> Example only:\n{lazy}\n{attestation}\n"
+    assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []})), lazy
+assert not g.review_section_names_fallback(
+    "## Review\n> Example only:\n2. note\nFallback review: agy on 89cda061 \u2014 verdict: clean", "89cda061" + "0" * 32)
+# ...while a non-empty item starting at 1, a bullet item and a real fence still end the quote.
+for interrupt in ("1. x", "1) x", "01. x", "- x", "+ x", "```\ncode\n```", "```py\ncode\n```", "~~~\ncode\n~~~"):
+    body = f"## Review\n> Example only:\n{interrupt}\n{attestation}\n"
+    assert g.evaluate(pr(body=body, headRefOid=head, reviews={"nodes": []})) == [], interrupt
 # nevar-fund #24 Codex P2: an empty `##` heading followed by a `Review` paragraph is not a Review section.
 for split in ("##\nReview\n", "##\r\nReview\n", "## \nReview\n"):
     assert g.evaluate(pr(body=f"{split}{attestation}\n", headRefOid=head, reviews={"nodes": []})), repr(split)
@@ -288,6 +300,9 @@ for bad in (
     "> Example only:\nfixed in deadbeef",
     "`example reply,\nfixed in deadbeef`",
     "- > Example\n  fixed in deadbeef",
+    "> Example\n```x`y\nfixed in deadbeef",
+    "> Example\n2. note\nfixed in deadbeef",
+    "> Example\n-\nfixed in deadbeef",
 ):
     assert any("P2" in r for r in g.evaluate(_p2(bad))), bad
 assert g.evaluate(_p2("not-a-finding: `retry` is idempotent")) == []
