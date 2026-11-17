@@ -1,0 +1,14 @@
+{
+  "id": "developer",
+  "label_en": "Developer",
+  "label_zh": "开发者版",
+  "description_en": "Three-line preset that emphasizes git state, context pressure, and token visibility.",
+  "description_zh": "三行开发者预设，重点强化 Git 状态、上下文压力和 Token 可见性。",
+  "lines": 3,
+  "modules": {
+    "1": ["model", "modes", "active"],
+    "2": ["cwd", "git", "context"],
+    "3": ["ctx_tokens", "sum_tokens", "duration", "cost"]
+  },
+  "is_default": false
+}
