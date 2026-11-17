@@ -7,14 +7,15 @@ import argparse
 import logging
 import shutil
 import subprocess
+import tempfile
 from pathlib import Path
 
-from office.soffice import get_soffice_env
+from office.soffice import get_soffice_env, soffice_binary
 
 logger = logging.getLogger(__name__)
 
-LIBREOFFICE_PROFILE = "/tmp/libreoffice_docx_profile"
-MACRO_DIR = f"{LIBREOFFICE_PROFILE}/user/basic/Standard"
+LIBREOFFICE_PROFILE = Path(tempfile.gettempdir()) / "libreoffice_docx_profile"
+MACRO_DIR = LIBREOFFICE_PROFILE / "user" / "basic" / "Standard"
 
 ACCEPT_CHANGES_MACRO = """<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE script:module PUBLIC "-//OpenOffice.org//DTD OfficeDocument 1.0//EN" "module.dtd">
@@ -56,9 +57,9 @@ def accept_changes(
         return None, "Error: Failed to setup LibreOffice macro"
 
     cmd = [
-        "soffice",
+        soffice_binary(),
         "--headless",
-        f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
+        f"-env:UserInstallation={LIBREOFFICE_PROFILE.as_uri()}",
         "--norestore",
         "vnd.sun.star.script:Standard.Module1.AcceptAllTrackedChanges?language=Basic&location=application",
         str(output_path.absolute()),
@@ -98,9 +99,9 @@ def _setup_libreoffice_macro() -> bool:
     if not macro_dir.exists():
         subprocess.run(
             [
-                "soffice",
+                soffice_binary(),
                 "--headless",
-                f"-env:UserInstallation=file://{LIBREOFFICE_PROFILE}",
+                f"-env:UserInstallation={LIBREOFFICE_PROFILE.as_uri()}",
                 "--terminate_after_init",
             ],
             capture_output=True,

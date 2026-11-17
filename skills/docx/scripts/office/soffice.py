@@ -40,6 +40,24 @@ def get_soffice_env() -> dict:
     return env
 
 
+def soffice_binary() -> str:
+    """Return the soffice executable: PATH first, then the default Windows install dirs.
+
+    The LibreOffice installer on Windows does not add soffice to PATH.
+    """
+    found = shutil.which("soffice")
+    if found:
+        return found
+    if os.name == "nt":
+        for var in ("ProgramFiles", "ProgramFiles(x86)"):
+            base = os.environ.get(var)
+            if base:
+                candidate = Path(base) / "LibreOffice" / "program" / "soffice.exe"
+                if candidate.is_file():
+                    return str(candidate)
+    return "soffice"
+
+
 def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
     args = list(args)
     with contextlib.ExitStack() as stack:
@@ -53,7 +71,7 @@ def run_soffice(args: Iterable[str], **kwargs) -> subprocess.CompletedProcess:
                 tempfile.TemporaryDirectory(prefix="lo_input_", ignore_cleanup_errors=True)
             ))
             args = [_without_outside_links(str(a), copies / str(i)) for i, a in enumerate(args)]
-        return subprocess.run(["soffice"] + args, env=get_soffice_env(), **kwargs)
+        return subprocess.run([soffice_binary()] + args, env=get_soffice_env(), **kwargs)
 
 
 
@@ -135,6 +153,10 @@ def _without_outside_links(arg: str, folder: Path) -> str:
 
 
 def _needs_shim() -> bool:
+    # The shim is an LD_PRELOAD library for Linux sandboxes; platforms without
+    # AF_UNIX in Python's socket module (Windows) have nothing to shim.
+    if not hasattr(socket, "AF_UNIX"):
+        return False
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
