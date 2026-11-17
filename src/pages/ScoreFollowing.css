@@ -1,0 +1,382 @@
+.score-following-page {
+  min-height: 100vh;
+  padding: 2rem 0;
+}
+
+.stage-content {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Conversion Progress */
+.conversion-progress {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  box-shadow: var(--shadow-lg);
+  text-align: center;
+}
+
+.progress-header h2 {
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.progress-header p {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+.progress-preview {
+  margin: 2rem 0;
+}
+
+.processing-thumbnail {
+  width: 100%;
+  max-width: 400px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.progress-bar-wrapper {
+  margin: 2rem 0;
+}
+
+.progress-bar-track {
+  height: 40px;
+  background: var(--light-bg);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+  transition: width 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1rem;
+}
+
+.progress-percentage {
+  color: white;
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.progress-stages {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.stage {
+  text-align: center;
+  opacity: 0.4;
+  transition: all 0.3s ease;
+}
+
+.stage.active {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.stage.complete {
+  opacity: 0.8;
+}
+
+.stage-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stage-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+/* Difficulty Display */
+.difficulty-display {
+  max-width: 900px;
+  margin: 0 auto 2rem;
+}
+
+.difficulty-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.difficulty-header h2 {
+  color: var(--text-primary);
+}
+
+.difficulty-card {
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: var(--shadow-md);
+}
+
+.overall-difficulty {
+  text-align: center;
+  padding: 2rem;
+  border-bottom: 2px solid var(--border-color);
+  margin-bottom: 2rem;
+}
+
+.difficulty-badge {
+  display: inline-block;
+  padding: 1rem 2rem;
+  border-radius: var(--radius-lg);
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  border: 3px solid;
+}
+
+.difficulty-score {
+  font-size: 1.2rem;
+}
+
+.score-label {
+  color: var(--text-secondary);
+  margin-right: 0.5rem;
+}
+
+.score-value {
+  font-weight: 700;
+  color: var(--text-primary);
+  font-size: 1.5rem;
+}
+
+.statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.stat-card {
+  background: var(--light-bg);
+  padding: 1.5rem;
+  border-radius: var(--radius-md);
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.stat-value {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.stat-label {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.notes-distribution {
+  margin-top: 2rem;
+}
+
+.notes-distribution h4 {
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.distribution-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.distribution-bar {
+  display: grid;
+  grid-template-columns: 100px 1fr 60px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.bar-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.bar-track {
+  height: 30px;
+  background: var(--light-bg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  transition: width 0.5s ease;
+  border-radius: var(--radius-md);
+}
+
+.bar-fill.easy {
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+}
+
+.bar-fill.medium {
+  background: linear-gradient(90deg, #f59e0b 0%, #d97706 100%);
+}
+
+.bar-fill.hard {
+  background: linear-gradient(90deg, #ef4444 0%, #dc2626 100%);
+}
+
+.bar-value {
+  text-align: right;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+/* Player Section */
+.player-section {
+  max-width: 900px;
+  margin: 2rem auto;
+}
+
+/* Actions */
+.actions {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.btn-secondary {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  background: white;
+  color: #667eea;
+  border: 2px solid #667eea;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+/* Error View */
+.error-view {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: var(--radius-lg);
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: var(--shadow-md);
+}
+
+.error-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.error-view h2 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.error-view p {
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+}
+
+.error-view ul {
+  text-align: left;
+  color: var(--text-secondary);
+  margin: 1rem auto;
+  max-width: 400px;
+}
+
+.error-view li {
+  margin-bottom: 0.5rem;
+}
+
+.error-note {
+  background: rgba(102, 126, 234, 0.1);
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin: 1.5rem 0;
+  border-left: 4px solid #667eea;
+  text-align: left;
+}
+
+.error-note strong {
+  color: #667eea;
+}
+
+.btn-primary {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 1rem;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .score-following-page {
+    padding: 1rem 0;
+  }
+
+  .conversion-progress,
+  .difficulty-card {
+    padding: 1.5rem;
+  }
+
+  .statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .progress-stages {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .distribution-bar {
+    grid-template-columns: 80px 1fr 50px;
+    gap: 0.5rem;
+  }
+
+  .bar-label {
+    font-size: 0.8rem;
+  }
+
+  .error-view {
+    padding: 2rem 1rem;
+  }
+}

@@ -1,0 +1,130 @@
+version: '3.8'
+
+# ============================================
+# Staging Environment Configuration
+# ============================================
+
+services:
+  # Frontend service
+  frontend:
+    image: ${REGISTRY:-ghcr.io}/${FRONTEND_IMAGE:-piano-tutor/frontend}:${VERSION:-latest}
+    container_name: piano-tutor-frontend-staging
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    environment:
+      - NODE_ENV=staging
+      - VITE_API_URL=https://api-staging.piano-tutor.com
+      - VITE_WS_URL=wss://api-staging.piano-tutor.com
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - backend
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    labels:
+      - "com.piano-tutor.environment=staging"
+      - "com.piano-tutor.service=frontend"
+
+  # Backend service
+  backend:
+    image: ${REGISTRY:-ghcr.io}/${BACKEND_IMAGE:-piano-tutor/backend}:${VERSION:-latest}
+    container_name: piano-tutor-backend-staging
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - ENVIRONMENT=staging
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - JWT_SECRET=${JWT_SECRET}
+      - CORS_ORIGINS=https://staging.piano-tutor.com
+      - LOG_LEVEL=debug
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 20s
+    labels:
+      - "com.piano-tutor.environment=staging"
+      - "com.piano-tutor.service=backend"
+
+  # PostgreSQL database
+  postgres:
+    image: postgres:15-alpine
+    container_name: piano-tutor-db-staging
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-piano_tutor_staging}
+      - POSTGRES_USER=${POSTGRES_USER:-piano_tutor}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./backend/migrations:/docker-entrypoint-initdb.d
+    networks:
+      - piano-tutor-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-piano_tutor}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis cache
+  redis:
+    image: redis:7-alpine
+    container_name: piano-tutor-redis-staging
+    restart: unless-stopped
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    volumes:
+      - redis-data:/data
+    networks:
+      - piano-tutor-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  # Celery worker for async tasks
+  celery-worker:
+    image: ${REGISTRY:-ghcr.io}/${BACKEND_IMAGE:-piano-tutor/backend}:${VERSION:-latest}
+    container_name: piano-tutor-celery-staging
+    restart: unless-stopped
+    command: celery -A app.celery.tasks worker --loglevel=info --concurrency=2
+    environment:
+      - ENVIRONMENT=staging
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_BROKER_URL=${REDIS_URL:-redis://redis:6379/0}
+      - CELERY_RESULT_BACKEND=${REDIS_URL:-redis://redis:6379/0}
+    networks:
+      - piano-tutor-network
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/logs:/app/logs
+
+networks:
+  piano-tutor-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local

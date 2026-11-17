@@ -1,0 +1,379 @@
+/* Metronome */
+.metronome {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.metronome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.metronome-status {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.metronome-status.playing {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.metronome-status.paused {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.metronome-controls {
+  display: grid;
+  gap: 20px;
+}
+
+.bpm-control {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.bpm-control label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.bpm-slider {
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  outline: none;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.bpm-slider:hover {
+  opacity: 1;
+}
+
+.bpm-slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #3b82f6;
+  cursor: pointer;
+}
+
+.bpm-presets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.bpm-presets button {
+  padding: 6px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+  font-size: 0.8em;
+  transition: all 0.2s;
+}
+
+.bpm-presets button:hover {
+  background: #f3f4f6;
+}
+
+.time-signature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.time-signature label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.time-signature select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+}
+
+.metronome-toggle {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 1em;
+}
+
+.metronome-toggle.start {
+  background: #10b981;
+  color: white;
+}
+
+.metronome-toggle.stop {
+  background: #ef4444;
+  color: white;
+}
+
+.metronome-toggle:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.beat-indicator {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.beat {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #e5e7eb;
+  transition: all 0.1s;
+}
+
+.beat.active {
+  background: #3b82f6;
+  transform: scale(1.2);
+}
+
+.beat.accented.active {
+  background: #ef4444;
+}
+
+.tap-tempo {
+  text-align: center;
+  padding-top: 15px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.tap-button {
+  padding: 10px 20px;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  background: #f9fafb;
+  cursor: pointer;
+  font-size: 1em;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+
+.tap-button:hover {
+  border-color: #3b82f6;
+  background: #f0f9ff;
+}
+
+.tap-tempo small {
+  color: #6b7280;
+}
+
+/* Study Loop */
+.study-loop {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.loop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.loop-status .looping {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.loop-status .paused {
+  color: #6b7280;
+}
+
+.loop-controls {
+  display: grid;
+  gap: 15px;
+}
+
+.measure-range {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.range-input {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.range-input label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 0.9em;
+}
+
+.range-input select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: white;
+}
+
+.repetition-control {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.repetition-control label {
+  font-weight: 600;
+  color: #374151;
+}
+
+.repetition-control input {
+  width: 100%;
+}
+
+.loop-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.start-loop,
+.stop-loop {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+}
+
+.start-loop {
+  background: #10b981;
+  color: white;
+}
+
+.stop-loop {
+  background: #ef4444;
+  color: white;
+}
+
+.settings-toggle {
+  padding: 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background: white;
+  cursor: pointer;
+  font-size: 1.2em;
+}
+
+.loop-progress {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #10b981, #3b82f6);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 0.9em;
+  color: #6b7280;
+  text-align: center;
+  display: block;
+}
+
+.loop-settings {
+  margin-top: 15px;
+  padding: 15px;
+  background: #f8fafc;
+  border-radius: 8px;
+}
+
+.loop-settings h4 {
+  margin: 0 0 10px 0;
+  color: #374151;
+}
+
+.setting {
+  margin-bottom: 8px;
+}
+
+.setting label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #4b5563;
+}
+
+.current-loop {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f0f9ff;
+  border-radius: 6px;
+  border-left: 4px solid #3b82f6;
+  font-size: 0.9em;
+}
+
+.current-measure {
+  color: #3b82f6;
+  font-weight: 600;
+  margin-left: 10px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .measure-range {
+    grid-template-columns: 1fr;
+  }
+
+  .loop-actions {
+    flex-direction: column;
+  }
+
+  .bpm-presets {
+    justify-content: center;
+  }
+
+  .metronome-controls {
+    gap: 15px;
+  }
+}

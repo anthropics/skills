@@ -1,0 +1,78 @@
+{
+  // Editor
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "explicit"
+  },
+  "editor.tabSize": 2,
+  "editor.rulers": [100],
+
+  // ESLint
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.format.enable": true,
+
+  // Prettier
+  "prettier.requireConfig": true,
+  "prettier.useEditorConfig": false,
+
+  // TypeScript
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "typescript.preferences.importModuleSpecifier": "relative",
+
+  // Files
+  "files.associations": {
+    "*.css": "css"
+  },
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/.cache": true
+  },
+
+  // Search
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/dist": true,
+    "**/build": true,
+    "**/.git": true,
+    "**/coverage": true,
+    "**/.vite": true
+  },
+
+  // Spell Checker
+  "cSpell.words": [
+    "piano",
+    "tutor",
+    "gamification",
+    "leaderboard",
+    "opensheetmusicdisplay",
+    "webmidi",
+    "tonejs",
+    "vitest",
+    "vite",
+    "pnpm",
+    "criptolandiatv"
+  ],
+
+  // Git
+  "git.ignoreLimitWarning": true,
+  "git.autofetch": true,
+
+  // GitHub Copilot
+  "github.copilot.enable": {
+    "*": true,
+    "yaml": true,
+    "plaintext": false,
+    "markdown": true
+  }
+}
