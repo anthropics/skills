@@ -1,0 +1,105 @@
+{
+  "schema_version": "1.1",
+  "generated_at": "ISO-8601",
+  "strategy": "micro|small|normal|macro",
+  "confidence": "low|medium|high",
+  "project": {
+    "name": "...",
+    "stack": ["..."],
+    "first_commit": "YYYY-MM-DD",
+    "last_commit": "YYYY-MM-DD"
+  },
+  "codebase": {
+    "counted_loc": 0,
+    "excluded_loc": { "generated": 0, "vendored": 0, "minified": 0, "lockfiles": 0 },
+    "by_language": {},
+    "test_ratio": 0.0,
+    "quality_multiplier": 1.0,
+    "quality_signals": ["..."]
+  },
+  "process": {
+    "project_duration_days": 0,
+    "commit_count": 0,
+    "contributor_count": 0,
+    "gross_adds": 0,
+    "gross_dels": 0,
+    "net_adds": 0,
+    "churn_ratio": 0.0,
+    "process_only_hours_estimate": 0,
+    "loc_per_day": 0,
+    "ai_authored_flag": "no|suspected|clear"
+  },
+  "engineering": {
+    "base_coding_hours": { "p10": 0, "p50": 0, "p90": 0 },
+    "overhead_multiplier": 1.0,
+    "total_hours": { "p10": 0, "p50": 0, "p90": 0 },
+    "cocomo_ii_hours": 0,
+    "function_point_count": 0,
+    "function_point_hours": 0,
+    "divergence_pct_bottom_up_vs_cocomo": 0.0,
+    "agreement": "high|medium|low"
+  },
+  "locomo": {
+    "regen_tokens": 0,
+    "api_cost_usd": 0,
+    "review_hours": 0,
+    "review_cost_usd": 0,
+    "locomo_cost_usd": 0,
+    "human_premium_multiple": 0.0
+  },
+  "rates": {
+    "recommended_usd_per_hour": 0,
+    "justification": "...",
+    "source": "websearch|skill_defaults"
+  },
+  "cost_engineering_usd": { "p10": 0, "p50": 0, "p90": 0 },
+  "cost_full_team_usd": {
+    "solo": 0, "lean_startup": 0, "growth": 0, "enterprise": 0
+  },
+  "calendar_months": {
+    "solo": 0, "lean_startup": 0, "growth": 0, "enterprise": 0
+  },
+  "claude_roi": {
+    "method": "session_logs|git_clustering|loc_estimate",
+    "method_confidence": "high|medium|low",
+    "active_hours_capped6": 0,
+    "active_hours_uncapped": 0,
+    "operator_hours_union": 0,
+    "peak_concurrent_sessions": 0,
+    "avg_concurrency": 0,
+    "parallel_tier": "single_window|single_autonomous|power_user|advanced_orchestrator|top_percentile_expert|off_the_chart",
+    "reviewer_ratio": 0.5,
+    "reviewer_hours": 0,
+    "plan": "max|pro|api|unknown",
+    "actual_cash_paid_usd": 0,
+    "equivalent_api_spend_usd": 0,
+    "equivalent_api_source": "session_logs|heuristic",
+    "effective_plan_savings_usd": 0,
+    "token_usage": {
+      "input_tokens": 0,
+      "cache_creation_input_tokens": 0,
+      "cache_read_input_tokens": 0,
+      "output_tokens": 0,
+      "messages": 0
+    },
+    "claude_total_cost_usd": 0,
+    "value_per_claude_compute_hour_usd": 0,
+    "value_per_operator_hour_usd": 0,
+    "speed_multiplier_compute": 0,
+    "speed_multiplier_operator": 0,
+    "sanity_flag": "plausible|suspicious|implausible",
+    "roi_multiple": 0
+  },
+  "external_anchors": {
+    "naive_supply_side_usd": 0,
+    "harvard_ratio": 0.0,
+    "harvard_flag": "normal|too_low|too_high",
+    "annual_maint_rate": 0.20,
+    "lifetime_cost_5y_usd": 0
+  },
+  "sensitivity_drivers": [
+    { "assumption": "...", "p50_impact_usd": 0 }
+  ],
+  "spot_check_items": ["...", "...", "..."],
+  "low_confidence_fields": ["..."]
+}
