@@ -1,0 +1,86 @@
+{
+  "active_cases": {
+    "25-6461": {
+      "case_number": "25-6461",
+      "judge": "Stacy Beckerman",
+      "parties": {
+        "appellants": [],
+        "appellees": []
+      },
+      "filing_history": [
+        {
+          "filename": "2025-12-22_NinthCircuitDecl-Lofall_Declaration.docx",
+          "path": "2025-12-22_NinthCircuitDecl-Lofall_Declaration.docx",
+          "date_processed": "2025-12-22T21:46:12.809535"
+        },
+        {
+          "filename": "2025-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx",
+          "path": "2025-12-22_NinthCircuitDecl-Lofall_Declaration_2025-12-22.docx",
+          "date_processed": "2025-12-22T21:46:12.812885"
+        },
+        {
+          "filename": "2025-12-22_NinthCircuitDecl-Lofall_Declaration_Advanced.docx",
+          "path": "2025-12-22_NinthCircuitDecl-Lofall_Declaration_Advanced.docx",
+          "date_processed": "2025-12-22T21:46:12.815482"
+        },
+        {
+          "filename": "Lofall_Declaration_2025-12-22.docx",
+          "path": "Lofall_Declaration_2025-12-22.docx",
+          "date_processed": "2025-12-22T21:46:12.817735"
+        },
+        {
+          "filename": "Lofall_Declaration_Advanced.docx",
+          "path": "Lofall_Declaration_Advanced.docx",
+          "date_processed": "2025-12-22T21:46:12.820311"
+        },
+        {
+          "filename": "20251206_234543-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "path": "chronological\\20251206_234543-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "date_processed": "2025-12-22T21:46:12.840147"
+        },
+        {
+          "filename": "20251206_234643-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "path": "chronological\\20251206_234643-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "date_processed": "2025-12-22T21:46:12.842330"
+        },
+        {
+          "filename": "20251221_052450-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "path": "chronological\\20251221_052450-25-6461-APPELLANTS_OPENING_BRIEF_COVER.docx",
+          "date_processed": "2025-12-22T21:46:12.863039"
+        },
+        {
+          "filename": "25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234543.docx",
+          "path": "covers\\25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234543.docx",
+          "date_processed": "2025-12-22T21:46:12.865251"
+        },
+        {
+          "filename": "25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234643.docx",
+          "path": "covers\\25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251206_234643.docx",
+          "date_processed": "2025-12-22T21:46:12.867325"
+        },
+        {
+          "filename": "25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251221_052450.docx",
+          "path": "covers\\25-6461-APPELLANTS_OPENING_BRIEF_COVER-20251221_052450.docx",
+          "date_processed": "2025-12-22T21:46:12.869662"
+        },
+        {
+          "filename": "Motion_for_Leave_Oversize_Brief.docx",
+          "path": "motions\\Motion_for_Leave_Oversize_Brief.docx",
+          "date_processed": "2025-12-22T21:46:12.870963"
+        }
+      ]
+    }
+  },
+  "learned_patterns": {
+    "common_citations": [
+      "Fed. R. App. P. 4",
+      "76 F.3d 1032",
+      "42 U.S.C. § 1983",
+      "Fed. R. App. P. 3",
+      "28 U.S.C. § 1331",
+      "28 U.S.C. § 1291",
+      "794 F.2d 1392"
+    ]
+  },
+  "last_updated": "2025-12-22T21:46:13.375684"
+}

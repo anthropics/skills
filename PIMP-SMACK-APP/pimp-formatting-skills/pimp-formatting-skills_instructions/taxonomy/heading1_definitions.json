@@ -1,0 +1,168 @@
+{
+  "_file": "heading1_definitions",
+  "_version": "2.1.0",
+  "_notes": [
+    "Heading-1 IDs are stable keys. 'display' is the text shown in the document.",
+    "The formatter should not invent new Heading-1 groups; use the IDs required by build_manifest.json.",
+    "Legal citations here are informational only and may require local-rule checking."
+  ],
+  "headings": {
+    "INTRODUCTION": {
+      "display": "INTRODUCTION",
+      "purpose": "Brief orienting statement; sets context.",
+      "aliases": [
+        "Preliminary Statement"
+      ]
+    },
+    "FACTUAL_BACKGROUND": {
+      "display": "FACTUAL BACKGROUND",
+      "purpose": "Relevant facts and procedural history (district).",
+      "aliases": [
+        "Background",
+        "Statement of Facts"
+      ]
+    },
+    "LEGAL_STANDARD": {
+      "display": "LEGAL STANDARD",
+      "purpose": "Standard governing the motion/issue."
+    },
+    "ARGUMENT": {
+      "display": "ARGUMENT",
+      "purpose": "Legal argument section with authorities and record citations."
+    },
+    "CONCLUSION": {
+      "display": "CONCLUSION",
+      "purpose": "States precise relief requested."
+    },
+    "DISCLOSURE_STATEMENT": {
+      "display": "DISCLOSURE STATEMENT",
+      "purpose": "Corporate disclosure statement if required (appellate).",
+      "rules_hint": [
+        "FRAP 26.1"
+      ]
+    },
+    "JURISDICTIONAL_STATEMENT": {
+      "display": "JURISDICTIONAL STATEMENT",
+      "purpose": "Explains basis for appellate jurisdiction.",
+      "rules_hint": [
+        "FRAP 28(a)"
+      ]
+    },
+    "STATUTORY_AND_REGULATORY_AUTHORITIES": {
+      "display": "STATUTORY AND REGULATORY AUTHORITIES",
+      "purpose": "Optional verbatim authorities or addendum pointer."
+    },
+    "ISSUES_PRESENTED": {
+      "display": "ISSUES PRESENTED",
+      "purpose": "Lists issues for review.",
+      "rules_hint": [
+        "FRAP 28(a)"
+      ]
+    },
+    "STATEMENT_OF_THE_CASE": {
+      "display": "STATEMENT OF THE CASE",
+      "purpose": "Procedural history + facts relevant to issues.",
+      "rules_hint": [
+        "FRAP 28(a)"
+      ]
+    },
+    "SUMMARY_OF_ARGUMENT": {
+      "display": "SUMMARY OF THE ARGUMENT",
+      "purpose": "Concise summary, not a rewrite of headings.",
+      "rules_hint": [
+        "FRAP 28(a)"
+      ]
+    },
+    "STANDARD_OF_REVIEW": {
+      "display": "STANDARD OF REVIEW",
+      "purpose": "Applicable standard(s) of review.",
+      "rules_hint": [
+        "FRAP 28(a)(8)(B)"
+      ]
+    },
+    "PARTIES": {
+      "display": "PARTIES",
+      "purpose": "Identifies parties (complaint)."
+    },
+    "JURISDICTION_AND_VENUE": {
+      "display": "JURISDICTION AND VENUE",
+      "purpose": "Basis for court jurisdiction and venue (complaint)."
+    },
+    "FACTUAL_ALLEGATIONS": {
+      "display": "FACTUAL ALLEGATIONS",
+      "purpose": "Chronological facts supporting claims."
+    },
+    "CLAIMS_FOR_RELIEF": {
+      "display": "CLAIMS FOR RELIEF",
+      "purpose": "Numbered causes of action and elements."
+    },
+    "PRAYER_FOR_RELIEF": {
+      "display": "PRAYER FOR RELIEF",
+      "purpose": "Requested remedies."
+    },
+    "JURY_DEMAND": {
+      "display": "JURY DEMAND",
+      "purpose": "Demand for jury trial if applicable."
+    },
+    "RESPONSES_TO_ALLEGATIONS": {
+      "display": "RESPONSES TO ALLEGATIONS",
+      "purpose": "Admit/deny/insufficient knowledge responses."
+    },
+    "AFFIRMATIVE_DEFENSES": {
+      "display": "AFFIRMATIVE DEFENSES",
+      "purpose": "Affirmative defenses section."
+    },
+    "DECLARATION": {
+      "display": "DECLARATION",
+      "purpose": "Sworn statement with numbered paragraphs."
+    },
+    "NOTICE_BODY": {
+      "display": "NOTICE",
+      "purpose": "Notice body."
+    },
+    "ORDER_BODY": {
+      "display": "ORDER",
+      "purpose": "Order text."
+    },
+    "STIPULATION_BODY": {
+      "display": "STIPULATION",
+      "purpose": "Stipulation text."
+    },
+    "REQUESTS_OR_RESPONSES": {
+      "display": "REQUESTS / RESPONSES",
+      "purpose": "Discovery requests or responses."
+    },
+    "DEFINITIONS": {
+      "display": "DEFINITIONS",
+      "purpose": "Defined terms for discovery."
+    },
+    "INSTRUCTIONS": {
+      "display": "INSTRUCTIONS",
+      "purpose": "Instructions for responding to discovery."
+    },
+    "OBJECTIONS": {
+      "display": "OBJECTIONS",
+      "purpose": "Objections section."
+    },
+    "RESPONSES": {
+      "display": "RESPONSES",
+      "purpose": "Responses section."
+    },
+    "EXHIBIT_BODY": {
+      "display": "EXHIBIT",
+      "purpose": "Exhibit content."
+    },
+    "JUDGMENT_BODY": {
+      "display": "JUDGMENT",
+      "purpose": "Judgment content."
+    },
+    "LETTER_BODY": {
+      "display": "LETTER",
+      "purpose": "Letter body."
+    },
+    "SUBPOENA_BODY": {
+      "display": "SUBPOENA",
+      "purpose": "Subpoena content."
+    }
+  }
+}

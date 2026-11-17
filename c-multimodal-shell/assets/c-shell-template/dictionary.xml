@@ -1,0 +1,13 @@
+<dictionary slot="40" mode="grounded-word-lookup">
+  <entry word="the">
+    <definition index="1">Definite article used to identify a specific person, place, thing, group, idea, or clause.</definition>
+    <definition index="2">Marker that a following noun phrase is already known, grounded, or uniquely identified in context.</definition>
+  </entry>
+  <entry word="as">
+    <definition index="1">Used to compare one role, state, manner, or identity with another.</definition>
+    <definition index="2">Used to mean while, because, or in the way that, depending on sentence structure.</definition>
+  </entry>
+  <entry word="grounded">
+    <definition index="1">Connected to a concrete source file, observation, rule, or verified context instead of an unreferenced guess.</definition>
+  </entry>
+</dictionary>

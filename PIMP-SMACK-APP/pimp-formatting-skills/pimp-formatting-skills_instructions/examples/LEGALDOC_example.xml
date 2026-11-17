@@ -1,0 +1,19 @@
+<DOCUMENT filing_type="MOTION" jurisdiction_id="FRCP_BASE">
+  <CAPTION>UNITED STATES DISTRICT COURT
+DISTRICT OF OREGON
+[[PLAINTIFF]], Plaintiff,
+v.
+[[DEFENDANT]], Defendant.
+Case No. [[CASE NUMBER]]</CAPTION>
+  <TITLE>MOTION TO [[RELIEF REQUESTED]]</TITLE>
+  <H1 id="INTRODUCTION">INTRODUCTION</H1>
+  <P>[[Paste the user's introduction text here.]]</P>
+  <H1 id="FACTUAL_BACKGROUND">FACTUAL BACKGROUND</H1>
+  <P>[[Paste the user's facts here.]]</P>
+  <H1 id="LEGAL_STANDARD">LEGAL STANDARD</H1>
+  <P>[[Paste the user's legal standard text here.]]</P>
+  <H1 id="ARGUMENT">ARGUMENT</H1>
+  <P>[[Paste the user's arguments here.]]</P>
+  <H1 id="CONCLUSION">CONCLUSION</H1>
+  <P>[[State the relief requested.]]</P>
+</DOCUMENT>

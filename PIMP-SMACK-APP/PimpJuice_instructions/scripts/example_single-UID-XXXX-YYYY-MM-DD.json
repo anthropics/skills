@@ -1,0 +1,111 @@
+  {
+      "uid": "1224",
+      "Location": [
+        {
+          "location": "Clackamas County Court House",
+          "date_of_event": "2022-06-10",
+          "time_of_event": "09:03"
+        }
+      ],
+      "claim": [
+        {
+          "clause": "Violation of Right to Counsel and Fair Trial (Sixth Amendment)",
+          "element": "Defendant interfered with or denied this right"
+        }
+      ],
+      "parties_involved": [
+        {
+          "d1_gunnarson": false,
+          "d2_blyth": false,
+          "d3_west_linn": false,
+          "d4_portlock": true,
+          "d5_jail": false,
+          "d6_county": true,
+          "d7_sheriff": false,
+          "d8_ccso_doe1": false,
+          "d9_ccso_doe2": false
+        }
+      ],
+      "none_party_players": [
+        {
+          "npp_priv": false,
+          "npp_Atny": true,
+          "npp_duty": false,
+          "npp_jail": false,
+          "npp_judg": true
+        }
+      ],
+      "screenshot_URL/link": "<not for model to insert>",
+      "description_of_evidence": "Official court transcript from a hearing on June 10, 2022, where Plaintiff's court-appointed advisor, Rubin Medina, colluded with the prosecution to cancel a trial based on false information.",
+      "depiction_quote": "JUDGE STEELE: Mr. Medina, the information that I got from you yesterday was that he had tested positive for the last two days. It turns out that he didn't. He didn't test positive yesterday.",
+      "significance": "The Sixth Amendment requires, at a minimum, that counsel (or an advisor) not actively work against the defendant. Here, court-appointed advisor Medina, who had no authority to make decisions, abandoned his role and became an agent of the prosecution. He colluded with the DA, lied to the court, and engineered the cancellation of a trial his client was prepared to win. This is a structural failure of the adversarial system.",
+      "precedence": [
+        {
+          "caselaw1": "Strickland v. Washington, 466 U.S. 668 (1984): This case sets the standard for ineffective assistance of counsel, requiring deficient performance and resulting prejudice. Medina's act of lying to the court on behalf of the prosecution falls far below the 'objective standard of reasonableness' required of counsel, and the prejudice is the trial cancellation and prolonged incarceration.",
+          "caselaw2": "United States v. Cronic, 466 U.S. 648 (1984): This case is crucial as it outlines circumstances where ineffective assistance is so profound that prejudice is presumed, such as when 'counsel entirely fails to subject the prosecution's case to meaningful adversarial testing.' By actively colluding with the DA, Medina did not just fail to test the prosecution's case; he actively aided it, triggering a presumption of prejudice."
+        }
+      ],
+      "oath_of_auth": "This is a true and accurate copy of a document produced by the opposing party.",
+      "notes": "Advisor Medina's actions represent a complete breakdown of the adversarial process. Instead of advising his pro se client, he acted as an agent for the state, providing the court with the same false information as the DA to achieve the state's goal of delaying the trial. This is not mere ineffective assistance but a hostile act against his own client's interests.",
+      "complements_uid": "334, 244",
+      "citation": "Court Transcript, page 5 at par 2-3",
+      "source": "Court Listener Transcript, Case No. 22CR10908",
+      "state_produced": "true"
+    },
+
+    {
+      "uid": "334",
+      "Location": [
+        {
+          "location": "Clackamas County Court House",
+          "date_of_event": "2022-06-10",
+          "time_of_event": "09:03"
+        }
+      ],
+      "claim": [
+        {
+          "clause": "Malicious Prosecution (Fourth & Fourteenth Amendments)",
+          "element": "Defendant acted with malice"
+        }
+      ],
+      "parties_involved": [
+        {
+          "d1_gunnarson": false,
+          "d2_blyth": false,
+          "d3_west_linn": false,
+          "d4_portlock": true,
+          "d5_jail": false,
+          "d6_county": true,
+          "d7_sheriff": false,
+          "d8_ccso_doe1": false,
+          "d9_ccso_doe2": false
+        }
+      ],
+      "none_party_players": [
+        {
+          "npp_priv": false,
+          "npp_Atny": true,
+          "npp_duty": false,
+          "npp_jail": false,
+          "npp_judg": true
+        }
+      ],
+      "screenshot_URL/link": "<not for model to insert>",
+      "description_of_evidence": "Official court transcript from June 10, 2022, showing DDA Portlock allowing a false statement about Plaintiff's health to be presented to the court to secure a trial delay.",
+      "depiction_quote": "DA REBECCA PORTLOCK: Mr. Lofall is in custody on another matter... Mr. Lofall tested positive for COVID at the jail yesterday. For reasons that are absolutely unclear to me. He was transported here without being tested again today.",
+      "significance": "Malice is proven by showing an improper purpose. The State knew their witness was unavailable and they were unprepared for trial. Instead of dismissing the case, DDA Portlock abused the judicial process by fabricating a health emergency. This act of lying to the court to continue a baseless prosecution is definitive evidence of malice, satisfying a key element of the claim.",
+      "precedence": [
+        {
+          "caselaw1": "Heck v. Humphrey, 512 U.S. 477 (1994): This case establishes that for a § 1983 malicious prosecution claim to proceed, the underlying criminal proceedings must have terminated in the plaintiff's favor. Lofall's case, which was ultimately dismissed, meets this 'favorable termination' requirement, allowing him to seek damages for the unconstitutional prosecution.",
+          "caselaw2": "Poppell v. City of San Diego, 149 F.3d 951 (9th Cir. 1998): This case defines malice in a malicious prosecution claim as acting with an 'improper or wrongful motive.' DDA Portlock's actions—lying to a judge to postpone a trial because the state was unprepared—were not part of her official duties but were an abuse of process for an improper purpose, which constitutes substantial evidence of malice."
+        }
+      ],
+      "oath_of_auth": "This is a true and accurate copy of a document produced by the opposing party.",
+      "notes": "The state's primary witness was hostile and had left the country. The prosecution was not ready for trial. Rather than dismiss the case, DDA Portlock participated in a scheme to lie to the court, using a fabricated health crisis as a pretext to continue a prosecution she knew lacked witness support. This demonstrates a clear intent to misuse the judicial process for an improper purpose.",
+      "complements_uid": "334, 1224",
+      "citation": "Court Transcript, page 5 at par 1",
+      "source": "Court Listener Transcript, Case No. 22CR10908",
+      "state_produced": "true"
+    }
+  ]
+}

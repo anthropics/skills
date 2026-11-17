@@ -1,0 +1,52 @@
+{
+  "generated_at": "2025-12-23T01:22:11.069534",
+  "total_broken": 3,
+  "broken_skills": [
+    {
+      "skill_name": "skills",
+      "uses": "",
+      "issues": [
+        "Loose item found: algorithmic-art",
+        "Loose item found: brand-guidelines",
+        "Loose item found: canvas-design",
+        "Loose item found: doc-coauthoring",
+        "Loose item found: docx",
+        "Loose item found: frontend-design",
+        "Loose item found: internal-comms",
+        "Loose item found: mcp-builder",
+        "Loose item found: pdf",
+        "Loose item found: pptx",
+        "Loose item found: skill-creator",
+        "Loose item found: slack-gif-creator",
+        "Loose item found: theme-factory",
+        "Loose item found: web-artifacts-builder",
+        "Loose item found: webapp-testing",
+        "Loose item found: xlsx",
+        "Missing required: SKILL.md",
+        "Missing required: LICENSE",
+        "Missing required: skills_instructions",
+        "Missing required: skills_example"
+      ]
+    },
+    {
+      "skill_name": "spec",
+      "uses": "",
+      "issues": [
+        "Loose item found: agent-skills-spec.md",
+        "Missing required: SKILL.md",
+        "Missing required: LICENSE",
+        "Missing required: spec_instructions",
+        "Missing required: spec_example"
+      ]
+    },
+    {
+      "skill_name": "template",
+      "uses": "Replace with description of the skill and when Claude should use it.",
+      "issues": [
+        "Missing required: LICENSE",
+        "Missing required: template_instructions",
+        "Missing required: template_example"
+      ]
+    }
+  ]
+}

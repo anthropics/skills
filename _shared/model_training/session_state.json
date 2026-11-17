@@ -1,0 +1,17 @@
+{
+  "model_id": "worker_001",
+  "session_count": 0,
+  "phase": "initialization",
+  "current_task": null,
+  "decisions_made": {},
+  "learned_patterns": {
+    "successful_approaches": [],
+    "failed_approaches": []
+  },
+  "validation_scores": {
+    "consistency": 0.5,
+    "citation_accuracy": 0.5,
+    "legal_reasoning": 0.5
+  },
+  "next_action": "Load evidence cards and begin analysis"
+}

@@ -1,0 +1,178 @@
+# HEADING-PARSER — INSTRUCTIONS
+
+## WHAT THIS DOES
+
+Parses raw text by HEADING_1 markers → outputs structured JSON.
+
+**No model rewriting. Script does the parsing.**
+
+---
+
+## KNOWN HEADING_1 MARKERS
+
+From `build_manifest.json`. Script looks for these:
+
+```
+INTRODUCTION
+FACTUAL BACKGROUND
+PROCEDURAL BACKGROUND
+STATEMENT OF FACTS
+LEGAL STANDARD
+ARGUMENT
+CONCLUSION
+PARTIES
+JURISDICTION AND VENUE
+FACTUAL ALLEGATIONS
+CAUSES OF ACTION
+FIRST CAUSE OF ACTION
+SECOND CAUSE OF ACTION
+[etc...]
+PRAYER FOR RELIEF
+RESPONSES TO COMPLAINT
+AFFIRMATIVE DEFENSES
+JURISDICTIONAL STATEMENT
+STATEMENT OF THE ISSUES
+STATEMENT OF THE CASE
+SUMMARY OF ARGUMENT
+STANDARD OF REVIEW
+RELATED CASES STATEMENT
+DEFINITIONS
+INSTRUCTIONS
+REQUESTS
+STIPULATION
+```
+
+---
+
+## PARSING ALGORITHM
+
+```
+INPUT: raw_text (string)
+OUTPUT: sections_json (object)
+
+1. markers = load_markers_from_build_manifest()
+2. sections = {}
+3. section_order = []
+4. current_marker = null
+5. current_text = ""
+
+6. FOR each line IN raw_text:
+     clean_line = line.trim().toUpperCase()
+     
+     IF clean_line MATCHES any marker:
+       IF current_marker != null:
+         sections[current_marker] = current_text.trim()
+         section_order.push(current_marker)
+       current_marker = normalize_marker_name(clean_line)
+       current_text = ""
+     ELSE:
+       current_text += line + "\n"
+
+7. IF current_marker != null:
+     sections[current_marker] = current_text.trim()
+     section_order.push(current_marker)
+
+8. RETURN {
+     "parsed_sections": sections,
+     "section_order": section_order
+   }
+```
+
+---
+
+## MARKER NORMALIZATION
+
+Display name → File name:
+- "FACTUAL BACKGROUND" → "FACTUAL_BACKGROUND"
+- "STATEMENT OF FACTS" → "STATEMENT_OF_FACTS"
+- Spaces become underscores
+- All caps
+
+---
+
+## INPUT FORMAT
+
+User provides raw text. Headings on their own lines:
+
+```
+INTRODUCTION
+
+The plaintiff brings this motion...
+
+ARGUMENT
+
+Under Federal Rule of Civil Procedure 56...
+
+CONCLUSION
+
+For the foregoing reasons...
+```
+
+---
+
+## OUTPUT FORMAT
+
+```json
+{
+  "filing_type": "MOTION",
+  "font_size": "12pt",
+  "parsed_sections": {
+    "INTRODUCTION": "The plaintiff brings this motion...",
+    "ARGUMENT": "Under Federal Rule of Civil Procedure 56...",
+    "CONCLUSION": "For the foregoing reasons..."
+  },
+  "section_order": [
+    "INTRODUCTION",
+    "ARGUMENT", 
+    "CONCLUSION"
+  ],
+  "metadata": {
+    "parsed_at": "ISO_TIMESTAMP",
+    "source": "user_input",
+    "case_number": null,
+    "parties": null
+  }
+}
+```
+
+---
+
+## STORAGE
+
+JSON output saves to:
+```
+/case_files/{case_number}/parsed/{document_name}.json
+```
+
+Can be reloaded, compared, or merged later.
+
+---
+
+## LOADING INTO TEMPLATES
+
+Once parsed, sections load into DOCX templates:
+
+```
+Template has: {{INTRODUCTION}}
+JSON has: parsed_sections.INTRODUCTION = "The plaintiff..."
+Result: Placeholder replaced with section text
+```
+
+---
+
+## EDGE CASES
+
+| Case | Handling |
+|------|----------|
+| No markers found | Return empty sections, flag warning |
+| Unknown marker | Skip, include in previous section's text |
+| Duplicate marker | Append to existing section |
+| Empty section | Store as empty string |
+
+---
+
+## VERSION
+
+| Version | Date | Changes |
+|---------|------|---------|
+| 1.0.0 | 2024-12-20 | Initial creation |

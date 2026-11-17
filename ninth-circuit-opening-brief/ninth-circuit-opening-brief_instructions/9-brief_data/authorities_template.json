@@ -1,0 +1,37 @@
+{
+    "cases": [],
+    "statutes": [],
+    "regulations": [],
+    "rules": [],
+    "other_authorities": [],
+    "_template_examples": {
+        "case_example": {
+            "name": "Hazel-Atlas Glass Co. v. Hartford-Empire Co.",
+            "citation": "322 U.S. 238 (1944)",
+            "court": "U.S. Supreme Court",
+            "pages_cited": [
+                4,
+                15,
+                22
+            ],
+            "proposition": "Fraud on the court"
+        },
+        "statute_example": {
+            "citation": "42 U.S.C. § 1983",
+            "title": "Civil Rights Act",
+            "pages_cited": [
+                1,
+                6,
+                18
+            ]
+        },
+        "rule_example": {
+            "citation": "Fed. R. App. P. 4(a)(4)(A)(iv)",
+            "description": "Tolling of appeal deadline by Rule 59 motion",
+            "pages_cited": [
+                3,
+                5
+            ]
+        }
+    }
+}

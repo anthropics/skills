@@ -1,0 +1,42 @@
+<training>
+  <slot id="1" modality="text" path="training/text_01.txt">Text training placeholder 01.</slot>
+  <slot id="2" modality="vision" path="training/image_01.png">Vision training placeholder 02.</slot>
+  <slot id="3" modality="audio" path="training/audio_01.wav">Audio training placeholder 03.</slot>
+  <slot id="4" modality="text" path="training/text_04.txt">Text training placeholder 04.</slot>
+  <slot id="5" modality="vision" path="training/image_05.png">Vision training placeholder 05.</slot>
+  <slot id="6" modality="audio" path="training/audio_06.wav">Audio training placeholder 06.</slot>
+  <slot id="7" modality="text" path="training/text_07.txt">Text training placeholder 07.</slot>
+  <slot id="8" modality="vision" path="training/image_08.png">Vision training placeholder 08.</slot>
+  <slot id="9" modality="audio" path="training/audio_09.wav">Audio training placeholder 09.</slot>
+  <slot id="10" modality="text" path="training/text_10.txt">Text training placeholder 10.</slot>
+  <slot id="11" modality="vision" path="training/image_11.png">Vision training placeholder 11.</slot>
+  <slot id="12" modality="audio" path="training/audio_12.wav">Audio training placeholder 12.</slot>
+  <slot id="13" modality="text" path="training/text_13.txt">Text training placeholder 13.</slot>
+  <slot id="14" modality="vision" path="training/image_14.png">Vision training placeholder 14.</slot>
+  <slot id="15" modality="audio" path="training/audio_15.wav">Audio training placeholder 15.</slot>
+  <slot id="16" modality="text" path="training/text_16.txt">Text training placeholder 16.</slot>
+  <slot id="17" modality="vision" path="training/image_17.png">Vision training placeholder 17.</slot>
+  <slot id="18" modality="audio" path="training/audio_18.wav">Audio training placeholder 18.</slot>
+  <slot id="19" modality="text" path="training/text_19.txt">Text training placeholder 19.</slot>
+  <slot id="20" modality="vision" path="training/image_20.png">Vision training placeholder 20.</slot>
+  <slot id="21" modality="audio" path="training/audio_21.wav">Audio training placeholder 21.</slot>
+  <slot id="22" modality="text" path="training/text_22.txt">Text training placeholder 22.</slot>
+  <slot id="23" modality="vision" path="training/image_23.png">Vision training placeholder 23.</slot>
+  <slot id="24" modality="audio" path="training/audio_24.wav">Audio training placeholder 24.</slot>
+  <slot id="25" modality="text" path="training/text_25.txt">Text training placeholder 25.</slot>
+  <slot id="26" modality="vision" path="training/image_26.png">Vision training placeholder 26.</slot>
+  <slot id="27" modality="audio" path="training/audio_27.wav">Audio training placeholder 27.</slot>
+  <slot id="28" modality="text" path="training/text_28.txt">Text training placeholder 28.</slot>
+  <slot id="29" modality="vision" path="training/image_29.png">Vision training placeholder 29.</slot>
+  <slot id="30" modality="audio" path="training/audio_30.wav">Audio training placeholder 30.</slot>
+  <slot id="31" modality="text" path="training/text_31.txt">Text training placeholder 31.</slot>
+  <slot id="32" modality="vision" path="training/image_32.png">Vision training placeholder 32.</slot>
+  <slot id="33" modality="audio" path="training/audio_33.wav">Audio training placeholder 33.</slot>
+  <slot id="34" modality="text" path="training/text_34.txt">Text training placeholder 34.</slot>
+  <slot id="35" modality="vision" path="training/image_35.png">Vision training placeholder 35.</slot>
+  <slot id="36" modality="audio" path="training/audio_36.wav">Audio training placeholder 36.</slot>
+  <slot id="37" modality="text" path="training/text_37.txt">Text training placeholder 37.</slot>
+  <slot id="38" modality="vision" path="training/image_38.png">Vision training placeholder 38.</slot>
+  <slot id="39" modality="audio" path="training/audio_39.wav">Audio training placeholder 39.</slot>
+  <slot id="40" modality="dictionary" path="dictionary.xml">Grounded XML dictionary slot for unknown words and multiple definitions.</slot>
+</training>
