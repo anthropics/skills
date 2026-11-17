@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "django: makemigrations",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["manage.py", "makemigrations"],
+      "problemMatcher": []
+    },
+    {
+      "label": "django: migrate",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["manage.py", "migrate"],
+      "problemMatcher": []
+    },
+    {
+      "label": "django: runserver",
+      "type": "shell",
+      "command": "${command:python.interpreterPath}",
+      "args": ["manage.py", "runserver"],
+      "isBackground": true,
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
+    }
+  ]
+}

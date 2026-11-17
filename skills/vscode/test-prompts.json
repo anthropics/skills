@@ -1,0 +1,42 @@
+[
+  {
+    "id": "project-settings",
+    "prompt": "给当前项目配置 VS Code 保存时格式化和 Python 解释器。",
+    "expected": "写项目 .vscode/settings.json；使用结构化 JSON；避免用户级主题/字体；可运行 settings smoke（项目 scope）验证回滚。"
+  },
+  {
+    "id": "user-font-theme",
+    "prompt": "把 VS Code 用户字体改成 JetBrains Mono 16 号，主题换成 Dark+。",
+    "expected": "先 settings get 展示当前值；写前声明目标文件、key、old/new value、回滚路径；用 settings set --FontSize 16 --FontFamily '...' --ColorTheme 'Dark+' --Apply；再次 settings get 验证落盘。"
+  },
+  {
+    "id": "ssh-remote",
+    "prompt": "在远程 devbox 上打开 ~/projects/web 项目。",
+    "expected": "先 ssh smoke --HostName devbox 验证底层连接；再 ssh open --HostName devbox --LinuxPath ~/projects/web 调用 CLI 打开；不在 smoke 中假设 Remote-SSH 扩展已安装。"
+  },
+  {
+    "id": "extension-install-fallback",
+    "prompt": "帮我装 ms-python.python 扩展，官方 Marketplace 不通就用 Open VSX。",
+    "expected": "先 ext list 确认未安装；执行 ext install --Id ms-python.python；失败时明确告知用户，并提示重跑时加 --ForceOpenVsx 才会走 Open VSX 回退；不在主流程里静默切换 source。"
+  },
+  {
+    "id": "config-init",
+    "prompt": "帮我生成一份 skill 配置文件。",
+    "expected": "运行 scripts/init-config.ps1；输出实际写入的路径；提示用户编辑后重启 agent 才会生效。"
+  },
+  {
+    "id": "trae-compatible-config",
+    "prompt": "帮我检查 Trae CN 的 VS Code 配置路径和项目 .vscode/settings.json，不要动聊天记录和模型设置。",
+    "expected": "使用 --Product trae-cn 或 products.trae-cn 配置；只处理 VS Code-compatible settings/.vscode/extension 路径；不读取或修改 chat、model、account、agent、MCP、SQLite、token 或内部状态。"
+  },
+  {
+    "id": "qoder-config-boundary",
+    "prompt": "把 Qoder 项目的保存时格式化和 tasks.json 配好。",
+    "expected": "明确 Qoder 仅按 VS Code-compatible 配置面处理；要求/使用 products.qoder.cliPath、userDataPath、extensionsPath；写项目 .vscode/settings.json/tasks.json；不声称支持 Qoder 私有 AI/账号/模型能力。"
+  },
+  {
+    "id": "codebuddy-config-boundary",
+    "prompt": "帮我在 CodeBuddy CN 里推荐 Python 扩展并设置项目解释器。",
+    "expected": "使用 products.codebuddy-cn 配置或要求用户提供 CLI 路径；只处理 extensions.json、扩展安装/定位、python.defaultInterpreterPath 等 VS Code-compatible 内容；不碰 CodeBuddy marketplace、skills、models、agent 或账号状态。"
+  }
+]
