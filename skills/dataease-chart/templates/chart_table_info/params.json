@@ -1,0 +1,22 @@
+{
+  "view": {
+    "VIEW_ID": "7448293416766541824",
+    "CONTENT_ID": "7449036212012060672",
+    "SCENE_ID": "1240025405293989888"
+  },
+  "dataset": {
+    "DATASET_GROUP_ID": "1178801986976485376",
+    "DATASOURCE_ID": "1166370337189924864",
+    "DATASET_TABLE_ID": "7387069976563159040"
+  },
+  "fields": {
+    "xAxis": {
+      "XAXIS_FIELD_ID": "1761214724097",
+      "XAXIS_DE_NAME": "f_3319f6ba3e484e93"
+    },
+    "xAxis2": {
+      "XAXIS2_FIELD_ID": "1761214724096",
+      "XAXIS2_DE_NAME": "f_97666027e11d7dc5"
+    }
+  }
+}
