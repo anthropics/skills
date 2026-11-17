@@ -168,12 +168,17 @@ def run_single_query(
                             return triggered
 
                     elif event.get("type") == "result":
+                        if event.get("is_error"):
+                            raise RuntimeError("claude -p reported an error")
                         return triggered
         finally:
             # Clean up process on any exit path (return, exception, timeout)
             if process.poll() is None:
                 process.kill()
                 process.wait()
+
+        if process.returncode != 0:
+            raise RuntimeError(f"claude -p exited {process.returncode}")
 
         return triggered
     finally:
@@ -212,6 +217,7 @@ def run_eval(
 
         query_triggers: dict[str, list[bool]] = {}
         query_items: dict[str, dict] = {}
+        query_errors: dict[str, int] = {}
         for future in as_completed(future_to_info):
             item, _ = future_to_info[future]
             query = item["query"]
@@ -223,6 +229,7 @@ def run_eval(
             except Exception as e:
                 print(f"Warning: query failed: {e}", file=sys.stderr)
                 query_triggers[query].append(False)
+                query_errors[query] = query_errors.get(query, 0) + 1
 
     for query, triggers in query_triggers.items():
         item = query_items[query]
@@ -232,12 +239,16 @@ def run_eval(
             did_pass = trigger_rate >= trigger_threshold
         else:
             did_pass = trigger_rate < trigger_threshold
+        # A failed trial says nothing about triggering and must not satisfy a
+        # negative example merely because it was recorded as False above.
+        did_pass = did_pass and query_errors.get(query, 0) == 0
         results.append({
             "query": query,
             "should_trigger": should_trigger,
             "trigger_rate": trigger_rate,
             "triggers": sum(triggers),
             "runs": len(triggers),
+            "errors": query_errors.get(query, 0),
             "pass": did_pass,
         })
 
