@@ -34,8 +34,15 @@ def split_eval_set(eval_set: list[dict], holdout: float, seed: int = 42) -> tupl
     random.shuffle(no_trigger)
 
     # Calculate split points
-    n_trigger_test = max(1, int(len(trigger) * holdout))
-    n_no_trigger_test = max(1, int(len(no_trigger) * holdout))
+    # Leave at least one example of each class in training. With a single
+    # example, a stratified holdout is impossible for that class.
+    def test_count(group: list[dict]) -> int:
+        if len(group) <= 1:
+            return 0
+        return min(len(group) - 1, max(1, int(len(group) * holdout)))
+
+    n_trigger_test = test_count(trigger)
+    n_no_trigger_test = test_count(no_trigger)
 
     # Split
     test_set = trigger[:n_trigger_test] + no_trigger[:n_no_trigger_test]
@@ -60,6 +67,8 @@ def run_loop(
     log_dir: Path | None = None,
 ) -> dict:
     """Run the eval + improvement loop."""
+    if not eval_set:
+        raise ValueError("Eval set must contain at least one query")
     project_root = find_project_root()
     name, original_description, content = parse_skill_md(skill_path)
     current_description = description_override or original_description
@@ -67,6 +76,11 @@ def run_loop(
     # Split into train/test if holdout > 0
     if holdout > 0:
         train_set, test_set = split_eval_set(eval_set, holdout)
+        if not test_set:
+            print(
+                "Warning: eval set is too small for a holdout; no held-out score will be available",
+                file=sys.stderr,
+            )
         if verbose:
             print(f"Split: {len(train_set)} train, {len(test_set)} test (holdout={holdout})", file=sys.stderr)
     else:
@@ -259,6 +273,8 @@ def main():
     args = parser.parse_args()
 
     eval_set = json.loads(Path(args.eval_set).read_text())
+    if not eval_set:
+        parser.error("Eval set must contain at least one query")
     skill_path = Path(args.skill_path)
 
     if not (skill_path / "SKILL.md").exists():
