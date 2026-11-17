@@ -21,6 +21,7 @@ import re
 import signal
 import subprocess
 import sys
+import tempfile
 import time
 import webbrowser
 from functools import partial
@@ -59,6 +60,7 @@ def get_mime_type(path: Path) -> str:
 
 def find_runs(workspace: Path) -> list[dict]:
     """Recursively find directories that contain an outputs/ subdirectory."""
+    workspace = workspace.resolve()
     runs: list[dict] = []
     _find_runs_recursive(workspace, workspace, runs)
     runs.sort(key=lambda r: (r.get("eval_id", float("inf")), r["id"]))
@@ -66,11 +68,11 @@ def find_runs(workspace: Path) -> list[dict]:
 
 
 def _find_runs_recursive(root: Path, current: Path, runs: list[dict]) -> None:
-    if not current.is_dir():
+    if current.is_symlink() or not current.is_dir():
         return
 
     outputs_dir = current / "outputs"
-    if outputs_dir.is_dir():
+    if outputs_dir.is_dir() and not outputs_dir.is_symlink():
         run = build_run(root, current)
         if run:
             runs.append(run)
@@ -78,7 +80,7 @@ def _find_runs_recursive(root: Path, current: Path, runs: list[dict]) -> None:
 
     skip = {"node_modules", ".git", "__pycache__", "skill", "inputs"}
     for child in sorted(current.iterdir()):
-        if child.is_dir() and child.name not in skip:
+        if child.is_dir() and not child.is_symlink() and child.name not in skip:
             _find_runs_recursive(root, child, runs)
 
 
@@ -89,7 +91,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
 
     # Try eval_metadata.json
     for candidate in [run_dir / "eval_metadata.json", run_dir.parent / "eval_metadata.json"]:
-        if candidate.exists():
+        if candidate.is_file() and not candidate.is_symlink():
             try:
                 metadata = json.loads(candidate.read_text())
                 prompt = metadata.get("prompt", "")
@@ -102,7 +104,7 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     # Fall back to transcript.md
     if not prompt:
         for candidate in [run_dir / "transcript.md", run_dir / "outputs" / "transcript.md"]:
-            if candidate.exists():
+            if candidate.is_file() and not candidate.is_symlink():
                 try:
                     text = candidate.read_text()
                     match = re.search(r"## Eval Prompt\n\n([\s\S]*?)(?=\n##|$)", text)
@@ -121,15 +123,15 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
     # Collect output files
     outputs_dir = run_dir / "outputs"
     output_files: list[dict] = []
-    if outputs_dir.is_dir():
+    if outputs_dir.is_dir() and not outputs_dir.is_symlink():
         for f in sorted(outputs_dir.iterdir()):
-            if f.is_file() and f.name not in METADATA_FILES:
+            if f.is_file() and not f.is_symlink() and f.name not in METADATA_FILES:
                 output_files.append(embed_file(f))
 
     # Load grading if present
     grading = None
     for candidate in [run_dir / "grading.json", run_dir.parent / "grading.json"]:
-        if candidate.exists():
+        if candidate.is_file() and not candidate.is_symlink():
             try:
                 grading = json.loads(candidate.read_text())
             except (json.JSONDecodeError, OSError):
@@ -148,6 +150,8 @@ def build_run(root: Path, run_dir: Path) -> dict | None:
 
 def embed_file(path: Path) -> dict:
     """Read a file and return an embedded representation."""
+    if path.is_symlink():
+        return {"name": path.name, "type": "error", "content": "(Symlink skipped)"}
     ext = path.suffix.lower()
     mime = get_mime_type(path)
 
@@ -220,7 +224,7 @@ def load_previous_iteration(workspace: Path) -> dict[str, dict]:
     # Load feedback
     feedback_map: dict[str, str] = {}
     feedback_path = workspace / "feedback.json"
-    if feedback_path.exists():
+    if feedback_path.is_file() and not feedback_path.is_symlink():
         try:
             data = json.loads(feedback_path.read_text())
             feedback_map = {
@@ -348,7 +352,7 @@ class ReviewHandler(BaseHTTPRequestHandler):
             self.wfile.write(content)
         elif self.path == "/api/feedback":
             data = b"{}"
-            if self.feedback_path.exists():
+            if self.feedback_path.is_file() and not self.feedback_path.is_symlink():
                 data = self.feedback_path.read_bytes()
             self.send_response(200)
             self.send_header("Content-Type", "application/json")
@@ -366,7 +370,16 @@ class ReviewHandler(BaseHTTPRequestHandler):
                 data = json.loads(body)
                 if not isinstance(data, dict) or "reviews" not in data:
                     raise ValueError("Expected JSON object with 'reviews' key")
-                self.feedback_path.write_text(json.dumps(data, indent=2) + "\n")
+                with tempfile.NamedTemporaryFile(
+                    mode="w", encoding="utf-8", dir=self.workspace,
+                    prefix=".feedback-", suffix=".json", delete=False,
+                ) as tmp:
+                    tmp.write(json.dumps(data, indent=2) + "\n")
+                    tmp_path = Path(tmp.name)
+                try:
+                    tmp_path.replace(self.feedback_path)
+                finally:
+                    tmp_path.unlink(missing_ok=True)
                 resp = b'{"ok":true}'
                 self.send_response(200)
             except (json.JSONDecodeError, OSError, ValueError) as e:
