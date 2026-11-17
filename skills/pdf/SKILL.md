@@ -186,6 +186,15 @@ squared = Paragraph("x<super>2</super> + y<super>2</super>", styles['Normal'])
 
 For canvas-drawn text (not Paragraph objects), manually adjust font the size and position rather than using Unicode subscripts/superscripts.
 
+#### CJK Compatibility in Adobe Acrobat
+
+For Chinese, Japanese, or Korean deliverables, do not assume a PDF is portable just because Chrome or Poppler renders it correctly. Chromium-generated PDFs with subsetted OpenType/CFF CJK fonts can render with missing glyphs in Adobe Acrobat even when text extraction still works.
+
+- Prefer a generation path that embeds CJK fonts as TrueType/CIDFontType2 when Acrobat compatibility matters.
+- If a Chromium-generated PDF shows missing CJK glyphs in Acrobat, re-export it through LibreOffice; this preserves searchable text while producing a more compatible font embedding.
+- Use page rasterization only as a last-resort compatibility fallback because it removes searchable/selectable text.
+- When Acrobat/Reader is a target viewer, verify at least one final page there before delivery.
+
 ## Command-Line Tools
 
 ### pdftotext (poppler-utils)
