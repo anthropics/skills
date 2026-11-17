@@ -1,10 +1,16 @@
 ---
 name: webapp-testing
-description: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs.
+description: Toolkit for interacting with and testing local web applications using Playwright. Supports verifying frontend functionality, debugging UI behavior, capturing browser screenshots, and viewing browser logs. Also includes ScoutQA CLI for AI-powered exploratory testing.
 license: Complete terms in LICENSE.txt
 ---
 
 # Web Application Testing
+
+Two approaches available:
+- **Playwright scripts** - Precise control, local dev servers, custom automation (below)
+- **ScoutQA CLI** - AI-powered exploratory testing with natural language prompts (see `scoutqa-test/README.md`)
+
+## Playwright Approach
 
 To test local web applications, write native Python Playwright scripts.
 
@@ -94,3 +100,18 @@ with sync_playwright() as p:
   - `element_discovery.py` - Discovering buttons, links, and inputs on a page
   - `static_html_automation.py` - Using file:// URLs for local HTML
   - `console_logging.py` - Capturing console logs during automation
+- **scoutqa-test/** - ScoutQA CLI reference for AI-powered exploratory testing
+
+## ScoutQA CLI (Alternative Approach)
+
+For AI-powered exploratory testing without writing scripts:
+
+```bash
+scoutqa --url "https://example.com" --prompt "test the login flow"
+```
+
+Use ScoutQA when:
+- User asks to "test this website" or "run exploratory testing"
+- Proactively verifying web features after implementation
+
+See `scoutqa-test/README.md` for full documentation including parallel testing and troubleshooting.
