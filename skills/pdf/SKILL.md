@@ -184,7 +184,7 @@ chemical = Paragraph("H<sub>2</sub>O", styles['Normal'])
 squared = Paragraph("x<super>2</super> + y<super>2</super>", styles['Normal'])
 ```
 
-For canvas-drawn text (not Paragraph objects), manually adjust font the size and position rather than using Unicode subscripts/superscripts.
+For canvas-drawn text (not Paragraph objects), manually adjust the font size and position rather than using Unicode subscripts/superscripts.
 
 ## Command-Line Tools
 
