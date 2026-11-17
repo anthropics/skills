@@ -24,7 +24,7 @@
 ### Transport
 - **Streamable HTTP**: For remote servers, multi-client scenarios
 - **stdio**: For local integrations, command-line tools
-- Avoid SSE (deprecated in favor of streamable HTTP)
+- Avoid the legacy SSE-only transport (`SSEServerTransport`) — it is deprecated; streamable HTTP replaces it. Note: streamable HTTP itself may use SSE for the server→client channel; that is expected and correct.
 
 ---
 
@@ -194,7 +194,7 @@ Provide annotations to help clients understand tool behavior:
 | Annotation | Type | Default | Description |
 |-----------|------|---------|-------------|
 | `readOnlyHint` | boolean | false | Tool does not modify its environment |
-| `destructiveHint` | boolean | true | Tool may perform destructive updates |
+| `destructiveHint` | boolean | true | Tool may perform destructive updates (only meaningful when `readOnlyHint` is false) |
 | `idempotentHint` | boolean | false | Repeated calls with same args have no additional effect |
 | `openWorldHint` | boolean | true | Tool interacts with external entities |
 
@@ -247,3 +247,4 @@ Comprehensive testing should cover:
 - Document security considerations
 - Specify required permissions and access levels
 - Document rate limits and performance characteristics
+
