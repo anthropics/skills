@@ -2,6 +2,7 @@
 """Copy the review-gate workflow + trusted checker into the current repo."""
 from __future__ import annotations
 
+import ast
 import hashlib
 import shutil
 import sys
@@ -25,18 +26,73 @@ KNOWN_OLD = frozenset({
 })
 
 
+WRAPPER = "check-forged-review-gate.py"
+# What the bundled wrapper calls on the detector. Checked by parsing, never by running: the
+# installer runs on a developer machine and must not execute repo code (#105 Codex P1).
+WRAPPER_FUNCS = {"forged": 3, "_gh_run_lookup": 1, "_load_check_runs": 1}  # name -> positional args used
+
+
+def _detector_compatible(path: Path) -> bool:
+    """True when the detector defines what the bundled wrapper calls, with call-compatible
+    signatures, and a PROTECTED dict literal with a non-empty `Review Gate` entry."""
+    try:
+        tree = ast.parse(path.read_bytes())
+    except (SyntaxError, ValueError):
+        return False
+    funcs, protected = {}, None
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef):
+            funcs[node.name] = node.args
+        elif isinstance(node, ast.Assign) and any(isinstance(t, ast.Name) and t.id == "PROTECTED" for t in node.targets):
+            protected = node.value
+    for name, used in WRAPPER_FUNCS.items():
+        args = funcs.get(name)
+        if args is None:
+            return False
+        if any(d is None for d in args.kw_defaults):
+            return False  # a required keyword-only arg the wrapper never passes
+        positional = args.posonlyargs + args.args
+        required = len(positional) - len(args.defaults)
+        if not (required <= used <= len(positional) or (args.vararg and required <= used)):
+            return False
+    if not isinstance(protected, ast.Dict):
+        return False
+    entry = next((v for k, v in zip(protected.keys, protected.values)
+                  if isinstance(k, ast.Constant) and k.value == "Review Gate"), None)
+    return isinstance(entry, ast.Set) and bool(entry.elts)
+
+
+def _backup(dest: Path) -> Path:
+    """Save dest beside itself under a name no earlier backup holds (never overwrites one)."""
+    data = dest.read_bytes()
+    for n in range(1000):
+        backup = dest.with_name(dest.name + (".custom.bak" if n == 0 else f".custom.{n}.bak"))
+        try:
+            with open(backup, "xb") as out:
+                out.write(data)
+            return backup
+        except FileExistsError:
+            continue
+    raise SystemExit(f"error: 1000 backups of {dest} already exist; clean them up first")
+
+
 def _copy(src: Path, dest: Path, force: bool) -> bool:
     """Return True if written. Skip existing unless force; never replace a newer or custom vendored detector."""
     if dest.is_file() and dest.read_bytes() == src.read_bytes():
         print(f"unchanged: {dest}")
         return False
     if (src.name == VENDORED and dest.is_file()
-            and hashlib.sha256(dest.read_bytes()).hexdigest() not in KNOWN_OLD):
+            and hashlib.sha256(dest.read_bytes()).hexdigest() not in KNOWN_OLD
+            and _detector_compatible(dest)):
         print(f"KEPT {dest}: it differs from this skill's copy (vendored from aec) and is not a known "
               f"older version, so it was not overwritten. If yours is older, copy scripts/{VENDORED} "
               "from the newest agents-environment-config by hand.", file=sys.stderr)
         return False
-    if dest.exists() and not force:
+    if src.name == VENDORED and dest.is_file() and force and not _detector_compatible(dest):
+        backup = _backup(dest)
+        print(f"REPLACED {dest}: the bundled {WRAPPER} cannot run against it; your copy is saved as {backup}.",
+              file=sys.stderr)
+    elif dest.exists() and not force:
         print(f"already exists: {dest} (pass --force to overwrite)")
         return False
     dest.parent.mkdir(parents=True, exist_ok=True)
@@ -58,6 +114,14 @@ def main() -> int:
             return 1
 
     root = Path.cwd()
+    detector = root / "scripts" / VENDORED
+    if (not force and detector.is_file() and detector.read_bytes() != (skill_root / "scripts" / VENDORED).read_bytes()
+            and not _detector_compatible(detector)):
+        # refuse before writing anything: an upgraded wrapper beside this detector fails every gate run
+        print(f"error: the bundled {WRAPPER} cannot run against {detector}. Rerun with --force to replace it "
+              "(your copy is backed up), or update it from the newest agents-environment-config.",
+              file=sys.stderr)
+        return 1
     _copy(workflow_src, root / ".github" / "workflows" / "review-gate.yml", force)
     # Scripts must live on the default branch; the workflow loads only that ref.
     for src in script_srcs:

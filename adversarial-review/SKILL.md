@@ -1,7 +1,7 @@
 ---
 name: adversarial-review
 description: Run the adversarial PR review loop with Codex-first spend and inline line-item PR comments. Use whenever you open or push a PR, say a PR is ready, hand work to a traffic cop, need a code review, or fall through reviewers after Codex/agy quota failures. Prefer this skill over remembering review order from AGENTS.md prose.
-version: 2.1.0
+version: 2.1.1
 author: Bernier LLC
 ---
 
@@ -59,10 +59,10 @@ Maintain a `## Review` section naming which reviewer ran and the round count. Wh
 ```text
 ## Review
 
-Fallback review: claude-sonnet on 89cda061 — verdict: clean
+Fallback review: claude-sonnet on 89cda0610123456789abcdef0123456789abcdef — verdict: clean
 ```
 
-The exact format is `Fallback review: <reviewer> on <sha> — verdict: <verdict>` on one plain-text line. Allowed reviewers: `codex` (local Codex, e.g. T3 Codex high), `agy`, `antigravity`, `superpowers`, `claude-sonnet`. Allowed verdicts: `clean`, `findings fixed`. The SHA must be the full current head OID or a matching prefix of at least 7 hex characters. Lines containing `pending`, `running` or `TODO` are rejected, as are keyword-only prose, URLs and generated footers. After every push, rerun review before updating the attestation; never just copy the new SHA. See [review-gate](../review-gate/SKILL.md) for enforcement.
+The exact format is `Fallback review: <reviewer> on <sha> — verdict: <verdict>` on one plain-text line. Allowed reviewers: `codex` (local Codex, e.g. T3 Codex high), `agy`, `antigravity`, `superpowers`, `claude-sonnet`. Allowed verdicts: `clean`, `findings fixed`. The SHA must be the full 40-hex current head OID (`gh pr view <n> --json headRefOid`); a prefix does not count. Lines containing `pending`, `running` or `TODO` are rejected, as are keyword-only prose, URLs and generated footers. After every push, rerun review before updating the attestation; never just copy the new SHA. See [review-gate](../review-gate/SKILL.md) for enforcement.
 
 ## Plan / spec PRs
 

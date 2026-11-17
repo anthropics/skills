@@ -19,22 +19,43 @@ _GH_SUBPROCESS_ENV: ContextVar[dict[str, str] | None] = ContextVar(
     "review_gate_gh_env", default=None
 )
 
-P2_ROOT = re.compile(r"\bp2\b", re.I)
-# A closing reply must *say* it: the token starts a rendered line (optionally a
-# list bullet), so "still open; later reply `fixed in abc1234`", a quote, or a
-# fenced example does not close the thread.
-CLOSING = re.compile(
-    r"(?m)^[ \t]*(?:[-*+][ \t]+)?(?:tracked:?[ \t]+)?"
-    r"(?:(?:\[[^\]\n]*\]\()?<?https?://(?:[a-z0-9-]+\.)?notion\.(?:so|com)/|fixed in (?:commit )?`?[0-9a-f]{7,40}\b`?|not-a-finding:[ \t]*\S)",
-    re.I,
+P2_ROOT = re.compile(r"(?<![A-Za-z0-9])p2(?![A-Za-z0-9])", re.I | re.A)  # _P2_ and P2_x count
+# A P2 thread closes on a reply whose FIRST line is, from column 0 to its end, exactly one closing token
+# and is the whole first paragraph: the reply ends there or the next line is blank (only spaces/tabs, as
+# in CommonMark). Nothing precedes that line, so no fence, quote, list, comment or HTML block can enclose
+# it, and nothing directly after it can turn it into a setext heading or a table header. Nothing may
+# follow a SHA or a Notion link on that line ("fixed in 0123456 - not really" does not close). A Notion
+# link needs link text starting with a letter or digit. Anything else does not close. No Markdown is parsed.
+_NOTION_URL = r"https?://(?:[a-z0-9-]+\.)?notion\.(?:so|com)/[A-Za-z0-9][^\s<>()\[\]`]*"
+_CLOSING_TOKEN = re.compile(
+    r"(?:tracked:?[ \t]+)?"
+    rf"(?:\[[A-Za-z0-9][^\[\]<>\n]*\]\({_NOTION_URL}\)|<{_NOTION_URL}>|{_NOTION_URL}"
+    r"|fixed in (?:commit )?(`?)[0-9a-f]{7,40}\1|not-a-finding:[ \t]*[A-Za-z0-9].*)[ \t.]*",
+    re.I | re.A,
 )
+
+
+CLOSER_ASSOCIATIONS = frozenset({"OWNER", "MEMBER", "COLLABORATOR"})
+
+
+def closes(reply: str) -> bool:
+    """True when the reply's first line is exactly one closing token and stands alone."""
+    lines = reply.replace("\r\n", "\n").replace("\r", "\n").split("\n", 2)
+    if len(lines) > 1 and not _is_blank(lines[1]):
+        return False
+    return bool(_CLOSING_TOKEN.fullmatch(lines[0]))
+
+
+def _is_blank(line: str) -> bool:
+    """CommonMark blank: only spaces and tabs. str.strip() would also drop NBSP, U+2028, form feed, ..."""
+    return not line.strip(" \t")
+
+
 FALLBACK_ATTESTATION = re.compile(
     r"Fallback review: (codex|agy|antigravity|superpowers|claude-sonnet) on "
-    r"([0-9a-f]{7,40}) — verdict: (clean|findings fixed)",
-    re.I,
+    r"([0-9a-f]{40}) — verdict: (clean|findings fixed)",
+    re.I | re.A,
 )
-INCOMPLETE_REVIEW = re.compile(r"\b(pending|running|todo)\b", re.I)
-REVIEW_SECTION = re.compile(r"(?m)^##[ \t]+Review(?![\w-])")
 MAIN_REVIEW_LABELS = {"review:high"}
 # Exact bot logins only — substring matches like "codex-helper" must not pass the gate.
 CODEX_AUTHORS = frozenset({"chatgpt-codex-connector"})
@@ -55,6 +76,26 @@ def gh_subprocess_env(env: dict[str, str] | None) -> Iterator[None]:
         _GH_SUBPROCESS_ENV.reset(token)
 
 
+def _describe_call(args: list[str]) -> str:
+    """'<METHOD> <endpoint>' for an error message; field values (queries, bodies) are left out.
+    Like gh, the method defaults to POST when fields are passed and no -X/--method is given."""
+    method, endpoint, fields, i = None, "", False, 0
+    while i < len(args):
+        a = args[i]
+        if a in ("-X", "--method"):
+            method = args[i + 1] if i + 1 < len(args) else None
+            i += 2
+        elif a in ("-f", "-F", "--field", "--raw-field"):
+            fields, i = True, i + 2
+        elif a in ("-H", "--header", "--jq", "-q", "--hostname", "-R"):
+            i += 2
+        else:
+            if not a.startswith("-") and not endpoint:
+                endpoint = a
+            i += 1
+    return f"{method or ('POST' if fields else 'GET')} {endpoint or '?'}"
+
+
 def run_gh(
     args: list[str],
     repo: str | None = None,
@@ -71,7 +112,8 @@ def run_gh(
         cmd, capture_output=True, text=True, env=_GH_SUBPROCESS_ENV.get()
     )
     if proc.returncode != 0:
-        raise RuntimeError(proc.stderr.strip() or proc.stdout.strip() or "gh api failed")
+        detail = proc.stderr.strip() or proc.stdout.strip() or "no output"
+        raise RuntimeError(f"gh api {_describe_call(args)} failed (exit {proc.returncode}): {detail}")
     if not proc.stdout.strip():
         return None
     return json.loads(proc.stdout)
@@ -162,315 +204,74 @@ def _graphql(
     for key, value in variables.items():
         args.extend(["-F", f"{key}={value}"])
     data = run_gh(args, hostname=hostname)
-    return (data or {}).get("data") or {}
+    return (data or {}).get("data") or {}  # an empty result fails closed in _all_nodes / pr_payload
 
 
-def _paginate_thread_comments(
-    thread_id: str,
-    hostname: str | None,
-    first_page: dict[str, Any] | None = None,
+_COMMENT_FIELDS = "pageInfo { hasNextPage endCursor } nodes { body author { login } authorAssociation }"
+_PR_CONNECTION_Q = """
+query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
+  repository(owner:$owner, name:$name) {
+    pullRequest(number:$number) {
+      %s(first: 50, after: $cursor) { pageInfo { hasNextPage endCursor } nodes { %s } }
+    }
+  }
+}
+"""
+_THREAD_COMMENTS_Q = """
+query($id:ID!, $cursor:String) {
+  node(id: $id) { ... on PullRequestReviewThread { comments(first: 50, after: $cursor) { %s } } }
+}
+""" % _COMMENT_FIELDS
+
+
+def _all_nodes(conn: Any, what: str, next_page: Any) -> list[dict[str, Any]]:
+    """Every node of a GraphQL connection, fetching later pages with next_page(cursor).
+
+    Fails closed: a missing connection, or a next page with no cursor, raises instead of
+    reading as an empty (passing) list."""
+    nodes: list[dict[str, Any]] = []
+    while True:
+        if not isinstance(conn, dict):
+            raise RuntimeError(f"GraphQL returned no {what}")
+        nodes.extend(conn.get("nodes") or [])
+        page = conn.get("pageInfo") or {}
+        if not page.get("hasNextPage"):
+            return nodes
+        if not page.get("endCursor"):
+            raise RuntimeError(f"GraphQL {what}: next page without a cursor")
+        conn = next_page(page["endCursor"])
+
+
+def _pr_connection(
+    owner: str, name: str, number: int, field: str, fields: str, hostname: str | None = None
 ) -> list[dict[str, Any]]:
-    """Return all comments for a thread, starting from an optional embedded page."""
-    comments: list[dict[str, Any]] = []
-    c_conn = first_page or {}
-    if first_page is not None:
-        comments.extend(first_page.get("nodes") or [])
-        page = first_page.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            return comments
-        c_cursor = page.get("endCursor")
-        if not c_cursor:
-            return comments
-    else:
-        c_cursor = None
+    """Every node of pullRequest.<field> (reviews, labels, comments, reviewThreads)."""
+    q = _PR_CONNECTION_Q % (field, fields)
 
-    comment_q = """
-    query($id:ID!, $cursor:String) {
-      node(id: $id) {
-        ... on PullRequestReviewThread {
-          comments(first: 50, after: $cursor) {
-            pageInfo { hasNextPage endCursor }
-            nodes { body author { login } }
-          }
-        }
-      }
-    }
-    """
-    comment_first = """
-    query($id:ID!) {
-      node(id: $id) {
-        ... on PullRequestReviewThread {
-          comments(first: 50) {
-            pageInfo { hasNextPage endCursor }
-            nodes { body author { login } }
-          }
-        }
-      }
-    }
-    """
-    while True:
-        if c_cursor is None:
-            c_conn = (
-                _graphql(comment_first, hostname=hostname, id=thread_id).get("node") or {}
-            ).get("comments") or {}
-            comments.extend(c_conn.get("nodes") or [])
-        else:
-            c_conn = (
-                _graphql(
-                    comment_q, hostname=hostname, id=thread_id, cursor=c_cursor
-                ).get("node")
-                or {}
-            ).get("comments") or {}
-            comments.extend(c_conn.get("nodes") or [])
-        page = c_conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            break
-        c_cursor = page.get("endCursor")
-        if not c_cursor:
-            break
-    return comments
-
-
-def _paginate_threads(owner: str, name: str, number: int, hostname: str | None = None) -> list[dict[str, Any]]:
-    """Fetch every review thread with comments embedded in the thread query.
-
-    Most threads fit in the first comments page (50), so one GraphQL call covers
-    up to 50 threads. Extra comment pages are fetched only when ``hasNextPage``.
-    """
-    threads: list[dict[str, Any]] = []
-    cursor: str | None = None
-    thread_q = """
-    query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
-      repository(owner:$owner, name:$name) {
-        pullRequest(number:$number) {
-          reviewThreads(first: 50, after: $cursor) {
-            pageInfo { hasNextPage endCursor }
-            nodes {
-              id
-              comments(first: 50) {
-                pageInfo { hasNextPage endCursor }
-                nodes { body author { login } }
-              }
-            }
-          }
-        }
-      }
-    }
-    """
-    while True:
-        if cursor is None:
-            first_q = """
-            query($owner:String!, $name:String!, $number:Int!) {
-              repository(owner:$owner, name:$name) {
-                pullRequest(number:$number) {
-                  reviewThreads(first: 50) {
-                    pageInfo { hasNextPage endCursor }
-                    nodes {
-                      id
-                      comments(first: 50) {
-                        pageInfo { hasNextPage endCursor }
-                        nodes { body author { login } }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-            """
-            conn = (
-                _graphql(first_q, hostname=hostname, owner=owner, name=name, number=number)
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("reviewThreads")
-                or {}
-            )
-        else:
-            conn = (
-                _graphql(
-                    thread_q,
-                    hostname=hostname,
-                    owner=owner,
-                    name=name,
-                    number=number,
-                    cursor=cursor,
-                )
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("reviewThreads")
-                or {}
-            )
-        for node in conn.get("nodes") or []:
-            thread_id = node.get("id")
-            if not thread_id:
-                continue
-            embedded = node.get("comments") or {}
-            comments = _paginate_thread_comments(
-                thread_id, hostname, first_page=embedded
-            )
-            threads.append({"comments": {"nodes": comments}})
-        page = conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            break
-        cursor = page.get("endCursor")
-        if not cursor:
-            break
-    return threads
-
-
-def _paginate_reviews(owner: str, name: str, number: int, hostname: str | None = None) -> list[dict[str, Any]]:
-    """Fetch every submitted review (not just the last 40)."""
-    reviews: list[dict[str, Any]] = []
-    cursor: str | None = None
-    while True:
-        if cursor is None:
-            q = """
-            query($owner:String!, $name:String!, $number:Int!) {
-              repository(owner:$owner, name:$name) {
-                pullRequest(number:$number) {
-                  reviews(first: 50) {
-                    pageInfo { hasNextPage endCursor }
-                    nodes {
-                      state
-                      body
-                      commit { oid }
-                      author { login }
-                    }
-                  }
-                }
-              }
-            }
-            """
-            conn = (
-                _graphql(q, hostname=hostname, owner=owner, name=name, number=number)
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("reviews")
-                or {}
-            )
-        else:
-            q = """
-            query($owner:String!, $name:String!, $number:Int!, $cursor:String!) {
-              repository(owner:$owner, name:$name) {
-                pullRequest(number:$number) {
-                  reviews(first: 50, after: $cursor) {
-                    pageInfo { hasNextPage endCursor }
-                    nodes {
-                      state
-                      body
-                      commit { oid }
-                      author { login }
-                    }
-                  }
-                }
-              }
-            }
-            """
-            conn = (
-                _graphql(q, hostname=hostname, owner=owner, name=name, number=number, cursor=cursor)
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("reviews")
-                or {}
-            )
-        reviews.extend(conn.get("nodes") or [])
-        page = conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            break
-        cursor = page.get("endCursor")
-        if not cursor:
-            break
-    return reviews
-
-
-def _paginate_labels(owner: str, name: str, number: int, hostname: str | None = None) -> list[dict[str, Any]]:
-    """Fetch every label on the PR."""
-    labels: list[dict[str, Any]] = []
-    cursor: str | None = None
-    while True:
-        if cursor is None:
-            q = """
-            query($owner:String!, $name:String!, $number:Int!) {
-              repository(owner:$owner, name:$name) {
-                pullRequest(number:$number) {
-                  labels(first: 50) {
-                    pageInfo { hasNextPage endCursor }
-                    nodes { name }
-                  }
-                }
-              }
-            }
-            """
-            conn = (
-                _graphql(q, hostname=hostname, owner=owner, name=name, number=number)
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("labels")
-                or {}
-            )
-        else:
-            q = """
-            query($owner:String!, $name:String!, $number:Int!, $cursor:String!) {
-              repository(owner:$owner, name:$name) {
-                pullRequest(number:$number) {
-                  labels(first: 50, after: $cursor) {
-                    pageInfo { hasNextPage endCursor }
-                    nodes { name }
-                  }
-                }
-              }
-            }
-            """
-            conn = (
-                _graphql(q, hostname=hostname, owner=owner, name=name, number=number, cursor=cursor)
-                .get("repository", {})
-                .get("pullRequest", {})
-                .get("labels")
-                or {}
-            )
-        labels.extend(conn.get("nodes") or [])
-        page = conn.get("pageInfo") or {}
-        if not page.get("hasNextPage"):
-            break
-        cursor = page.get("endCursor")
-        if not cursor:
-            break
-    return labels
-
-
-def _codex_comments(
-    owner: str, name: str, number: int, hostname: str | None = None
-) -> list[dict[str, Any]]:
-    """Every PR conversation comment (Codex keeps one summary comment updated)."""
-    out: list[dict[str, Any]] = []
-    cursor: str | None = None
-    q = """
-    query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
-      repository(owner:$owner, name:$name) {
-        pullRequest(number:$number) {
-          comments(first: 100, after: $cursor) {
-            pageInfo { hasNextPage endCursor }
-            nodes { author { login } body }
-          }
-        }
-      }
-    }
-    """
-    while True:
+    def fetch(cursor: str | None) -> Any:
         variables: dict[str, Any] = {"owner": owner, "name": name, "number": number}
         if cursor:
             variables["cursor"] = cursor
-        conn = (
-            _graphql(q, hostname=hostname, **variables)
-            .get("repository", {})
-            .get("pullRequest", {})
-            .get("comments")
-            or {}
-        )
-        out.extend(conn.get("nodes") or [])
-        page = conn.get("pageInfo") or {}
-        cursor = page.get("endCursor")
-        if not page.get("hasNextPage") or not cursor:
-            return out
+        data = _graphql(q, hostname=hostname, **variables)
+        return ((data.get("repository") or {}).get("pullRequest") or {}).get(field)
+
+    return _all_nodes(fetch(None), f"pullRequest.{field} for {owner}/{name}#{number}", fetch)
+
+
+def _review_threads(owner: str, name: str, number: int, hostname: str | None = None) -> list[dict[str, Any]]:
+    """Every review thread with every comment; comments past the first 50 are fetched per thread."""
+    threads = []
+    for node in _pr_connection(owner, name, number, "reviewThreads",
+                               f"id comments(first: 50) {{ {_COMMENT_FIELDS} }}", hostname):
+        thread_id = node.get("id")
+
+        def more(cursor: str, _id: Any = thread_id) -> Any:
+            data = _graphql(_THREAD_COMMENTS_Q, hostname=hostname, id=_id, cursor=cursor)
+            return (data.get("node") or {}).get("comments")
+
+        comments = _all_nodes(node.get("comments"), f"comments of review thread {thread_id}", more)
+        threads.append({"comments": {"nodes": comments}})
+    return threads
 
 
 def codex_clean_comment_on_head(pr: dict[str, Any]) -> bool:
@@ -516,12 +317,12 @@ def pr_payload(
     pr = (data.get("repository") or {}).get("pullRequest")
     if not pr:
         raise RuntimeError(f"PR #{number} not found in {owner}/{name}")
-    pr["labels"] = {"nodes": _paginate_labels(owner, name, number, hostname=hostname)}
-    pr["reviews"] = {"nodes": _paginate_reviews(owner, name, number, hostname=hostname)}
-    pr["comments"] = {"nodes": _codex_comments(owner, name, number, hostname=hostname)}
-    pr["reviewThreads"] = {
-        "nodes": _paginate_threads(owner, name, number, hostname=hostname)
-    }
+    pr["labels"] = {"nodes": _pr_connection(owner, name, number, "labels", "name", hostname)}
+    pr["reviews"] = {"nodes": _pr_connection(owner, name, number, "reviews",
+                                             "state body commit { oid } author { login }", hostname)}
+    # Codex keeps one summary comment updated: every PR conversation comment is read.
+    pr["comments"] = {"nodes": _pr_connection(owner, name, number, "comments", "author { login } body", hostname)}
+    pr["reviewThreads"] = {"nodes": _review_threads(owner, name, number, hostname)}
     return pr
 
 
@@ -551,173 +352,78 @@ def codex_done_on_head(pr: dict[str, Any]) -> bool:
     return False
 
 
-_BLOCK_TAGS = (
-    "address|article|aside|base|basefont|blockquote|body|caption|center|col|colgroup|dd|details|dialog|"
-    "dir|div|dl|dt|fieldset|figcaption|figure|footer|form|frame|frameset|h[1-6]|head|header|hr|html|"
-    "iframe|legend|li|link|main|menu|menuitem|nav|noframes|ol|optgroup|option|p|param|search|section|"
-    "summary|table|tbody|td|tfoot|th|thead|title|tr|track|ul"
-)
-# CommonMark html block type 6 (named block tags) ...
-_HTML_BLOCK6 = re.compile(rf" {{0,3}}</?(?:{_BLOCK_TAGS})(?:[\s/>]|$)", re.I)
-# ... and type 7 (one complete tag alone on its line; cannot interrupt a paragraph; quoted attrs may hold <>)
-_HTML_BLOCK7 = re.compile(
-    r" {0,3}(?:<[A-Za-z][A-Za-z0-9-]*(?:\s+(?:[^<>\"']|\"[^\"]*\"|'[^']*')*)?/?>"
-    r"|</[A-Za-z][A-Za-z0-9-]*\s*>)\s*$")
-# types 1, 3, 4, 5: (start, end marker); the block runs to the line holding the end marker
-_RAW_BLOCKS = (
-    (re.compile(r" {0,3}<(pre|script|style|textarea)\b", re.I), None),  # closes on its own </tag>
-    (re.compile(r" {0,3}<\?"), re.compile(r"\?>")),
-    (re.compile(r" {0,3}<![A-Za-z]"), re.compile(r">")),
-    (re.compile(r" {0,3}<!\[CDATA\["), re.compile(r"\]\]>")),
-)
-# a backtick fence's info string cannot contain a backtick (CommonMark), or it is not a fence
-_FENCE_OPEN = re.compile(r" {0,3}(?:(`{3,})[^`]*$|(~{3,}))")
+# PR-body grammar (Program 19:10 directive, #105): a strict allow-list over physical lines, with no
+# Markdown parsing and no recovery. Anything outside it fails the whole check with a reason naming the
+# line, so the author rewrites the body instead of the gate guessing what GitHub renders.
+_FENCE_LINE = re.compile(r"[ \t]*(?:`{3}|~{3})")
+# A line whose first character after quote/list markers is `<` can open an HTML block, and an unterminated
+# attribute (`<div title='`) or a type 1-5 block (`<pre>`, `<!`, `<?`) swallows the lines after it,
+# `## Review` included, so every such line is banned. A comment is banned anywhere; `<details` too, since
+# an unclosed one collapses what follows even mid-line.
+_DETAILS_TAG = re.compile(r"<details(?![A-Za-z0-9-])", re.I)
+_RAW_HTML_LINE = re.compile(r"[ \t>*+\-0-9.)]*<")
+REVIEW_HEADING = "## Review"
+_PROSE_LINE = re.compile(r"[A-Za-z0-9][^`<>|\[\]()*_~$]*")
+_ORDERED_MARKER = re.compile(r"[0-9]{1,9}[.)](?:[ \t]|$)")
 
 
-def _rendered_markdown(body: str) -> str:
-    """Keep only what GitHub renders as prose, in one pass over the lines.
+def review_region(body: str) -> tuple[list[str], list[str]]:
+    """Return (region lines, problems) for the PR body's single `## Review` section.
 
-    Dropped: fenced and indented code, HTML comments, raw HTML blocks (a block
-    opened by any tag at line start runs to the next blank line; pre/script/
-    style/textarea run to their closing tag). One state machine, so an example
-    inside a fence can never open a comment or block, and nothing opened is
-    silently closed early. Unclosed constructs run to the end of the body, as
-    GitHub renders them, so this only ever removes more, never less.
+    Whole body: no ``` or ~~~ line, no `<!--`, no `<details`, no line whose first character after quote/list markers is `<`. Exactly one
+    line equal to `## Review`, after a blank line or at the top. The region runs to the next line
+    starting `## ` or the end. Every non-blank region line is plain prose: starts with a letter or
+    digit, no ordered-list marker, and none of ` < > | [ ] ( ) * _ ~ $ (an attestation or closing line
+    is such prose). Blank means only spaces and tabs. Any other line fails the check.
     """
-    kept: list[str] = []
-    fence: str | None = None
-    in_comment = False
-    raw_close: re.Pattern[str] | None = None  # end marker of an open <pre>-style block
-    in_html = False  # inside a blank-line-terminated html block
-    para = False  # previous line was paragraph text (type-7 blocks cannot interrupt it)
-    for line in body.replace("\r\n", "\n").split("\n"):
-        was_para, para = para, False
-        if fence is not None:
-            marker = re.match(r" {0,3}(`{3,}|~{3,})", line)
-            # a closing fence is the marker plus optional whitespace only (CommonMark)
-            if (marker and marker.group(1)[0] == fence[0] and len(marker.group(1)) >= len(fence)
-                    and not line[marker.end():].strip()):
-                fence = None
+    lines = body.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    problems: list[str] = []
+    for n, line in enumerate(lines, 1):
+        if _FENCE_LINE.match(line):
+            problems.append(f"PR body line {n}: code fences (``` or ~~~) are not allowed in a gated PR body")
+        if "<!--" in line:
+            problems.append(f"PR body line {n}: HTML comments (<!--) are not allowed in a gated PR body")
+        elif _RAW_HTML_LINE.match(line):
+            problems.append(f"PR body line {n}: a line starting with < (raw HTML) is not allowed in a gated PR body")
+        if _DETAILS_TAG.search(line):
+            problems.append(f"PR body line {n}: <details> is not allowed in a gated PR body (an unclosed one collapses ## Review)")
+    headings = [i for i, line in enumerate(lines) if line.rstrip() == REVIEW_HEADING]
+    if len(headings) != 1:
+        problems.append(f"PR body must have exactly one line '{REVIEW_HEADING}' (found {len(headings)})")
+        return [], problems
+    start = headings[0]
+    if start and not _is_blank(lines[start - 1]):
+        problems.append(f"PR body line {start + 1}: '{REVIEW_HEADING}' must follow a blank line")
+    region: list[str] = []
+    for n, line in enumerate(lines[start + 1 :], start + 2):
+        if line.startswith("## "):
+            break
+        region.append(line)
+        if _is_blank(line) or (_PROSE_LINE.fullmatch(line) and not _ORDERED_MARKER.match(line)):
             continue
-        if raw_close is not None:
-            if raw_close.search(line):
-                raw_close = None
-            continue
-        if in_html:
-            if line.strip():
-                continue
-            in_html = False
-        if not in_comment:
-            opener = _FENCE_OPEN.match(line)
-            if opener:
-                fence = opener.group(1) or opener.group(2)
-                kept.append("")  # the dropped fence still ends a paragraph (and a quote's lazy continuation)
-                continue
-            if line.startswith(("    ", "\t")):
-                continue
-            raw = next(((m, c) for st, c in _RAW_BLOCKS if (m := st.match(line))), None)
-            if raw:
-                raw_close = raw[1] or re.compile(rf"</{raw[0].group(1)}\s*>", re.I)
-                if raw_close.search(line[raw[0].end():]):
-                    raw_close = None
-                continue
-            if _HTML_BLOCK6.match(line) or (not was_para and _HTML_BLOCK7.match(line)):
-                in_html = True
-                continue
-        # strip HTML comment spans, which may open or close mid-line
-        out = ""
-        rest = line
-        while rest:
-            if in_comment:
-                end = rest.find("-->")
-                if end < 0:
-                    rest = ""
-                else:
-                    in_comment, rest = False, rest[end + 3 :]
-            else:
-                start = rest.find("<!--")
-                if start < 0:
-                    out += rest
-                    rest = ""
-                else:
-                    out += rest[:start]
-                    in_comment, rest = True, rest[start + 4 :]
-        # a heading or thematic break is a complete block, so a tag on the next line may open an html block
-        para = bool(out.strip()) and not re.match(r" {0,3}(?:#{1,6}(?:\s|$)|(?:[-*_][ \t]*){3,}$)", out)
-        if out.strip() or not line.strip():
-            kept.append(out)
-    return "\n".join(kept)
+        problems.append(
+            f"PR body line {n}: in ## Review every line must be plain prose (starting with a letter or "
+            "digit, no list marker, none of ` < > | [ ] ( ) * _ ~ $)"
+        )
+    return region, problems
 
 
 def review_section_names_fallback(body: str, head: str | None = None) -> bool:
-    """Require one explicit completed-review line bound to the current head.
+    """True when the well-formed ## Review region holds an exact attestation for the current head.
 
-    Full-line matching excludes incidental prose, URLs and generated footers.
-    Compare the entire captured SHA prefix so a stale longer SHA cannot pass
-    merely because its first seven characters match.
+    The whole line must equal the attestation (no extra text) and name the full 40-hex head OID: a short
+    prefix could be ground onto an unreviewed commit.
     """
-    if not head or len(head) < 7:
+    if not head:
         return False
-    body = _prose(body)
-    m = REVIEW_SECTION.search(body)
-    if not m:
+    region, problems = review_region(body)
+    if problems:
         return False
-    rest = body[m.end() :]
-    next_h = re.search(r"(?m)^##\s+", rest)
-    section = rest[: next_h.start()] if next_h else rest
-    # \n only: str.splitlines() also splits on U+2028 and friends.
-    for line in section.split("\n"):
-        if INCOMPLETE_REVIEW.search(line):
-            continue
-        attestation = FALLBACK_ATTESTATION.fullmatch(line.strip())
-        if attestation and head.lower().startswith(attestation.group(2).lower()):
+    for line in region:
+        attestation = FALLBACK_ATTESTATION.fullmatch(line)
+        if attestation and head.lower() == attestation.group(2).lower():
             return True
     return False
-
-
-# What may interrupt a paragraph (CommonMark), so a lazy continuation ends: an ATX heading, a
-# thematic break, a NON-EMPTY list item (ordered ones only when starting at 1), or a real fence
-# (left to _FENCE_OPEN: a ``` line whose info string holds a backtick is not a fence). Anything
-# else, such as `2. note` or an empty `-`, is lazy continuation text and stays inside the quote.
-_INTERRUPTS = re.compile(
-    r" {0,3}(?:#{1,6}(?:[ \t]|$)|([-*_])(?:[ \t]*\1){2,}[ \t]*$|(?:[-*+]|0{0,8}1[.)])[ \t]+\S)")
-
-
-def _unquoted(text: str) -> str:
-    """Drop blockquotes, including lazy continuation lines (a non-blank line
-    after a `>` line stays inside the quote until a blank line or a line that
-    interrupts a paragraph) and quotes nested in list items (`- > example`)."""
-    kept: list[str] = []
-    in_quote = False
-    for line in text.split("\n"):
-        marker = re.match(r"[ \t]*(?:(?:[-*+]|\d{1,9}[.)])[ \t]+)*>", line)
-        if marker:
-            # A marker-only line (`>`, `> >`) is a blank line inside the quote: it ends the quoted
-            # paragraph, so no lazy continuation follows it (aec #163 Codex P2).
-            in_quote = bool(line[marker.end():].strip(" \t>"))
-            continue
-        # A lazy continuation is paragraph text only: a line that interrupts a paragraph
-        # (ATX heading, fence, thematic break, list item) ends the quote and is kept.
-        if in_quote and line.strip() and not (_INTERRUPTS.match(line) or _FENCE_OPEN.match(line)):
-            continue
-        in_quote = False
-        kept.append(line)
-    return "\n".join(kept)
-
-
-# a code span: a backtick run closed by a run of the same length, never across a blank line
-_CODE_SPAN = re.compile(r"(?<!`)(`+)(?!`)((?:(?!\n[ \t]*\n).)+?)(?<!`)\1(?!`)", re.S)
-
-
-def _prose(body: str) -> str:
-    """Rendered prose only: no code blocks, comments or HTML blocks, no quotes,
-    and every inline code span collapsed to the word `code`, so an example
-    span (even one wrapping onto its own line) cannot start a line. A span that
-    is only a commit SHA keeps its text, so `fixed in `abc1234`` still reads."""
-    def span(m: re.Match[str]) -> str:
-        inner = m.group(2).strip()
-        return inner if re.fullmatch(r"[0-9a-f]{7,40}", inner, re.I) else "code"
-    return _CODE_SPAN.sub(span, _unquoted(_rendered_markdown(body or "")))
 
 
 def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
@@ -729,11 +435,16 @@ def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
         root = comments[0].get("body") or ""
         if not P2_ROOT.search(root):
             continue
-        replies = comments[1:]
-        if any(CLOSING.search(_prose(c.get("body") or "")) for c in replies):
+        # Only an owner, org member or collaborator closes: on a public repo anyone can reply to a thread.
+        # The PR author may close: every agent and reviewer here shares one gh login with the author
+        # (claude-skills #105: all 15 human replies are the author's), so barring the author would leave
+        # every P2 unclosable. Binding closers to a separate reviewer identity is plan PR #113.
+        replies = [c for c in comments[1:] if c.get("authorAssociation") in CLOSER_ASSOCIATIONS]
+        if any(closes(c.get("body") or "") for c in replies):
             continue
         failures.append(
-            f"P2 thread #{i} has no closing reply (Notion link / fixed in <sha> / not-a-finding:)"
+            f"P2 thread #{i} has no closing reply from a repo owner, member or collaborator "
+            "(Notion link / fixed in <sha> / not-a-finding:)"
         )
     return failures
 
@@ -742,9 +453,7 @@ def evaluate(pr: dict[str, Any]) -> list[str]:
     reasons: list[str] = []
     body = pr.get("body") or ""
     head = pr.get("headRefOid") or ""
-    # Rendered view: a heading inside a comment or fence is not visible.
-    if not REVIEW_SECTION.search(_rendered_markdown(body)):
-        reasons.append("PR body missing ## Review section")
+    reasons.extend(review_region(body)[1])
     if not (
         codex_done_on_head(pr)
         or codex_clean_comment_on_head(pr)

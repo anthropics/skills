@@ -83,13 +83,11 @@ jobs:
         run: python3 pr-merge-flow/tests/test_pr_guard.py
 
       - name: review-gate tests
-        run: python3 review-gate/tests/test_check_review_gate.py
-
-      - name: review-gate forged-check tests
+        # Every test script in the directory, so a new one cannot be left out of CI.
         # PyYAML parses the template as GitHub does (run-name test); setup-python ships without it.
         run: |
           python3 -m pip install --quiet pyyaml==6.0.2
-          python3 review-gate/tests/test_forged_gate.py
+          for t in review-gate/tests/test_*.py; do echo "== $t"; python3 "$t"; done
 
       - name: Changed skills bump their version
         if: github.event_name == 'pull_request'
