@@ -1,0 +1,11 @@
+flowchart TD
+    A[User opens app] --> B{Has session?}
+    B -->|Yes| C[Load dashboard]
+    B -->|No| D[Show login form]
+    D --> E["Enter email & password"]
+    E --> F{Credentials valid?}
+    F -->|Yes| G[Create session]
+    G --> C
+    F -->|No| H[Show error]
+    H --> D
+    C --> I[End]
