@@ -1,0 +1,199 @@
+graph TB
+    subgraph User["👤 用户层"]
+        UserQuery[用户查询]
+    end
+
+    subgraph LangGraph["🔄 LangGraph 状态图层"]
+        Discover[发现技能<br/>discover_skills]
+        Select[选择技能<br/>select_skill]
+        Load[加载技能<br/>load_skill]
+        Analyze[分析意图<br/>analyze_intent]
+        Generate[生成代码<br/>generate_code]
+        Execute[执行代码<br/>execute_code]
+        HandleError[处理错误<br/>handle_error]
+        Finalize[完成任务<br/>finalize]
+    end
+
+    subgraph Management["📦 技能管理层"]
+        Discovery[SkillDiscovery<br/>• 扫描目录<br/>• 解析元数据<br/>• 构建索引]
+        Loader[SkillLoader<br/>• 按需加载<br/>• 缓存管理<br/>• 上下文格式化]
+    end
+
+    subgraph LLM["🤖 LLM 推理层"]
+        DeepSeek[DeepSeekLLM<br/>• 技能选择<br/>• 意图理解<br/>• 代码生成<br/>• 工作流规划]
+    end
+
+    subgraph Skills["💾 Skills 仓库层"]
+        PDF[pdf/<br/>• SKILL.md<br/>• scripts/<br/>• references/]
+        GIF[slack-gif-creator/<br/>• SKILL.md<br/>• core/<br/>• templates/]
+        DOCX[docx/<br/>• SKILL.md<br/>• scripts/]
+        More[更多技能...]
+    end
+
+    %% 主要流程
+    UserQuery --> Discover
+    Discover --> Select
+    Select -->|找到技能| Load
+    Select -->|未找到| Finalize
+    Load --> Analyze
+    Analyze --> Generate
+    Generate --> Execute
+    Execute -->|成功| Finalize
+    Execute -->|失败| HandleError
+    HandleError --> Finalize
+
+    %% 组件交互
+    Discover -.-> Discovery
+    Select -.-> DeepSeek
+    Load -.-> Loader
+    Analyze -.-> DeepSeek
+    Generate -.-> DeepSeek
+    
+    Discovery -.-> Skills
+    Loader -.-> Skills
+
+    %% 样式
+    classDef userClass fill:#e1f5ff,stroke:#01579b,stroke-width:2px
+    classDef graphClass fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef managementClass fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef llmClass fill:#e8f5e9,stroke:#1b5e20,stroke-width:2px
+    classDef skillClass fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+
+    class UserQuery userClass
+    class Discover,Select,Load,Analyze,Generate,Execute,HandleError,Finalize graphClass
+    class Discovery,Loader managementClass
+    class DeepSeek llmClass
+    class PDF,GIF,DOCX,More skillClass
+```
+
+## 数据流图
+
+```mermaid
+sequenceDiagram
+    participant User as 👤 用户
+    participant Agent as 🔄 SkillAgent
+    participant Discovery as 📦 SkillDiscovery
+    participant Loader as 📦 SkillLoader
+    participant LLM as 🤖 DeepSeekLLM
+    participant Skills as 💾 Skills仓库
+
+    User->>Agent: 发送查询
+    Agent->>Discovery: 发现技能
+    Discovery->>Skills: 扫描目录
+    Skills-->>Discovery: 返回技能列表
+    Discovery-->>Agent: 技能索引
+    
+    Agent->>LLM: 选择技能(查询+技能列表)
+    LLM-->>Agent: 选中的技能名称
+    
+    Agent->>Loader: 加载技能内容
+    Loader->>Skills: 读取 SKILL.md
+    Skills-->>Loader: 技能内容
+    Loader-->>Agent: 完整技能内容
+    
+    Agent->>LLM: 分析意图(查询+技能上下文)
+    LLM-->>Agent: 意图分析结果
+    
+    opt 需要参考文档
+        Agent->>Loader: 加载参考文档
+        Loader->>Skills: 读取 references/
+        Skills-->>Loader: 文档内容
+        Loader-->>Agent: 参考文档
+    end
+    
+    Agent->>LLM: 生成代码(任务+完整上下文)
+    LLM-->>Agent: 生成的代码
+    
+    Agent->>Agent: 执行代码
+    
+    alt 执行成功
+        Agent-->>User: 返回结果
+    else 执行失败
+        Agent->>Agent: 错误处理
+        Agent-->>User: 错误信息
+    end
+```
+
+## 技能加载流程
+
+```mermaid
+flowchart TD
+    Start([开始]) --> CheckCache{检查缓存}
+    CheckCache -->|存在| ReturnCache[返回缓存内容]
+    CheckCache -->|不存在| ParseYAML[解析 YAML frontmatter]
+    
+    ParseYAML --> ReadMarkdown[读取 Markdown 正文]
+    ReadMarkdown --> CheckScripts{有 scripts/?}
+    
+    CheckScripts -->|是| IndexScripts[索引脚本文件]
+    CheckScripts -->|否| CheckRefs{有 references/?}
+    IndexScripts --> CheckRefs
+    
+    CheckRefs -->|是| IndexRefs[索引参考文档]
+    CheckRefs -->|否| CheckAssets{有 assets/?}
+    IndexRefs --> CheckAssets
+    
+    CheckAssets -->|是| IndexAssets[索引资源文件]
+    CheckAssets -->|否| CreateContent[创建 SkillContent]
+    IndexAssets --> CreateContent
+    
+    CreateContent --> SaveCache[保存到缓存]
+    SaveCache --> ReturnCache
+    ReturnCache --> End([结束])
+```
+
+## 状态转换详图
+
+```mermaid
+stateDiagram-v2
+    [*] --> DiscoverSkills: 用户查询
+    
+    DiscoverSkills --> SelectSkill: 技能已发现
+    
+    SelectSkill --> LoadSkill: 找到合适技能
+    SelectSkill --> Finalize: 未找到技能
+    
+    LoadSkill --> AnalyzeIntent: 技能已加载
+    
+    AnalyzeIntent --> GenerateCode: 意图已分析
+    
+    GenerateCode --> ExecuteCode: 代码已生成
+    
+    ExecuteCode --> Finalize: 执行成功
+    ExecuteCode --> HandleError: 执行失败
+    
+    HandleError --> GenerateCode: 重试
+    HandleError --> Finalize: 放弃
+    
+    Finalize --> [*]: 任务完成
+    
+    note right of DiscoverSkills
+        扫描 Skills 仓库
+        构建技能索引
+    end note
+    
+    note right of SelectSkill
+        DeepSeek 分析查询
+        匹配最合适技能
+    end note
+    
+    note right of LoadSkill
+        加载 SKILL.md
+        索引 scripts/references/assets
+    end note
+    
+    note right of AnalyzeIntent
+        理解具体需求
+        提取参数
+        确定步骤
+    end note
+    
+    note right of GenerateCode
+        基于技能上下文
+        生成解决方案代码
+    end note
+    
+    note right of ExecuteCode
+        沙箱环境执行
+        捕获输出/错误
+    end note
