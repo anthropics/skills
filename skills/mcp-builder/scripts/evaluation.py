@@ -363,7 +363,7 @@ Examples:
         report = await run_evaluation(args.eval_file, connection, args.model)
 
         if args.output:
-            args.output.write_text(report)
+            args.output.write_text(report, encoding="utf-8")
             print(f"\n✅ Report saved to {args.output}")
         else:
             print("\n" + report)
