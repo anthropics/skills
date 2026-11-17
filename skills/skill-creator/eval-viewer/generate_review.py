@@ -358,20 +358,44 @@ class ReviewHandler(BaseHTTPRequestHandler):
         else:
             self.send_error(404)
 
+    def _validate_feedback_request(self) -> str | None:
+        """Reject non-JSON or cross-origin POSTs to the feedback endpoint.
+
+        The server listens on localhost, so any page the user's browser loads
+        could otherwise reach it: a cross-origin ``fetch`` with a simple-request
+        content type skips the CORS preflight, and a form POST bypasses CORS
+        entirely. Require an ``application/json`` content type (simple-request
+        types such as ``text/plain`` and ``application/x-www-form-urlencoded``
+        are rejected) and only allow same-origin senders (``localhost`` /
+        ``127.0.0.1``, any port). Requests without an Origin header (curl,
+        local scripts) are still accepted.
+        """
+        content_type = self.headers.get("Content-Type", "").split(";")[0].strip().lower()
+        if content_type != "application/json":
+            return "Content-Type must be application/json"
+        origin = self.headers.get("Origin")
+        if origin and not re.fullmatch(r"https?://(?:localhost|127\.0\.0\.1)(?::\d+)?", origin):
+            return f"Cross-origin POST from {origin!r} is not allowed"
+        return None
+
     def do_POST(self) -> None:
         if self.path == "/api/feedback":
-            length = int(self.headers.get("Content-Length", 0))
-            body = self.rfile.read(length)
-            try:
-                data = json.loads(body)
-                if not isinstance(data, dict) or "reviews" not in data:
-                    raise ValueError("Expected JSON object with 'reviews' key")
-                self.feedback_path.write_text(json.dumps(data, indent=2) + "\n")
-                resp = b'{"ok":true}'
-                self.send_response(200)
-            except (json.JSONDecodeError, OSError, ValueError) as e:
-                resp = json.dumps({"error": str(e)}).encode()
-                self.send_response(500)
+            if error := self._validate_feedback_request():
+                resp = json.dumps({"error": error}).encode()
+                self.send_response(403)
+            else:
+                length = int(self.headers.get("Content-Length", 0))
+                body = self.rfile.read(length)
+                try:
+                    data = json.loads(body)
+                    if not isinstance(data, dict) or "reviews" not in data:
+                        raise ValueError("Expected JSON object with 'reviews' key")
+                    self.feedback_path.write_text(json.dumps(data, indent=2) + "\n")
+                    resp = b'{"ok":true}'
+                    self.send_response(200)
+                except (json.JSONDecodeError, OSError, ValueError) as e:
+                    resp = json.dumps({"error": str(e)}).encode()
+                    self.send_response(500)
             self.send_header("Content-Type", "application/json")
             self.send_header("Content-Length", str(len(resp)))
             self.end_headers()
