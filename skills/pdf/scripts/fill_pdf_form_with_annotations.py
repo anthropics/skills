@@ -49,7 +49,9 @@ def fill_pdf_form(input_pdf_path, fields_json_path, output_pdf_path):
     for field in fields_data["form_fields"]:
         page_num = field["page_number"]
 
-        page_info = next(p for p in fields_data["pages"] if p["page_number"] == page_num)
+        page_info = next((p for p in fields_data["pages"] if p["page_number"] == page_num), None)
+        if page_info is None:
+            raise ValueError(f"No page info found for page number {page_num} in fields.json")
         pdf_width, pdf_height = pdf_dimensions[page_num]
 
         if "pdf_width" in page_info:
