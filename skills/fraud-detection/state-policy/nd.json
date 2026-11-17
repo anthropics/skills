@@ -1,0 +1,116 @@
+{
+  "name": "nd-medicaid-policy",
+  "kind": "state-policy",
+  "state": "ND",
+  "index": "https://www.hhs.nd.gov/healthcare/medicaid/provider/manuals-and-guidelines",
+  "fetchVia": "curl",
+  "out": "policy/nd",
+  "note": "ND HHS Medicaid Billing & Policy Manual — single flat index, ~90 per-chapter PDFs at /sites/.../medicaid-policies/<slug>.pdf (Drupal, two parallel paths: /sites/www/files/ and /sites/default/files/). DME + Pharmacy live on separate sub-pages. curl 200, no login.",
+  "docs": [
+    {
+      "title": "Non-Emergency Medical Transportation",
+      "detector": "D19",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/non-emergency-medical-transportation.pdf",
+      "pp": null
+    },
+    {
+      "title": "NEMT Documentation Guidelines",
+      "detector": "D19",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/nemt-documentation-guidelines.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services",
+      "detector": "D19",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/ambulance-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health",
+      "detector": "D20",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/home-health.pdf",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/private-duty-nursing.pdf",
+      "pp": null
+    },
+    {
+      "title": "Electronic Visit Verification",
+      "detector": "D20",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/medicaid-policies/electronic-visit-verification.pdf",
+      "pp": null
+    },
+    {
+      "title": "1915(i) Medicaid State Plan Amendment (HCBS)",
+      "detector": "D20",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/medicaid-policies/1915i-medicaid-state-plan-amendment.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Services",
+      "detector": "D20",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/hospice-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services",
+      "detector": "D4",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/physician-services.pdf",
+      "pp": null
+    },
+    {
+      "title": "Telehealth",
+      "detector": "D4",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/medicaid-policies/telehealth.pdf",
+      "pp": null
+    },
+    {
+      "title": "Service Authorizations (Prior Auth)",
+      "detector": "D4,D15",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/service-authorizations.pdf",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Services",
+      "detector": "D4",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/lab.pdf",
+      "pp": null
+    },
+    {
+      "title": "DMEPOS Manual",
+      "detector": "D15",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/DME/dmepos-manual-exclusion.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Provider Manual",
+      "detector": "D16,D23",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/pharmacy-provider-manual-exclusion.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Administered Drugs",
+      "detector": "D16",
+      "url": "https://www.hhs.nd.gov/sites/www/files/documents/medicaid-policies/physician-administered-drugs.pdf",
+      "pp": null
+    },
+    {
+      "title": "Provider Enrollment & Exclusion",
+      "detector": "D3",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/medicaid-policies/provider-enrollment-exclusion.pdf",
+      "pp": null
+    },
+    {
+      "title": "Claims Guidance",
+      "detector": "D4",
+      "url": "https://www.hhs.nd.gov/sites/default/files/documents/medicaid-policies/claims-guidance.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "ND HHS 'Provider Guidelines, Manuals and Policies' — ~90 short per-topic chapter PDFs on one Drupal page. No standalone Personal Care chapter (HCBS via 1915(i) SPA + EVV). DME sub-page (/provider/durable-medical-equipment-providers) has DMEPOS manual + ~60 per-item policy PDFs; Pharmacy sub-page (/provider/pharmacy) hosts the Pharmacy Provider Manual. Filenames use two Drupal storage roots (sites/www/files vs sites/default/files) — both 200 via curl.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

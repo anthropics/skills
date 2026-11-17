@@ -1,0 +1,110 @@
+{
+  "name": "wv-medicaid-policy",
+  "kind": "state-policy",
+  "state": "WV",
+  "index": "https://bms.wv.gov/providers/policy-manuals",
+  "fetchVia": "curl",
+  "out": "policy/wv",
+  "note": "WV BMS Provider Policy Manuals — ~40 numbered chapters (100/200/300 admin + 5xx per-service + 800 PI). Index links to per-chapter sub-pages or direct /media/<id>/download?inline PDFs. Old dhhr.wv.gov/bms SharePoint paths are dead; site migrated to Drupal at bms.wv.gov. curl 200, no login.",
+  "docs": [
+    {
+      "title": "Chapter 524 — Transportation",
+      "detector": "D19",
+      "url": "https://bms.wv.gov/media/24376/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 524 Appendix A — Ground Ambulance Medical Necessity",
+      "detector": "D19",
+      "url": "https://bms.wv.gov/media/24371/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 508 — Home Health",
+      "detector": "D20",
+      "url": "https://bms.wv.gov/media/39999/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 517 — Personal Care Services",
+      "detector": "D20",
+      "url": "https://bms.wv.gov/media/40115/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 501 — Aged and Disabled Waiver",
+      "detector": "D20",
+      "url": "https://bms.wv.gov/media/39990/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 532 — Private Duty Nursing",
+      "detector": "D20",
+      "url": "https://bms.wv.gov/media/40967/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 519.1 — Practitioner Services Overview",
+      "detector": "D4",
+      "url": "https://bms.wv.gov/media/40140/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 519.8 — Evaluation and Management Services",
+      "detector": "D4",
+      "url": "https://bms.wv.gov/media/40134/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 506 — DMEPOS",
+      "detector": "D15",
+      "url": "https://bms.wv.gov/media/39997/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Appendix 506A — Covered DME Supplies",
+      "detector": "D15",
+      "url": "https://bms.wv.gov/media/21886/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 518 — Pharmacy Services",
+      "detector": "D16,D23",
+      "url": "https://bms.wv.gov/media/40116/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 518A — Physician Administered Drugs",
+      "detector": "D16",
+      "url": "https://bms.wv.gov/media/22016/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 529.1 — Laboratory and Pathology Services",
+      "detector": "D4",
+      "url": "https://bms.wv.gov/media/40947/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 529.2 — Drug Screenings",
+      "detector": "D4,D16",
+      "url": "https://bms.wv.gov/media/40945/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 300 — Provider Participation Requirements",
+      "detector": "D3",
+      "url": "https://bms.wv.gov/media/41119/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Chapter 800 — Program Integrity",
+      "detector": "D3,D4",
+      "url": "https://bms.wv.gov/media/41005/download?inline",
+      "pp": null
+    }
+  ],
+  "_comment": "Index lists ~40 chapters; ~half link directly to /media/<id>/download?inline, the rest to /bms-manual/chapter-* or /chapter-* sub-pages (307→canonical) that hold the current PDF + appendices + public-comment PDFs. Ch 519 (Practitioner) is split into ~20 519.x sub-policies. Ch 524 covers both ambulance and NEMT. media id 25241 is the BMS letterhead image — ignore. Old dhhr.wv.gov/bms/Provider/Documents/Manuals/*.pdf URLs all 404.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

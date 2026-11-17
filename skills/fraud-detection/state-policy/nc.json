@@ -1,0 +1,110 @@
+{
+  "name": "nc-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NC",
+  "index": "https://medicaid.ncdhhs.gov/providers/program-specific-clinical-coverage-policies",
+  "fetchVia": "curl",
+  "out": "policy/nc",
+  "note": "NC Medicaid Clinical Coverage Policies — ~150 numbered policies (1A-x physician, 3x community, 5x DME, 8x BH, 9x pharmacy, etc). Each is a direct /download PDF (Drupal file entity; index links carry ?VersionId= but bare /download path 200s via curl). No login.",
+  "docs": [
+    {
+      "title": "15 — Ambulance Services",
+      "detector": "D19",
+      "url": "https://medicaid.ncdhhs.gov/15-ambulance-services/download",
+      "pp": null
+    },
+    {
+      "title": "3A — Home Health Services",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3a-home-health-services/download",
+      "pp": null
+    },
+    {
+      "title": "3D — Hospice Services",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3d-hospice-services/download",
+      "pp": null
+    },
+    {
+      "title": "3G-1 — Private Duty Nursing (21+)",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3g-1-private-duty-nursing-beneficiaries-age-21-and-older/download",
+      "pp": null
+    },
+    {
+      "title": "3K-1 — Community Alternatives Program for Children (CAP/C)",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3k-1-community-alternatives-program-children-capc/download",
+      "pp": null
+    },
+    {
+      "title": "3K-2 — Community Alternatives Program for Disabled Adults (CAP/DA)",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3k-2-community-alternatives-program-disabled-adults-capda/download",
+      "pp": null
+    },
+    {
+      "title": "3L — State Plan Personal Care Services (PCS)",
+      "detector": "D20",
+      "url": "https://medicaid.ncdhhs.gov/3l-state-plan-personal-care-services-pcs/download",
+      "pp": null
+    },
+    {
+      "title": "5A-1 — Physical Rehabilitation Equipment and Supplies",
+      "detector": "D15",
+      "url": "https://medicaid.ncdhhs.gov/5a-1-physical-rehabilitation-equipment-and-supplies/download",
+      "pp": null
+    },
+    {
+      "title": "5A-2 — Respiratory Equipment and Supplies",
+      "detector": "D15",
+      "url": "https://medicaid.ncdhhs.gov/5a-2-respiratory-equipment-and-supplies/download",
+      "pp": null
+    },
+    {
+      "title": "5A-3 — Nursing Equipment and Supplies",
+      "detector": "D15",
+      "url": "https://medicaid.ncdhhs.gov/5a-3-nursing-equipment-and-supplies/download",
+      "pp": null
+    },
+    {
+      "title": "5B — Orthotics & Prosthetics",
+      "detector": "D15",
+      "url": "https://medicaid.ncdhhs.gov/5b-orthotics-prosthetics/download",
+      "pp": null
+    },
+    {
+      "title": "9 — Outpatient Pharmacy Program",
+      "detector": "D16,D23",
+      "url": "https://medicaid.ncdhhs.gov/9-outpatient-pharmacy-program/download",
+      "pp": null
+    },
+    {
+      "title": "1B — Physician's Drug Program",
+      "detector": "D16",
+      "url": "https://medicaid.ncdhhs.gov/1b-physicians-drug-program/download",
+      "pp": null
+    },
+    {
+      "title": "1A-2 — Preventive Medicine Annual Health Assessment",
+      "detector": "D4",
+      "url": "https://medicaid.ncdhhs.gov/1a-2-preventive-medicine-annual-health-assessment/download",
+      "pp": null
+    },
+    {
+      "title": "1S-3 — Laboratory Services",
+      "detector": "D4",
+      "url": "https://medicaid.ncdhhs.gov/1s-3-laboratory-services/download",
+      "pp": null
+    },
+    {
+      "title": "1S-8 — Drug Testing for Opioid Treatment and Controlled Substance Monitoring",
+      "detector": "D4,D16",
+      "url": "https://medicaid.ncdhhs.gov/1s-8-drug-testing-opioid-treatment-and-controlled-substance-monitoring/download",
+      "pp": null
+    }
+  ],
+  "_comment": "NC DHHS Clinical Coverage Policy index lists ~150 numbered policies grouped by category. URL pattern: /<policy-num-slugified-title>/download (Drupal). NEMT is not a CCP (handled by NCTracks/broker contract) — only #15 Ambulance covers transportation. HCBS waivers under 3K-x; PCS under 3L. DME split into 5A-1/2/3 + 5B.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

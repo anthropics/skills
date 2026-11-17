@@ -1,0 +1,104 @@
+{
+  "name": "mo-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MO",
+  "index": "https://mydss.mo.gov/mhd/provider-manuals",
+  "fetchVia": "curl",
+  "out": "policy/mo",
+  "note": "MO HealthNet provider manuals on mydss.mo.gov (Drupal). ~40 program-specific manuals + a separate General Sections manual. Index links are stable /media/pdf/<slug> wrapper pages — each wraps a dated .docx (most) or .pdf at /sites/mydss/files/media/{file,pdf}/YYYY/MM/. curl 200, no login. Handler must follow wrapper → extract the sites/mydss/files link.",
+  "docs": [
+    {
+      "title": "General Sections Provider Manual",
+      "detector": "D3,D4",
+      "url": "https://mydss.mo.gov/media/file/general-sections-provider-manual",
+      "pp": null
+    },
+    {
+      "title": "Non-Emergency Medical Transportation (NEMT) Provider Manual",
+      "detector": "D19",
+      "url": "https://mydss.mo.gov/media/pdf/non-emergency-medical-transportation-provider-manual",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Manual",
+      "detector": "D19",
+      "url": "https://mydss.mo.gov/media/pdf/ambulance-manual",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/pdf/personal-care-manual",
+      "pp": null
+    },
+    {
+      "title": "Home Health Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/pdf/home-health-manual",
+      "pp": null
+    },
+    {
+      "title": "Aged and Disabled Waiver Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/pdf/aged-and-disabled-waiver-manual",
+      "pp": null
+    },
+    {
+      "title": "Independent Living Waiver Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/32111",
+      "pp": null
+    },
+    {
+      "title": "Adult Day Care Waiver Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/pdf/adult-day-care-waiver",
+      "pp": null
+    },
+    {
+      "title": "Physicians Provider Manual",
+      "detector": "D4",
+      "url": "https://mydss.mo.gov/media/pdf/physicians-provider-manual",
+      "pp": null
+    },
+    {
+      "title": "Therapy Manual (PT/OT/ST)",
+      "detector": "D4,D20",
+      "url": "https://mydss.mo.gov/media/pdf/therapy-manual",
+      "pp": null
+    },
+    {
+      "title": "Ambulatory Surgical Center Provider Manual",
+      "detector": "D4",
+      "url": "https://mydss.mo.gov/media/pdf/ambulatory-surgical-center-provider-manual",
+      "pp": null
+    },
+    {
+      "title": "Hospital Manual",
+      "detector": "D20",
+      "url": "https://mydss.mo.gov/media/pdf/hospital-manual",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Manual",
+      "detector": "D15",
+      "url": "https://mydss.mo.gov/media/pdf/durable-medical-equipment-manual",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Manual / Benefit Tables",
+      "detector": "D16,D23",
+      "url": "https://mydss.mo.gov/media/pdf/pharmacy",
+      "pp": null
+    },
+    {
+      "title": "Medicare/Medicaid Claims Processing Manual",
+      "detector": "D4",
+      "url": "https://mydss.mo.gov/media/pdf/medicare-medicaid-claims-processing-manual",
+      "pp": null
+    }
+  ],
+  "_comment": "MO HealthNet (DSS/MHD). Migrated 2024 from manuals.momed.com → mydss.mo.gov. Most manuals are DOCX, not PDF (e.g. Physicians-Provider-Manual-Published-June-03-2026.docx, Home Health Provider Manual.docx); DME + Pharmacy benefit tables are PDF behind a pdf.js viewer iframe (?file=<encoded>). Direct file URLs are date-stamped and rotate — use the /media/ wrapper as the stable handle. No standalone Laboratory manual on the index (lab covered under Physician/Hospital). Managed-care plan manuals (Healthy Blue / Home State / UHC) live on plan sites — out of scope.",
+  "siteArchitecture": "docx-curl",
+  "lastVerified": "2026-06-22"
+}

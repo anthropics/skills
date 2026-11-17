@@ -1,0 +1,116 @@
+{
+  "name": "tn-medicaid-policy",
+  "kind": "state-policy",
+  "state": "TN",
+  "index": "https://www.tn.gov/tenncare/policy-guidelines/policies.html",
+  "fetchVia": "curl",
+  "out": "policy/tn",
+  "note": "TennCare is ~100% managed-care (1115 waiver) — no per-specialty FFS provider manual. Policy lives in: (1) the TennCare Policy Manual index (~47 short PDFs, /content/dam/tn/tenncare/documents2/*.pdf, curl 200); (2) TennCare Rules ch. 1200-13 on publications.tnsosfiles.com (S3, curl 403 — browser); (3) legacy TCMIS Medicare-crossover provider manuals (Ambulance/DME/Hospital/Physician) behind an ASP dropdown postback at tcmisweb.tenncare.tn.gov. Pharmacy PDL/criteria on OptumRx portal.",
+  "docs": [
+    {
+      "title": "Transportation Network Companies Providing NEMT Services (PRO 22-003)",
+      "detector": "D19",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pro22-003.pdf",
+      "pp": null
+    },
+    {
+      "title": "TCMIS Provider Manual — Ambulance",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Cost Calculations for Medical Necessity Determination of Private Duty Nursing Services (BEN 25-001)",
+      "detector": "D20",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/BEN25001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice (BEN 07-001)",
+      "detector": "D20",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/ben07001.pdf",
+      "pp": null
+    },
+    {
+      "title": "TennCare Rules 1200-13-01 — Long-Term Care / CHOICES (HCBS)",
+      "detector": "D20",
+      "url": "https://publications.tnsosfiles.com/rules/1200/1200-13/1200-13-01.pdf",
+      "pp": null
+    },
+    {
+      "title": "Claims Processing, Timely Filing and Prior Authorizations (PAY 06-002)",
+      "detector": "D4,D15",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pay06002.pdf",
+      "pp": null
+    },
+    {
+      "title": "When a Provider May Bill a TennCare Enrollee (PRO 08-001)",
+      "detector": "D4",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pro08001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ordering, Referring, or Prescribing Providers (PRO 13-001)",
+      "detector": "D4,D16",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pro13001.pdf",
+      "pp": null
+    },
+    {
+      "title": "TCMIS Provider Manual — Physician (Medicare-crossover)",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Professional Provider Billing Manual (Medicare-crossover)",
+      "detector": "D4",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents/CMS-1500ProfessionalProviderBillingManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "TCMIS Provider Manual — DME",
+      "detector": "D15",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "340B Drug Pricing Program (PRO 13-002)",
+      "detector": "D16,D23",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pro13-002.pdf",
+      "pp": null
+    },
+    {
+      "title": "Coverage Review of Newly Released or Approved Pharmaceuticals (BEN 15-001)",
+      "detector": "D16,D23",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/ben15001.pdf",
+      "pp": null
+    },
+    {
+      "title": "TennCare Rules 1200-13-13 — TennCare Medicaid (covered services incl. Lab, Home Health, DME)",
+      "detector": "D4,D15,D20",
+      "url": "https://publications.tnsosfiles.com/rules/1200/1200-13/1200-13-13.pdf",
+      "pp": null
+    },
+    {
+      "title": "Provider Screening Requirements (PRO 16-001)",
+      "detector": "D3",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pro16001.pdf",
+      "pp": null
+    },
+    {
+      "title": "Contractor and Provider Screening of Employees and Contractors (PI 11-002)",
+      "detector": "D3",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pi11-002.pdf",
+      "pp": null
+    },
+    {
+      "title": "Disclosure of Ownership or Control; Changes in Ownership (PI 10-001)",
+      "detector": "D18",
+      "url": "https://www.tn.gov/content/dam/tn/tenncare/documents2/pi10-001.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "TennCare Policy Manual index has ~47 PDFs (PRO/BEN/PAY/PI/CON/ORG xx-xxx); captured 17 detector-relevant. tn.gov /content/dam/ PDFs curl 200. TennCare Rules ch.1200-13 on publications.tnsosfiles.com (AmazonS3) returned 403 via curl HEAD — may need browser or signed-URL pattern. TCMIS legacy manuals (4 only: Ambulance/DME/Hospital/Physician) are behind an ASP <select> postback at https://tcmisweb.tenncare.tn.gov/tcmis/public/manuals/ProviderManuals.asp — no static href, url left null. No standalone Laboratory or Home Health manual; coverage definitions live in Rules 1200-13-13.04. Pharmacy PDL: https://www.optumrx.com/oe_tenncare/landing (login).",
+  "siteArchitecture": "aspnet-postback",
+  "lastVerified": "2026-06-22"
+}

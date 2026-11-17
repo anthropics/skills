@@ -1,0 +1,104 @@
+{
+  "name": "ks-medicaid-policy",
+  "kind": "state-policy",
+  "state": "KS",
+  "index": "https://portal.kmap-state-ks.us/PublicPage/Public/ProviderManuals",
+  "fetchVia": "browser",
+  "out": "policy/ks",
+  "note": "KMAP (Kansas Medical Assistance Program) Provider Manuals — 50 per-service FFS PDFs behind a Kendo dropdown (ContentID GUID → versioned /Documents/Provider/Provider%20Manuals/<slug>_<rev>_<rev>.pdf). Whole portal sits behind Oracle Access Manager: curl 302→obrar.cgi even on direct PDF links — browser-only. KanCare MCOs publish their own manuals separately; these are the state FFS policy. No standalone Laboratory manual (lab is inside Professional).",
+  "docs": [
+    {
+      "title": "General Benefits Provider Manual",
+      "detector": "D4",
+      "url": "https://portal.kmap-state-ks.us/Documents/Provider/Provider%20Manuals/GenBenefits_25146_25163.pdf",
+      "pp": null
+    },
+    {
+      "title": "General Billing Provider Manual",
+      "detector": "D4",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "General Special Requirements Provider Manual",
+      "detector": "D3",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Professional Provider Manual (physician, lab, radiology)",
+      "detector": "D4",
+      "url": "https://portal.kmap-state-ks.us/Documents/Provider/Provider%20Manuals/Professional_25267_25291.pdf",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Provider Manual",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "NEMT Provider Manual",
+      "detector": "D19",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Home Health Agency Provider Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "HCBS Frail Elderly (FE) Waiver Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "HCBS Physical Disability (PD) Waiver Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "HCBS Brain Injury (BI) Waiver Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Manual",
+      "detector": "D20",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "DME / Medical Supply Dealer Provider Manual",
+      "detector": "D15",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Prosthetic and Orthotic Provider Manual",
+      "detector": "D15",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Provider Manual",
+      "detector": "D16,D23",
+      "url": null,
+      "pp": null
+    },
+    {
+      "title": "RHC / FQHC Provider Manual",
+      "detector": "D4",
+      "url": "https://portal.kmap-state-ks.us/Documents/Provider/Provider%20Manuals/RHC_FQHC_25068_24280.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Index is a Kendo DropDownList (50 current + discontinued list) with no static hrefs — selecting an item resolves ContentID server-side to a revision-suffixed PDF filename. Dropdown dataSource fields: {Description, ContentID, DataListItemCode, StrEffectiveDate}; Url field is null in payload. fetch-reference handler will need to drive the dropdown (or replay the change-handler XHR with a session cookie) to resolve current PDF filenames; the _NNNNN_NNNNN suffixes change on each republish. 3 URLs above captured from Google index (point-in-time revisions). All /Documents/* and /PublicPage/* paths 302 to obrar.cgi without an OAM cookie.",
+  "siteArchitecture": "portal-gated",
+  "lastVerified": "2026-06-22"
+}

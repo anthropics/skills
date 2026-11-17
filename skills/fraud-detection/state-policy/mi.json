@@ -1,0 +1,92 @@
+{
+  "name": "mi-medicaid-policy",
+  "kind": "state-policy",
+  "state": "MI",
+  "index": "https://www.michigan.gov/mdhhs/doing-business/providers/providers/medicaid/policyforms/medicaid-provider-manual",
+  "fetchVia": "curl",
+  "out": "policy/mi",
+  "note": "MDHHS Michigan Medicaid Provider Manual. Single monolithic PDF (~23 MB, ~2,300 pp), updated quarterly — no per-chapter URLs published. Chapters are internal PDF bookmarks; detector-relevant ones listed below all resolve to the same file. Direct PDF on mdch.state.mi.us 200s via curl, no login.",
+  "docs": [
+    {
+      "title": "Medicaid Provider Manual — full (Apr 2026 quarterly)",
+      "detector": "D3,D4,D15,D16,D19,D20,D23",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — General Information for Providers",
+      "detector": "D3,D4",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Billing & Reimbursement for Professionals",
+      "detector": "D4",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Ambulance",
+      "detector": "D19",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Non-Emergency Medical Transportation",
+      "detector": "D19",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Home Help (Personal Care Services)",
+      "detector": "D20",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Home Health",
+      "detector": "D20",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — MI Choice Waiver (HCBS)",
+      "detector": "D20",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Practitioner",
+      "detector": "D4",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Medical Supplier (DME/POS)",
+      "detector": "D15",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Pharmacy",
+      "detector": "D16,D23",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Laboratory",
+      "detector": "D4",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    },
+    {
+      "title": "Chapter — Hospice",
+      "detector": "D20",
+      "url": "https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "MI does NOT split the manual into per-chapter PDFs — only MedicaidProviderManual.pdf (+.zip) on mdch.state.mi.us. Index page on michigan.gov links straight to that single file. fetch-reference should dedupe by URL (1 actual download) and pdftotext once; chapter rows here are for detector-tagging / pp-range fill-in later via PDF bookmarks. Quarterly release; last-modified 2026-03-31. Zipped copy: https://www.mdch.state.mi.us/dch-medicaid/manuals/MedicaidProviderManual.zip (~14 MB).",
+  "siteArchitecture": "monolithic-pdf",
+  "lastVerified": "2026-06-22"
+}

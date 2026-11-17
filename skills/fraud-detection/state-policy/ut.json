@@ -1,0 +1,104 @@
+{
+  "name": "ut-medicaid-policy",
+  "kind": "state-policy",
+  "state": "UT",
+  "index": "https://medicaid.utah.gov/utah-medicaid-official-publications/?folder=Documents/manuals/pdfs/Medicaid%20Provider%20Manuals/",
+  "fetchVia": "curl",
+  "out": "policy/ut",
+  "note": "Utah DHHS Medicaid Provider Manuals — folder browser (?folder=) over a GCS-backed doc host (medicaid-documents.dhhs.utah.gov). 27 per-service folders, each with one current dated PDF + Archive/. PDFs curl 200, no login. No standalone Laboratory manual (lab is inside Physician Services).",
+  "docs": [
+    {
+      "title": "Medical Transportation Provider Manual",
+      "detector": "D19",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FMedical+Transportation%2FTransportation9-25.pdf",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Provider Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHome+Health+Services%2FHomeHealth1-26.pdf",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Provider Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FPersonal+Care%2FPersonalCare3-26.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waiver — Aging Waiver (Individuals 65+)",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHome+And+Community-Based+Waiver+Services%2FIndividuals+Aged+65+And+Over%2FAgingWaiver4-22.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waiver — New Choices Waiver",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHome+And+Community-Based+Waiver+Services%2FNew+Choices+Waiver%2FNewChoicesWaiver7-21.pdf",
+      "pp": null
+    },
+    {
+      "title": "HCBS Waiver — Individuals with Physical Disabilities",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHome+And+Community-Based+Waiver+Services%2FIndividuals+With+Physical+Disabilities%2FPhysicalDisabilities9-25.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physician Services Provider Manual (incl. Laboratory)",
+      "detector": "D4",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FPhysician+Services%2FPhysician+Services+Manual%2FPhysicianServices.pdf",
+      "pp": null
+    },
+    {
+      "title": "Medical Supplies and Durable Medical Equipment Manual",
+      "detector": "D15",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FMedical+Supplies+And+Durable+Medical+Equipment%2FMedSupplyDME11-25.pdf",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy Services Provider Manual",
+      "detector": "D16,D23",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FPharmacy%2FPharmacy.pdf",
+      "pp": null
+    },
+    {
+      "title": "Section I — All Providers General Information",
+      "detector": "D3,D4",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FAll+Providers+General+Information+Section+I%2FAllProvidersGeneralInfo_Section_1.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospice Care Services Provider Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHospice%2FHospiceCareServices.pdf",
+      "pp": null
+    },
+    {
+      "title": "Hospital Services Provider Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FHospital%2FHospital+Services%2FHospitalServices.pdf",
+      "pp": null
+    },
+    {
+      "title": "Physical Therapy and Occupational Therapy Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FPhysical+Therapy+And+Occupational+Therapy%2FPT-OT1-26.pdf",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health Services Provider Manual",
+      "detector": "D4",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FBehavioral+Health+Services%2FBehavioralHealthServices5-26.pdf",
+      "pp": null
+    },
+    {
+      "title": "Long Term Care Provider Manual",
+      "detector": "D20",
+      "url": "https://medicaid-documents.dhhs.utah.gov/Documents%2Fmanuals%2Fpdfs%2FMedicaid+Provider+Manuals%2FLong+Term+Care%2FLongTermCare9-25.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "Index is a ?folder= directory browser; PDFs live on medicaid-documents.dhhs.utah.gov (GCS-style %2F-encoded path + +-for-space). Filenames carry M-YY revision suffix (e.g. Transportation9-25.pdf) so they rotate — the legacy medicaid.utah.gov/Documents/.../<Slug>.pdf path also redirects to current. 27 service folders total; HCBS has 7 per-waiver subfolders. No standalone Laboratory or NEMT-only manual — Medical Transportation manual covers ambulance + NEMT; lab/radiology inside Physician Services.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

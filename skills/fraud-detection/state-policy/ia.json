@@ -1,0 +1,98 @@
+{
+  "name": "ia-medicaid-policy",
+  "kind": "state-policy",
+  "state": "IA",
+  "index": "https://hhs.iowa.gov/about/policy-manuals/medicaid-provider",
+  "fetchVia": "curl",
+  "out": "policy/ia",
+  "note": "Iowa HHS Medicaid Provider Policy Manuals — ~50 per-service chapter PDFs (Drupal /media/<id>/download?inline, 301→302→200 PDF). 4 'All Providers' chapters + Institutional/Waiver/All-Other-Services groups. No login. NEMT is brokered (Access2Care) — no FFS NEMT manual; Ambulance chapter covers emergency transport.",
+  "docs": [
+    {
+      "title": "All Providers Ch.I — General Program Policies",
+      "detector": "D3,D4",
+      "url": "https://hhs.iowa.gov/media/4303/download?inline",
+      "pp": null
+    },
+    {
+      "title": "All Providers Ch.IV — Billing Iowa Medicaid",
+      "detector": "D4",
+      "url": "https://hhs.iowa.gov/media/4305/download?inline",
+      "pp": null
+    },
+    {
+      "title": "All Providers — Appendix",
+      "detector": "D4",
+      "url": "https://hhs.iowa.gov/media/4302/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Services Provider Manual",
+      "detector": "D19",
+      "url": "https://hhs.iowa.gov/media/4306/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Home and Community-Based Services (HCBS) Waiver Provider Manual",
+      "detector": "D20",
+      "url": "https://hhs.iowa.gov/media/4323/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Home Health Services Provider Manual",
+      "detector": "D20",
+      "url": "https://hhs.iowa.gov/media/4324/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Habilitation Services Provider Manual",
+      "detector": "D20",
+      "url": "https://hhs.iowa.gov/media/4322/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Manual",
+      "detector": "D20",
+      "url": "https://hhs.iowa.gov/media/4325/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Physician Services Provider Manual",
+      "detector": "D4",
+      "url": "https://hhs.iowa.gov/media/4339/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Durable Medical Equipment Provider Manual",
+      "detector": "D15",
+      "url": "https://hhs.iowa.gov/media/15903/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Pharmacy — Outpatient Prescribed Drugs Provider Manual",
+      "detector": "D16,D23",
+      "url": "https://hhs.iowa.gov/media/4319/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Independent Laboratory Provider Manual",
+      "detector": "D4",
+      "url": "https://hhs.iowa.gov/media/4330/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Behavioral Health Services Provider Manual",
+      "detector": "D4",
+      "url": "https://hhs.iowa.gov/media/4310/download?inline",
+      "pp": null
+    },
+    {
+      "title": "Physical Therapy Provider Manual",
+      "detector": "D20",
+      "url": "https://hhs.iowa.gov/media/4340/download?inline",
+      "pp": null
+    }
+  ],
+  "_comment": "Iowa HHS Provider Policy Manuals index (Drupal). ~50 chapter PDFs total; captured 14 detector-relevant. Media href pattern: /media/<id>/ → 301 → /media/<id>/download?inline (application/pdf, curl 200). No standalone NEMT chapter — Iowa Medicaid NEMT is MCO-brokered (Access2Care/A2C); only Ambulance Services covers transport FFS. Coverage policy also lives in IAC 441 Ch.77–79 (rules.iowa.gov) but the manuals roll it up.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

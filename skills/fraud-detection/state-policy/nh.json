@@ -1,0 +1,110 @@
+{
+  "name": "nh-medicaid-policy",
+  "kind": "state-policy",
+  "state": "NH",
+  "index": "https://nhmmis.nh.gov/portals/wps/portal/BillingManuals",
+  "fetchVia": "curl",
+  "out": "policy/nh",
+  "note": "NH MMIS Health Enterprise Portal (Conduent) — Vol I General Billing + 30 Vol II per-provider-type PDFs at /portals/wps/wcm/connect/<uuid>/<file>.pdf?MOD=AJPERES&CVID=...; curl 200, no login. No standalone Physician, DME, or Pharmacy manual on the index (pharmacy via separate PBM; DME under He-W 573 rules).",
+  "docs": [
+    {
+      "title": "General Billing Provider Manual — Volume I",
+      "detector": "D3,D4",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/fe04cf39-6219-4f67-a984-5b6a3a56edf0/GENERAL+BILLING+-+Volume+I.pdf?MOD=AJPERES&CVID=pLtLA7i",
+      "pp": null
+    },
+    {
+      "title": "Medical Transportation Services (MTS / Wheelchair Van) Provider Manual Vol II",
+      "detector": "D19",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/d6c8fb29-9ef1-4713-a6ce-e79db30e89ad/NHCSR-OMBP-1-Provider-MTS+Provider+Manual+Update+32024-Att1-20240327.pdf?MOD=AJPERES&CVID=oWLwe6a",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Provider Manual Vol II",
+      "detector": "D19",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/cc73ed93-9a49-4675-8fa9-65b5a69de384/NHCSR-OMBP-1-Provider-Ambulance+Provider+Manual+-+Revised-Att1-20230727.pdf?MOD=AJPERES&CVID=oCov6rw",
+      "pp": null
+    },
+    {
+      "title": "Ambulance Reference Guide",
+      "detector": "D19",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/618850e8-cf3e-43a7-81b4-ec817ebf0a7c/nhmedicaid-ambulancereferenceguide-final.pdf?MOD=AJPERES&CVID=prpbo0A",
+      "pp": null
+    },
+    {
+      "title": "Home Health Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/c8dc9943-f06f-40ef-af39-49012c0a7c71/NH+Medicaid+Final+Rebranded+Home+Health+Provider+Manual+1-18-18.pdf?MOD=AJPERES&CVID=m9FXLI-",
+      "pp": null
+    },
+    {
+      "title": "Private Duty Nursing Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/c9299b42-b17c-4348-b204-c1c6b233bda6/nh-medicaid-private-duty-nursing-provider-manual.pdf?MOD=AJPERES&CVID=pSR.m6m",
+      "pp": null
+    },
+    {
+      "title": "Personal Care Attendant (PCA) Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/fe65d9ba-b28f-4a61-ac19-1f13dc020294/NH+Medicaid++Final+PCA+Provider+Manual+Rebrand+12-20-2017.pdf?MOD=AJPERES&CVID=m9FoWXU",
+      "pp": null
+    },
+    {
+      "title": "Choices for Independence (CFI) HCBS Waiver Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/dd9d7e2e-2c02-41e3-872a-eaefb8fd6342/NH+Medicaid+Final+Rebranded+CFI++Provider+Manual+1-18-18.pdf?MOD=AJPERES&CVID=m9FvPIy",
+      "pp": null
+    },
+    {
+      "title": "Developmental Services (HCBS) Provider Billing Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/2bde2b12-4eb7-44c2-8a3a-99ff82264adf/NH+Medicaid+final+Developmental+Services+Provider+Billing+Manual+Rebrand+12-20-2017.pdf?MOD=AJPERES&CVID=m9FqSbn",
+      "pp": null
+    },
+    {
+      "title": "Medical Services Clinic Provider Manual Vol II (physician/practitioner)",
+      "detector": "D4",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/4922ba42-45d3-4b6a-a9d6-70ebd7e58c2d/Medical+Services+Clinic+Manual+-+Provider+Manual+II.pdf?MOD=AJPERES&CVID=powEa15",
+      "pp": null
+    },
+    {
+      "title": "Laboratory Provider Manual Vol II",
+      "detector": "D4",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/ee5d73e3-7886-4fa8-9804-e53aa20c2f1c/NHCSR-OMBP-5-Provider-Laboratory+Provider+Manual+-Att1-20230612.pdf?MOD=AJPERES&CVID=ozA2d1V",
+      "pp": null
+    },
+    {
+      "title": "Radiological Services Provider Manual Vol II",
+      "detector": "D4",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/477e43ec-6b8e-4713-80c1-4fd4e0b66ca6/Radiological+Services+-++Provider+Manual+II.pdf?MOD=AJPERES&CVID=pjWOINy",
+      "pp": null
+    },
+    {
+      "title": "Home Infusion Therapy Provider Manual Vol II",
+      "detector": "D16,D23",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/a658fdbb-0b7d-4e64-bdfd-c0a40fc7a5c3/NHCSR-OMBP-4-Provider-Home+Infusion+Provider+Manual+-Att1-20230612.pdf?MOD=AJPERES&CVID=ozA1WH9",
+      "pp": null
+    },
+    {
+      "title": "Therapies (PT/OT/ST) Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/4f864dbb-6c49-4820-8cf5-b40bd1fd577c/NHCSR-OMBP-6-Provider+Bulletin-Therapies+PT+OT+ST+Provider+Manual+-Att1-20230321.pdf?MOD=AJPERES&CVID=oA3fKVZ",
+      "pp": null
+    },
+    {
+      "title": "Hospice Provider Manual Vol II",
+      "detector": "D20",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/7bd043cc-8c6b-49dc-8e52-37614f33a71d/NH+Medicaid+rebranded+Hospice+Provider+Manual+1-30-18.pdf?MOD=AJPERES&CVID=m9FWy6.",
+      "pp": null
+    },
+    {
+      "title": "Ambulatory Surgical Center (ASC) Provider Manual Vol II",
+      "detector": "D4",
+      "url": "https://nhmmis.nh.gov/portals/wps/wcm/connect/0c6a5509-272d-4eba-b4c3-e8519ee4a4b0/NH+Medicaid+rebranded+ASC+Provider+Manual+1-26-18.pdf?MOD=AJPERES&CVID=m9FVj7I",
+      "pp": null
+    }
+  ],
+  "_comment": "31 manual PDFs total on the BillingManuals index (WebSphere WCM ?MOD=AJPERES URLs with UUID + CVID). No login, curl 200. NEMT = 'MTS' (Medical Transportation Services / Wheelchair Van). Physician services have no standalone Vol II — Medical Services Clinic + General Billing Vol I cover practitioner billing; coverage rules in He-W 530. DME (He-W 573) and Pharmacy (He-W 570 / Conduent PBM) not posted as Vol II manuals here.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}

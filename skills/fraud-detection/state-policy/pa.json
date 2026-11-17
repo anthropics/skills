@@ -1,0 +1,92 @@
+{
+  "name": "pa-medicaid-policy",
+  "kind": "state-policy",
+  "state": "PA",
+  "index": "https://www.pa.gov/agencies/dhs/resources/for-providers/promise/promise-provider-handbooks-guides",
+  "fetchVia": "curl",
+  "out": "policy/pa",
+  "note": "PA DHS PROMISe Provider Handbooks & Billing Guides. Index page on new pa.gov AEM site is a stub (intro text only, no link list rendered) — PDFs found via Google site: search. All live under /content/dam/copapwp-pagov/en/dhs/documents/{providers/promise-guides,docs/for-providers/...}/. Direct curl 200, no login. MATP (NEMT) is county-administered (matp.pa.gov), not a PROMISe billing guide.",
+  "docs": [
+    {
+      "title": "PROMISe Provider Handbook — 837 Professional / CMS-1500",
+      "detector": "D3,D4",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/Professional%20Provider%20Handbook.pdf",
+      "pp": null
+    },
+    {
+      "title": "PROMISe Provider Handbook — 837 Institutional / UB-04",
+      "detector": "D4,D20",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/Institutional%20Handbook.pdf",
+      "pp": null
+    },
+    {
+      "title": "PROMISe Provider Handbook — NCPDP D.0 Pharmacy Billing",
+      "detector": "D16,D23",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/NCPDP%20D.0%20Pharmacy%20Billing.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Physicians",
+      "detector": "D4",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/CMS%201500%20Billing%20Guide%20for%20PROMISe%20Physicians.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Ambulance Providers",
+      "detector": "D19",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/Ambulance.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Medical Suppliers (DME)",
+      "detector": "D15",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/CMS%201500%20Billing%20Guide%20for%20PROMISe%20Medical%20Suppliers.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Home Health Agencies",
+      "detector": "D20",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/CMS%201500%20Billing%20Guide%20for%20PROMISe%20Home%20Health%20Agencies.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Therapists (PT/OT/ST)",
+      "detector": "D20",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/Therapist%20PROMISe.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Laboratories",
+      "detector": "D4",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/CMS%201500%20Billing%20Guide%20for%20PROMISe%20Laboratories.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Financial Management Services (HCBS waiver)",
+      "detector": "D20",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/providers/promise-guides/documents/CMS%201500%20Billing%20Guide%20for%20PROMISe%20FMS.pdf",
+      "pp": null
+    },
+    {
+      "title": "UB-04 Billing Guide for PROMISe — Nursing Facilities",
+      "detector": "D20",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/nursing%20facilities.pdf",
+      "pp": null
+    },
+    {
+      "title": "CMS-1500 Billing Guide for PROMISe — Healthy Beginnings Plus (HBP)",
+      "detector": "D4",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/hbp.pdf",
+      "pp": null
+    },
+    {
+      "title": "PROMISe Provider Handbook — 837 Dental / ADA",
+      "detector": "D4",
+      "url": "https://www.pa.gov/content/dam/copapwp-pagov/en/dhs/documents/docs/for-providers/documents/promise-provider-handbooks_billing-guides/Dental%20Handbook.pdf",
+      "pp": null
+    }
+  ],
+  "_comment": "PROMISe = PA's MMIS. ~40 per-provider-type CMS-1500/UB-04 billing-guide PDFs total (predictable URL slug 'CMS 1500 Billing Guide for PROMISe <Type>.pdf'); captured 13 detector-relevant. Index page link-list broken on new pa.gov AEM migration as of 2026-06 — PDFs resolved via Google site: search. Policy/coverage rules also in 55 Pa. Code Ch.1101–1251 (HTML, pacodeandbulletin.gov) — not captured here.",
+  "siteArchitecture": "pdf-curl",
+  "lastVerified": "2026-06-22"
+}
