@@ -212,7 +212,12 @@ def convert_to_images(pptx_path: Path, temp_dir: Path) -> list[Path]:
     if result.returncode != 0:
         raise RuntimeError("Image conversion failed")
 
-    return sorted(temp_dir.glob("slide-*.jpg"))
+    # pdftoppm numbers pages slide-1, slide-2, ... slide-10. Plain string
+    # sorting puts slide-10 before slide-2, so sort by the page number instead.
+    def _page_number(path: Path) -> int:
+        return int(path.stem.split("-")[-1])
+
+    return sorted(temp_dir.glob("slide-*.jpg"), key=_page_number)
 
 
 def create_grids(
