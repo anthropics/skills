@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Preview: VoltAgent (Light)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --color-abyss: #050507;
+    --color-carbon: #101010;
+    --color-signal-green: #00d992;
+    --color-mint: #2fd6a1;
+    --color-emerald: #10b981;
+    --color-purple: #818cf8;
+    --color-warm-charcoal: #3d3a39;
+    --color-steel: #8b949e;
+    --color-parchment: #b8b3b0;
+    --color-snow: #f2f2f2;
+    --color-white: #ffffff;
+    --color-fog: #bdbdbd;
+    --color-mist: #dcdcdc;
+    --color-warning: #ffba00;
+    --color-danger: #fb565b;
+    --color-info: #4cb3d4;
+    --color-success: #008b00;
+    --font-system: system-ui, -apple-system, 'Segoe UI', Roboto, Ubuntu, Cantarell, 'Noto Sans', Helvetica, Arial, sans-serif;
+    --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+    /* Light mode overrides */
+    --bg-page: #ffffff;
+    --bg-card: #f8f8f8;
+    --bg-nav: rgba(255,255,255,0.92);
+    --text-primary: #101010;
+    --text-secondary: #3d3a39;
+    --text-muted: #8b949e;
+    --border-color: #e0e0e0;
+    --border-subtle: #f0f0f0;
+    --section-label-color: var(--color-signal-green);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg-page);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* NAV */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 40px;
+    background: var(--bg-nav);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nav-brand { font-family: var(--font-system); font-size: 18px; font-weight: 600; letter-spacing: -0.3px; display: flex; align-items: center; gap: 8px; }
+  .nav-brand .bolt { color: var(--color-signal-green); font-size: 20px; }
+  .nav-links { display: flex; gap: 32px; align-items: center; }
+  .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--color-signal-green); }
+  .nav-cta {
+    background: var(--color-carbon);
+    color: var(--color-mint);
+    padding: 8px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .hero {
+    position: relative;
+    text-align: center;
+    padding: 120px 40px 100px;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 600px;
+    height: 600px;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, rgba(0,217,146,0.08) 0%, rgba(16,185,129,0.04) 40%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero h1 {
+    font-family: var(--font-system);
+    font-size: 60px;
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -0.65px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .hero h1 span { color: var(--color-signal-green); }
+  .hero p {
+    color: var(--text-secondary);
+    font-size: 18px;
+    line-height: 1.5;
+    margin-bottom: 40px;
+    position: relative;
+  }
+  .hero-buttons { display: flex; gap: 16px; justify-content: center; position: relative; }
+  .btn-primary-green {
+    background: var(--color-carbon);
+    color: var(--color-mint);
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-primary);
+    padding: 12px 24px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+
+  /* SECTIONS */
+  .section {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 80px 40px;
+  }
+  .section-title {
+    font-family: var(--font-system);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2.52px;
+    color: var(--section-label-color);
+    margin-bottom: 12px;
+  }
+  .section-heading {
+    font-family: var(--font-system);
+    font-size: 36px;
+    font-weight: 400;
+    line-height: 1.11;
+    letter-spacing: -0.9px;
+    margin-bottom: 48px;
+  }
+  .section-divider {
+    border: none;
+    border-top: 1px solid var(--border-subtle);
+    margin: 0 40px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* COLOR PALETTE */
+  .color-group { margin-bottom: 40px; }
+  .color-group-title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 1.2;
+    margin-bottom: 20px;
+    color: var(--text-secondary);
+  }
+  .color-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 16px;
+  }
+  .color-swatch {
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .color-swatch-block {
+    height: 80px;
+    position: relative;
+  }
+  .color-swatch-info {
+    padding: 12px;
+    background: var(--bg-card);
+  }
+  .color-swatch-name { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .color-swatch-hex { font-family: var(--font-mono); font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .color-swatch-role { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* TYPOGRAPHY */
+  .type-sample { margin-bottom: 32px; padding-bottom: 32px; border-bottom: 1px solid var(--border-subtle); }
+  .type-sample:last-child { border-bottom: none; }
+  .type-sample-text { margin-bottom: 8px; }
+  .type-sample-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* BUTTONS */
+  .button-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .button-demo { text-align: center; }
+  .button-demo-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+  }
+  .btn-ghost-charcoal {
+    background: transparent;
+    color: var(--text-primary);
+    padding: 12px 16px;
+    border: 1px solid var(--color-warm-charcoal);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+  .btn-tertiary {
+    background: var(--bg-card);
+    color: var(--text-primary);
+    padding: 20px;
+    border: 3px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    cursor: pointer;
+  }
+  .btn-accent-border {
+    background: transparent;
+    color: var(--color-signal-green);
+    padding: 12px 16px;
+    border: 2px solid var(--color-signal-green);
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: var(--font-body);
+    font-weight: 500;
+    cursor: pointer;
+  }
+
+  /* CARDS */
+  .card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+  .card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 28px;
+  }
+  .card-standard { border: 1px solid var(--border-color); }
+  .card-accent {
+    border: 2px solid var(--color-signal-green);
+  }
+  .card-dramatic {
+    border: 1px solid var(--border-color);
+    box-shadow: 0px 20px 60px rgba(0,0,0,0.07);
+  }
+  .card h3 { font-family: var(--font-system); font-size: 24px; font-weight: 700; line-height: 1.33; letter-spacing: -0.6px; margin-bottom: 12px; }
+  .card p { color: var(--text-secondary); font-size: 15px; line-height: 1.63; }
+  .card-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    color: var(--color-signal-green);
+    margin-bottom: 16px;
+  }
+
+  /* CODE BLOCK */
+  .code-block {
+    background: var(--color-carbon);
+    border: 1px solid var(--color-warm-charcoal);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--color-snow);
+    overflow-x: auto;
+  }
+  .code-block .keyword { color: var(--color-purple); }
+  .code-block .string { color: var(--color-mint); }
+  .code-block .comment { color: var(--color-steel); }
+
+  /* SPACING */
+  .spacing-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; }
+  .spacing-item { text-align: center; }
+  .spacing-box {
+    background: rgba(0,217,146,0.12);
+    border: 1px solid rgba(0,217,146,0.3);
+    border-radius: 2px;
+    margin-bottom: 8px;
+  }
+  .spacing-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+
+  /* RADIUS */
+  .radius-row { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; }
+  .radius-item { text-align: center; }
+  .radius-box {
+    width: 80px;
+    height: 80px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    margin-bottom: 8px;
+  }
+  .radius-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-muted);
+  }
+  .radius-context {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  /* ELEVATION */
+  .elevation-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 24px; }
+  .elevation-card {
+    background: var(--bg-card);
+    border-radius: 8px;
+    padding: 24px;
+    min-height: 140px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .elevation-flat { border: none; background: var(--bg-page); }
+  .elevation-contained { border: 1px solid var(--border-subtle); }
+  .elevation-emphasized { border: 3px solid var(--border-color); }
+  .elevation-accent { border: 2px solid var(--color-signal-green); }
+  .elevation-ambient { border: 1px solid var(--border-color); box-shadow: 0px 0px 15px rgba(92,88,85,0.1); }
+  .elevation-dramatic { border: 1px solid var(--border-color); box-shadow: 0px 20px 60px rgba(0,0,0,0.07); }
+  .elevation-name { font-size: 16px; font-weight: 600; margin-bottom: 8px; }
+  .elevation-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+  .elevation-level {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--color-signal-green);
+    text-transform: uppercase;
+    letter-spacing: 0.55px;
+    margin-top: 12px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    .nav { padding: 12px 20px; }
+    .nav-links a:not(.nav-cta-wrapper) { display: none; }
+    .hero { padding: 80px 20px 60px; }
+    .hero h1 { font-size: 36px; }
+    .section { padding: 60px 20px; }
+    .section-heading { font-size: 28px; }
+    .color-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+    .card-grid { grid-template-columns: 1fr; }
+    .hero-buttons { flex-direction: column; align-items: center; }
+    .button-row { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-brand"><span class="bolt">&#9889;</span> VoltAgent</div>
+  <div class="nav-links">
+    <a href="#colors">Colors</a>
+    <a href="#typography">Typography</a>
+    <a href="#buttons">Buttons</a>
+    <a href="#cards">Cards</a>
+    <a href="#spacing">Spacing</a>
+    <a href="#elevation">Elevation</a>
+    <button class="nav-cta">Get Started</button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <h1>Design System Preview:<br><span>VoltAgent</span></h1>
+  <p>Auto-generated design token catalog from DESIGN.md</p>
+  <div class="hero-buttons">
+    <button class="btn-primary-green">Explore Tokens</button>
+    <button class="btn-ghost">View Source</button>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- COLORS -->
+<section class="section" id="colors">
+  <div class="section-title">01 / Color Palette</div>
+  <h2 class="section-heading">Color Palette & Roles</h2>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Primary</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #00d992;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Emerald Signal Green</div>
+          <div class="color-swatch-hex">#00d992</div>
+          <div class="color-swatch-role">Core brand accent, glow effects, active borders</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #2fd6a1;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">VoltAgent Mint</div>
+          <div class="color-swatch-hex">#2fd6a1</div>
+          <div class="color-swatch-role">CTA button text on dark surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #10b981;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Tailwind Emerald</div>
+          <div class="color-swatch-hex">#10b981</div>
+          <div class="color-swatch-role">Ecosystem green, link defaults, background tints at 30%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Secondary & Accent</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #818cf8;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Soft Purple</div>
+          <div class="color-swatch-hex">#818cf8</div>
+          <div class="color-swatch-role">Secondary categorization, code syntax highlights</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #306cce;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Cobalt Primary</div>
+          <div class="color-swatch-hex">#306cce</div>
+          <div class="color-swatch-role">Docs links, interactive focus states</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #4cb3d4;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Info Teal</div>
+          <div class="color-swatch-hex">#4cb3d4</div>
+          <div class="color-swatch-role">Informational callouts and tip admonitions</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Surface & Background</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #050507; border-bottom: 1px solid #3d3a39;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Abyss Black</div>
+          <div class="color-swatch-hex">#050507</div>
+          <div class="color-swatch-role">Landing page canvas</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #101010; border-bottom: 1px solid #3d3a39;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Carbon Surface</div>
+          <div class="color-swatch-hex">#101010</div>
+          <div class="color-swatch-role">Card backgrounds, button surfaces</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #3d3a39;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warm Charcoal</div>
+          <div class="color-swatch-hex">#3d3a39</div>
+          <div class="color-swatch-role">Borders, containment lines</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Neutrals & Text</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #f2f2f2; border-bottom: 1px solid #e0e0e0;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Snow White</div>
+          <div class="color-swatch-hex">#f2f2f2</div>
+          <div class="color-swatch-role">Primary text on dark surfaces (1008 instances)</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #b8b3b0;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warm Parchment</div>
+          <div class="color-swatch-hex">#b8b3b0</div>
+          <div class="color-swatch-role">Secondary body text</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #8b949e;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Steel Slate</div>
+          <div class="color-swatch-hex">#8b949e</div>
+          <div class="color-swatch-role">Tertiary text, metadata</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="color-group">
+    <h3 class="color-group-title">Semantic</h3>
+    <div class="color-grid">
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #ffba00;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Warning Amber</div>
+          <div class="color-swatch-hex">#ffba00</div>
+          <div class="color-swatch-role">Warning states and caution alerts</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #fb565b;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Danger Coral</div>
+          <div class="color-swatch-hex">#fb565b</div>
+          <div class="color-swatch-role">Error states and destructive actions</div>
+        </div>
+      </div>
+      <div class="color-swatch">
+        <div class="color-swatch-block" style="background: #008b00;"></div>
+        <div class="color-swatch-info">
+          <div class="color-swatch-name">Success Emerald</div>
+          <div class="color-swatch-hex">#008b00</div>
+          <div class="color-swatch-role">Success confirmations</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- TYPOGRAPHY -->
+<section class="section" id="typography">
+  <div class="section-title">02 / Typography Scale</div>
+  <h2 class="section-heading">Typography Rules</h2>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-system); font-size: 60px; font-weight: 400; line-height: 1.0; letter-spacing: -0.65px;">Display Hero</div>
+    <div class="type-sample-label">Display / Hero &mdash; 60px / 400 / 1.00 / -0.65px &mdash; system-ui</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-system); font-size: 36px; font-weight: 400; line-height: 1.11; letter-spacing: -0.9px;">Section Heading</div>
+    <div class="type-sample-label">Section Heading &mdash; 36px / 400 / 1.11 / -0.9px &mdash; system-ui</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-system); font-size: 24px; font-weight: 700; line-height: 1.33; letter-spacing: -0.6px;">Sub-heading Bold</div>
+    <div class="type-sample-label">Sub-heading Bold &mdash; 24px / 700 / 1.33 / -0.6px &mdash; system-ui</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-system); font-size: 20px; font-weight: 600; line-height: 1.40; text-transform: uppercase; letter-spacing: 0.5px;">OVERLINE LABEL</div>
+    <div class="type-sample-label">Overline &mdash; 20px / 600 / 1.40 / 0.5px / uppercase &mdash; system-ui</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 20px; font-weight: 600; line-height: 1.40;">Feature Title</div>
+    <div class="type-sample-label">Feature Title &mdash; 20px / 600 / 1.40 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 16px; font-weight: 400; line-height: 1.65;">Body text for standard paragraphs, navigation links, and button labels. Inter provides geometric precision for all UI copy.</div>
+    <div class="type-sample-label">Body / Button &mdash; 16px / 400 / 1.65 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-body); font-size: 14px; font-weight: 500; line-height: 1.43; color: var(--text-secondary);">Caption and metadata text for descriptions</div>
+    <div class="type-sample-label">Caption &mdash; 14px / 500 / 1.43 / normal &mdash; Inter</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-system); font-size: 14px; font-weight: 600; line-height: 1.43; text-transform: uppercase; letter-spacing: 2.52px; color: var(--text-muted);">TINY OVERLINE TAG</div>
+    <div class="type-sample-label">Tag / Overline Tiny &mdash; 14px / 600 / 1.43 / 2.52px / uppercase &mdash; system-ui</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 14px; font-weight: 400; line-height: 1.43;">const agent = new Agent({ name: "voltagent" })</div>
+    <div class="type-sample-label">Code Body &mdash; 14px / 400 / 1.43 / normal &mdash; SFMono-Regular</div>
+  </div>
+
+  <div class="type-sample">
+    <div class="type-sample-text" style="font-family: var(--font-mono); font-size: 12px; font-weight: 400; line-height: 1.33;">import { Agent } from "@voltagent/core"</div>
+    <div class="type-sample-label">Code Small &mdash; 12px / 400 / 1.33 / normal &mdash; SFMono-Regular</div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BUTTONS -->
+<section class="section" id="buttons">
+  <div class="section-title">03 / Button Variants</div>
+  <h2 class="section-heading">Buttons</h2>
+
+  <div class="button-row">
+    <div class="button-demo">
+      <button class="btn-primary-green">Get Started</button>
+      <div class="button-demo-label">Primary Green CTA</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost">View Docs</button>
+      <div class="button-demo-label">Ghost / Outline</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-ghost-charcoal">Secondary</button>
+      <div class="button-demo-label">Ghost / Charcoal</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-accent-border">Highlighted</button>
+      <div class="button-demo-label">Accent Border</div>
+    </div>
+    <div class="button-demo">
+      <button class="btn-tertiary">Container Button</button>
+      <div class="button-demo-label">Tertiary / Container</div>
+    </div>
+  </div>
+
+  <div class="code-block" style="margin-top: 40px;">
+    <span class="comment">// npm install command — the primary CTA</span><br>
+    <span class="keyword">$</span> npm create voltagent-app@latest
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- CARDS -->
+<section class="section" id="cards">
+  <div class="section-title">04 / Card Examples</div>
+  <h2 class="section-heading">Cards & Containers</h2>
+
+  <div class="card-grid">
+    <div class="card card-standard">
+      <div class="card-label">Standard Card</div>
+      <h3>Warm Charcoal Border</h3>
+      <p>Standard content card with 1px solid warm-charcoal border and 8px radius. The default container for features, code blocks, and content sections.</p>
+    </div>
+    <div class="card card-accent">
+      <div class="card-label">Accent Highlighted</div>
+      <h3>Green Signal Border</h3>
+      <p>Active or highlighted card with 2px solid Emerald Signal Green border. Used for selected features, active states, and primary emphasis.</p>
+    </div>
+    <div class="card card-dramatic">
+      <div class="card-label">Dramatic Float</div>
+      <h3>Deep Shadow Elevation</h3>
+      <p>Maximum-elevation card with dramatic shadow (20px 60px) and inset slate ring. Reserved for hero feature showcases and floating content.</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- SPACING -->
+<section class="section" id="spacing">
+  <div class="section-title">05 / Spacing Scale</div>
+  <h2 class="section-heading">Spacing System</h2>
+  <p style="color: var(--text-secondary); margin-bottom: 32px;">Base unit: 8px. Scale builds from 2px to 64px.</p>
+
+  <div class="spacing-row">
+    <div class="spacing-item"><div class="spacing-box" style="width: 8px; height: 8px;"></div><div class="spacing-label">2px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 16px; height: 16px;"></div><div class="spacing-label">4px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 24px; height: 24px;"></div><div class="spacing-label">6px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 32px; height: 32px;"></div><div class="spacing-label">8px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 48px; height: 48px;"></div><div class="spacing-label">12px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 64px; height: 64px;"></div><div class="spacing-label">16px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 80px; height: 80px;"></div><div class="spacing-label">20px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 96px; height: 96px;"></div><div class="spacing-label">24px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 128px; height: 128px;"></div><div class="spacing-label">32px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 160px; height: 160px;"></div><div class="spacing-label">40px</div></div>
+    <div class="spacing-item"><div class="spacing-box" style="width: 192px; height: 192px;"></div><div class="spacing-label">48px</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- BORDER RADIUS -->
+<section class="section">
+  <div class="section-title">06 / Border Radius Scale</div>
+  <h2 class="section-heading">Border Radius</h2>
+
+  <div class="radius-row">
+    <div class="radius-item"><div class="radius-box" style="border-radius: 4px;"></div><div class="radius-label">4px</div><div class="radius-context">Nearly squared</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 6px;"></div><div class="radius-label">6px</div><div class="radius-context">Subtly rounded</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 8px;"></div><div class="radius-label">8px</div><div class="radius-context">Comfortably rounded</div></div>
+    <div class="radius-item"><div class="radius-box" style="border-radius: 9999px;"></div><div class="radius-label">9999px</div><div class="radius-context">Pill-shaped</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- ELEVATION -->
+<section class="section" id="elevation">
+  <div class="section-title">07 / Elevation & Depth</div>
+  <h2 class="section-heading">Depth & Elevation</h2>
+
+  <div class="elevation-grid">
+    <div class="elevation-card elevation-flat">
+      <div><div class="elevation-name">Flat</div><div class="elevation-desc">No shadow, no border. Page background and inline text.</div></div>
+      <div class="elevation-level">Level 0</div>
+    </div>
+    <div class="elevation-card elevation-contained">
+      <div><div class="elevation-name">Contained</div><div class="elevation-desc">1px solid Warm Charcoal. Standard cards and code blocks.</div></div>
+      <div class="elevation-level">Level 1</div>
+    </div>
+    <div class="elevation-card elevation-emphasized">
+      <div><div class="elevation-name">Emphasized</div><div class="elevation-desc">3px solid Warm Charcoal. Large interactive buttons and containers.</div></div>
+      <div class="elevation-level">Level 2</div>
+    </div>
+    <div class="elevation-card elevation-accent">
+      <div><div class="elevation-name">Accent</div><div class="elevation-desc">2px solid Emerald Signal Green. Active/highlighted feature cards.</div></div>
+      <div class="elevation-level">Level 3</div>
+    </div>
+    <div class="elevation-card elevation-ambient">
+      <div><div class="elevation-name">Ambient Glow</div><div class="elevation-desc">Warm diffused shadow (15px blur). Soft atmospheric lift.</div></div>
+      <div class="elevation-level">Level 4</div>
+    </div>
+    <div class="elevation-card elevation-dramatic">
+      <div><div class="elevation-name">Dramatic Float</div><div class="elevation-desc">Heavy shadow (20px 60px) + inset ring. Hero features, modals.</div></div>
+      <div class="elevation-level">Level 5</div>
+    </div>
+  </div>
+</section>
+
+<div style="height: 80px;"></div>
+
+</body>
+</html>
