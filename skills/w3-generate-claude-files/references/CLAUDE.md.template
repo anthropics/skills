@@ -1,0 +1,261 @@
+# CLAUDE.md - Project Constitution
+
+> **Note**: This is a Node.js/TypeScript example. Adapt the specifics (framework, tools, syntax) to match YOUR tech stack (Python, Go, Java, C#, etc.)
+
+## 📋 Project Overview
+
+**Name**: [PROJECT_NAME]
+**Purpose**: [BRIEF_DESCRIPTION]
+**Type**: [Backend API / Full-stack / Microservice / CLI / etc]
+**Tech Stack**:
+- Runtime: Node.js v18+
+- Language: TypeScript
+- Framework: [Express / NestJS / Fastify]
+- Database: [PostgreSQL / MongoDB / SQLite]
+- Testing: [Jest / Vitest]
+- Additional: [OpenAI API / Redis / etc]
+
+---
+
+## ⚡ Critical Rules (MUST FOLLOW)
+
+### Code Quality
+- [ ] **TypeScript**: Strict mode (`strict: true`)
+- [ ] **No `any`**: Type everything explicitly
+- [ ] **File Size**: Max 600 lines per file
+- [ ] **Function Size**: Max 40 lines per function
+- [ ] **Nesting Depth**: Max 3 levels
+- [ ] **Immutability**: Never mutate, use spread operator
+
+### Input Validation
+```typescript
+// ALWAYS validate with zod
+import { z } from 'zod'
+
+const CreateSchema = z.object({
+  email: z.string().email('Invalid email'),
+  name: z.string().min(1),
+})
+
+const data = CreateSchema.parse(req.body) // Throws if invalid
+```
+
+### Error Handling
+```typescript
+// ALWAYS try/catch with custom errors
+try {
+  const result = await riskyOperation()
+  res.json({ success: true, data: result })
+} catch (error) {
+  logger.error('Operation failed:', error)
+  res.status(400).json({ success: false, error: 'Operation failed' })
+}
+```
+
+### Logging
+- [ ] **NO console.log** in production code
+- [ ] **Use Logger**: Winston / Pino
+- [ ] **Never log**: passwords, keys, sensitive data
+
+```typescript
+import { logger } from '../../utils/logger'
+
+logger.info('User created', { userId: user.id })
+logger.error('Create failed', error)
+```
+
+### Testing Requirements
+- [ ] **Minimum Coverage**: 80%
+- [ ] **Unit Tests**: `src/**/__tests__/[name].test.ts`
+- [ ] **Integration Tests**: `tests/integration/[feature].test.ts`
+- [ ] **E2E Tests**: `tests/e2e/` (Playwright)
+- [ ] **Mock External APIs**: Never call real APIs in tests
+- [ ] **Pre-commit**: Run `npm run test:coverage`
+
+### Security (CRITICAL)
+- [ ] **NO Hardcoded Secrets**: Use .env variables
+- [ ] **VALIDATE All Inputs**: zod schemas
+- [ ] **SANITIZE Outputs**: No XSS
+- [ ] **RATE LIMITING**: Configured per endpoint
+- [ ] **HTTPS Only**: In production
+- [ ] **Error Messages**: Don't expose internal details
+
+```env
+# ✅ CORRECT (.env file)
+OPENAI_API_KEY=sk_test_xxx
+const apiKey = process.env.OPENAI_API_KEY
+
+# ❌ WRONG (hardcoded)
+const apiKey = "sk_test_xxx"
+```
+
+### Git & Commits
+- [ ] **Conventional Commits**: `feat:`, `fix:`, `test:`, `docs:`, `refactor:`, `chore:`
+- [ ] **Commit Format**:
+  ```
+  feat: add user authentication
+
+  - Add JWT token generation
+  - Add login endpoint
+  - Add token verification middleware
+  ```
+- [ ] **Branch Naming**: `feat/xxx`, `fix/xxx`, `test/xxx`, `docs/xxx`
+- [ ] **Before Commit**: Tests pass + linter passes
+- [ ] **Never Force Push**: To main/develop
+
+---
+
+## 📂 Project Structure
+
+```
+[project-root]/
+├── src/
+│   ├── api/                    ← HTTP routes & handlers
+│   │   ├── [feature]/
+│   │   │   ├── routes.ts       ← Route definitions
+│   │   │   ├── controller.ts   ← Request handlers
+│   │   │   └── schema.ts       ← zod validation
+│   │   └── index.ts            ← Register all routes
+│   ├── services/               ← Business logic
+│   │   ├── [Feature]Service.ts
+│   │   └── BaseService.ts
+│   ├── models/                 ← Database models & types
+│   │   ├── [Entity].ts
+│   │   └── schemas.ts          ← zod schemas
+│   ├── middleware/             ← Express middleware
+│   │   ├── auth.ts
+│   │   ├── errorHandler.ts
+│   │   ├── validation.ts
+│   │   ├── logger.ts
+│   │   └── cors.ts
+│   ├── utils/                  ← Helper functions
+│   │   ├── logger.ts
+│   │   ├── errors.ts
+│   │   └── db.ts
+│   ├── types/                  ← TypeScript types
+│   │   └── index.ts
+│   └── server.ts               ← Express app setup
+├── tests/
+│   ├── unit/                   ← Service/utility tests
+│   ├── integration/            ← API endpoint tests
+│   └── e2e/                    ← User flow tests
+├── migrations/                 ← Database migrations
+├── .env.example
+├── package.json
+├── tsconfig.json
+├── jest.config.js
+└── CLAUDE.md
+```
+
+---
+
+## 🛠️ How to Add Features
+
+### Adding New API Endpoint
+
+```typescript
+// 1. Create schema (src/api/users/schema.ts)
+import { z } from 'zod'
+
+export const CreateUserSchema = z.object({
+  email: z.string().email(),
+  name: z.string().min(1),
+})
+
+// 2. Create controller (src/api/users/controller.ts)
+export async function createUser(req: Request, res: Response) {
+  try {
+    const user = await UserService.create(req.body)
+    res.json({ success: true, data: user })
+  } catch (error) {
+    logger.error('Create user failed', error)
+    res.status(400).json({ success: false, error: 'Failed' })
+  }
+}
+
+// 3. Create route (src/api/users/routes.ts)
+router.post('/', validateBody(CreateUserSchema), createUser)
+
+// 4. Create service (src/services/UserService.ts)
+export class UserService extends BaseService {
+  static async create(data: CreateUserDto) {
+    // Business logic
+    return await this.repository.create(data)
+  }
+}
+
+// 5. Write tests (tests/integration/users.test.ts)
+describe('POST /api/users', () => {
+  it('should create user', async () => {
+    const res = await request(app)
+      .post('/api/users')
+      .send({ email: 'test@example.com', name: 'John' })
+    expect(res.status).toBe(201)
+    expect(res.body.success).toBe(true)
+  })
+})
+```
+
+---
+
+## 📌 API Response Format
+
+```typescript
+interface ApiResponse<T> {
+  success: boolean
+  data?: T
+  error?: string
+  meta?: {
+    total: number
+    page: number
+    limit: number
+  }
+}
+
+// Examples
+{ success: true, data: { id: 1, name: "John" } }
+{ success: false, error: "Email already exists" }
+{ success: true, data: [...], meta: { total: 100, page: 1, limit: 10 } }
+```
+
+---
+
+## 🚨 When To Ask Me First
+
+- ❓ Technology choice unclear?
+- ❓ Multiple valid approaches?
+- ❓ Risky action? (Force push, delete, deploy)
+- ❓ Breaking change?
+- ❓ Architecture decision?
+
+## ✅ When I Can Decide
+
+- ✅ Bug fix (clear fix)
+- ✅ Add test (matches pattern)
+- ✅ Refactor (no behavior change)
+- ✅ Update docs
+- ✅ Add feature (clear spec)
+
+---
+
+## 🔍 Pre-Commit Checklist
+
+Before I commit:
+- [ ] TypeScript compiles (`tsc --noEmit`)
+- [ ] Linter passes (`npm run lint`)
+- [ ] Tests pass (`npm run test`)
+- [ ] 80%+ coverage (`npm run test:coverage`)
+- [ ] No console.log
+- [ ] No hardcoded secrets
+- [ ] Zod validation on inputs
+- [ ] Error handling in try/catch
+- [ ] No mutation (immutable)
+- [ ] No `any` types
+- [ ] Conventional commit message
+
+---
+
+## 🔗 Related Files
+- [MEMORY.md](./MEMORY.md) - Project context
+- [CODEMAP.md](./CODEMAP.md) - Codebase architecture
+- [README.md](./README.md) - Setup instructions
