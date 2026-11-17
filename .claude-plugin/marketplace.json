@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -67,6 +66,15 @@
       "strict": false,
       "skills": [
         "./skills/discernment-nudge"
+      ]
+    },
+    {
+      "name": "hol-guard",
+      "description": "HOL Guard runtime security and package verification for Claude Code workflows",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/hol-guard"
       ]
     }
   ]
