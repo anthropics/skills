@@ -170,15 +170,16 @@ async def evaluate_single_task(
     feedback = extract_xml_content(response, "feedback")
 
     duration_seconds = time.time() - start_time
+    num_tool_calls = sum(len(metrics["durations"]) for metrics in tool_metrics.values())
 
     return {
         "question": qa_pair["question"],
         "expected": qa_pair["answer"],
         "actual": response_value,
-        "score": int(response_value == qa_pair["answer"]) if response_value else 0,
+        "score": int(bool(response_value) and response_value == qa_pair["answer"] and num_tool_calls > 0),
         "total_duration": duration_seconds,
         "tool_calls": tool_metrics,
-        "num_tool_calls": sum(len(metrics["durations"]) for metrics in tool_metrics.values()),
+        "num_tool_calls": num_tool_calls,
         "summary": summary,
         "feedback": feedback,
     }
