@@ -1,0 +1,4 @@
+pandas>=2.0.0
+openpyxl>=3.1.0
+defusedxml>=0.7.1
+lxml>=4.9.0
