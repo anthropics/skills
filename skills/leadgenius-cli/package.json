@@ -1,0 +1,33 @@
+{
+  "name": "leadgenius-cli-skill",
+  "version": "1.1.0",
+  "description": "AI agent skill for operating the LeadGenius Pro Automation API and lgp CLI. Covers ICP management, FSD pipeline automation, lead generation/enrichment/scoring, user provisioning, territory analysis, webhook management, and email platform integration.",
+  "keywords": [
+    "ai-skill",
+    "agent-skill",
+    "leadgenius",
+    "b2b-leads",
+    "lead-enrichment",
+    "lead-scoring",
+    "automation-api",
+    "cli",
+    "fsd-pipeline",
+    "icp",
+    "sales-intelligence",
+    "sdr-ai",
+    "claude-skill",
+    "ai-agent"
+  ],
+  "homepage": "https://github.com/thierryteisseire/leadgenius-cli#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/thierryteisseire/leadgenius-cli.git"
+  },
+  "license": "MIT",
+  "author": "Thierry Teisseire",
+  "files": [
+    "SKILL.md",
+    "README.md",
+    "references/"
+  ]
+}
