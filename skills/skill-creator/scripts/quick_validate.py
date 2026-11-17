@@ -9,6 +9,40 @@ import re
 import yaml
 from pathlib import Path
 
+
+def find_path_references(content):
+    """Find bundled-resource references (scripts/, references/, assets/) in SKILL.md.
+
+    Fenced code blocks are skipped: paths there are typically illustrative
+    examples, not real references. Example/placeholder prose lines and
+    placeholder-looking paths are skipped as well.
+    """
+    # Only markdown link targets are checked: [text](references/x.md).
+    # Inline-code mentions in prose (e.g. routing examples like
+    # "read `references/aws.md`") are often illustrative, not real references,
+    # so they are intentionally out of scope for a quick check.
+    pattern = r'\]\(((?:scripts|references|assets)/[^)\s]+)\)'
+    paths = set()
+    in_fence = False
+    for line in content.split('\n'):
+        stripped = line.lstrip()
+        if stripped.startswith('```') or stripped.startswith('~~~'):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+        for path in re.findall(pattern, line):
+            # Strip anchor fragments: [x](references/g.md#section) links to a
+            # section inside g.md; the fragment is not part of the file path.
+            path = path.split('#', 1)[0]
+            if not path:
+                continue
+            if any(x in path.lower() for x in ('example', 'xxx', '<', '>', 'my-', 'my_')):
+                continue
+            paths.add(path)
+    return sorted(paths)
+
+
 def validate_skill(skill_path):
     """Basic validation of a skill"""
     skill_path = Path(skill_path)
@@ -60,6 +94,8 @@ def validate_skill(skill_path):
     if not isinstance(name, str):
         return False, f"Name must be a string, got {type(name).__name__}"
     name = name.strip()
+    if not name:
+        return False, "Field 'name' in frontmatter must not be empty"
     if name:
         # Check naming convention (kebab-case: lowercase with hyphens)
         if not re.match(r'^[a-z0-9-]+$', name):
@@ -75,6 +111,8 @@ def validate_skill(skill_path):
     if not isinstance(description, str):
         return False, f"Description must be a string, got {type(description).__name__}"
     description = description.strip()
+    if not description:
+        return False, "Field 'description' in frontmatter must not be empty"
     if description:
         # Check for angle brackets
         if '<' in description or '>' in description:
@@ -90,6 +128,11 @@ def validate_skill(skill_path):
             return False, f"Compatibility must be a string, got {type(compatibility).__name__}"
         if len(compatibility) > 500:
             return False, f"Compatibility is too long ({len(compatibility)} characters). Maximum is 500 characters."
+
+    # Check that referenced bundled resources exist on disk
+    missing = [p for p in find_path_references(content) if not (skill_path / p).exists()]
+    if missing:
+        return False, "Referenced file(s) not found: " + ", ".join(missing)
 
     return True, "Skill is valid!"
 
