@@ -188,6 +188,11 @@ Please respond with only the new description text in <new_description> tags, not
         log_file = log_dir / f"improve_iter_{iteration or 'unknown'}.json"
         log_file.write_text(json.dumps(transcript, indent=2))
 
+    if len(description) > 1024:
+        raise ValueError(
+            f"Description still exceeds the 1024-character limit after one rewrite ({len(description)} characters)."
+        )
+
     return description
 
 
