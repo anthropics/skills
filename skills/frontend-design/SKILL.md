@@ -1,71 +1,61 @@
 ---
 name: frontend-design
-description: Guidance for distinctive, intentional visual design when building new UI or reshaping an existing one. Helps with aesthetic direction, typography, and making choices that don't read as templated defaults.
+description: Establish domain-specific visual identity, typographic hierarchy, spatial layout, and interface copy when building a new user interface or refactoring an existing interface.
 license: Complete terms in LICENSE.txt
 ---
 
 # Frontend Design
 
-Approach this as the design lead at a design studio known for giving every client a distinct visual identity that is not mistaken for anyone else's. This client has already rejected proposals that felt cliché or templated, and is paying for a distinctive point of view: make deliberate, opinionated choices about palette, typography, and layout that are specific to this brief, and take aesthetic risk if justified.
+## Domain Grounding
 
-## Ground your designs in the subject matter
+- Derive color palette, typographic hierarchy, spatial layout, and interface copy directly from the industry, physical materials, domain vernacular, target audience, and functional objective specified in the input brief.
+- Extract existing user preferences and project context from provided session parameters to anchor visual direction prior to layout generation.
+- Formulate a concrete proposal defining a single product subject, target audience, and primary functional objective for user confirmation prior to code generation when the input brief omits subject specifications.
+- Populate interface components with domain-authentic content and terminology derived from the target subject matter across each view.
 
-If the brief does not identify what the product or subject matter is, identify it yourself before designing, and confirm with the client. You can come up with one concrete subject, the design's audience, and the design's primary job, as a proposal. If there's any information in your memory about the client's preferences or context about what they're building, use that as a hint. The subject's industry, subject matter, materials, and vernacular are where distinctive visual choices come from — a design for a toy for girls aged 8–11 will be very aesthetically different from a dashboard for financial analysts. Build with the brief's real content and subject matter throughout.
+## Execution Workflow
 
-## Design principles
+- Execute design and implementation in two sequential phases: Phase 1 (Design Specification Plan) followed by Phase 2 (Source Code Implementation).
+- Construct a structured design token specification in Phase 1 prior to generating source code:
+  + Color Tokens: Define 4 to 6 named hexadecimal color values representing the core palette.
+  + Typography Tokens: Specify 1 or 2 typeface families and assign each family to a distinct structural role.
+  + Layout Specification: Formulate single-sentence spatial descriptions paired with comparative ASCII wireframes and explicit text alignment rules (left-aligned, center-aligned, or justified).
+  + Visual Differentiation Rules: Define the domain-specific structural and aesthetic mechanisms that distinguish the interface.
+- Audit each unspecified visual axis in the Phase 1 design plan against recurring cross-domain default patterns, replacing generic defaults with domain-grounded alternatives and documenting each revision rationale prior to Phase 2 code generation:
+  + Warm cream background (`#F4F1EA`) paired with high-contrast serif display typography and terracotta accent (`#D97757`)
+  + Near-black background (`#0B0B0B` or `#111111`) paired with a single acid-green or vermilion accent
+  + Broadsheet grid with hairline rules, `0px` border-radius, and multi-column newspaper density
+  + Uniform rounded SaaS card grids with identical border-radius across hierarchy levels, `rgba(0,0,0,0.1)` drop shadows, and decorative gradient washes
+  + Recurring template chrome consisting of tracked uppercase eyebrow labels, middle-dot metadata strings (`A · B · C`), spaced em-dash labels (`WORD — fragment`), monospace micro-labels, and trailing arrow glyphs (`→`) on interactive triggers
+- Resolve conflicts among competing design criteria in descending priority order: Explicit input brief constraints > Functional legibility and accessibility compliance > Domain-specific visual differentiation.
 
-For web designs, the hero is the first thing viewers will see. Open with the most characteristic thing in the subject's world, in the form that is most appropriate: a headline, an image, an animation, a live demo, an interactive moment, or other treatments. Be deliberate with your choice: a big number with a small label, supporting stats, and a gradient accent is the default treatment, so only use it if that's truly the best option.
+## Visual and Structural Specifications
 
-Typography carries the personality of the page. You don't need a different typeface for display or headline text and body content: use one family or two, and if two, make them clearly distinct.
+- Anchor the primary viewport (hero section) with the primary representative artifact of the subject domain—selected from a typographic statement, primary imagery, choreographed animation, live functional demo, or interactive component—separated from default metric-counter blocks and decorative gradient accents.
+- Concentrate visual contrast on 1 primary focal element per view while maintaining neutral supporting surfaces, retaining exclusively structural elements that serve an informational role in the brief.
+- Select 1 typeface family for the interface or 2 structurally contrasting typeface families mapped to display and body roles, calibrated to the domain vernacular of the brief.
+- Configure a modular typographic scale governed by *The Elements of Typographic Style* using explicit font weights, character widths, and letter-spacing values so headline typography operates as an active structural element.
+- Constrain body copy measure to a maximum of 80 characters per line for sans-serif typefaces, expanding line length and vertical line-height proportionally when rendering serif body text.
+- Render headlines with uniform typographic weight, style, and color across the complete phrase, separated from single-word italic, bold, or color highlights.
+- Format interface labels in sentence case or title case, and position structural headings directly above content blocks separated from intermediary uppercase eyebrow labels.
+- Assign structural dividers, borders, outlines, and labels strictly to encode semantic hierarchy and content relationships.
+- Apply sequential numeric markers (`01`, `02`, `03`) exclusively to ordered multi-step processes or chronological timelines.
+- Restrict autonomous motion to at most 1 orchestrated page-load or reveal sequence per view, separated from repetitive section fade-up entrances and uniform card hover transitions.
+- Bind interactive motion directly to user-triggered state changes (opening, expanding, or confirming actions) to indicate structural state transitions.
 
-Choose your typefaces deliberately, not the default families you would reach for on any other project, and set a clear type scale following the default guidance of The Elements of Typographic Style with intentional weights, widths, and spacing. When type is used as a headline or visual element, use the type treatment itself as an active part of the design, not a neutral delivery vehicle for the content.
+## Interface Copy Specifications
 
-Default to line lengths of less than 80 characters. Serif typefaces can have slightly longer line lengths; give serif body text slightly more line-height than a sans-serif.
+- Formulate interface copy in sentence case, active voice, and plain domain verbs where each text element executes 1 informational or navigational function.
+- Label interface controls and views according to end-user mental models, separated from internal system architecture terminology:
+  + `Webhook config` ➔ `Notifications`
+- Specify the exact state mutation on each interactive trigger and maintain lexical equivalence between the trigger label and its resulting state confirmation:
+  + `Submit` ➔ `Save changes`
+  + `Publish` (action trigger) ➔ `Published` (confirmation toast)
+- Construct empty states as actionable onboarding prompts and format error messages as direct diagnostic statements specifying the failure cause and remediation step, separated from apologetic phrasing.
 
-Avoid these default typographic treatments; they are the commonest tells of a generated page:
-- Accenting just a single word or phrase in a headline, like putting one word in italic/bold or a different color.
-- Using all caps for labels.
-- Adding unnecessary typographic labels above content.
+## Technical Implementation and Verification
 
-Visual structure is information. Structural devices like outlines, borders, numbering, eyebrows, dividers, labels, etc., encode useful information about the content rather than decorate it. Many generic designs use numbered markers (01 / 02 / 03), but that's only appropriate if the content actually is a sequence — like a stepped process or a timeline. Before adding numbered markers, check the content really is a sequence.
-
-Use non-user-triggered motion sparingly and deliberately, only to draw attention. A single orchestrated moment — one page-load sequence or one reveal — lands better than scattered effects; fade-and-slide-up entrances on each section and hover transitions on every card are the generic default and read as AI-generated. Motion that answers a person's action (opening, expanding, confirming) is welcome when it shows what changed.
-
-Consider written content carefully. Often a design brief may not contain real content, and it's up to you to come up with copy and placeholder content. Copy can make a design feel as templated as the design itself. See the below section on writing for more guidance.
-
-## Process: plan, review against the brief, build, critique
-
-For calibration, AI-generated design right now clusters around some traits:
-1. a warm cream background (near #F4F1EA) with a high-contrast serif display and a terracotta or warm-clay accent (often near #D97757 — Anthropic's own Claude-interaction accent, so on a user's brief it reads as a tell);
-2. a near-black background with a single bright acid-green or vermilion accent;
-3. a broadsheet-style layout with hairline rules, zero border-radius, and dense newspaper-like columns;
-4. the SaaS-card kit: content chopped into identical rounded cards, one border-radius on everything regardless of hierarchy, the same soft grey shadow (rgba(0,0,0,.1)) under each, and gradient washes as decoration;
-5. template chrome that appears whatever the subject: a tracked-out ALL-CAPS eyebrow label above every heading; meta strings joined with middle dots ('A · B · C'); labels built as 'WORD — fragment' with a spaced em dash; tinted near-black (#0B0B0B, #111) standing in for black; a monospace face for small data labels; a '→' appended to link and button text.
-
-All traits are legitimate for some briefs, but they are defaults rather than choices, and they appear regardless of subject. Where the brief pins down a visual direction, follow it exactly — the brief's own words always win, including when it asks for one of these looks. Where it leaves an axis free, don't spend that freedom on one of these defaults. As with a hired human designer, there's often a careful balance between doing what you're good at and taking each project as a chance to experiment and learn.
-
-Work in two passes. First, brainstorm a short design plan based on the client's design brief: create a compact token system with color, type, layout, and principles.
-- Color: describe the core base palette as 4–6 named hex values.
-- Type: the typefaces and their roles.
-- Layout: a layout concept, using one-sentence prose descriptions and ASCII wireframes to ideate and compare. Include alignment guidance; should the content be left aligned, center aligned, justified?
-- Principles: the high-level guidance for what makes this page unique.
-
-Then review that plan against the brief before building: if any part of it reads like the generic default you would produce for any similar page (work through a similar prompt to see if you arrive somewhere similar) rather than a choice made for this specific brief — revise that part, say what you changed and why. Only after you've confirmed the relative uniqueness of your design plan should you start to write the code, following the revised plan.
-
-When writing the code, be careful of structuring your CSS selector specificities. It's easy to generate CSS classes that cancel each other out (especially with a type-based selector like .section and an element-based selector like .cta). This can happen often with padding/margin between sections.
-
-## Restraint and self-critique
-
-Spend your boldness in one place. Let one element be the memorable thing, keep everything around it quiet and disciplined, and cut any decoration that does not serve the brief. Build to a quality floor without announcing it: responsive down to mobile, visible keyboard focus, reduced motion respected, visually accessible, harmonious color palettes. Critique your own work as you build, taking screenshots to review if your environment supports it — a picture is worth 1000 tokens. Consider Chanel's advice: before leaving the house, take a look in the mirror and remove one accessory. Human creatives have memory and always try to do something new, so if you have a space to quickly jot down notes about what you've tried, it can help you in future passes.
-
-## More on writing in design
-
-Words appear in a design for one reason: to make it easier to understand and use. They are design content, not decoration. Bring the same intentionality and minimalism to copywriting that you would bring to spacing and color. Before writing anything, ask what the design needs to say, and how it can best be said to help the person navigate the experience.
-
-Write from the end user's perspective. Name things by what users will understand in simple language, not by how the system is built. A user manages notifications, not webhook config. Describe what something is or does in plain terms rather than selling it. Being specific and legible to new users is always better than being clever.
-
-Use active voice as default. A CTA says exactly what happens when it is used: "Save changes," not "Submit." An action keeps the same name through the whole flow, so the button that says "Publish" produces a toast that says "Published." The vocabulary of an interface is the signposting for someone navigating the product. Cohesion and consistency are how people learn their way around.
-
-Treat failure and emptiness as moments for direction, not mood. Explain what went wrong and how to fix it, in the interface's voice rather than a person's. Errors don't apologize, and they are never vague about what happened. An empty screen is an invitation to act.
-
-Keep the tone conversational: plain verbs, sentence case, no filler, with tone matched to the brand and the audience. Let each written element do exactly one job.
+- Partition CSS selector specificity across layout containers (such as `.section`) and interactive components (such as `.cta`) to preserve orthogonal margin and padding declarations.
+- Implement responsive viewport adaptation down to mobile breakpoints, visible `:focus-visible` keyboard indicators, `@media (prefers-reduced-motion: reduce)` compliance, and WCAG-compliant color contrast across each view.
+- Capture and inspect rendered viewport screenshots when supported by the execution environment to identify and resolve spatial, typographic, or alignment defects prior to final output delivery.
+- Record executed visual tokens and layout patterns into an explicit design log parameter when persistent workspace storage is available to maintain cross-session visual differentiation.
