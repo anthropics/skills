@@ -39,6 +39,9 @@ GRID_PADDING = 20
 BORDER_WIDTH = 2
 FONT_SIZE_RATIO = 0.10
 LABEL_PADDING_RATIO = 0.4
+PRESENTATION_NS = "http://schemas.openxmlformats.org/presentationml/2006/main"
+RELATIONSHIP_NS = "http://schemas.openxmlformats.org/officeDocument/2006/relationships"
+PACKAGE_RELATIONSHIP_NS = "http://schemas.openxmlformats.org/package/2006/relationships"
 
 
 def main():
@@ -112,7 +115,7 @@ def get_slide_info(pptx_path: Path) -> list[dict]:
         rels_dom = defusedxml.minidom.parseString(rels_content)
 
         rid_to_part = {}
-        for rel in rels_dom.getElementsByTagName("Relationship"):
+        for rel in rels_dom.getElementsByTagNameNS(PACKAGE_RELATIONSHIP_NS, "Relationship"):
             if rel.getAttribute("Type") != SLIDE_REL_TYPE:
                 continue
             part = opc_target(
@@ -129,8 +132,8 @@ def get_slide_info(pptx_path: Path) -> list[dict]:
         present = set(zf.namelist())
 
         slides = []
-        for sld_id in pres_dom.getElementsByTagName("p:sldId"):
-            part = rid_to_part.get(sld_id.getAttribute("r:id"))
+        for sld_id in pres_dom.getElementsByTagNameNS(PRESENTATION_NS, "sldId"):
+            part = rid_to_part.get(sld_id.getAttributeNS(RELATIONSHIP_NS, "id"))
             if part is not None and part in present:
                 slides.append(
                     {"name": posixpath.basename(part), "hidden": _is_hidden(zf, part)}
