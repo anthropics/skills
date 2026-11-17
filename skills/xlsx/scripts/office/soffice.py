@@ -135,6 +135,10 @@ def _without_outside_links(arg: str, folder: Path) -> str:
 
 
 def _needs_shim() -> bool:
+    # socket.AF_UNIX does not exist on Windows (AttributeError, not OSError);
+    # the LD_PRELOAD shim is Linux-only anyway, so never build it there.
+    if not hasattr(socket, "AF_UNIX") or os.name == "nt":
+        return False
     try:
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.close()
