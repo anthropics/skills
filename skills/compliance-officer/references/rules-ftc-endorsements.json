@@ -1,0 +1,1494 @@
+[
+  {
+    "id": "FTC-255-0-purpose",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsement Guide Purpose",
+    "severity": "info",
+    "summary": "The FTC Endorsement Guides address the application of Section 5 of the FTC Act to endorsements and testimonials in advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Understand that endorsement guidelines apply to all advertising mediums including social media.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.0",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.0",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-0-scope",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsement Guide Scope",
+    "severity": "info",
+    "summary": "FTC Endorsement Guides apply to endorsements and testimonials in advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "endorsement",
+        "testimonial",
+        "advertising"
+      ]
+    },
+    "remediation": {
+      "guidance": "Apply these guidelines to all endorsements in marketing materials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.0",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-current",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Current User Requirement",
+    "severity": "warning",
+    "summary": "Endorsers must be bona fide users of the product at time of endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "current user",
+        "bona fide",
+        "actual user"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure endorsers are current users of the product or service.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.1(c)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-honest",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsements Must Reflect Honest Opinions",
+    "severity": "critical",
+    "summary": "Endorsements must reflect the honest opinions, findings, beliefs, or experience of the endorser.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "testimonial",
+        "endorsement",
+        "customer\\s+(says?|review|story)"
+      ],
+      "keywords": [
+        "testimonial",
+        "endorsement",
+        "customer review",
+        "user says"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all endorsements are genuine and reflect actual user experience. Do not script or fabricate testimonials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-misleading",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Endorsements Cannot Be Misleading",
+    "severity": "critical",
+    "summary": "Endorsements may not contain any representations that would be deceptive or could not be substantiated if made directly by the advertiser.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Verify that all claims in endorsements can be substantiated. Remove unverifiable statements.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-substantiation",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Claim Substantiation",
+    "severity": "critical",
+    "summary": "Claims in endorsements must be substantiated by the advertiser.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "substantiation",
+        "verify",
+        "proof"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify all claims made in endorsements are accurate and can be proven.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.1(b)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "claims"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-1-typical",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Atypical Results Require Disclosure",
+    "severity": "critical",
+    "summary": "If an endorsement represents results that are not typical, the advertiser must clearly disclose expected results for consumers.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "results\\s+not\\s+typical",
+        "individual\\s+results\\s+(may\\s+)?vary",
+        "your\\s+results\\s+may\\s+differ"
+      ],
+      "keywords": [
+        "results not typical",
+        "results may vary",
+        "individual results"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure of typical results when showing exceptional testimonials. Example: \"Results not typical. Most users see [X].\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.1(c)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.1",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-actor",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Actor Portrayal Requires Disclosure",
+    "severity": "warning",
+    "summary": "If the person appearing in an advertisement is not an actual consumer, this must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "actor\\s+portrayal",
+        "dramatization",
+        "simulation"
+      ],
+      "keywords": [
+        "actor portrayal",
+        "dramatization",
+        "paid actor"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose \"Actor portrayal\" or \"Dramatization\" when not using actual customers.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.2(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-consumer",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Consumer Endorser Must Be Actual User",
+    "severity": "critical",
+    "summary": "An advertisement using an endorsement by a consumer must use an actual consumer of the product or service.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "real customer",
+        "actual user",
+        "verified purchase"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only use endorsements from people who have actually used the product. Actors portraying consumers must be disclosed.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.2(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.2",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-disclosure",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Consumer Endorsement Disclosure",
+    "severity": "warning",
+    "summary": "Consumer endorsements should clearly disclose what the typical consumer experience is.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "typical",
+        "average",
+        "consumer experience"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure of typical outcomes alongside testimonials.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.2(b)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-2-typical",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Typical Results Disclosure",
+    "severity": "critical",
+    "summary": "If results are not typical, must clearly disclose expected results or that results may vary.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\"[^\"]{20,}\"s*[-–—]",
+        "lost\\s+\\d+\\s+pounds",
+        "earned\\s+\\$\\d+"
+      ],
+      "keywords": [
+        "typical results",
+        "results may vary",
+        "individual results"
+      ]
+    },
+    "remediation": {
+      "guidance": "Add \"Results not typical\" or disclose generally expected results.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.2(a)",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert-evaluation",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Must Actually Evaluate Product",
+    "severity": "critical",
+    "summary": "Experts must actually exercise their expertise in evaluating the product features relevant to their endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Document that expert endorsers have conducted actual evaluation using their professional expertise.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.3(b)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert-qualified",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Endorsers Must Be Qualified",
+    "severity": "critical",
+    "summary": "An expert endorser must possess the expertise represented by the endorsement and must have actually evaluated the product.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "doctor\\s+(recommended|approved)",
+        "expert\\s+(review|opinion|approved)",
+        "dermatologist\\s+tested",
+        "clinically\\s+(tested|proven)"
+      ],
+      "keywords": [
+        "doctor recommended",
+        "expert approved",
+        "clinically tested"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify expert credentials. Ensure expert has actually examined/tested the product before endorsing.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.3(a)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.3",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-3-expert",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Expert Qualification",
+    "severity": "warning",
+    "summary": "Expert endorsers must have qualifications to give expert opinion on the subject.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "expert",
+        "qualified",
+        "credentials",
+        "specialist"
+      ]
+    },
+    "remediation": {
+      "guidance": "Verify expert credentials match the subject matter of endorsement.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.3",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-4-org",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Organization Endorsement Standards",
+    "severity": "warning",
+    "summary": "Organization endorsements must represent the collective judgment of the organization, not just individual members.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(approved|endorsed)\\s+by\\s+[A-Z]",
+        "association\\s+(approved|endorsed)",
+        "seal\\s+of\\s+approval"
+      ],
+      "keywords": [
+        "approved by",
+        "endorsed by",
+        "seal of approval",
+        "certified by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure organization endorsements follow proper approval processes and reflect collective judgment.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.4",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-affiliate",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Affiliate Link Disclosure",
+    "severity": "critical",
+    "summary": "Affiliate links and commission arrangements must be disclosed when recommending products.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "affiliate\\s+link",
+        "earn\\s+a?\\s*commission",
+        "may\\s+earn\\s+from"
+      ],
+      "keywords": [
+        "affiliate link",
+        "earn commission",
+        "referral link"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose affiliate relationships. Example: \"This post contains affiliate links. I may earn a commission.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-clear",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Clear and Conspicuous Disclosure",
+    "severity": "critical",
+    "summary": "Disclosures must be clear, conspicuous, and hard to miss.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\*\\s*disclaimer",
+        "fine\\s*print"
+      ],
+      "keywords": [
+        "clear",
+        "conspicuous",
+        "prominent",
+        "visible"
+      ]
+    },
+    "remediation": {
+      "guidance": "Place disclosures prominently, not buried in text. Use clear language like \"#ad\" or \"Paid partnership\".",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-connection",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Material Connection Disclosure",
+    "severity": "critical",
+    "summary": "Material connections between endorsers and advertisers must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "#ad\\b",
+        "#sponsored",
+        "#partner",
+        "paid\\s+partnership"
+      ],
+      "keywords": [
+        "material connection",
+        "sponsored",
+        "paid",
+        "affiliate"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose any payment, free products, employment, or business relationship.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-disclosure-clear",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Disclosure Must Be Clear and Conspicuous",
+    "severity": "warning",
+    "summary": "Disclosures must be clear, conspicuous, and placed where consumers will notice them before engaging with the endorsement.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "fine print",
+        "small print",
+        "terms and conditions apply",
+        "see details",
+        "restrictions apply",
+        "subject to terms"
+      ]
+    },
+    "remediation": {
+      "guidance": "Place disclosures at the beginning of content. Use clear language like \"Ad\" or \"Sponsored\". Avoid burying in hashtags.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-employee",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Employee Endorser Disclosure",
+    "severity": "critical",
+    "summary": "Employees who endorse products in their personal capacity must disclose their employment relationship.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "employee",
+        "work for",
+        "employed by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Require employees posting about company products to clearly disclose their employment.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-free-product",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Free Product Disclosure",
+    "severity": "critical",
+    "summary": "If an endorser received a free product to review, this must be clearly disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(free|gifted|complimentary)\\s+product",
+        "received\\s+(free|for\\s+review)",
+        "pr\\s+sample"
+      ],
+      "keywords": [
+        "free product",
+        "gifted",
+        "PR sample",
+        "received for review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear disclosure when products were provided for free. Example: \"Product provided for review.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-material-connection",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Material Connection Disclosure Required",
+    "severity": "critical",
+    "summary": "When there is a material connection between an endorser and seller that would affect the weight of the endorsement, it must be disclosed.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "#?ad\\b",
+        "#?sponsored",
+        "#?partner(ship)?",
+        "paid\\s+(partnership|promotion|ad)",
+        "in\\s+collaboration\\s+with"
+      ],
+      "keywords": [
+        "#ad",
+        "#sponsored",
+        "paid partnership",
+        "affiliate",
+        "material connection"
+      ]
+    },
+    "remediation": {
+      "guidance": "Disclose all material connections: payments, free products, employment, family relationships, equity stakes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.5",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "endorsement",
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-5-social",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Social Media Disclosure",
+    "severity": "critical",
+    "summary": "Social media posts by paid influencers must clearly disclose the material connection.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "@\\w+\\s+(says?|loves?|recommends?)",
+        "influencer",
+        "ambassador"
+      ],
+      "keywords": [
+        "social media",
+        "influencer",
+        "#ad",
+        "sponsored"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use #ad or \"Sponsored\" at the beginning of posts, not hidden in hashtags.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/disclosures-101-social-media-influencers",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-6-liability",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Advertiser Liable for Endorser Claims",
+    "severity": "warning",
+    "summary": "Advertisers are liable for false or unsubstantiated statements made by endorsers, and for failing to disclose material connections.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Monitor endorser content. Provide clear guidelines to endorsers. Require compliance training.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.6",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "claims",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-255-6-monitoring",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Advertiser Must Monitor Endorsers",
+    "severity": "warning",
+    "summary": "Advertisers must take steps to monitor endorsers and address non-compliant content.",
+    "rationale": "",
+    "detection": {
+      "type": "ai-only"
+    },
+    "remediation": {
+      "guidance": "Implement monitoring program for influencer and affiliate content. Address violations promptly.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.6",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-B/part-255#255.6",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NATIVE-DISCLOSURE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Missing Advertisement Label",
+    "severity": "warning",
+    "summary": "Native ads must include clear and prominent disclosure that identifies them as advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(paid|promoted|sponsored)\\s+(post|placement)",
+        "#?ad\\b",
+        "#?sponsored",
+        "advertisement"
+      ],
+      "keywords": [
+        "ad",
+        "advertisement",
+        "sponsored",
+        "promoted",
+        "paid placement"
+      ]
+    },
+    "remediation": {
+      "guidance": "Add clear \"Ad\" or \"Advertisement\" label in a prominent location using contrasting text.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Native Advertising Guide",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/native-advertising-guide-businesses",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-NATIVE-EDITORIAL",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Sponsored Content Disguised as Editorial",
+    "severity": "critical",
+    "summary": "Paid content that mimics editorial content must be clearly identified as advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "sponsored\\s+(content|post|article)",
+        "partner\\s+content",
+        "presented\\s+by",
+        "brought\\s+to\\s+you\\s+by",
+        "in\\s+partnership\\s+with"
+      ],
+      "keywords": [
+        "sponsored content",
+        "partner content",
+        "presented by",
+        "brought to you by"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly label sponsored content with \"Advertisement\", \"Sponsored\", or \"Paid Content\" in prominent placement.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5 / Native Advertising Guide",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/native-advertising-guide-businesses",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-EMPLOYEE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Employee/Insider Reviews Without Disclosure",
+    "severity": "critical",
+    "summary": "Reviews from employees, owners, or business insiders must clearly disclose the material connection.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "employee review",
+        "insider review",
+        "staff review",
+        "owner review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Require all employee reviewers to prominently disclose their employment relationship.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-FAKE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake or AI-Generated Reviews",
+    "severity": "critical",
+    "summary": "Using fake, fabricated, or AI-generated reviews to deceive consumers is prohibited. Reviews must reflect genuine consumer experiences.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "as\\s+an\\s+ai",
+        "i\\s+cannot\\s+provide",
+        "(amazing|excellent|fantastic)\\s+product.*(highly|would)\\s+recommend"
+      ],
+      "keywords": [
+        "verified purchase",
+        "authentic review",
+        "customer feedback"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove all fake or AI-generated reviews. Only display authentic customer reviews with verified purchases.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-INCENTIVE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Incentivized Reviews Without Disclosure",
+    "severity": "critical",
+    "summary": "Offering discounts, free products, or other incentives for reviews without clear disclosure violates FTC guidelines.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "review\\s+for\\s+(discount|free|coupon)",
+        "leave\\s+a?\\s*review.*get\\s+(\\$|percent|%|off|discount)",
+        "(free|discount).*in\\s+exchange\\s+for.*review",
+        "write\\s+a?\\s*review.*receive"
+      ],
+      "keywords": [
+        "review discount",
+        "review reward",
+        "review incentive",
+        "free for review"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly disclose when reviews are incentivized with labels like \"Incentivized Review\" or \"Received free product for review.\"",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 255.5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/ftcs-endorsement-guides-what-people-are-asking",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-MANIPULATE",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Review Manipulation / Cherry-Picking",
+    "severity": "warning",
+    "summary": "Displaying only positive reviews, hiding negative reviews, or manipulating the order of reviews to mislead consumers is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "showing.*positive\\s+reviews\\s+only",
+        "top\\s+reviews.*highest\\s+rated"
+      ],
+      "keywords": [
+        "filtered reviews",
+        "best reviews",
+        "top rated reviews"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display reviews objectively. Allow consumers to sort by rating including negative reviews.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-PLATFORM",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Fake Review Counts or Star Ratings",
+    "severity": "critical",
+    "summary": "Displaying fake or inflated review counts, star ratings, or aggregate scores is deceptive advertising.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+[,\\d]*\\s*reviews?.*\\d+(\\.\\d)?\\s*stars?",
+        "rated\\s+\\d+(\\.\\d)?\\s*out\\s+of\\s*5"
+      ],
+      "keywords": [
+        "star rating",
+        "customer reviews",
+        "average rating",
+        "review count"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all displayed ratings and review counts accurately reflect actual verified customer reviews.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/resources/advertising-faqs",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "FTC-REVIEW-SUPPRESS",
+    "version": "1.0.0",
+    "framework": "ftc",
+    "title": "Review Gating / Selective Review Solicitation",
+    "severity": "warning",
+    "summary": "Soliciting reviews only from satisfied customers or filtering out negative reviews before they are posted is deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "how\\s+would\\s+you\\s+rate.*before",
+        "satisfied.*leave.*review",
+        "(5|five)\\s*star.*customers"
+      ],
+      "keywords": [
+        "review gate",
+        "happy customers only",
+        "satisfied customers",
+        "selective reviews"
+      ]
+    },
+    "remediation": {
+      "guidance": "Solicit reviews from all customers equally. Do not screen or gate reviews based on expected rating.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "FTC Act §5",
+      "source_url": "https://www.ftc.gov/business-guidance/news-events/news/press-releases",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "general"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]

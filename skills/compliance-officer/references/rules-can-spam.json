@@ -1,0 +1,665 @@
+[
+  {
+    "id": "CAN-SPAM-316-3-transactional",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Transactional Email Definition",
+    "severity": "info",
+    "summary": "Transactional or relationship messages (order confirmations, account updates, warranty info) are exempt from most CAN-SPAM requirements, but must not be deceptive.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "order\\s+confirm",
+        "account\\s+(update|notification|alert)",
+        "shipping\\s+(confirm|notification|update)",
+        "password\\s+reset"
+      ],
+      "keywords": [
+        "transactional email",
+        "order confirmation",
+        "account notification",
+        "relationship message"
+      ]
+    },
+    "remediation": {
+      "guidance": "Transactional emails are exempt from opt-out and identification requirements, but the primary purpose must genuinely be transactional. Do not disguise commercial messages as transactional.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 316.3",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "classification"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-316-4-primary-purpose",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Primary Purpose Test",
+    "severity": "warning",
+    "summary": "If an email contains both transactional and commercial content, the primary purpose determines whether CAN-SPAM applies. Commercial content in subject line makes it commercial.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "primary purpose",
+        "commercial content",
+        "transactional content",
+        "dual purpose email"
+      ]
+    },
+    "remediation": {
+      "guidance": "When mixing transactional and commercial content, the primary purpose determines classification. If the subject line or opening content is commercial, the entire message is commercial under CAN-SPAM.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "16 CFR 316.3(a)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "classification"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-1-header",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Accurate Header Information",
+    "severity": "critical",
+    "summary": "Header information in commercial email must not be materially false or misleading. From, To, Reply-To, and routing information must be accurate.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "from:\\s*[^@]+@",
+        "reply[\\s-]?to"
+      ],
+      "keywords": [
+        "from address",
+        "reply-to",
+        "sender identity",
+        "header information",
+        "originating email"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure From, To, Reply-To, and routing information accurately identifies the person or business who initiated the email.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "identity"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-2-subject",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Non-Deceptive Subject Lines",
+    "severity": "critical",
+    "summary": "Subject lines must not be deceptive or misleading about the content of the message.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "re:\\s",
+        "fw(d)?:\\s",
+        "urgent.*act\\s+now",
+        "you('ve)?\\s+won"
+      ],
+      "keywords": [
+        "deceptive subject line",
+        "misleading subject",
+        "subject line accuracy"
+      ]
+    },
+    "remediation": {
+      "guidance": "Subject lines must accurately reflect the content of the email. Do not use deceptive subject lines like fake Re: or Fwd: prefixes.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(2)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-3-ad-identifier",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Advertisement Identification",
+    "severity": "warning",
+    "summary": "Commercial email must be clearly and conspicuously identified as an advertisement or solicitation.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(this\\s+(is\\s+)?(an?\\s+)?)?advertis(ement|ing)",
+        "commercial\\s+(message|email)",
+        "promotional\\s+(message|email|offer)"
+      ],
+      "keywords": [
+        "advertisement",
+        "this is an ad",
+        "commercial message",
+        "promotional email",
+        "solicitation"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include clear identification that the message is a commercial advertisement or solicitation, unless the recipient has given prior affirmative consent.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(5)(A)(i)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-4-physical-address",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Physical Postal Address",
+    "severity": "critical",
+    "summary": "Commercial email must include a valid physical postal address of the sender.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "\\d+\\s+[A-Z][a-z]+\\s+(St|Ave|Blvd|Rd|Dr|Ln|Way|Ct)",
+        "P\\.?O\\.?\\s+Box\\s+\\d+",
+        "Suite\\s+\\d+"
+      ],
+      "keywords": [
+        "physical address",
+        "mailing address",
+        "postal address",
+        "P.O. Box"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include a valid physical postal address in every commercial email. This can be a street address, P.O. Box, or private mailbox registered with a commercial mail receiving agency.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(5)(A)(iii)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "identity"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-5-opt-out",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Opt-Out Mechanism Required",
+    "severity": "critical",
+    "summary": "Every commercial email must include a clear and conspicuous mechanism to opt out of future messages.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "unsubscribe",
+        "opt[\\s-]?out",
+        "manage.*preferences",
+        "email\\s+preferences",
+        "stop\\s+(receiving|these)\\s+(emails|messages)"
+      ],
+      "keywords": [
+        "unsubscribe",
+        "opt out",
+        "manage email preferences",
+        "stop receiving emails",
+        "remove from list"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include a clear, conspicuous, and functional opt-out mechanism in every commercial email. Must be operational for at least 30 days after sending.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(3)(A)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "opt-out"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-6-opt-out-honor",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Honor Opt-Out Requests",
+    "severity": "critical",
+    "summary": "Opt-out requests must be honored within 10 business days. Cannot send commercial email after opt-out request is received.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "10 business days",
+        "honor opt-out",
+        "opt-out processing",
+        "unsubscribe within"
+      ]
+    },
+    "remediation": {
+      "guidance": "Process opt-out requests within 10 business days. Once a recipient opts out, stop sending them commercial email. The opt-out mechanism must remain functional for at least 30 days.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(4)(A)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "opt-out",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-7-no-opt-out-fee",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Free Opt-Out",
+    "severity": "critical",
+    "summary": "Cannot charge a fee, require the recipient to provide information beyond email address, or make the recipient take more than a single step to opt out.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "(login|sign\\s+in|log\\s+in).*unsubscribe",
+        "(pay|fee|charge).*unsubscribe"
+      ],
+      "keywords": [
+        "free to unsubscribe",
+        "no fee to opt out",
+        "single step opt out",
+        "one-click unsubscribe"
+      ]
+    },
+    "remediation": {
+      "guidance": "Opt-out must require no more than a single action (e.g., clicking a link or sending a reply). Cannot require login, payment, or additional personal information beyond email address.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(3)(B)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "opt-out"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-8-no-transfer",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "No Selling Opt-Out Lists",
+    "severity": "critical",
+    "summary": "Cannot sell, transfer, or share email addresses of recipients who have opted out.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "do not share opt-out",
+        "opt-out list",
+        "suppression list",
+        "do not sell email addresses"
+      ]
+    },
+    "remediation": {
+      "guidance": "Never sell, lease, exchange, or otherwise transfer the email addresses of people who have opted out of your messages.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(4)(B)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-dictionary",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "No Dictionary Attacks",
+    "severity": "critical",
+    "summary": "Cannot generate email addresses using automated tools that combine names, letters, or numbers (dictionary attacks).",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "dictionary attack",
+        "generated email addresses",
+        "automated address generation"
+      ]
+    },
+    "remediation": {
+      "guidance": "Do not use automated tools to generate email addresses by combining names, letters, numbers, or other characters. All recipient addresses must be legitimately obtained.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(b)(1)(B)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-harvesting",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "No Harvested Addresses",
+    "severity": "critical",
+    "summary": "Cannot send commercial email to addresses obtained through automated harvesting of websites or online services.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "patterns": [],
+      "keywords": [
+        "email harvesting",
+        "scraped email",
+        "automated collection",
+        "purchased email list"
+      ]
+    },
+    "remediation": {
+      "guidance": "Only send commercial email to addresses obtained through legitimate means (direct opt-in, business relationship). Never use harvested, scraped, or purchased email lists.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(b)(1)(A)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "consent",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-sender-identity",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Sender Identification",
+    "severity": "critical",
+    "summary": "The sender of commercial email must be clearly identifiable. The 'From' line must accurately identify the person or entity who initiated the message.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "on\\s+behalf\\s+of",
+        "sent\\s+by",
+        "from\\s+the\\s+team\\s+at"
+      ],
+      "keywords": [
+        "sender identification",
+        "sent by",
+        "on behalf of",
+        "from the team at"
+      ]
+    },
+    "remediation": {
+      "guidance": "Clearly identify the sender in the 'From' field. If sending on behalf of another party, both the sender and the party must be identified.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(a)(1)",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "identity"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "CAN-SPAM-7704-sexually-explicit",
+    "version": "1.0.0",
+    "framework": "can-spam",
+    "title": "Sexually Explicit Content",
+    "severity": "critical",
+    "summary": "Email with sexually explicit content must include 'SEXUALLY-EXPLICIT:' at the beginning of the subject line and specific initial viewable content requirements.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "SEXUALLY[\\s-]EXPLICIT"
+      ],
+      "keywords": [
+        "sexually explicit",
+        "adult content label",
+        "SEXUALLY-EXPLICIT",
+        "18+"
+      ]
+    },
+    "remediation": {
+      "guidance": "If sending email with sexually explicit content, include 'SEXUALLY-EXPLICIT:' at the beginning of the subject line and ensure no sexually explicit content appears in the initial viewable area.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "15 USC 7704(d), 16 CFR 316.4",
+      "source_url": "https://www.ecfr.gov/current/title-16/chapter-I/subchapter-C/part-316",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "content-label"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "email",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]

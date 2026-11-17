@@ -1,0 +1,769 @@
+[
+  {
+    "id": "HIPAA-312-access-control",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Access Control Requirements",
+    "severity": "critical",
+    "summary": "Technical policies must limit access to ePHI to authorized persons.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "access control",
+        "authentication",
+        "user ID"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement unique user IDs, automatic logoff, and encryption.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.312(a)(1)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-312-audit",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Audit Controls",
+    "severity": "warning",
+    "summary": "Hardware, software, and procedures must record and examine access to ePHI.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "audit",
+        "logging",
+        "access records"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement audit logging for all ePHI access and review logs regularly.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.312(b)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-312-encryption",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "ePHI Encryption",
+    "severity": "critical",
+    "summary": "Electronic PHI must be encrypted when transmitted over networks.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "http://"
+      ],
+      "keywords": [
+        "encryption",
+        "HTTPS",
+        "TLS",
+        "secure transmission"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use TLS/HTTPS for all ePHI transmission. Encrypt data at rest.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.312(a)(2)(iv)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/security/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-502-marketing",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Marketing Use Restrictions",
+    "severity": "critical",
+    "summary": "PHI may not be used for marketing purposes without explicit authorization.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "health\\s+(information|data|records?).*marketing",
+        "patient\\s+(information|data).*promot"
+      ],
+      "keywords": [
+        "marketing",
+        "PHI",
+        "promotion",
+        "advertising"
+      ]
+    },
+    "remediation": {
+      "guidance": "Obtain written authorization before using PHI for any marketing activities.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.502(a)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-502-minimum",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Minimum Necessary Standard",
+    "severity": "critical",
+    "summary": "Covered entities must make reasonable efforts to limit PHI to the minimum necessary to accomplish the intended purpose.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "minimum necessary",
+        "PHI",
+        "limit disclosure"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement policies to limit PHI access and disclosure to minimum necessary.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.502(b)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-502-permitted",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Permitted Uses and Disclosures",
+    "severity": "warning",
+    "summary": "PHI may only be used or disclosed as permitted or required by the Privacy Rule.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "permitted",
+        "disclosure",
+        "treatment",
+        "payment",
+        "operations"
+      ]
+    },
+    "remediation": {
+      "guidance": "Ensure all PHI uses and disclosures fall within permitted categories.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.502(a)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "privacy",
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-508-elements",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Authorization Form Elements",
+    "severity": "warning",
+    "summary": "Authorization forms must contain specific required elements including description of PHI, purpose, and expiration.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "authorization form",
+        "elements",
+        "expiration",
+        "revoke"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include all required elements: PHI description, purpose, expiration, right to revoke.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.508(c)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-508-required",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Authorization Required for Marketing",
+    "severity": "critical",
+    "summary": "Written authorization is required before using PHI for marketing communications.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "authorization",
+        "written consent",
+        "marketing"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement authorization forms that meet HIPAA requirements for marketing.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.508(a)(3)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-520-content",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Privacy Notice Content Requirements",
+    "severity": "warning",
+    "summary": "Notice must describe uses/disclosures, individual rights, and entity duties.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "uses?\\s+and\\s+disclosures?\\s+of\\s+(your\\s+)?(protected\\s+)?health\\s+information",
+        "your\\s+rights.*health\\s+information",
+        "PHI"
+      ],
+      "keywords": [
+        "uses and disclosures",
+        "protected health information",
+        "your health information rights",
+        "PHI"
+      ]
+    },
+    "remediation": {
+      "guidance": "Include all required content: uses, disclosures, rights, complaints process.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.520(b)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "privacy"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-520-notice",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Notice of Privacy Practices Required",
+    "severity": "critical",
+    "summary": "Covered entities must provide a Notice of Privacy Practices describing how PHI may be used.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "privacy\\s+notice",
+        "notice\\s+of\\s+privacy\\s+practices",
+        "NPP"
+      ],
+      "keywords": [
+        "notice of privacy practices",
+        "NPP",
+        "privacy notice"
+      ]
+    },
+    "remediation": {
+      "guidance": "Display Notice of Privacy Practices prominently and provide copy to patients.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.520(a)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "privacy",
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-520-website",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Website Privacy Notice",
+    "severity": "warning",
+    "summary": "Entities with websites must post Notice of Privacy Practices prominently online.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "notice\\s+of\\s+privacy\\s+practices",
+        "privacy\\s+practices.*website",
+        "HIPAA\\s+privacy"
+      ],
+      "keywords": [
+        "notice of privacy practices",
+        "HIPAA privacy notice",
+        "privacy practices online"
+      ]
+    },
+    "remediation": {
+      "guidance": "Post full Notice of Privacy Practices on website and link from all PHI collection pages.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.520(c)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "privacy"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-524-access",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Individual Access Rights",
+    "severity": "warning",
+    "summary": "Individuals have the right to access and obtain copies of their PHI.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "access",
+        "copy",
+        "records request"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement process to handle access requests within 30 days.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.524(a)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-524-electronic",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Electronic Access",
+    "severity": "info",
+    "summary": "If PHI is maintained electronically, individuals may request electronic copies.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "electronic",
+        "digital copy",
+        "format"
+      ]
+    },
+    "remediation": {
+      "guidance": "Provide electronic copies in requested format if readily producible.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.524(c)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-530-sanctions",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Sanctions Policy",
+    "severity": "info",
+    "summary": "Covered entities must have sanctions against workforce members who violate privacy policies.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "sanctions",
+        "violations",
+        "discipline"
+      ]
+    },
+    "remediation": {
+      "guidance": "Document and enforce sanctions policy for privacy violations.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.530(e)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "privacy",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-530-training",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Workforce Training",
+    "severity": "warning",
+    "summary": "Covered entities must train workforce members on privacy policies and procedures.",
+    "rationale": "",
+    "detection": {
+      "type": "keyword",
+      "keywords": [
+        "training",
+        "workforce",
+        "education"
+      ]
+    },
+    "remediation": {
+      "guidance": "Implement regular HIPAA training and document completion.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.530(b)",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "privacy",
+        "structural"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-web-forms",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Secure PHI Collection Forms",
+    "severity": "critical",
+    "summary": "Web forms collecting PHI must use secure transmission and link to privacy notice.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "type=[\"']?(text|email)[\"']?.*name=[\"']?(ssn|social|medical|health|diagnosis)",
+        "<form[^>]*(?!https)"
+      ],
+      "keywords": [
+        "form",
+        "PHI collection",
+        "secure",
+        "HTTPS"
+      ]
+    },
+    "remediation": {
+      "guidance": "Use HTTPS for all forms. Link to Notice of Privacy Practices near PHI fields.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.312",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "privacy",
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  },
+  {
+    "id": "HIPAA-web-tracking",
+    "version": "1.0.0",
+    "framework": "hipaa",
+    "title": "Tracking Technology on Health Pages",
+    "severity": "critical",
+    "summary": "Third-party tracking pixels on pages with PHI may constitute unauthorized disclosure.",
+    "rationale": "",
+    "detection": {
+      "type": "hybrid",
+      "patterns": [
+        "facebook.*pixel",
+        "google.*analytics",
+        "tracking.*health"
+      ],
+      "keywords": [
+        "tracking",
+        "pixel",
+        "analytics",
+        "third-party"
+      ]
+    },
+    "remediation": {
+      "guidance": "Remove or limit third-party trackers on pages collecting or displaying health information.",
+      "examples": []
+    },
+    "source": {
+      "source_type": "public_law",
+      "policy_status": "allowed",
+      "citation": "164.502",
+      "source_url": "https://www.hhs.gov/hipaa/for-professionals/privacy/guidance/index.html",
+      "retrieved_at": "2026-02-09",
+      "attribution_required": false
+    },
+    "metadata": {
+      "tags": [
+        "disclosure",
+        "health-data"
+      ],
+      "jurisdiction": [
+        "US"
+      ],
+      "content_types": [
+        "landing-page",
+        "marketing"
+      ],
+      "owner": "qcme-core"
+    }
+  }
+]
