@@ -74,7 +74,9 @@ def run_loop(
         test_set = []
 
     history = []
-    exit_reason = "unknown"
+    exit_reason = (
+        f"max_iterations ({max_iterations})" if max_iterations <= 0 else "unknown"
+    )
 
     for iteration in range(1, max_iterations + 1):
         if verbose:
@@ -86,17 +88,28 @@ def run_loop(
         # Evaluate train + test together in one batch for parallelism
         all_queries = train_set + test_set
         t0 = time.time()
-        all_results = run_eval(
-            eval_set=all_queries,
-            skill_name=name,
-            description=current_description,
-            num_workers=num_workers,
-            timeout=timeout,
-            project_root=project_root,
-            runs_per_query=runs_per_query,
-            trigger_threshold=trigger_threshold,
-            model=model,
-        )
+        try:
+            all_results = run_eval(
+                eval_set=all_queries,
+                skill_name=name,
+                description=current_description,
+                num_workers=num_workers,
+                timeout=timeout,
+                project_root=project_root,
+                runs_per_query=runs_per_query,
+                trigger_threshold=trigger_threshold,
+                model=model,
+            )
+        except Exception as e:
+            # Initial configuration failures must remain visible to callers.
+            # After a completed iteration, preserve its measured scores and
+            # report why the next candidate could not be evaluated.
+            if not history:
+                raise
+            exit_reason = f"run_eval failed on iteration {iteration}: {e}"
+            if verbose:
+                print(f"\nEvaluation failed — keeping partial results.\n  {e}", file=sys.stderr)
+            break
         eval_elapsed = time.time() - t0
 
         # Split results back into train/test by matching queries
@@ -196,22 +209,50 @@ def run_loop(
             {k: v for k, v in h.items() if not k.startswith("test_")}
             for h in history
         ]
-        new_description = improve_description(
-            skill_name=name,
-            skill_content=content,
-            current_description=current_description,
-            eval_results=train_results,
-            history=blinded_history,
-            model=model,
-            log_dir=log_dir,
-            iteration=iteration,
-        )
+        try:
+            new_description = improve_description(
+                skill_name=name,
+                skill_content=content,
+                current_description=current_description,
+                eval_results=train_results,
+                history=blinded_history,
+                model=model,
+                log_dir=log_dir,
+                iteration=iteration,
+            )
+        except Exception as e:
+            exit_reason = f"improve_description failed on iteration {iteration}: {e}"
+            if verbose:
+                print(
+                    "\nDescription improvement failed — keeping partial "
+                    f"results.\n  {e}",
+                    file=sys.stderr,
+                )
+            break
         improve_elapsed = time.time() - t0
 
         if verbose:
             print(f"Proposed ({improve_elapsed:.1f}s): {new_description}", file=sys.stderr)
 
         current_description = new_description
+
+    # A zero-iteration run has no score to maximize, but is still a valid
+    # result that callers and the report generator should be able to render.
+    if not history:
+        return {
+            "exit_reason": exit_reason,
+            "original_description": original_description,
+            "best_description": original_description,
+            "best_score": None,
+            "best_train_score": None,
+            "best_test_score": None,
+            "final_description": current_description,
+            "iterations_run": 0,
+            "holdout": holdout,
+            "train_size": len(train_set),
+            "test_size": len(test_set),
+            "history": history,
+        }
 
     # Find the best iteration by TEST score (or train if no test set)
     if test_set:
