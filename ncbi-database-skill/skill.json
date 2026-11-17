@@ -1,0 +1,19 @@
+{
+  "id": "ncbi-database-skill",
+  "name": "NCBI Database Query",
+  "description": "A Claude skill to query NCBI biological databases (GenBank, SRA, etc.) via E-utilities API, supporting sequence search, gene annotation and data export",
+  "version": "1.0.1",
+  "author": "yanmengli123",
+  "repository": "https://github.com/yanmengli123/ncbi-database-skill",
+  "npm": "ncbi-database-skill",
+  "keywords": [
+    "ncbi",
+    "bioinformatics",
+    "genomics",
+    "database",
+    "claude-skill"
+  ],
+  "permissions": [],
+  "runtime": "node",
+  "entrypoint": "npx ncbi-database-skill"
+}
