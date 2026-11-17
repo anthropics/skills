@@ -8,6 +8,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&display=swap" rel="stylesheet">
   <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-EnyY0/GSHQGSxSgMwaIPzSESbqoOLSexfnSMN2AP+39Ckmn92stwABZynq1JyzdT" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.3/dist/mermaid.min.js"></script>
   <style>
     :root {
       --bg: #faf9f5;
@@ -162,12 +164,68 @@
       padding: 0.75rem;
       overflow-x: auto;
     }
-    .output-file-content pre {
-      font-size: 0.8125rem;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
+    .output-file-content .markdown-body {
+      font-size: 0.9rem;
+      line-height: 1.65;
+    }
+    .output-file-content .markdown-body h1 {
+      font-size: 1.35rem;
+      margin: 1.1rem 0 0.6rem;
+    }
+    .output-file-content .markdown-body h2 {
+      font-size: 1.15rem;
+      margin: 1.1rem 0 0.5rem;
+    }
+    .output-file-content .markdown-body h3,
+    .output-file-content .markdown-body h4 {
+      font-size: 1.02rem;
+      margin: 0.9rem 0 0.4rem;
+    }
+    .output-file-content .markdown-body p,
+    .output-file-content .markdown-body ul,
+    .output-file-content .markdown-body ol,
+    .output-file-content .markdown-body blockquote,
+    .output-file-content .markdown-body pre {
+      margin: 0.5rem 0;
+    }
+    .output-file-content .markdown-body ul,
+    .output-file-content .markdown-body ol {
+      padding-left: 1.5rem;
+    }
+    .output-file-content .markdown-body code {
       font-family: 'SF Mono', SFMono-Regular, Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 0.85em;
+      background: var(--bg);
+      padding: 0.1em 0.35em;
+      border-radius: 3px;
+    }
+    .output-file-content .markdown-body pre {
+      background: var(--bg);
+      padding: 0.75rem;
+      border-radius: 4px;
+      overflow-x: auto;
+    }
+    .output-file-content .markdown-body pre code {
+      background: none;
+      padding: 0;
+    }
+    .output-file-content .markdown-body blockquote {
+      border-left: 3px solid var(--border);
+      padding-left: 0.75rem;
+      color: var(--text-muted);
+    }
+    .output-file-content .markdown-body a { color: var(--accent); }
+    .output-file-content .markdown-body .mermaid {
+      margin: 0.75rem 0;
+      overflow-x: auto;
+      text-align: center;
+      background: var(--bg);
+      padding: 1rem 0.75rem;
+      border-radius: 4px;
+    }
+    .output-file-content .markdown-body .mermaid svg {
+      max-width: 100%;
+      height: auto;
     }
     .output-file-content img {
       max-width: 100%;
@@ -792,10 +850,8 @@
         const content = document.createElement("div");
         content.className = "output-file-content";
 
-        if (file.type === "text") {
-          const pre = document.createElement("pre");
-          pre.textContent = file.content;
-          content.appendChild(pre);
+        if (file.type === "text" || file.type === "markdown") {
+          appendTextOrMarkdown(content, file);
         } else if (file.type === "image") {
           const img = document.createElement("img");
           img.src = file.data_uri;
@@ -824,6 +880,62 @@
         fileDiv.appendChild(content);
         container.appendChild(fileDiv);
       }
+    }
+
+    function isMarkdownFile(file) {
+      const name = (file.name || "").toLowerCase();
+      return file.type === "markdown" || name.endsWith(".md");
+    }
+
+    function appendTextOrMarkdown(container, file) {
+      if (isMarkdownFile(file) && typeof marked !== "undefined") {
+        const div = document.createElement("div");
+        div.className = "markdown-body";
+        try {
+          div.innerHTML = marked.parse(file.content || "", { gfm: true, breaks: false });
+          container.appendChild(div);
+          renderMermaidDiagrams(div);
+          return;
+        } catch (err) {
+          // Fall through to raw text if the parser throws.
+        }
+      }
+      const pre = document.createElement("pre");
+      pre.textContent = file.content;
+      container.appendChild(pre);
+    }
+
+    let mermaidReady = false;
+    function ensureMermaid() {
+      if (mermaidReady || typeof mermaid === "undefined") return;
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: "neutral",
+        securityLevel: "loose",
+        fontFamily: "'PingFang SC', 'Hiragino Sans GB', 'Noto Sans SC', 'Microsoft YaHei', sans-serif",
+        flowchart: { htmlLabels: true, curve: "basis" }
+      });
+      mermaidReady = true;
+    }
+
+    function renderMermaidDiagrams(root) {
+      ensureMermaid();
+      if (typeof mermaid === "undefined") return;
+      const blocks = root.querySelectorAll("pre code.language-mermaid, pre code.lang-mermaid");
+      const nodes = [];
+      blocks.forEach((code) => {
+        const pre = code.closest("pre");
+        if (!pre) return;
+        const div = document.createElement("div");
+        div.className = "mermaid";
+        div.textContent = code.textContent;
+        pre.replaceWith(div);
+        nodes.push(div);
+      });
+      if (!nodes.length) return;
+      mermaid.run({ nodes: nodes }).catch(function () {
+        // Keep the mermaid source visible if a diagram fails to parse.
+      });
     }
 
     // ---- XLSX rendering via SheetJS ----
@@ -952,10 +1064,8 @@
         const fc = document.createElement("div");
         fc.className = "output-file-content";
 
-        if (file.type === "text") {
-          const pre = document.createElement("pre");
-          pre.textContent = file.content;
-          fc.appendChild(pre);
+        if (file.type === "text" || file.type === "markdown") {
+          appendTextOrMarkdown(fc, file);
         } else if (file.type === "image") {
           const img = document.createElement("img");
           img.src = file.data_uri;
@@ -1092,7 +1202,7 @@
     function getDownloadUri(file) {
       if (file.data_uri) return file.data_uri;
       if (file.data_b64) return "data:application/octet-stream;base64," + file.data_b64;
-      if (file.type === "text") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
+      if (file.type === "text" || file.type === "markdown") return "data:text/plain;charset=utf-8," + encodeURIComponent(file.content);
       return "#";
     }
 
