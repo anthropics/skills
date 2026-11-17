@@ -1,0 +1,21 @@
+[project]
+name = "ledger-one"
+version = "0.1.0"
+description = "Pull SimpleFIN transactions into your own Postgres with Claude-assisted categorization."
+requires-python = ">=3.11"
+dependencies = [
+  "psycopg[binary]>=3.2",
+  "anthropic>=0.40",
+  "requests>=2.32",
+  "PyYAML>=6.0",
+  "python-dotenv>=1.0",
+  "pydantic>=2.0",
+]
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[tool.setuptools]
+packages = ["ledger_one"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
