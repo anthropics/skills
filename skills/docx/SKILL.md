@@ -30,6 +30,7 @@ A `.docx` is a ZIP archive of XML files. Choose your approach by task:
 - **Never use `\n`** — use separate `Paragraph` elements.
 - **Headings:** style every level you use (`title`, `heading1`, `heading2`…) in `styles.default`: `heading1: { run: { font: "Arial", size: 32, bold: true }, paragraph: { spacing: { before: 240, after: 120 }, keepNext: true } }`. Every level needs its own font (even with a document default), `before` and `after` (even if 0) and `keepNext`: the built-in styles set none of them.
 - **TOC:** headings must use built-in `HeadingLevel.*`; custom heading styles need `outlineLevel` set or they won't appear.
+- **Footnotes:** if a docx-js document with footnotes opens with Word's repair dialog, inspect `word/footnotes.xml` before delivery. The special separator and continuation-separator footnotes are structural markers, not ordinary content footnotes; remove any `w:footnoteRef` and `FootnoteReference` run style that docx-js emitted inside those special entries while preserving their separator runs, then repack and verify the document again.
 - **Don't use a table as a horizontal rule** — use a paragraph bottom border instead.
 - **Dot-leader / right-aligned-on-same-line:** use `PositionalTab` (`alignment: PositionalTabAlignment.RIGHT`, `leader: PositionalTabLeader.DOT`) inside a `TextRun`, not literal `.` or space padding.
 
