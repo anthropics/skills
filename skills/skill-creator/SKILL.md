@@ -108,6 +108,13 @@ cloud-deploy/
 ```
 Claude reads only the relevant reference file.
 
+#### Cross-Platform Tool Compatibility
+
+Skills can run across different runtime platforms (e.g. Claude Code, Claude.ai, Agent SDK, desktop apps). Because native tool names and behaviors differ across platforms (e.g. `Write`/`Edit` vs `create_file`/`str_replace`, `AskUserQuestion` vs `ask_user_input_v0`, `Bash` vs `bash_tool`):
+- Avoid coupling instructions to platform-specific tool names when general phrasing suffices (e.g. "Create a file named...", "Ask the user to clarify...").
+- When platform-specific capabilities are required, document the requirements under `compatibility` in frontmatter.
+- Be mindful of semantic differences across platform tools (e.g. overwrite flags vs duplicate file protection).
+
 #### Principle of Lack of Surprise
 
 This goes without saying, but skills must not contain malware, exploit code, or any content that could compromise system security. A skill's contents should not surprise the user in their intent if described. Don't go along with requests to create misleading skills or skills designed to facilitate unauthorized access, data exfiltration, or other malicious activities. Things like a "roleplay as an XYZ" are OK though.
