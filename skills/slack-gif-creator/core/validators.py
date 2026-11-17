@@ -53,7 +53,7 @@ def validate_gif(
                 duration_ms = img.info.get("duration", 100)
                 total_duration = (duration_ms * frame_count) / 1000
                 fps = frame_count / total_duration if total_duration > 0 else 0
-            except:
+            except Exception:
                 total_duration = None
                 fps = None
 
