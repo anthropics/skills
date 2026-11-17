@@ -82,6 +82,35 @@ until Excel opens the file.
 - **On every new chart set `chart.roundedCorners = False`, `.overlay = False` on its legend and on each title you gave it (`chart.legend`, `chart.title`, `chart.x_axis.title`…), and, if it has axes (not pie or doughnut), `chart.x_axis.delete = False` and `chart.y_axis.delete = False`**, or Excel may draw the title or legend over the plot, round the frame, or draw no axes.
 - **With a `DateAxis`, set `chart.y_axis.crossAx = 500`**, or Excel may offer to repair the file.
 
+## Complex workbooks: surgical package editing
+
+An openpyxl load→save rewrites the entire package. Parts it does not model — native
+charts, drawings, comment VML, slicers, `extLst` extensions — are silently dropped or
+regenerated, and `xl/styles.xml` is rewritten. Desktop Excel opens the result with a
+"repair" dialog whose recovery log is generic and names no specific part.
+
+Check first (`unzip -l file.xlsx`): if the workbook has chart, drawing, or comment
+parts that must survive, do not full-save with a library. Patch surgically instead:
+rewrite only the target worksheet XML members inside the ZIP and copy every other
+member byte-for-byte. Each rule below, violated, produces the same repair prompt:
+
+- **Never round-trip worksheet XML through a generic XML serializer.** ElementTree
+  renames namespace prefixes on write (`mc` becomes `ns1`). Legal in plain XML —
+  fatal in OOXML, because `mc:Ignorable="x14ac xr …"` names prefixes as literal
+  strings and every name listed must be a declared prefix in scope (ISO 29500-3).
+  Edit sheet XML with targeted string surgery or a prefix-preserving serializer
+  (lxml), and diff the changed part's prefix→URI map against the original before
+  delivery.
+- **Keep `xl/styles.xml` byte-identical.** Cells reference the style table by
+  numeric index; merging or reordering it leaves dangling references. Reuse the
+  workbook's existing style ids for new cells.
+- **If cell contents changed, delete `xl/calcChain.xml`** (the ZIP member and its
+  `[Content_Types].xml` override) and set `<calcPr fullCalcOnLoad="1"/>` in
+  `workbook.xml`; Excel rebuilds the chain cleanly on open.
+- **Validate before delivery**: ZIP integrity, every changed part parses, internal
+  relationship targets resolve, untouched members byte-identical to the source.
+  Excel's repair log will not tell you which rule you broke.
+
 ## Financial models
 
 Unless the user says otherwise, or the existing file already does something else.
