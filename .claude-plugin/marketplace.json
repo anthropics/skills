@@ -40,8 +40,7 @@
         "./skills/web-artifacts-builder",
         "./skills/webapp-testing"
       ]
-    }
-    ,
+    },
     {
       "name": "claude-api",
       "description": "Claude API and SDK documentation skill for building LLM-powered applications",
@@ -67,6 +66,15 @@
       "strict": false,
       "skills": [
         "./skills/discernment-nudge"
+      ]
+    },
+    {
+      "name": "pr-reviewer",
+      "description": "Systematic seven-dimension code review for pull requests, branch diffs, and staged changes — findings classified as blocker/should-fix/nit with file:line anchors, instead of a superficial read",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/pr-reviewer"
       ]
     }
   ]
