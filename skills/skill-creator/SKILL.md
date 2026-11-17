@@ -94,7 +94,8 @@ These word counts are approximate and you can feel free to go longer if needed.
 
 **Key patterns:**
 - Keep SKILL.md under 500 lines; if you're approaching this limit, add an additional layer of hierarchy along with clear pointers about where the model using the skill should go next to follow up.
-- Reference files clearly from SKILL.md with guidance on when to read them
+- Reference files clearly from SKILL.md with guidance on when to read them.
+- When referring to bundled files such as `references/foo.md`, tell the model to resolve them from the skill's own directory. If the runtime file tool requires absolute paths, instruct the model to first determine the installed skill directory and then read the bundled file by absolute path instead of assuming `references/foo.md` resolves from the current working directory.
 - For large reference files (>300 lines), include a table of contents
 
 **Domain organization**: When a skill supports multiple domains/frameworks, organize by variant:
