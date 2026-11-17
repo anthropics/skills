@@ -1,0 +1,126 @@
+# {{FEATURE_NAME}} - Requirements
+
+> **Status**: Draft | In Review | Approved
+> **Proposal**: [proposal.md](./proposal.md)
+> **Last Updated**: {{DATE}}
+
+## Overview
+
+<!-- Brief summary of what these requirements describe -->
+
+## Functional Requirements
+
+<!-- Use EARS (Easy Approach to Requirements Syntax) format -->
+
+### Ubiquitous Requirements
+
+<!-- Always-on requirements: "The system shall..." -->
+
+- **FR-001**: The system shall {{action}}.
+- **FR-002**: The system shall {{action}}.
+
+### Event-Driven Requirements
+
+<!-- Triggered by events: "When [trigger], the system shall..." -->
+
+- **FR-010**: When {{trigger event}}, the system shall {{action}}.
+- **FR-011**: When {{trigger event}}, the system shall {{action}}.
+
+### State-Driven Requirements
+
+<!-- Active during states: "While [state], the system shall..." -->
+
+- **FR-020**: While {{state condition}}, the system shall {{action}}.
+- **FR-021**: While {{state condition}}, the system shall {{action}}.
+
+### Unwanted Behavior Requirements
+
+<!-- Negative requirements: "If [condition], then the system shall NOT..." -->
+
+- **FR-030**: If {{error condition}}, then the system shall NOT {{prohibited action}}.
+- **FR-031**: If {{error condition}}, then the system shall NOT {{prohibited action}}.
+
+### Optional Features
+
+<!-- Conditional features: "Where [feature is enabled], the system shall..." -->
+
+- **FR-040**: Where {{feature flag}} is enabled, the system shall {{action}}.
+
+## Non-Functional Requirements
+
+### Performance
+
+- **NFR-001**: The system shall respond to {{operation}} within {{time}} under {{load conditions}}.
+- **NFR-002**: The system shall support {{number}} concurrent {{operations}}.
+
+### Security
+
+- **NFR-010**: The system shall {{security requirement}}.
+- **NFR-011**: The system shall NOT {{security prohibition}}.
+
+### Reliability
+
+- **NFR-020**: The system shall maintain {{uptime percentage}} availability.
+- **NFR-021**: The system shall recover from {{failure type}} within {{time}}.
+
+### Scalability
+
+- **NFR-030**: The system shall scale to handle {{capacity}} of {{resource}}.
+
+### Usability
+
+- **NFR-040**: The system shall {{usability requirement}}.
+
+### Maintainability
+
+- **NFR-050**: The system shall {{maintainability requirement}}.
+
+## Constraints
+
+<!-- Technical or business constraints that must be respected -->
+
+- **C-001**: {{constraint description}}
+- **C-002**: {{constraint description}}
+
+## Assumptions
+
+<!-- Assumptions made when writing these requirements -->
+
+- **A-001**: {{assumption description}}
+- **A-002**: {{assumption description}}
+
+## Acceptance Criteria
+
+<!-- Testable criteria that define when the feature is complete -->
+
+### Core Functionality
+
+- [ ] **AC-001**: Given {{precondition}}, when {{action}}, then {{expected result}}.
+- [ ] **AC-002**: Given {{precondition}}, when {{action}}, then {{expected result}}.
+
+### Edge Cases
+
+- [ ] **AC-010**: Given {{edge case condition}}, when {{action}}, then {{expected behavior}}.
+- [ ] **AC-011**: Given {{error condition}}, when {{action}}, then {{error handling behavior}}.
+
+### Performance
+
+- [ ] **AC-020**: {{operation}} completes within {{time}} for {{data size}}.
+
+## Traceability Matrix
+
+<!-- Maps requirements to acceptance criteria -->
+
+| Requirement | Acceptance Criteria | Test Case |
+|-------------|---------------------|-----------|
+| FR-001 | AC-001 | TC-001 |
+| FR-010 | AC-002 | TC-002 |
+| NFR-001 | AC-020 | TC-020 |
+
+## Glossary
+
+<!-- Define domain-specific terms -->
+
+| Term | Definition |
+|------|------------|
+| {{term}} | {{definition}} |
