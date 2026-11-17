@@ -1,0 +1,30 @@
+{
+  "skill_name": "skill-analyzer",
+  "target_skill": "ml-trainer",
+  "evals": [
+    {
+      "id": 1,
+      "name": "resnet-medical-imaging",
+      "prompt": "I'm a computer vision engineer fine-tuning ResNet-50 on a custom medical imaging dataset — 4,800 chest X-rays, 90% normal and 10% pathology (severely imbalanced). My workflow: (1) Baseline — set initial fine-tuning params and verify the model is learning; (2) Pilot Sweeps — short runs to find the right LR for pretrained weight fine-tuning; (3) Optuna — 30 trials over LR, weight decay, and dropout; (4) Cross Validation — 5 folds to confirm generalization on this imbalanced dataset. I have the ml-trainer skill installed. Compare ml-trainer vs Claude alone for each phase — quality, tokens, time — and give me a verdict per phase.",
+      "expected_output": "Per-phase table (quality skill vs alone, tokens, time). Phase 1 should flag that ml-trainer LR 3e-4 default may be too high for fine-tuning pretrained weights. Phase 4 should flag stratified k-fold as directly applicable for the 90/10 imbalance. Overall verdict PARTIAL or USE IT."
+    },
+    {
+      "id": 2,
+      "name": "lstm-demand-forecasting",
+      "prompt": "I'm an ML engineer training an LSTM on 3 years of daily retail sales data across 200 SKUs for demand forecasting. My workflow: (1) Baseline — set initial LSTM params, verify loss is decreasing; (2) Pilot Sweeps — short runs varying sequence length and hidden units; (3) Optuna — automated search over LSTM depth, dropout, and learning rate; (4) Cross Validation — validate that the model generalizes across time. I have the ml-trainer skill. Compare ml-trainer vs Claude alone for each phase — quality, tokens, time — and give me a verdict per phase.",
+      "expected_output": "Per-phase table. Phase 4 critical test — ml-trainer explicitly mentions time-series split (never shuffle) which is directly applicable. Phase 2 pilot sweeps on sequence length and hidden units not in ml-trainer sweep priorities. Phase 4 is skill's strongest contribution."
+    },
+    {
+      "id": 3,
+      "name": "lightgbm-fraud-detection",
+      "prompt": "I'm a data scientist training LightGBM on 2 million credit card transactions to detect fraud — 0.3% fraud rate (highly imbalanced). My workflow: (1) Baseline — set initial LightGBM params and verify the model can find any fraud signal; (2) Pilot Sweeps — short runs over num_leaves, learning rate, and class_weight; (3) Optuna — 40 trials over tree depth, regularization, and sampling; (4) Cross Validation — stratified k-fold to account for class imbalance. I have the ml-trainer skill. Compare ml-trainer vs Claude alone for each phase — quality, tokens, time — and tell me which phases to use the skill for.",
+      "expected_output": "Per-phase table. Phase 2 should flag ml-trainer sweep priority (LR, batch, weight decay) does not match LightGBM key params (num_leaves, max_depth). Phase 4 stratified k-fold directly mentioned in ml-trainer. Overall PARTIAL — Phase 4 KEEP, Phases 1-3 questionable for tree-based model."
+    },
+    {
+      "id": 4,
+      "name": "webapp-testing-playwright",
+      "prompt": "I'm a frontend engineer who needs to write Playwright tests for a React SPA that fetches data from an API and renders it dynamically — content is not present in initial HTML. My workflow: (1) Element Discovery — find the right selectors for dynamic content; (2) Script Authoring — write the Playwright automation; (3) Dynamic Content Handling — ensure tests wait for network idle before asserting; (4) Server Lifecycle — start the dev server before tests and shut it down after. I have the webapp-testing skill. Compare webapp-testing vs Claude alone for each phase — quality, tokens, time — and give me a verdict per phase.",
+      "expected_output": "Per-phase table. Phase 3 should flag webapp-testing's explicit page.wait_for_load_state('networkidle') rule as directly applicable and scoring 5/5 — this is a specific directive Claude alone may omit. Phase 4 should flag the with_server.py helper script as a concrete artifact the skill provides. Phases 1-2 moderate (3-4/5) since Claude handles Playwright selectors adequately alone. Overall PARTIAL or USE IT."
+    }
+  ]
+}
