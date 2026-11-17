@@ -20,6 +20,15 @@ import time
 import sys
 import argparse
 
+def is_port_in_use(port):
+    """Check whether a service already answers on the requested local port."""
+    try:
+        with socket.create_connection(('localhost', port), timeout=1):
+            return True
+    except OSError:
+        return False
+
+
 def is_server_ready(port, timeout=30):
     """Wait for server to be ready by polling the port."""
     start_time = time.time()
@@ -63,6 +72,11 @@ def main():
     try:
         # Start all servers
         for i, server in enumerate(servers):
+            if is_port_in_use(server['port']):
+                raise RuntimeError(
+                    f"Port {server['port']} is already in use; refusing to test "
+                    "against an unrelated server"
+                )
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
             # Use shell=True to support commands with cd and &&
