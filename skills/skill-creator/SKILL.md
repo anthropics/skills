@@ -83,6 +83,22 @@ skill-name/
     └── assets/     - Files used in output (templates, icons, fonts)
 ```
 
+#### Frontmatter YAML
+
+The `name` and `description` fields are parsed as YAML. Parsers vary in
+strictness: Claude Code is lenient, but stricter parsers (e.g. Codex) reject
+descriptions that contain an unquoted `:`, which is common in natural prose
+(`Use when: ...`, `X: Y`). To stay portable across tools, wrap the
+`description` value in single quotes and escape literal apostrophes by
+doubling them:
+
+```yaml
+---
+name: my-skill
+description: 'Does X. Use when: the user needs Y, or asks about Z. Don''t trigger for W.'
+---
+```
+
 #### Progressive Disclosure
 
 Skills use a three-level loading system:
