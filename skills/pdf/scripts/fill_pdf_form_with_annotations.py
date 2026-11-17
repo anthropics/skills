@@ -49,7 +49,10 @@ def fill_pdf_form(input_pdf_path, fields_json_path, output_pdf_path):
     for field in fields_data["form_fields"]:
         page_num = field["page_number"]
 
-        page_info = next(p for p in fields_data["pages"] if p["page_number"] == page_num)
+        page_info = next((p for p in fields_data["pages"] if p["page_number"] == page_num), None)
+        if page_info is None:
+            print(f"Error: fields.json has no page {page_num} entry for field on page {page_num}; cannot map its coordinates", file=sys.stderr)
+            sys.exit(1)
         pdf_width, pdf_height = pdf_dimensions[page_num]
 
         if "pdf_width" in page_info:
