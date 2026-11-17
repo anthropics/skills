@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "maximo-agent",
+      "description": "Generalist delivery agent for cross-domain planning, source verification, privacy, safety boundaries, and validated outputs",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/maximo"
+      ]
     }
   ]
 }
