@@ -1,0 +1,88 @@
+#!/usr/bin/env python3
+"""
+Simple URL status checker.
+Usage:
+  - Check single URL:   python url_checker.py https://example.com
+  - Check multiple:     python url_checker.py urls.txt
+  - Check many URLs:    python url_checker.py https://a.com https://b.com
+"""
+import sys
+import time
+from typing import List, Tuple
+try:
+    import requests
+except ImportError:
+    requests = None
+    from urllib.request import urlopen, Request
+    from urllib.error import URLError, HTTPError
+
+
+def check_url_requests(url: str, timeout: float = 5.0) -> Tuple[int, float]:
+    """Use requests (if available) to get status code and elapsed time (s)."""
+    start = time.time()
+    r = requests.get(url, timeout=timeout, allow_redirects=True)
+    elapsed = time.time() - start
+    return r.status_code, elapsed
+
+
+def check_url_urllib(url: str, timeout: float = 5.0) -> Tuple[int, float]:
+    """Fallback using urllib when requests is not installed."""
+    start = time.time()
+    req = Request(url, headers={"User-Agent": "url-checker/1.0"})
+    try:
+        with urlopen(req, timeout=timeout) as resp:
+            elapsed = time.time() - start
+            return resp.getcode(), elapsed
+    except HTTPError as e:
+        elapsed = time.time() - start
+        return e.code, elapsed
+    except URLError:
+        raise
+
+
+def check_url(url: str, timeout: float = 5.0) -> Tuple[str, str]:
+    """Return (status_str, time_str)."""
+    if not url.startswith(("http://", "https://")):
+        url = "http://" + url  # default to http for convenience
+
+    try:
+        if requests:
+            code, elapsed = check_url_requests(url, timeout)
+        else:
+            code, elapsed = check_url_urllib(url, timeout)
+        return str(code), f"{elapsed:.2f}s"
+    except Exception as e:
+        return "ERROR", str(e)
+
+
+def load_urls_from_file(path: str) -> List[str]:
+    with open(path, "r", encoding="utf-8") as f:
+        lines = [line.strip() for line in f if line.strip() and not line.strip().startswith("#")]
+    return lines
+
+
+def main(args: List[str]):
+    if not args:
+        print("Usage: python url_checker.py <url|file> [more urls...]")
+        sys.exit(1)
+
+    # If single argument and it's a file, load from file
+    urls: List[str] = []
+    if len(args) == 1 and args[0].endswith(".txt"):
+        try:
+            urls = load_urls_from_file(args[0])
+        except FileNotFoundError:
+            print(f"File not found: {args[0]}")
+            sys.exit(2)
+    else:
+        urls = args
+
+    print(f"{'URL':<50} {'STATUS':<8} {'TIME'}")
+    print("-" * 70)
+    for u in urls:
+        status, info = check_url(u)
+        print(f"{u:<50} {status:<8} {info}")
+
+
+if __name__ == "__main__":
+    main(sys.argv[1:])
