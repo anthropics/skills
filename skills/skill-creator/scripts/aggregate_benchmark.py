@@ -177,7 +177,8 @@ def aggregate_results(results: dict) -> dict:
     """
     Aggregate run results into summary statistics.
 
-    Returns run_summary with stats for each configuration and delta.
+    Returns run_summary with stats for each configuration and, when two or
+    more configurations exist, a delta between the first two.
     """
     run_summary = {}
     configs = list(results.keys())
@@ -203,23 +204,22 @@ def aggregate_results(results: dict) -> dict:
             "tokens": calculate_stats(tokens)
         }
 
-    # Calculate delta between the first two configs (if two exist)
+    # A delta only exists between two configurations; with a single config
+    # there is no baseline to compare against, and emitting one against an
+    # invented zero baseline would fabricate a "+X" improvement.
     if len(configs) >= 2:
         primary = run_summary.get(configs[0], {})
         baseline = run_summary.get(configs[1], {})
-    else:
-        primary = run_summary.get(configs[0], {}) if configs else {}
-        baseline = {}
 
-    delta_pass_rate = primary.get("pass_rate", {}).get("mean", 0) - baseline.get("pass_rate", {}).get("mean", 0)
-    delta_time = primary.get("time_seconds", {}).get("mean", 0) - baseline.get("time_seconds", {}).get("mean", 0)
-    delta_tokens = primary.get("tokens", {}).get("mean", 0) - baseline.get("tokens", {}).get("mean", 0)
+        delta_pass_rate = primary.get("pass_rate", {}).get("mean", 0) - baseline.get("pass_rate", {}).get("mean", 0)
+        delta_time = primary.get("time_seconds", {}).get("mean", 0) - baseline.get("time_seconds", {}).get("mean", 0)
+        delta_tokens = primary.get("tokens", {}).get("mean", 0) - baseline.get("tokens", {}).get("mean", 0)
 
-    run_summary["delta"] = {
-        "pass_rate": f"{delta_pass_rate:+.2f}",
-        "time_seconds": f"{delta_time:+.1f}",
-        "tokens": f"{delta_tokens:+.0f}"
-    }
+        run_summary["delta"] = {
+            "pass_rate": f"{delta_pass_rate:+.2f}",
+            "time_seconds": f"{delta_time:+.1f}",
+            "tokens": f"{delta_tokens:+.0f}"
+        }
 
     return run_summary
 
@@ -285,10 +285,7 @@ def generate_markdown(benchmark: dict) -> str:
 
     # Determine config names (excluding "delta")
     configs = [k for k in run_summary if k != "delta"]
-    config_a = configs[0] if len(configs) >= 1 else "config_a"
-    config_b = configs[1] if len(configs) >= 2 else "config_b"
-    label_a = config_a.replace("_", " ").title()
-    label_b = config_b.replace("_", " ").title()
+    label_a = configs[0].replace("_", " ").title() if configs else "config_a"
 
     lines = [
         f"# Skill Benchmark: {metadata['skill_name']}",
@@ -299,28 +296,42 @@ def generate_markdown(benchmark: dict) -> str:
         "",
         "## Summary",
         "",
-        f"| Metric | {label_a} | {label_b} | Delta |",
-        "|--------|------------|---------------|-------|",
     ]
 
-    a_summary = run_summary.get(config_a, {})
-    b_summary = run_summary.get(config_b, {})
-    delta = run_summary.get("delta", {})
+    a_summary = run_summary.get(configs[0], {}) if configs else {}
 
     # Format pass rate
     a_pr = a_summary.get("pass_rate", {})
-    b_pr = b_summary.get("pass_rate", {})
-    lines.append(f"| Pass Rate | {a_pr.get('mean', 0)*100:.0f}% ± {a_pr.get('stddev', 0)*100:.0f}% | {b_pr.get('mean', 0)*100:.0f}% ± {b_pr.get('stddev', 0)*100:.0f}% | {delta.get('pass_rate', '—')} |")
+    a_pass_rate = f"{a_pr.get('mean', 0)*100:.0f}% ± {a_pr.get('stddev', 0)*100:.0f}%"
 
     # Format time
     a_time = a_summary.get("time_seconds", {})
-    b_time = b_summary.get("time_seconds", {})
-    lines.append(f"| Time | {a_time.get('mean', 0):.1f}s ± {a_time.get('stddev', 0):.1f}s | {b_time.get('mean', 0):.1f}s ± {b_time.get('stddev', 0):.1f}s | {delta.get('time_seconds', '—')}s |")
+    a_time_s = f"{a_time.get('mean', 0):.1f}s ± {a_time.get('stddev', 0):.1f}s"
 
     # Format tokens
     a_tokens = a_summary.get("tokens", {})
-    b_tokens = b_summary.get("tokens", {})
-    lines.append(f"| Tokens | {a_tokens.get('mean', 0):.0f} ± {a_tokens.get('stddev', 0):.0f} | {b_tokens.get('mean', 0):.0f} ± {b_tokens.get('stddev', 0):.0f} | {delta.get('tokens', '—')} |")
+    a_tokens_s = f"{a_tokens.get('mean', 0):.0f} ± {a_tokens.get('stddev', 0):.0f}"
+
+    if len(configs) >= 2:
+        label_b = configs[1].replace("_", " ").title()
+        b_summary = run_summary.get(configs[1], {})
+        delta = run_summary.get("delta", {})
+
+        b_pr = b_summary.get("pass_rate", {})
+        b_time = b_summary.get("time_seconds", {})
+        b_tokens = b_summary.get("tokens", {})
+
+        lines.append(f"| Metric | {label_a} | {label_b} | Delta |")
+        lines.append("|--------|------------|---------------|-------|")
+        lines.append(f"| Pass Rate | {a_pass_rate} | {b_pr.get('mean', 0)*100:.0f}% ± {b_pr.get('stddev', 0)*100:.0f}% | {delta.get('pass_rate', '—')} |")
+        lines.append(f"| Time | {a_time_s} | {b_time.get('mean', 0):.1f}s ± {b_time.get('stddev', 0):.1f}s | {delta.get('time_seconds', '—')}s |")
+        lines.append(f"| Tokens | {a_tokens_s} | {b_tokens.get('mean', 0):.0f} ± {b_tokens.get('stddev', 0):.0f} | {delta.get('tokens', '—')} |")
+    else:
+        lines.append(f"| Metric | {label_a} |")
+        lines.append("|--------|------------|")
+        lines.append(f"| Pass Rate | {a_pass_rate} |")
+        lines.append(f"| Time | {a_time_s} |")
+        lines.append(f"| Tokens | {a_tokens_s} |")
 
     # Notes section
     if benchmark.get("notes"):
