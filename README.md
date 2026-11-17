@@ -39,16 +39,17 @@ You can register this repository as a Claude Code Plugin marketplace by running 
 Then, to install a specific set of skills:
 1. Select `Browse and install plugins`
 2. Select `anthropic-agent-skills`
-3. Select `document-skills` or `example-skills`
+3. Select `document-skills`, `example-skills`, or `claude-api`
 4. Select `Install now`
 
-Alternatively, directly install either Plugin via:
+Alternatively, directly install any plugin via:
 ```
 /plugin install document-skills@anthropic-agent-skills
 /plugin install example-skills@anthropic-agent-skills
+/plugin install claude-api@anthropic-agent-skills
 ```
 
-After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
+After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`". If you install the `claude-api` plugin, you can ask for help building with the Claude API or SDKs.
 
 ## Claude.ai
 
