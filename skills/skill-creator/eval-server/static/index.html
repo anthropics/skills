@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>skill-creator — eval dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600&family=Lora:wght@400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <h1>skill-creator</h1>
+    <span class="topbar-sub">trigger optimization dashboard</span>
+    <div class="topbar-right">
+      <span id="connection-pill" class="pill pill-idle">idle</span>
+      <button id="show-runs-btn" class="ghost-btn">history</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <section class="control-group">
+        <label for="skill-select">Skill</label>
+        <select id="skill-select">
+          <option value="">— select skill —</option>
+        </select>
+        <p class="hint" id="skill-desc-preview"></p>
+      </section>
+
+      <section class="control-group">
+        <label for="eval-set-select">Eval set</label>
+        <select id="eval-set-select" disabled>
+          <option value="">— pick a skill first —</option>
+        </select>
+        <p class="hint" id="eval-set-stats"></p>
+        <details class="paste-eval">
+          <summary>Or paste JSON</summary>
+          <textarea id="eval-set-paste" rows="4" placeholder='[{"query":"...","should_trigger":true},...]'></textarea>
+        </details>
+      </section>
+
+      <section class="control-group">
+        <label for="model-select">Model</label>
+        <select id="model-select">
+          <option value="claude-sonnet-4-6">claude-sonnet-4-6</option>
+          <option value="claude-opus-4-7">claude-opus-4-7</option>
+          <option value="claude-haiku-4-5">claude-haiku-4-5</option>
+          <option value="kimi-k2.6:cloud">kimi-k2.6:cloud</option>
+        </select>
+      </section>
+
+      <section class="control-group grid-2">
+        <div>
+          <label for="num-workers">Workers</label>
+          <input type="number" id="num-workers" min="1" max="8" value="1">
+        </div>
+        <div>
+          <label for="max-iterations">Iterations</label>
+          <input type="number" id="max-iterations" min="1" max="10" value="3">
+        </div>
+        <div>
+          <label for="runs-per-query">Runs/query</label>
+          <input type="number" id="runs-per-query" min="1" max="5" value="1">
+        </div>
+        <div>
+          <label for="timeout">Timeout (s)</label>
+          <input type="number" id="timeout" min="15" max="300" value="60">
+        </div>
+        <div>
+          <label for="holdout">Holdout</label>
+          <input type="number" id="holdout" min="0" max="0.7" step="0.05" value="0.4">
+        </div>
+        <div>
+          <label for="trigger-threshold">Threshold</label>
+          <input type="number" id="trigger-threshold" min="0" max="1" step="0.1" value="0.5">
+        </div>
+      </section>
+
+      <section class="control-group">
+        <label for="description-override">Description override (optional)</label>
+        <textarea id="description-override" rows="3" placeholder="leave blank to use SKILL.md description"></textarea>
+      </section>
+
+      <section class="control-group action-row">
+        <button id="start-btn" class="primary-btn" disabled>Start</button>
+        <button id="stop-btn" class="ghost-btn" disabled>Stop</button>
+      </section>
+
+      <section class="control-group action-row">
+        <button id="apply-best-btn" class="success-btn" disabled>Apply best to SKILL.md</button>
+      </section>
+    </aside>
+
+    <main class="main">
+      <section class="status-card">
+        <div class="status-row">
+          <strong>Run:</strong> <span id="run-id">—</span>
+          <strong>Status:</strong> <span id="run-status" class="pill pill-idle">idle</span>
+          <strong>Iter:</strong> <span id="run-iter">0</span> / <span id="run-iter-max">—</span>
+        </div>
+        <div class="status-row">
+          <strong>Best:</strong> <span id="best-score">—</span>
+          <strong>Train:</strong> <span id="train-size">—</span>
+          <strong>Test:</strong> <span id="test-size">—</span>
+        </div>
+        <div class="best-desc-card">
+          <div class="best-desc-label">Current best description</div>
+          <div id="best-description">—</div>
+        </div>
+      </section>
+
+      <section class="results-card">
+        <div class="results-table-wrap">
+          <table id="results-table">
+            <thead>
+              <tr id="results-thead-row">
+                <th>Iter</th>
+                <th>Train</th>
+                <th>Test</th>
+                <th class="desc-col">Description</th>
+              </tr>
+            </thead>
+            <tbody id="results-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="runs-modal" class="runs-modal">
+    <h2>Recent runs</h2>
+    <ul id="runs-list"></ul>
+    <button class="ghost-btn" onclick="document.getElementById('runs-modal').close()">close</button>
+  </dialog>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
