@@ -66,11 +66,13 @@ def main():
             print(f"Starting server {i+1}/{len(servers)}: {server['cmd']}")
 
             # Use shell=True to support commands with cd and &&
+            # Discard server output: an unread PIPE deadlocks the server once the
+            # OS buffer fills, and inheriting our stdout would flood the caller.
             process = subprocess.Popen(
                 server['cmd'],
                 shell=True,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
             )
             server_processes.append(process)
 
