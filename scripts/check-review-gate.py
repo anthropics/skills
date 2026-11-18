@@ -38,7 +38,8 @@ _CLOSING_TOKEN = re.compile(
 CLOSER_ASSOCIATIONS = frozenset({"OWNER", "MEMBER", "COLLABORATOR"})
 # Repo roles that also close, read from the legacy `permission` field (maintain reads as write, triage as read).
 CLOSER_PERMISSIONS = frozenset({"admin", "write"})
-_GITHUB_LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})", re.A)
+# Underscores: enterprise-managed logins are `<handle>_<shortcode>`. The login only builds a URL path segment.
+_GITHUB_LOGIN = re.compile(r"[A-Za-z0-9][A-Za-z0-9_-]{0,99}", re.A)
 
 
 def closes(reply: str) -> bool:
@@ -341,6 +342,10 @@ def closer_permissions(
     so bots never close by this path. Any API error raises, naming the call: the gate fails closed."""
     perms: dict[str, str] = {}
     for _, replies in _p2_threads(pr):
+        # A thread an owner, member or collaborator already closed needs no lookup, so a failing
+        # lookup (a deleted account, say) cannot fail a closed thread.
+        if any(c.get("authorAssociation") in CLOSER_ASSOCIATIONS and closes(c.get("body") or "") for c in replies):
+            continue
         for c in replies:
             author = c.get("author") or {}
             login = author.get("login") or ""

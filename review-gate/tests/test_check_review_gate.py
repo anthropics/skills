@@ -1870,6 +1870,11 @@ assert "aec path" not in skill
 assert "$(dirname)/scripts/install-workflow.py" not in skill
 assert "scripts/check-review-gate.py" in skill
 assert "default branch" in skill.lower()
+# the gate-safe body example in SKILL.md passes the gate, attestation and all, into main with review:high
+_ex = re.search(r"A PR body the gate accepts.*?```markdown\n(.*?)```", skill, re.S).group(1)
+_ex_head = re.search(r"on ([0-9a-f]{40}) ", _ex).group(1)
+assert g.evaluate(pr(body=_ex, headRefOid=_ex_head, baseRefName="main", reviews={"nodes": []},
+                     labels={"nodes": [{"name": "review:high"}]})) == [], _ex
 
 # PATH=… can swap the gh binary even with a literal -R — fail closed
 assert mg.sets_path_override("PATH=/tmp/fake:$PATH gh -R owner/safe pr merge 1")
@@ -2321,6 +2326,12 @@ _r, _rc, _out, _calls = _run_perm([_priv(body="thanks")], {"priv": "admin"})
 assert _rc == 1 and _calls == [], (_r, _out, _calls)
 _r, _rc, _out, _calls = _run_perm([_priv(assoc="MEMBER")], {})
 assert (_r, _rc, _calls) == ([], 0, []), (_r, _out, _calls)
+# a thread an association-closer already closed makes no lookup, so a failing lookup cannot fail it (#116 P2-2)
+_r, _rc, _out, _calls = _run_perm([_priv("gone"), _priv(assoc="MEMBER", login="m")], {"gone": "ERROR"})
+assert (_r, _rc, _calls) == ([], 0, []), (_r, _out, _calls)
+# an enterprise-managed login (`handle_shortcode`) is looked up and closes with write (#116 P2-3)
+_r, _rc, _out, _calls = _run_perm([_priv("jdoe_acme")], {"jdoe_acme": "write"})
+assert (_r, _rc, _calls) == ([], 0, ["jdoe_acme", "jdoe_acme"]), (_r, _out, _calls)
 # one lookup per login per run, however many replies it wrote
 _r, _rc, _out, _calls = _run_perm([_priv(), _priv(body="not-a-finding: x")], {"priv": "read"})
 assert _rc == 1 and _calls == ["priv", "priv"], (_r, _out, _calls)

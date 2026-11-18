@@ -49,9 +49,11 @@ permissions:
   checks: write
   actions: read  # forged-check step looks up which workflow/event ran a job
 
-concurrency:
-  group: review-gate-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# No `concurrency:` group, on purpose. The required check reads the newest run's result, and a rerun
+# lands in the old run's suite, so a cancelled newest run blocks the merge until it is re-run itself
+# (nevar-fund #27; review-gate-sandbox PR #30). `cancel-in-progress: false` still cancels a pending run
+# when a newer one queues. Each run is an idempotent ~8 s read of the PR's current state, so parallel
+# runs are safe: the newest one sees the latest event.
 
 jobs:
   gate:

@@ -307,8 +307,9 @@ class ForgedGateWorkflow(unittest.TestCase):
             "opened", "reopened", "ready_for_review", "synchronize", "edited", "labeled", "unlabeled"]}})
         self.assertEqual(wf["permissions"], {"contents": "read", "pull-requests": "read", "checks": "write",
                                              "actions": "read"})
-        self.assertEqual(wf["concurrency"], {"group": "review-gate-${{ github.event.pull_request.number || github.ref }}",
-                                             "cancel-in-progress": True})
+        # no concurrency group: a cancelled newest run blocks the merge (review-gate-sandbox PR #30)
+        self.assertNotIn("concurrency", wf)
+        self.assertNotIn("concurrency", wf["jobs"]["gate"])
         self.assertEqual(list(wf["jobs"]), ["gate"])
         (step,) = wf["jobs"]["gate"]["steps"]
         self.assertEqual(step["env"], {
