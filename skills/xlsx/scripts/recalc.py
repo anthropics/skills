@@ -26,7 +26,7 @@ import zipfile
 from pathlib import Path
 from xml.parsers import expat
 
-from office.soffice import get_soffice_env, run_soffice
+from office.soffice import get_soffice_env, run_soffice, soffice_binary
 
 MACRO_FILENAME = "Module1.xba"
 SOFFICE_MISSING = "soffice not found on PATH; LibreOffice is required to recalculate"
@@ -180,7 +180,7 @@ def _recalc_with_profile(filename, abs_path, copy, timeout, profile_dir: Path):
     before = _stamp(copy)
 
     cmd = [
-        "soffice",
+        soffice_binary(),
         "--headless",
         "--norestore",
         f"-env:UserInstallation={profile_url}",
