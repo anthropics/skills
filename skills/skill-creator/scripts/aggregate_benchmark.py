@@ -73,43 +73,92 @@ def load_run_results(benchmark_dir: Path) -> dict:
     """
     # Support both layouts: eval dirs directly under benchmark_dir, or under runs/
     runs_dir = benchmark_dir / "runs"
-    if runs_dir.exists():
+    if runs_dir.is_dir():
         search_dir = runs_dir
-    elif list(benchmark_dir.glob("eval-*")):
-        search_dir = benchmark_dir
     else:
+        search_dir = benchmark_dir
+
+    if not search_dir.is_dir():
+        print(f"Directory not found: {search_dir}")
+        return {}
+
+    eval_dirs = []
+    for entry in sorted(search_dir.iterdir()):
+        if not entry.is_dir() or entry.name.startswith(".") or entry.name == "runs":
+            continue
+        if entry.name.startswith("eval-"):
+            eval_dirs.append(entry)
+        elif (entry / "eval_metadata.json").is_file() or (entry / "config.json").is_file():
+            eval_dirs.append(entry)
+        else:
+            try:
+                has_runs = any(
+                    child.is_dir()
+                    and any(
+                        r.is_dir() and r.name.startswith("run-") for r in child.iterdir()
+                    )
+                    for child in entry.iterdir()
+                )
+                if has_runs:
+                    eval_dirs.append(entry)
+            except OSError:
+                pass
+
+    if not eval_dirs:
         print(f"No eval directories found in {benchmark_dir} or {benchmark_dir / 'runs'}")
         return {}
 
     results: dict[str, list] = {}
 
-    for eval_idx, eval_dir in enumerate(sorted(search_dir.glob("eval-*"))):
+    for eval_idx, eval_dir in enumerate(eval_dirs):
+        eval_id = None
         metadata_path = eval_dir / "eval_metadata.json"
-        if metadata_path.exists():
+        config_path = eval_dir / "config.json"
+        if metadata_path.is_file():
             try:
                 with open(metadata_path) as mf:
-                    eval_id = json.load(mf).get("eval_id", eval_idx)
+                    meta = json.load(mf)
+                    eval_id = meta.get("eval_id") or meta.get("id") or meta.get("name")
             except (json.JSONDecodeError, OSError):
-                eval_id = eval_idx
-        else:
+                pass
+        if eval_id is None and config_path.is_file():
             try:
-                eval_id = int(eval_dir.name.split("-")[1])
-            except ValueError:
-                eval_id = eval_idx
+                with open(config_path) as cf:
+                    cfg = json.load(cf)
+                    eval_id = cfg.get("eval_id") or cfg.get("id") or cfg.get("name")
+            except (json.JSONDecodeError, OSError):
+                pass
+        if eval_id is None:
+            if eval_dir.name.startswith("eval-"):
+                try:
+                    eval_id = int(eval_dir.name.split("-")[1])
+                except (ValueError, IndexError):
+                    eval_id = eval_dir.name
+            else:
+                eval_id = eval_dir.name
 
         # Discover config directories dynamically rather than hardcoding names
         for config_dir in sorted(eval_dir.iterdir()):
-            if not config_dir.is_dir():
+            if not config_dir.is_dir() or config_dir.name.startswith("."):
                 continue
-            # Skip non-config directories (inputs, outputs, etc.)
-            if not list(config_dir.glob("run-*")):
+
+            # Validate run directory names before parsing run numbers
+            run_dirs = []
+            for run_entry in sorted(config_dir.iterdir()):
+                if not run_entry.is_dir() or run_entry.name.startswith("."):
+                    continue
+                parts = run_entry.name.split("-")
+                if len(parts) == 2 and parts[0] == "run" and parts[1].isdigit():
+                    run_dirs.append((int(parts[1]), run_entry))
+
+            if not run_dirs:
                 continue
+
             config = config_dir.name
             if config not in results:
                 results[config] = []
 
-            for run_dir in sorted(config_dir.glob("run-*")):
-                run_number = int(run_dir.name.split("-")[1])
+            for run_number, run_dir in run_dirs:
                 grading_file = run_dir / "grading.json"
 
                 if not grading_file.exists():
@@ -121,6 +170,10 @@ def load_run_results(benchmark_dir: Path) -> dict:
                         grading = json.load(f)
                 except json.JSONDecodeError as e:
                     print(f"Warning: Invalid JSON in {grading_file}: {e}")
+                    continue
+
+                if not isinstance(grading, dict):
+                    print(f"Warning: grading.json in {grading_file} is not a valid JSON object")
                     continue
 
                 # Extract metrics
@@ -155,10 +208,32 @@ def load_run_results(benchmark_dir: Path) -> dict:
 
                 # Extract expectations — viewer requires fields: text, passed, evidence
                 raw_expectations = grading.get("expectations", [])
+                if not isinstance(raw_expectations, list):
+                    raw_expectations = []
+                validated_expectations = []
                 for exp in raw_expectations:
-                    if "text" not in exp or "passed" not in exp:
-                        print(f"Warning: expectation in {grading_file} missing required fields (text, passed, evidence): {exp}")
-                result["expectations"] = raw_expectations
+                    if not isinstance(exp, dict):
+                        print(f"Warning: expectation in {grading_file} is not a dict: {exp}")
+                        continue
+                    missing = [f for f in ("text", "passed", "evidence") if f not in exp]
+                    if missing:
+                        print(
+                            f"Warning: expectation in {grading_file} missing required fields "
+                            f"({', '.join(missing)}): {exp}"
+                        )
+                        normalized = dict(exp)
+                        if "text" not in normalized and "name" in normalized:
+                            normalized["text"] = str(normalized["name"])
+                        if "passed" not in normalized and "met" in normalized:
+                            normalized["passed"] = bool(normalized["met"])
+                        if "evidence" not in normalized and "details" in normalized:
+                            normalized["evidence"] = str(normalized["details"])
+                        if "evidence" not in normalized:
+                            normalized["evidence"] = ""
+                        validated_expectations.append(normalized)
+                    else:
+                        validated_expectations.append(exp)
+                result["expectations"] = validated_expectations
 
                 # Extract notes from user_notes_summary
                 notes_summary = grading.get("user_notes_summary", {})
@@ -254,11 +329,15 @@ def generate_benchmark(benchmark_dir: Path, skill_name: str = "", skill_path: st
             })
 
     # Determine eval IDs from results
-    eval_ids = sorted(set(
+    raw_eval_ids = set(
         r["eval_id"]
         for config in results.values()
         for r in config
-    ))
+    )
+    eval_ids = sorted(
+        raw_eval_ids,
+        key=lambda x: (0, x) if isinstance(x, int) else (1, str(x)),
+    )
 
     benchmark = {
         "metadata": {
