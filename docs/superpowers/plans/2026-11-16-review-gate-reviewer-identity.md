@@ -75,6 +75,9 @@ those identities.
    reply from an allow-listed reviewer login: the author fixes the finding, and the reviewer runtime posts
    `fixed in <sha>` or `not-a-finding: <reason>` with the App token after re-checking. A closing reply from the
    PR author, or from any other owner, member or collaborator, no longer counts.
+   It also removes the repo-permission path (`CLOSER_PERMISSIONS` and `closer_permissions()`, review-gate
+   3.2.9), which lets a user with write or admin close when the Actions token reads a private org member as
+   `CONTRIBUTOR` (nevar-fund #27). That fix lands before this step; this step supersedes it.
 4. **Migration.** Ship as a minor version (3.3.0). It accepts both signals for one release behind a dated
    deprecation note, then drops the body line in 3.4.0. Repos with vendored copies take each step through their
    normal sync PR.

@@ -2177,6 +2177,13 @@ _FAKE_GQL = r"""#!/usr/bin/env python3
 import json, os, re, sys
 fx = json.load(open(os.environ["FAKE_GQL"]))
 args = sys.argv[1:]
+m = next(filter(None, (re.fullmatch(r"repos/o/r/collaborators/([^/]+)/permission", a) for a in args)), None)
+if m:
+    open(os.environ["FAKE_GQL"] + ".calls", "a").write(m.group(1) + "\n")
+    perm = fx.get("permissions", {}).get(m.group(1), "none")
+    if perm == "ERROR":
+        print("gh: Server Error (HTTP 502)", file=sys.stderr); sys.exit(1)
+    print(json.dumps({"permission": perm} if perm != "MISSING" else {})); sys.exit(0)
 q = next(a[6:] for a in args if a.startswith("query="))
 var = dict(a.split("=", 1) for a in args[args.index("graphql"):] if "=" in a and not a.startswith("query="))
 i = int(var.get("cursor", "0"))
@@ -2283,3 +2290,59 @@ assert g.evaluate(pr(reviewThreads={"nodes": [{"comments": {"nodes": [{"body": "
 # end to end through gh: the author's own closing reply closes the P2
 _own = {"body": "fixed in deadbeef", "author": {"login": "pr-author"}, "authorAssociation": "OWNER"}
 assert _run(_fixture(reviewThreads=[[], [_thread("T2", [_p2_root, _own])]]))[:2] == ([], 0)
+
+
+# A private org member reads as CONTRIBUTOR to the Actions token (review-gate-sandbox run 44388630509,
+# nevar-fund #27): a closing reply from a User with write or admin on the repo closes, read via
+# GET repos/{o}/{r}/collaborators/{login}/permission. Who may close is otherwise unchanged.
+def _priv(login="priv", typename="User", assoc="CONTRIBUTOR", body="fixed in deadbeef"):
+    return {"body": body, "author": {"__typename": typename, "login": login}, "authorAssociation": assoc}
+def _run_perm(replies, permissions):
+    calls = Path(_gd, "fx.json.calls")
+    calls.unlink(missing_ok=True)
+    out = _run(_fixture(reviewThreads=[[], [_thread("T2", [_p2_root, *replies])]], permissions=permissions))
+    return (*out, calls.read_text().split() if calls.exists() else [])
+# a private member with admin or write closes; maintain reads as write
+for perm in ("admin", "write"):
+    _r, _rc, _out, _calls = _run_perm([_priv()], {"priv": perm})
+    assert (_r, _rc, _calls) == ([], 0, ["priv", "priv"]), (perm, _r, _out, _calls)
+# read (and triage, which reads as read), none (unrelated account) and an unknown value are still rejected
+for perm in ("read", "none", "maintain", "triage", "WRITE"):
+    _r, _rc, _out, _ = _run_perm([_priv()], {"priv": perm})
+    assert _rc == 1 and any(f"priv (CONTRIBUTOR, permission {perm})" in x for x in _r), (perm, _r, _out)
+# bots, mannequins, organizations and null authors are never looked up and never close
+for reply in (_priv("github-actions", "Bot"), _priv("ghost", "Mannequin"), _priv("acme", "Organization"),
+              {"body": "fixed in deadbeef", "author": None, "authorAssociation": "CONTRIBUTOR"},
+              _priv("priv", None), _priv("bad/login")):
+    _r, _rc, _out, _calls = _run_perm([reply], {"priv": "admin", "github-actions": "admin", "acme": "admin"})
+    assert _rc == 1 and _calls == [], (reply, _r, _out, _calls)
+# a non-closing reply, or a closer whose association already counts, triggers no lookup
+_r, _rc, _out, _calls = _run_perm([_priv(body="thanks")], {"priv": "admin"})
+assert _rc == 1 and _calls == [], (_r, _out, _calls)
+_r, _rc, _out, _calls = _run_perm([_priv(assoc="MEMBER")], {})
+assert (_r, _rc, _calls) == ([], 0, []), (_r, _out, _calls)
+# one lookup per login per run, however many replies it wrote
+_r, _rc, _out, _calls = _run_perm([_priv(), _priv(body="not-a-finding: x")], {"priv": "read"})
+assert _rc == 1 and _calls == ["priv", "priv"], (_r, _out, _calls)
+# any API error, or a response without a permission, fails closed (exit 2) naming the call
+for perm, want in (("ERROR", "gh api GET repos/o/r/collaborators/priv/permission failed (exit 1)"),
+                   ("MISSING", "gh api GET repos/o/r/collaborators/priv/permission returned no permission")):
+    _r, _rc, _out, _ = _run_perm([_priv()], {"priv": perm})
+    assert isinstance(_r, RuntimeError) and want in str(_r) and _rc == 2 and want in _out, (perm, _r, _out)
+# evaluate() alone: only User authors with admin/write in closerPermissions close
+_t = {"nodes": [{"comments": {"nodes": [{"body": "P2: x"}, _priv()]}}]}
+assert g.evaluate(pr(reviewThreads=_t, closerPermissions={"priv": "write"})) == []
+assert any("P2" in x for x in g.evaluate(pr(reviewThreads=_t)))
+_tb = {"nodes": [{"comments": {"nodes": [{"body": "P2: x"}, _priv(typename="Bot")]}}]}
+assert any("P2" in x for x in g.evaluate(pr(reviewThreads=_tb, closerPermissions={"priv": "admin"})))
+# the merge guard decides on the same permissions (it calls pr_payload, then evaluate)
+_orig_payload = mg.gate.pr_payload
+try:
+    for perms, allowed in (({"priv": "admin"}, True), ({"priv": "read"}, False), ({}, False)):
+        mg.gate.pr_payload = lambda *a, _p=perms, **k: pr(body=f"{R}\n\n{attestation}\n", headRefOid=head,
+                                                           reviews={"nodes": []}, reviewThreads=_t, closerPermissions=_p)
+        blocked = mg.check_one("gh -R owner/target pr merge 42 --squash", cwd="/tmp")
+        assert (blocked is None) == allowed, (perms, blocked)
+finally:
+    mg.gate.pr_payload = _orig_payload
+print("closer permission ok")

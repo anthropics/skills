@@ -36,6 +36,9 @@ _CLOSING_TOKEN = re.compile(
 
 
 CLOSER_ASSOCIATIONS = frozenset({"OWNER", "MEMBER", "COLLABORATOR"})
+# Repo roles that also close, read from the legacy `permission` field (maintain reads as write, triage as read).
+CLOSER_PERMISSIONS = frozenset({"admin", "write"})
+_GITHUB_LOGIN = re.compile(r"[A-Za-z0-9](?:[A-Za-z0-9-]{0,38})", re.A)
 
 
 def closes(reply: str) -> bool:
@@ -207,7 +210,7 @@ def _graphql(
     return (data or {}).get("data") or {}  # an empty result fails closed in _all_nodes / pr_payload
 
 
-_COMMENT_FIELDS = "pageInfo { hasNextPage endCursor } nodes { body author { login } authorAssociation }"
+_COMMENT_FIELDS = "pageInfo { hasNextPage endCursor } nodes { body author { __typename login } authorAssociation }"
 _PR_CONNECTION_Q = """
 query($owner:String!, $name:String!, $number:Int!, $cursor:String) {
   repository(owner:$owner, name:$name) {
@@ -323,7 +326,34 @@ def pr_payload(
     # Codex keeps one summary comment updated: every PR conversation comment is read.
     pr["comments"] = {"nodes": _pr_connection(owner, name, number, "comments", "author { login } body", hostname)}
     pr["reviewThreads"] = {"nodes": _review_threads(owner, name, number, hostname)}
+    pr["closerPermissions"] = closer_permissions(owner, name, pr, hostname)
     return pr
+
+
+def closer_permissions(
+    owner: str, name: str, pr: dict[str, Any], hostname: str | None = None
+) -> dict[str, str]:
+    """Repo permission of each user whose closing reply to a P2 thread lacks a closer association.
+
+    The Actions GITHUB_TOKEN cannot see private org membership, so it reads a private member's reply as
+    CONTRIBUTOR where a user token reads MEMBER (review-gate-sandbox run 44388630509; nevar-fund #27).
+    The collaborator permission endpoint reads the repo role directly. Only `User` authors are looked up,
+    so bots never close by this path. Any API error raises, naming the call: the gate fails closed."""
+    perms: dict[str, str] = {}
+    for _, replies in _p2_threads(pr):
+        for c in replies:
+            author = c.get("author") or {}
+            login = author.get("login") or ""
+            if (author.get("__typename") != "User" or login in perms or not _GITHUB_LOGIN.fullmatch(login)
+                    or c.get("authorAssociation") in CLOSER_ASSOCIATIONS or not closes(c.get("body") or "")):
+                continue
+            endpoint = f"repos/{owner}/{name}/collaborators/{login}/permission"
+            data = run_gh([endpoint], hostname=hostname)
+            perm = data.get("permission") if isinstance(data, dict) else None
+            if not isinstance(perm, str):
+                raise RuntimeError(f"gh api GET {endpoint} returned no permission")
+            perms[login] = perm
+    return perms
 
 
 def codex_done_on_head(pr: dict[str, Any]) -> bool:
@@ -426,25 +456,43 @@ def review_section_names_fallback(body: str, head: str | None = None) -> bool:
     return False
 
 
-def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
-    failures: list[str] = []
+def _p2_threads(pr: dict[str, Any]) -> Iterator[tuple[int, list[dict[str, Any]]]]:
+    """(1-based thread index, replies) for every review thread whose root comment is a P2."""
     for i, thread in enumerate(pr.get("reviewThreads", {}).get("nodes") or [], 1):
         comments = thread.get("comments", {}).get("nodes") or []
-        if not comments:
+        if comments and P2_ROOT.search(comments[0].get("body") or ""):
+            yield i, comments[1:]
+
+
+def p2_threads_closed(pr: dict[str, Any]) -> list[str]:
+    failures: list[str] = []
+    perms = pr.get("closerPermissions") or {}
+
+    def may_close(c: dict[str, Any]) -> bool:
+        # Only an owner, org member, collaborator, or a user with write/admin on the repo closes: on a
+        # public repo anyone can reply to a thread. The permission covers private org members, whom the
+        # Actions token sees as CONTRIBUTOR (closer_permissions). The PR author may close: every agent and
+        # reviewer here shares one gh login with the author (claude-skills #105: all 15 human replies are
+        # the author's), so barring the author would leave every P2 unclosable. Binding closers to a
+        # separate reviewer identity is plan PR #113 (gate step 3), which replaces both paths.
+        if c.get("authorAssociation") in CLOSER_ASSOCIATIONS:
+            return True
+        author = c.get("author") or {}
+        return author.get("__typename") == "User" and perms.get(author.get("login")) in CLOSER_PERMISSIONS
+
+    for i, replies in _p2_threads(pr):
+        closing = [c for c in replies if closes(c.get("body") or "")]
+        if any(may_close(c) for c in closing):
             continue
-        root = comments[0].get("body") or ""
-        if not P2_ROOT.search(root):
-            continue
-        # Only an owner, org member or collaborator closes: on a public repo anyone can reply to a thread.
-        # The PR author may close: every agent and reviewer here shares one gh login with the author
-        # (claude-skills #105: all 15 human replies are the author's), so barring the author would leave
-        # every P2 unclosable. Binding closers to a separate reviewer identity is plan PR #113.
-        replies = [c for c in comments[1:] if c.get("authorAssociation") in CLOSER_ASSOCIATIONS]
-        if any(closes(c.get("body") or "") for c in replies):
-            continue
+        not_counted = sorted({
+            f"{(c.get('author') or {}).get('login') or '?'} ({c.get('authorAssociation') or '?'}, "
+            f"permission {perms.get((c.get('author') or {}).get('login'), 'not looked up')})"
+            for c in closing
+        })
         failures.append(
-            f"P2 thread #{i} has no closing reply from a repo owner, member or collaborator "
+            f"P2 thread #{i} has no closing reply from a repo owner, member, collaborator or user with write access "
             "(Notion link / fixed in <sha> / not-a-finding:)"
+            + (f"; closing replies not counted: {', '.join(not_counted)}" if not_counted else "")
         )
     return failures
 
