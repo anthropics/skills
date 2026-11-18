@@ -631,6 +631,7 @@ def _computed(copy_path, array_cells, names):
         for name, part_name in _worksheets(archive):
             name = ours.get(name, name)
             cells, lacks = computed.setdefault(name, {}), lacked.setdefault(name, set())
+            shared_formulas = {}
             wanted = array_cells.get(name, ())
             for row, column, m in _cells(archive.read(part_name)):
                 content = m[4] or b""
@@ -644,8 +645,12 @@ def _computed(copy_path, array_cells, names):
                         strings = [_rich_text(si) for si in shared.iter(f"{_MAIN_NS}si")]
                     kind, text = b"str", html.escape(strings[int(text)], quote=False).encode()
                 f = _F_RE.search(content)
-                its_formula = (f and f[2]) or b""
-                if re.search(rb"[a-z]", its_formula):  
+                its_formula, si = (f and f[2]) or b"", _attr(_SI_RE, f[1]) if f else None
+                if not its_formula and si is not None:
+                    its_formula = shared_formulas.get(si, b"")
+                elif its_formula and si is not None:
+                    shared_formulas[si] = its_formula
+                if re.search(rb"[a-z]", its_formula):
                     called = [_PREFIX_RE.sub("", n) for n in _called(_text(its_formula))]
                     if any(n != n.upper() and n.upper() in LIBREOFFICE_LACKS for n in called):
                         lacks.add((row, column))
