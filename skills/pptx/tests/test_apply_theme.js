@@ -50,6 +50,8 @@ async function main() {
 		const shapes = [...master.matchAll(/<p:sp>[\s\S]*?<\/p:sp>/g)].map(([xml]) => xml);
 		assert.equal(shapes.length, 3, "notes master contains only the three supported placeholders");
 		assert(shapes.every((xml) => xml.includes("<a:xfrm>")), "each notes placeholder has an explicit transform");
+		assert(shapes.every((xml) => xml.includes('<a:spLocks noGrp="1"/>') || xml.includes('<a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/>')), "Notes Page placeholders have PowerPoint shape locks");
+		assert(shapes.find((xml) => xml.includes('<p:ph type="sldImg"')).includes('noChangeAspect="1"'), "slide image placeholder preserves its aspect ratio");
 
 		const relsPath = masterName.replace(/(notesMaster\d+\.xml)$/, "_rels/$1.rels");
 		const rels = await zip.file(relsPath).async("string");

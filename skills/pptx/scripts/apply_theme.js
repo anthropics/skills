@@ -110,11 +110,11 @@ async function preserveNotesMaster(zip) {
 	const thumbW = Math.round(W * 0.8), thumbH = Math.round(thumbW * 9 / 16);
 	const x = Math.round((W - thumbW) / 2), y = Math.round(H * 0.08);
 	const bodyY = y + thumbH + Math.round(H * 0.04), bodyH = H - bodyY - Math.round(H * 0.08);
-	const shape = (id, name, placeholder, left, top, width, height, body = "") =>
-		`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${name}"/><p:cNvSpPr/><p:nvPr>${placeholder}</p:nvPr></p:nvSpPr>` +
+	const shape = (id, name, placeholder, left, top, width, height, body = "", locks = '<a:spLocks noGrp="1"/>') =>
+		`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${name}"/><p:cNvSpPr>${locks}</p:cNvSpPr><p:nvPr>${placeholder}</p:nvPr></p:nvSpPr>` +
 		`<p:spPr><a:xfrm><a:off x="${left}" y="${top}"/><a:ext cx="${width}" cy="${height}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>${body}</p:sp>`;
 	const placeholders = [
-		shape(2, "Slide Image Placeholder 1", '<p:ph type="sldImg" idx="2"/>', x, y, thumbW, thumbH),
+		shape(2, "Slide Image Placeholder 1", '<p:ph type="sldImg" idx="2"/>', x, y, thumbW, thumbH, "", '<a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/>'),
 		shape(3, "Notes Placeholder 2", '<p:ph type="body" sz="quarter" idx="3"/>', x, bodyY, thumbW, bodyH,
 			'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>'),
 		shape(4, "Slide Number Placeholder 3", '<p:ph type="sldNum" sz="quarter" idx="10"/>', x + thumbW - Math.round(W * 0.3), H - Math.round(H * 0.07), Math.round(W * 0.3), Math.round(H * 0.04),
