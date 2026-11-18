@@ -38,6 +38,7 @@ Paths are relative to this skill's directory. Everything else is plain Python, `
 - **Shadow `offset` must be ≥ 0** — a negative offset corrupts the file. To cast a shadow upward, use `angle: 270` with a positive offset.
 - **`letterSpacing` is silently ignored** — the real option is `charSpacing`.
 - **Lists:** `bullet: true` on each item, never a literal `•` (renders double bullets). Set `breakLine: true` on every array item except the last. Space bulleted paragraphs with `paraSpaceAfter`, not `lineSpacing` (huge gaps).
+- **Set CJK language metadata explicitly.** In PptxGenJS 4.0.1, text runs default to `lang="en-US"`, which was reported to affect Japanese line breaking. Pass a matching locale such as `lang: "ja-JP"`, `"zh-CN"`, or `"ko-KR"` on each `addText()` call and each table cell's `options`; a table-level `lang` does not propagate to cells in that version. Verify the resulting line breaks in PowerPoint.
 - **One `new pptxgen()` per output file** — never reuse an instance.
 - **`rectRadius` only works on `ROUNDED_RECTANGLE`**, not `RECTANGLE`.
 - **Gradient fills aren't supported** — use a gradient image as the background instead.
