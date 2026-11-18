@@ -55,6 +55,80 @@ function themeXml(xml, theme) {
 	return out;
 }
 
+async function preserveNotesMaster(zip) {
+	const presentationPath = "ppt/presentation.xml";
+	if (!zip.file(presentationPath)) return;
+	const notesMasters = Object.keys(zip.files).filter((name) => /^ppt\/notesMasters\/notesMaster\d+\.xml$/.test(name));
+	if (!notesMasters.length) return;
+
+	// ECMA-376 puts notesMasterIdLst before sldIdLst. pptxgenjs writes it after sldIdLst;
+	// PowerPoint opens that package but drops the notes-master placeholders when saving it.
+	let presentation = await zip.file(presentationPath).async("string");
+	const notesIds = presentation.match(/<p:notesMasterIdLst\b[^>]*>[\s\S]*?<\/p:notesMasterIdLst\s*>/);
+	const slideIdsAt = presentation.indexOf("<p:sldIdLst");
+	if (notesIds && slideIdsAt >= 0 && presentation.indexOf(notesIds[0]) > slideIdsAt) {
+		presentation = presentation.replace(notesIds[0], "");
+		presentation = presentation.replace(/<p:sldIdLst\b/, `${notesIds[0]}<p:sldIdLst`);
+	}
+	presentation = presentation.replace(/<p:notesSz\b[^>]*\/>/, '<p:notesSz cx="6858000" cy="9144000"/>');
+	zip.file(presentationPath, presentation);
+
+	// A notes master cannot share the slide master's theme in this schema-correct order.
+	// Give each notes master that still points at a shared theme its own copy.
+	const themeNames = Object.keys(zip.files).filter((name) => /^ppt\/theme\/theme\d+\.xml$/.test(name));
+	let nextTheme = themeNames.reduce((max, name) => Math.max(max, Number(name.match(/theme(\d+)\.xml$/)[1])), 0) + 1;
+	const slideMasterRels = Object.keys(zip.files).filter((name) => /^ppt\/slideMasters\/_rels\/slideMaster\d+\.xml\.rels$/.test(name));
+	const slideThemes = new Set();
+	for (const name of slideMasterRels) {
+		const rels = await zip.file(name).async("string");
+		for (const match of rels.matchAll(/<Relationship\b(?=[^>]*\bType="[^"]*\/theme")(?=[^>]*\bTarget="([^"]+)")[^>]*\/?\s*>/g)) {
+			slideThemes.add(match[1].split("/").pop());
+		}
+	}
+
+	for (const master of notesMasters) {
+		const relsPath = master.replace(/(notesMaster\d+\.xml)$/, "_rels/$1.rels");
+		if (!zip.file(relsPath)) continue;
+		let rels = await zip.file(relsPath).async("string");
+		const themeRel = [...rels.matchAll(/<Relationship\b(?=[^>]*\bType="[^"]*\/theme")(?=[^>]*\bTarget="([^"]+)")[^>]*\/?\s*>/g)][0];
+		if (!themeRel) continue;
+		const targetName = themeRel[1].split("/").pop();
+		if (!slideThemes.has(targetName)) continue;
+		const sourcePath = `ppt/theme/${targetName}`;
+		if (!zip.file(sourcePath)) continue;
+		const newName = `theme${nextTheme++}.xml`;
+		zip.file(`ppt/theme/${newName}`, await zip.file(sourcePath).async("nodebuffer"));
+		rels = rels.replace(themeRel[1], `../theme/${newName}`);
+		zip.file(relsPath, rels);
+		const contentTypes = await zip.file("[Content_Types].xml").async("string");
+		zip.file("[Content_Types].xml", contentTypes.replace("</Types>", `<Override PartName="/ppt/theme/${newName}" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/></Types>`));
+	}
+
+	// pptxgenjs placeholders lack explicit transforms and PowerPoint discards them on save.
+	// Replace them with the three standard Notes Page placeholders PowerPoint retains.
+	const W = 6858000, H = 9144000;
+	const thumbW = Math.round(W * 0.8), thumbH = Math.round(thumbW * 9 / 16);
+	const x = Math.round((W - thumbW) / 2), y = Math.round(H * 0.08);
+	const bodyY = y + thumbH + Math.round(H * 0.04), bodyH = H - bodyY - Math.round(H * 0.08);
+	const shape = (id, name, placeholder, left, top, width, height, body = "") =>
+		`<p:sp><p:nvSpPr><p:cNvPr id="${id}" name="${name}"/><p:cNvSpPr/><p:nvPr>${placeholder}</p:nvPr></p:nvSpPr>` +
+		`<p:spPr><a:xfrm><a:off x="${left}" y="${top}"/><a:ext cx="${width}" cy="${height}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr>${body}</p:sp>`;
+	const placeholders = [
+		shape(2, "Slide Image Placeholder 1", '<p:ph type="sldImg" idx="2"/>', x, y, thumbW, thumbH),
+		shape(3, "Notes Placeholder 2", '<p:ph type="body" sz="quarter" idx="3"/>', x, bodyY, thumbW, bodyH,
+			'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody>'),
+		shape(4, "Slide Number Placeholder 3", '<p:ph type="sldNum" sz="quarter" idx="10"/>', x + thumbW - Math.round(W * 0.3), H - Math.round(H * 0.07), Math.round(W * 0.3), Math.round(H * 0.04),
+			'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:fld id="{F7021451-1387-4CA6-816F-3879F97B5CBC}" type="slidenum"><a:rPr lang="en-US"/><a:t>‹#›</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody>'),
+	].join("");
+	for (const master of notesMasters) {
+		let xml = await zip.file(master).async("string");
+		if (!xml.includes("</p:spTree>")) continue;
+		xml = xml.replace(/<p:sp>[^]*?<\/p:sp>/g, "");
+		xml = xml.replace("</p:grpSpPr></p:spTree>", `</p:grpSpPr>${placeholders}</p:spTree>`);
+		zip.file(master, xml);
+	}
+}
+
 async function applyTheme(deckPath, theme, outPath = deckPath) {
 	const zip = await loadJSZip().loadAsync(fs.readFileSync(deckPath));
 	const part = "ppt/theme/theme1.xml"; // the one theme part pptxgenjs writes; the slide master and the notes master share it
@@ -77,6 +151,8 @@ async function applyTheme(deckPath, theme, outPath = deckPath) {
 		// a number; the word belongs in <c:crosses>, where it means the same: cross at zero.
 		if (xml.includes('<c:crossesAt val="autoZero"/>')) zip.file(name, xml.replaceAll('<c:crossesAt val="autoZero"/>', '<c:crosses val="autoZero"/>'));
 	}
+	await preserveNotesMaster(zip);
+
 	// A ZIP entry for a folder ("ppt/slides/") is not a part, and pptxgenjs writes one per folder.
 	// A cloud co-editing service reported issues editing decks that carry them. They are dropped
 	// here for that reason, not to save space. (zip.remove() would take the folder's files too.)
