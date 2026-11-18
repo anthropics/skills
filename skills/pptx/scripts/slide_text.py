@@ -49,6 +49,23 @@ def _chart(chart) -> list[str]:
     return [heading, "", *_table(rows)]
 
 
+def _is_title(shape) -> bool:
+    if not shape.is_placeholder:
+        return False
+    ph = shape._element.ph
+    ph_type = ph.get("type") if ph is not None else None
+    if ph_type is None:
+        try:
+            base = shape.part.slide_layout.placeholders.get(idx=shape.placeholder_format.idx)
+            if base is not None and base._element.ph is not None:
+                ph_type = base._element.ph.get("type")
+        except Exception:
+            pass
+    if ph_type is not None:
+        return ph_type.strip() in ("title", "ctrTitle")
+    return shape.placeholder_format.idx == 0
+
+
 def _shape(shape) -> list[str]:
     tag = shape._element.tag
     if tag.endswith("}grpSp"):
@@ -62,8 +79,7 @@ def _shape(shape) -> list[str]:
         return ["", *_chart(shape.chart), ""]
     if shape.has_text_frame and shape.text_frame.text.strip():
         text = shape.text_frame.text.replace("\v", "\n")
-        is_title = shape.is_placeholder and shape.placeholder_format.idx == 0
-        return ["# " + text.lstrip() if is_title else text]
+        return ["# " + text.lstrip() if _is_title(shape) else text]
     return []
 
 
