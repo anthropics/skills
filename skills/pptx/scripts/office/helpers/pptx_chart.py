@@ -242,6 +242,23 @@ def _check_preset_dashes(part: str, xml: str) -> list[str]:
     ]
 
 
+_AX_ID_RE = re.compile(r"<c:axId\b[^>]*/>")
+
+
+def _check_axis_id_count(part: str, xml: str) -> list[str]:
+    problems = []
+    for match in _BAR_GROUP_RE.finditer(_strip_ext_lst(xml)):
+        count = len(_AX_ID_RE.findall(match.group(0)))
+        if count != 2:
+            problems.append(
+                f"{part}: a bar/bar3D chart has {count} <c:axId/> elements; the "
+                "schema allows exactly 2 (one category and one value axis). "
+                "PowerPoint offers to repair the deck. Fix: delete the extra "
+                "axId - pptxgenjs can emit a third one with no matching axis."
+            )
+    return problems
+
+
 def _outermost_spans(text: str, name: str) -> list[tuple[int, int]]:
     spans: list[tuple[int, int]] = []
     depth = 0
@@ -268,6 +285,7 @@ CHART_CHECKS = (
     _check_decimal_settings,
     _check_series_order,
     _check_preset_dashes,
+    _check_axis_id_count,
 )
 
 

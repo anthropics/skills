@@ -52,6 +52,16 @@ FATAL_SLIDE_ERRORS: tuple[tuple[re.Pattern[str], str], ...] = (
         re.compile(r"\}prstDash', attribute 'val'"),
         "an unknown line dash style (for line.dashType try dash, sysDash or solid)",
     ),
+    (
+        re.compile(r"\}buSzPct', attribute 'val'"),
+        'a bullet size written as an integer instead of a percentage '
+        '(use "100%", not "100000")',
+    ),
+    (
+        re.compile(r"\}tcPr', attribute 'anchor'"),
+        "a cell vertical alignment outside t/ctr/b/just/dist "
+        "(use ctr, not mid)",
+    ),
 )
 
 
