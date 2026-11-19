@@ -15,7 +15,7 @@ This document provides Node/TypeScript-specific best practices and examples for 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import express from "express";
+import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
 import { z } from "zod";
 ```
 
@@ -546,7 +546,7 @@ async function getUser(id: string): Promise<any> {
     "node": ">=18"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.6.1",
+    "@modelcontextprotocol/sdk": "^1.24.2",
     "axios": "^1.7.9",
     "zod": "^3.23.8"
   },
@@ -723,8 +723,9 @@ async function runHTTP() {
     process.exit(1);
   }
 
-  const app = express();
-  app.use(express.json());
+  // createMcpExpressApp() parses JSON and, for a localhost bind, rejects requests whose
+  // Host header is not localhost (DNS rebinding protection)
+  const app = createMcpExpressApp();
 
   app.post('/mcp', async (req, res) => {
     const transport = new StreamableHTTPServerTransport({
@@ -737,8 +738,9 @@ async function runHTTP() {
   });
 
   const port = parseInt(process.env.PORT || '3000');
-  app.listen(port, () => {
-    console.error(`MCP server running on http://localhost:${port}/mcp`);
+  // Bind loopback only; see "Exposing the server beyond localhost" below
+  app.listen(port, '127.0.0.1', () => {
+    console.error(`MCP server running on http://127.0.0.1:${port}/mcp`);
   });
 }
 
@@ -824,10 +826,10 @@ The TypeScript SDK supports two main transport mechanisms:
 
 ```typescript
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
-import express from "express";
+import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
 
-const app = express();
-app.use(express.json());
+// Parses JSON and validates the Host header (DNS rebinding protection) for a localhost bind
+const app = createMcpExpressApp();
 
 app.post('/mcp', async (req, res) => {
   // Create new transport for each request (stateless, prevents request ID collisions)
@@ -842,7 +844,13 @@ app.post('/mcp', async (req, res) => {
   await transport.handleRequest(req, res, req.body);
 });
 
-app.listen(3000);
+app.listen(3000, "127.0.0.1");
+```
+
+**Exposing the server beyond localhost:** the examples bind `127.0.0.1` and validate the `Host` header. An MCP endpoint with no authentication answers anyone who can reach its port, so before serving other machines add bearer authentication to the route (`requireBearerAuth` from `@modelcontextprotocol/sdk/server/auth/middleware/bearerAuth.js`) and name the hosts you serve:
+
+```typescript
+const app = createMcpExpressApp({ host: "0.0.0.0", allowedHosts: ["mcp.example.com"] });
 ```
 
 #### stdio (For Local Integrations)
