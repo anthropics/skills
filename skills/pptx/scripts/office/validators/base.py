@@ -554,6 +554,19 @@ class BaseSchemaValidator:
                 if extension is not None:
                     declared_extensions.add(extension.lower())
 
+            # Reverse check: an Override naming a part that is not in the
+            # package. PowerPoint offers to repair the deck; LibreOffice and
+            # python-pptx open it silently. pptxgenjs emits one slideMasterN.xml
+            # Override per slide but only writes slideMaster1.xml.
+            for part_name in sorted(declared_parts):
+                if not (self.unpacked_dir / part_name).is_file():
+                    errors.append(
+                        f"  /{part_name}: declared by an <Override> in "
+                        "[Content_Types].xml but the part is not in the package. "
+                        "PowerPoint offers to repair the deck. Fix: remove the "
+                        "Override or add the missing part."
+                    )
+
             declarable_roots = {
                 "sld",
                 "sldLayout",
