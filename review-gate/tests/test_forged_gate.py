@@ -28,7 +28,14 @@ with open(os.path.join(state, "calls.log"), "a") as log:
     log.write(" ".join(args) + "\n")
 fixture = json.load(open(os.path.join(state, "fixture.json")))
 path = next(a for a in args if a.startswith("repos/"))
-HEAD, BASE = "a" * 40 + "\tfeat/x\to/r", "b" * 40
+fail = fixture.get("fail")  # {"pattern": regex over the joined args, "nth": which match 404s (1-based)}
+if fail and __import__("re").search(fail["pattern"], " ".join(args)):
+    seen_path = os.path.join(state, "fail.count")
+    seen = int(open(seen_path).read()) + 1 if os.path.exists(seen_path) else 1
+    open(seen_path, "w").write(str(seen))
+    if seen == fail.get("nth", 1):
+        print("gh: Not Found (HTTP 404)", file=sys.stderr); sys.exit(1)
+HEAD = "a" * 40
 created_path = os.path.join(state, "created.json")
 created = json.load(open(created_path)) if os.path.exists(created_path) else []
 if "-X" in args and "POST" in args:
@@ -49,46 +56,20 @@ if "/contents/scripts/" in path:
     if src is None:
         sys.exit(1)
     print(json.dumps({"content": base64.b64encode(open(src, "rb").read()).decode()})); sys.exit(0)
-if "/contents/" in path:  # blob of a file at a ref; the PR's base ref answers like main unless overridden
-    file, ref = path.split("/contents/")[1].split("?ref=")
-    if ref == BASE and "base_blob" in fixture:
-        if fixture["base_blob"] is None:
-            sys.exit(1)
-        print(fixture["base_blob"]); sys.exit(0)
-    if f"{file}?ref={'main' if ref == BASE else ref}" not in fixture.get("default_files", []):
-        sys.exit(1)
-    print("blob-1"); sys.exit(0)
-if path.split("?")[0].endswith("/files") and "/pulls/" in path:
-    if fixture.get("pr_files") is None:
-        sys.exit(1)
-    for i in range(0, max(len(fixture["pr_files"]), 1), 2):  # two per page, like --paginate's concatenation
-        print(json.dumps(fixture["pr_files"][i:i + 2]))
-    sys.exit(0)
-if path.startswith("repos/o/r/pulls/") and path.rsplit("/", 1)[1].isdigit():
-    if fixture.get("pr_head", HEAD) is None:
-        sys.exit(1)
-    print(fixture.get("pr_head", HEAD) + "\t" + BASE); sys.exit(0)
-if "/actions/runs?" in path:  # the gate's suite check: review-gate workflow runs on the head
-    if fixture.get("workflow_runs_fail"):
-        sys.exit(1)
-    suite = fixture.get("current_suite", 1)  # the evaluating run itself, titled by the template's run-name
-    default = [{"id": int(os.environ["GITHUB_RUN_ID"]), "path": ".github/workflows/review-gate.yml",
-                "conclusion": None, "check_suite_id": suite, "display_title": os.environ["FAKE_RUN_TITLE"]}]
-    print(json.dumps({"workflow_runs": fixture.get("workflow_runs", default)})); sys.exit(0)
-if "/actions/runs/" in path and "head_sha" in " ".join(args):  # the wrapper's provenance lookup
-    head = fixture.get("run_heads", {}).get(path.rsplit("/", 1)[1], fixture.get("pr_head") or HEAD)
-    if head is None:
-        sys.exit(1)
-    print(head); sys.exit(0)
-if "/commits/" in path and path.split("?")[0].endswith("/pulls"):
-    print("\n".join(fixture.get("shared_prs", []))); sys.exit(0)
-if path == "repos/o/r":
-    print(fixture.get("default_branch", "main")); sys.exit(0)
 if "/check-runs" in path and "/commits/" in path:
     if fixture.get("listing_fails"):
         sys.exit(1)
-    runs = fixture["check_runs"] + created
-    print(json.dumps({"total_count": len(runs), "check_runs": runs})); sys.exit(0)
+    runs = fixture["check_runs"] + created + fixture.get("own_jobs", [])
+    page2 = fixture.get("page2", [])  # served only to --paginate, as a second concatenated page
+    print(json.dumps({"total_count": len(runs) + len(page2), "check_runs": runs}))
+    if page2 and "--paginate" in args:
+        print(json.dumps({"total_count": len(runs) + len(page2), "check_runs": page2}))
+    sys.exit(0)
+if "/actions/runs/" in path and ".display_title" in args:  # the wrapper's run-title provenance lookup
+    run_id = path.rsplit("/", 1)[1]
+    if run_id not in fixture.get("titles", {}):
+        sys.exit(1)
+    print(fixture["titles"][run_id]); sys.exit(0)
 if "/actions/runs/" in path:
     run_id = path.rsplit("/", 1)[1]
     if run_id not in fixture["runs"]:
@@ -127,29 +108,15 @@ def run_title(pr):
         "${{ github.event.pull_request.number }}", str(pr))
 
 
-def run_id(suite, pr):
-    return 100 * suite + int(pr)
-
-
-def gate_run(suite, conclusion=None, pr=7, title=None):
-    return {"id": run_id(suite, pr), "path": RG_PATH, "conclusion": conclusion, "check_suite_id": suite,
-            "display_title": run_title(pr) if title is None else title}
-
-
 RG_PATH = ".github/workflows/review-gate.yml"
 
 
-def pr_file(filename, status="modified", previous=None):
-    entry = {"filename": filename, "status": status}
-    if previous:
-        entry["previous_filename"] = previous
-    return entry
-
-
 class ForgedGateWorkflow(unittest.TestCase):
-    def gate(self, check_runs, runs=None, listing_fails=False, missing=(), evaluations=1, prs=None,
-             pr_files=(), default_files=(), suites=None):
-        """prs: [(pr_number, checker_rc)] evaluations on the same head sha (default PR 7 passing)."""
+    def gate(self, check_runs, runs=None, listing_fails=False, missing=(), evaluations=1, prs=None, fixture=None, empty=()):
+        """prs: [(pr_number, checker_rc)] evaluations on the same head sha (default PR 7 passing).
+
+        Each evaluation's own job (`Review Gate`, run 600 + n) is on the head, as GitHub lists it.
+        """
         prs = prs or [("7", 0)] * evaluations
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
@@ -162,203 +129,211 @@ class ForgedGateWorkflow(unittest.TestCase):
                        "check-forged-review-gate.py": str(SCRIPTS / "check-forged-review-gate.py")}
             for name in missing:
                 scripts.pop(name)
+            for name in empty:
+                (tmp / f"empty-{name}").write_text("")
+                scripts[name] = str(tmp / f"empty-{name}")
+            own_ids = [str(600 + n) for n, _ in enumerate(prs)]
             (tmp / "fixture.json").write_text(json.dumps(
-                {"scripts": scripts, "check_runs": check_runs, "runs": runs or {}, "listing_fails": listing_fails,
-                 "pr_files": list(pr_files), "default_files": list(default_files), **(suites or {})}))
+                {"scripts": scripts, "check_runs": check_runs, "listing_fails": listing_fails,
+                 "runs": {**{i: TRUSTED_RUN for i in own_ids}, **(runs or {})},
+                 "titles": {i: run_title(n) for i, (n, _) in zip(own_ids, prs)},
+                 "own_jobs": [job("Review Gate", int(i)) for i in own_ids], **(fixture or {})}))
             workdir = tmp / "job"; workdir.mkdir()
             env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=str(tmp), GH_TOKEN="x",
                        PR_NUMBER="7", REPO="o/r", SHA="a" * 40, DEFAULT_BRANCH="main")
             # The block writes the trusted scripts to /tmp/<name>; point that at this test's own dir.
             script = run_block().replace("/tmp/", f"{workdir}/")
+            self.rcs = []
             for pr_number, checker_rc in prs:
-                own = run_id((suites or {}).get("current_suite", 1), pr_number)
                 proc = subprocess.run(["bash", "-e", "-c", script], capture_output=True, text=True,
-                                      env=dict(env, PR_NUMBER=pr_number, FAKE_CHECKER_RC=str(checker_rc),
-                                               GITHUB_RUN_ID=str(own), FAKE_RUN_TITLE=run_title(pr_number)))
-            concl = (tmp / "conclusion").read_text() if (tmp / "conclusion").exists() else None
+                                      env=dict(env, PR_NUMBER=pr_number, FAKE_CHECKER_RC=str(checker_rc)))
+                self.rcs.append(proc.returncode)
             self.calls = (tmp / "calls.log").read_text().splitlines()
             self.patches = (tmp / "patches.log").read_text().splitlines() if (tmp / "patches.log").exists() else []
             self.created = json.loads((tmp / "created.json").read_text()) if (tmp / "created.json").exists() else []
-            return proc.returncode, concl, proc.stdout + proc.stderr
+            return proc.returncode, proc.stdout + proc.stderr
+
+    def final(self):
+        out = {}
+        for line in self.patches:
+            check_id, conclusion = line.split()
+            out[check_id] = conclusion
+        return out
 
     def test_forged_same_repo_review_gate_job_fails_the_gate(self):
-        rc, concl, out = self.gate(
-            [api_check("Review Gate", 41), job("Review Gate", 500)],
-            runs={"500": ".github/workflows/forge.yml\tpull_request"})
-        self.assertEqual((rc, concl), (1, "failure"), out)
+        rc, out = self.gate([job("Review Gate", 500)], runs={"500": ".github/workflows/forge.yml\tpull_request"})
+        self.assertEqual(rc, 1, out)
         self.assertIn("forged check 'Review Gate'", out)
 
-    def test_checks_api_run_and_other_jobs_pass(self):
-        rc, concl, out = self.gate(
-            [api_check("Review Gate", 41), job("review-gate-runner", 501), job("CI", 502)],
-            runs={"501": TRUSTED_RUN, "502": ".github/workflows/ci.yml\tpull_request"})
-        self.assertEqual((rc, concl), (0, "success"), out)
+    def test_own_job_and_other_jobs_pass(self):
+        rc, out = self.gate([job("CI", 502)], runs={"502": ".github/workflows/ci.yml\tpull_request"})
+        self.assertEqual(rc, 0, out)
 
-    def test_stacked_child_review_gate_job_on_head_fails_the_gate(self):
-        # H is the outer PR's head and the stacked child's base: the child's pull_request_target job
-        # attaches to H with the trusted path/event pair. It must not count as this PR's gate.
-        rc, concl, out = self.gate([api_check("Review Gate", 41), job("Review Gate", 505)],
-                                   runs={"505": TRUSTED_RUN})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("forged check 'Review Gate'", out)
+    def test_failing_checker_fails_the_job(self):
+        rc, out = self.gate([])
+        self.assertEqual(rc, 0, out)
+        rc, out = self.gate([], prs=[("7", 1)])
+        self.assertEqual(rc, 1, out)
 
-    def test_gate_job_is_not_named_like_the_required_check(self):
-        # The real result is the Checks API run; an Actions job named "Review Gate" would land on the
-        # base SHA, which is a stacked child's head-or-base. Every Actions-created "Review Gate" is forged.
-        jobs = TEMPLATE.read_text().split("\njobs:\n", 1)[1]
-        self.assertNotIn("name: Review Gate", jobs)
+    # 3.2.8: the job IS the required check. Its check run is on the PR head in its own run's suite
+    # (email_demo #1068), the suite the required-status rule reads; a Checks API POST lands in the head's
+    # oldest suite and the rule read "expected" (#104). So the job carries the name and nothing is POSTed.
+    def test_gate_job_is_named_like_the_required_check(self):
+        self.assertEqual(yaml.safe_load(TEMPLATE.read_text())["jobs"]["gate"]["name"], "Review Gate")
+
+    def test_no_check_run_is_posted(self):
+        self.assertNotIn("-X POST", run_block())
+        self.gate([api_check("Review Gate", 41, pr=7)])
+        self.assertEqual(self.created, [])
+        self.assertFalse([c for c in self.calls if "POST" in c], self.calls)
 
     def test_main_via_staging_pull_request_job_is_not_flagged(self):
         # Several repos publish this name from a plain pull_request job; Review Gate must not block them.
-        rc, concl, out = self.gate(
-            [job("PRs into main must come from staging", 503)],
-            runs={"503": ".github/workflows/main-via-staging.yml\tpull_request"})
-        self.assertEqual((rc, concl), (0, "success"), out)
+        rc, out = self.gate([job("PRs into main must come from staging", 503)],
+                            runs={"503": ".github/workflows/main-via-staging.yml\tpull_request"})
+        self.assertEqual(rc, 0, out)
 
-    # 3.2.6: a new run on every evaluation, so the newest suite carries one (the Checks API cannot pick a
-    # suite). 3.2.1 still holds: GitHub blocks while any `Review Gate` run is red, so every evaluation
-    # completes ALL of this PR's runs with its result and no earlier failure stays standing.
-    def test_each_evaluation_publishes_and_completes_every_run(self):
-        rc, concl, out = self.gate([job("CI", 502)], runs={"502": ".github/workflows/ci.yml\tpull_request"},
-                                   prs=[("7", 1), ("7", 0)])
-        self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertEqual([c["id"] for c in self.created], [900, 901], self.calls)
-        self.assertEqual(sorted(self.patches[-2:]), ["900 success", "901 success"])
+    # 3.2.1 still holds for runs 3.2.0-3.2.7 POSTed: every evaluation completes all of this PR's legacy
+    # API runs with its result, so no earlier red (or green) API run stays standing beside the job.
+    def test_every_legacy_api_run_of_this_pr_gets_the_latest_result(self):
+        legacy = [api_check("Review Gate", 41, pr=7), api_check("Review Gate", 42, pr=7)]
+        rc, out = self.gate(legacy, prs=[("7", 0), ("7", 1)])
+        self.assertEqual(rc, 1, out)
+        self.assertEqual(self.final(), {"41": "failure", "42": "failure"})
+        self.gate(legacy, prs=[("7", 1), ("7", 0)])
+        self.assertEqual(self.final(), {"41": "success", "42": "success"})
 
-    def test_every_existing_api_run_of_this_pr_is_completed(self):
-        # #85's head: three API runs in one suite, two red from evaluations before Codex finished.
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7), api_check("Review Gate", 42, pr=7),
-                                    api_check("Review Gate", 43, pr=7)])
-        self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertEqual([c["id"] for c in self.created], [900])
-        self.assertEqual(sorted(self.patches[-4:]), ["41 success", "42 success", "43 success", "900 success"])
+    # nevar-content Codex P1: two PRs on one head sha must not complete each other's legacy runs. Each
+    # also sees the other's gate job on the head, so both fail closed (3.2.8): only 41 ever gets PR 11's.
+    def test_shared_head_pr_b_never_flips_pr_a_legacy_run(self):
+        self.gate([api_check("Review Gate", 41, pr=11), api_check("Review Gate", 42, pr=12)],
+                  prs=[("11", 1), ("12", 0)])
+        self.assertEqual(self.rcs, [1, 1])
+        self.assertEqual(self.final(), {"41": "failure", "42": "failure"})
 
-    # 3.2.6 regression: every non-cancelled review-gate suite on the head must carry this PR's Review Gate
-    # run, else the required check can read "expected" (nevar-audit #17): fail closed with the fix named.
-    def test_older_suite_without_a_review_gate_run_fails_closed(self):
-        rc, concl, out = self.gate([], suites={"workflow_runs": [gate_run(1, "failure"), gate_run(2)],
-                                               "current_suite": 2})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("suite check failed", out)
-        self.assertIn("push a new head", out)
+    def test_unmarked_or_other_pr_runs_and_jobs_are_never_patched(self):
+        # Pre-3.2.2 runs carry no PR marker: they could belong to any PR on this head, so never adopt them.
+        rc, out = self.gate([api_check("Review Gate", 41), api_check("Review Gate", 42, pr=8),
+                             job("Review Gate", 500)], runs={"500": ".github/workflows/forge.yml\tpull_request"})
+        self.assertEqual(rc, 1, out)
+        self.assertEqual(self.patches, [])
 
-    def test_every_suite_covered_passes(self):
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
-                                   suites={"workflow_runs": [gate_run(1, "success"), gate_run(2)], "current_suite": 2})
-        self.assertEqual((rc, concl), (0, "success"), out)
+    # #105 Codex P1: another PR on this head (open, merged, or closed-unmerged, which commits/{sha}/pulls
+    # omits) leaves a trusted-pair job here. Its run title names that PR, so it is not this PR's result.
+    def test_another_prs_gate_job_on_this_head_fails_the_gate(self):
+        rc, out = self.gate([job("Review Gate", 517)], runs={"517": TRUSTED_RUN},
+                            fixture={"titles": {"600": run_title(7), "517": run_title(8)}})
+        self.assertEqual(rc, 1, out)
+        self.assertIn("'Review Gate - PR #8', not 'Review Gate - PR #7'", out)
+        self.assertFalse([c for c in self.calls if "/pulls" in c], self.calls)  # no PR listing to fool
 
-    def test_cancelled_duplicate_suite_with_run_in_surviving_suite_passes(self):
-        # nevar-audit #18 (96d2ff2f): label at PR-open cancelled a duplicate runner; merge was not blocked.
-        rc, concl, out = self.gate([], suites={"workflow_runs": [gate_run(1, "cancelled"), gate_run(2)],
-                                               "current_suite": 2})
-        self.assertEqual((rc, concl), (0, "success"), out)
+    def test_failed_listing_fails_closed(self):
+        rc, out = self.gate([], listing_fails=True)
+        self.assertEqual(rc, 1, out)
 
-    def test_another_prs_run_does_not_cover_a_suite(self):
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=8, suite=1)],
-                                   suites={"workflow_runs": [gate_run(1, "success"), gate_run(2)], "current_suite": 2})
-        self.assertEqual((rc, concl), (1, "failure"), out)
+    def test_unreadable_run_lookup_fails_closed(self):
+        rc, out = self.gate([job("Review Gate", 504)])
+        self.assertEqual(rc, 1, out)
+        self.assertIn("forged-check step failed (exit 2)", out)
 
-    def test_two_prs_on_one_head_each_pass_with_their_own_suite(self):
-        # Codex P1 on #102: one branch into staging and main; each PR's suite must not be the other's gap.
-        runs = [gate_run(1, pr=7), gate_run(2, pr=8)]
-        rc, concl, out = self.gate([api_check("Review Gate", 42, pr=8, suite=2)],
-                                   suites={"workflow_runs": runs, "current_suite": 1})
-        self.assertEqual((rc, concl), (0, "success"), out)
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)], prs=[("8", 0)],
-                                   suites={"workflow_runs": runs, "current_suite": 2})
-        self.assertEqual((rc, concl), (0, "success"), out)
+    def test_empty_trusted_script_fails_closed(self):
+        for name in ("check-review-gate.py", "check-forged-review-gate.py"):
+            with self.subTest(name=name):
+                rc, out = self.gate([], empty=(name,))
+                self.assertEqual(rc, 1, out)
+                self.assertIn(f"Could not load trusted scripts/{name}", out)
 
-    # 3.2.7 P1: 3.2.6's unquoted run-name lost " #<n>" to a YAML comment, the title matched no runs and
-    # the suite check passed with nothing checked (fail-open). Parse the real template, as GitHub does.
-    def test_run_name_resolves_to_the_title_the_suite_check_matches(self):
+    def test_missing_detector_on_default_branch_fails_closed(self):
+        rc, out = self.gate([], missing=("check-forged-gate-names.py",))
+        self.assertEqual(rc, 1, out)
+        self.assertIn("Could not load trusted scripts/check-forged-gate-names.py", out)
+        self.assertIn("::error::review-gate: gh api GET repos/o/r/contents/scripts/check-forged-gate-names.py?ref=main failed", out)
+
+    # nevar-auth #26 (3.2.7): a PATCH got "gh: Not Found (HTTP 404)", the step died without naming the call,
+    # and its POSTed run stayed queued. 3.2.8 POSTs nothing; any API error fails the job, which IS the
+    # check (a terminal failure even with the Checks API down), and the log names method and endpoint.
+    # Legacy cleanup stays best effort: the failed job, not the legacy run, is what blocks the merge.
+    def api_error(self, pattern, nth=1, prs=None):
+        rc, out = self.gate([api_check("Review Gate", 41, pr=7)], prs=prs,
+                            fixture={"fail": {"pattern": pattern, "nth": nth}})
+        self.assertEqual(rc, 1, out)
+        return out
+
+    def test_initial_legacy_patch_error_fails_before_evaluating(self):
+        out = self.api_error(r"PATCH repos/o/r/check-runs/41 ")
+        self.assertIn("::error::review-gate: gh api PATCH repos/o/r/check-runs/41 failed (exit 1)", out)
+        self.assertFalse([c for c in self.calls if "/contents/" in c], self.calls)
+
+    def test_final_legacy_patch_error_turns_a_pass_into_a_failure(self):
+        out = self.api_error(r"PATCH repos/o/r/check-runs/41 ", nth=2)
+        self.assertIn("::error::review-gate: gh api PATCH repos/o/r/check-runs/41 failed (exit 1)", out)
+        self.assertIn("were not all completed; failing closed", out)
+        self.assertEqual(self.patches, ["41 failure"])
+
+    def test_legacy_listing_error_fails_closed_and_names_the_call(self):
+        out = self.api_error(r"check_name=Review%20Gate")
+        self.assertIn("::error::review-gate: gh api GET repos/o/r/commits/" + "a" * 40
+                      + "/check-runs?check_name=Review%20Gate&filter=all&per_page=100 failed", out)
+        self.assertIn("could not list legacy Review Gate check runs", out)
+        self.assertEqual(self.patches, [])
+
+    def test_final_legacy_listing_error_fails_a_passing_gate(self):
+        out = self.api_error(r"check_name=Review%20Gate", nth=2)
+        self.assertIn("could not list legacy Review Gate check runs", out)
+        self.assertEqual(self.patches, ["41 failure"])
+
+    def test_forged_listing_error_names_the_call(self):
+        out = self.api_error(r"check-runs\?per_page=100&filter=all")
+        self.assertIn("::error::review-gate: gh api GET repos/o/r/commits/" + "a" * 40
+                      + "/check-runs?per_page=100&filter=all failed", out)
+        self.assertEqual(self.final(), {"41": "failure"})
+
+    # Sonnet b on ea4fb8b, P1 1: both listings must read every page, not only the first 100 runs.
+    def test_forged_job_on_a_later_page_fails_the_gate(self):
+        rc, out = self.gate([], runs={"500": ".github/workflows/forge.yml\tpull_request"},
+                            fixture={"page2": [job("Review Gate", 500)]})
+        self.assertEqual(rc, 1, out)
+        self.assertIn("forged check 'Review Gate'", out)
+
+    def test_legacy_run_on_a_later_page_is_completed(self):
+        rc, out = self.gate([], fixture={"page2": [api_check("Review Gate", 41, pr=7)]})
+        self.assertEqual(rc, 0, out)
+        self.assertEqual(self.final(), {"41": "success"})
+
+    # Sonnet b on ea4fb8b, P1 2-3: the trigger, token scope and step inputs are the security boundary.
+    def test_trigger_permissions_and_inputs_are_pinned(self):
+        wf = yaml.safe_load(TEMPLATE.read_text())
+        self.assertEqual(wf[True], {"pull_request_target": {"types": [
+            "opened", "reopened", "ready_for_review", "synchronize", "edited", "labeled", "unlabeled"]}})
+        self.assertEqual(wf["permissions"], {"contents": "read", "pull-requests": "read", "checks": "write",
+                                             "actions": "read"})
+        # no concurrency group: a cancelled newest run blocks the merge (review-gate-sandbox PR #30)
+        self.assertNotIn("concurrency", wf)
+        self.assertNotIn("concurrency", wf["jobs"]["gate"])
+        self.assertEqual(list(wf["jobs"]), ["gate"])
+        (step,) = wf["jobs"]["gate"]["steps"]
+        self.assertEqual(step["env"], {
+            "GH_TOKEN": "${{ secrets.GITHUB_TOKEN }}",
+            "PR_NUMBER": "${{ github.event.pull_request.number }}",
+            "REPO": "${{ github.repository }}",
+            "SHA": "${{ github.event.pull_request.head.sha }}",
+            "DEFAULT_BRANCH": "${{ github.event.repository.default_branch }}"})
+        self.assertNotIn("uses", step)  # no checkout: PR-head code never runs
+
+    # 3.2.7 P1: an unquoted run-name lost " #<n>" to a YAML comment. Parse the real template, as GitHub does.
+    def test_run_name_keeps_the_pr_number(self):
         self.assertEqual(run_title(7), "Review Gate - PR #7")
-        block = run_block()
-        self.assertIn('RUN_TITLE="Review Gate - PR #$PR_NUMBER"', block)
-        self.assertIn('--arg title "$RUN_TITLE"', block)
+        wrapper = (SCRIPTS / "check-forged-review-gate.py").read_text()
+        self.assertIn(f'RUN_TITLE = "{run_title("{pr}")}"', wrapper)  # the wrapper matches this exact title
         for line in TEMPLATE.read_text().split("\njobs:\n", 1)[0].splitlines():  # top-level plain scalars
             if line and not line[0].isspace() and not line.startswith("#") and ": " in line:
                 value = line.split(": ", 1)[1].strip()
                 self.assertFalse(" #" in value and value[0] not in "\"'", line)
 
-    def test_run_matching_no_title_fails_closed(self):
-        # The 3.2.6 shape: every run titled "Review Gate - PR" (no number), so nothing matches, not even us.
-        runs = [gate_run(1, "success", title="Review Gate - PR"), gate_run(2, title="Review Gate - PR")]
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
-                                   suites={"workflow_runs": runs, "current_suite": 2})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("is not among the review-gate runs titled", out)
-
-    def test_own_run_absent_from_listing_fails_closed(self):
-        # Other runs of this PR match, but this evaluation's run does not: the listing is not trustworthy.
-        rc, concl, out = self.gate([api_check("Review Gate", 41, pr=7, suite=1)],
-                                   suites={"workflow_runs": [gate_run(1, "success")], "current_suite": 2})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("this run (207)", out)
-
-    def test_suite_lookup_failure_fails_closed(self):
-        rc, concl, out = self.gate([], suites={"workflow_runs_fail": True})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("<lookup failed>", out)
-
-    # nevar-content Codex P1: two PRs on one head sha must not complete each other's runs.
-    def test_shared_head_pr_b_passing_never_flips_pr_a_failure(self):
-        rc, concl, out = self.gate([], prs=[("11", 1), ("12", 0)])
-        final = {}
-        for line in self.patches:
-            check_id, conclusion = line.split()
-            final[check_id] = conclusion
-        by_pr = {c["external_id"]: str(c["id"]) for c in self.created}
-        self.assertEqual(set(by_pr), {"review-gate-pr-11", "review-gate-pr-12"}, self.created)
-        self.assertEqual(final[by_pr["review-gate-pr-11"]], "failure", self.patches)
-        self.assertEqual(final[by_pr["review-gate-pr-12"]], "success", self.patches)
-
-    def test_unmarked_or_other_pr_runs_are_never_patched(self):
-        # Pre-3.2.2 runs carry no PR marker: they could belong to any PR on this head, so never adopt them.
-        rc, concl, out = self.gate([api_check("Review Gate", 41), api_check("Review Gate", 42, pr=8)])
-        self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertEqual([c["external_id"] for c in self.created], ["review-gate-pr-7"])
-        self.assertEqual({p.split()[0] for p in self.patches}, {"900"})
-
-    # nevar-integrations #11: the PR that installs 3.2.x is evaluated by main's legacy workflow, whose
-    # job is named `Review Gate`. That PR replaces the file, so its own legacy job is not forged.
-    def test_bootstrap_pr_replacing_legacy_workflow_passes(self):
-        rc, concl, out = self.gate([job("Review Gate", 509)], runs={"509": TRUSTED_RUN},
-                                   pr_files=[pr_file(RG_PATH)], default_files=[RG_PATH + "?ref=main"])
-        self.assertEqual((rc, concl), (0, "success"), out)
-
-    def test_same_named_actions_job_is_never_reused(self):
-        # A PR job named "Review Gate" is forged; the gate must not adopt or PATCH it.
-        rc, concl, out = self.gate([job("Review Gate", 500)],
-                                   runs={"500": ".github/workflows/forge.yml\tpull_request"})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertEqual([c["id"] for c in self.created], [900])
-        self.assertEqual({p.split()[0] for p in self.patches}, {"900"})
-
-    def test_gate_own_run_keeps_listing_nonempty(self):
-        # The detector exits 2 on an empty listing; the gate publishes its own run before listing,
-        # so a head with no other checks still evaluates (and passes).
-        rc, concl, out = self.gate([])
-        self.assertEqual((rc, concl), (0, "success"), out)
-        self.assertNotIn("forged-check step failed", out)
-
-    def test_failed_listing_fails_closed(self):
-        rc, concl, out = self.gate([], listing_fails=True)
-        self.assertEqual((rc, concl), (1, "failure"), out)
-
-    def test_unreadable_run_lookup_fails_closed(self):
-        rc, concl, out = self.gate([job("Review Gate", 504)], runs={})
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("forged-check step failed (exit 2)", out)
-
-    def test_missing_detector_on_default_branch_fails_closed(self):
-        rc, concl, out = self.gate([], missing=("check-forged-gate-names.py",))
-        self.assertEqual((rc, concl), (1, "failure"), out)
-        self.assertIn("Missing trusted scripts/check-forged-gate-names.py", out)
-
 
 class WrapperReason(unittest.TestCase):
     def test_wrapper_reason_still_holds(self):
-        # The wrapper exists only because the vendored map protects this name with no trusted pair.
+        # The wrapper exists only because the vendored map protects the other name with no trusted pair.
         # If a re-vendor changes that, revisit (or delete) the wrapper.
         import importlib.util
         spec = importlib.util.spec_from_file_location("cfgn", SCRIPTS / "check-forged-gate-names.py")
@@ -368,23 +343,19 @@ class WrapperReason(unittest.TestCase):
         self.assertEqual(detector.PROTECTED["Review Gate"],
                          {(".github/workflows/review-gate.yml", "pull_request_target")})
         header = (SCRIPTS / "check-forged-review-gate.py").read_text()
-        self.assertIn('scoped = {"Review Gate": set()}', header)
-        self.assertIn("NO TRUSTED ACTIONS PAIR FOR `Review Gate`", header)
+        self.assertIn("THE GATE'S OWN JOB IS THE RESULT", header)
         self.assertIn("WHY THIS WRAPPER EXISTS", header)
         self.assertIn("DELETE THIS WRAPPER when Option A or B", header)
 
 
 class WrapperDetector(unittest.TestCase):
-    def wrapper(self, check_runs, runs, stdin=None, pr_files=(), default_files=(RG_PATH + "?ref=main",),
-                provenance=None, **env_over):
+    def wrapper(self, check_runs, runs, stdin=None, fixture=None, **env_over):
         with tempfile.TemporaryDirectory() as tmp:
             bindir = Path(tmp); (bindir / "gh").write_text(FAKE_GH); (bindir / "gh").chmod(0o755)
             (bindir / "fixture.json").write_text(json.dumps({
                 "scripts": {}, "check_runs": check_runs, "runs": runs,
-                "pr_files": None if pr_files is None else list(pr_files), "default_files": list(default_files),
-                **(provenance or {})}))
-            env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r",
-                       PR_NUMBER="7", DEFAULT_BRANCH="main")
+                "titles": {i: run_title(7) for i in runs}, **(fixture or {})}))
+            env = dict(os.environ, PATH=f"{bindir}:{os.environ['PATH']}", FAKE_STATE=tmp, REPO="o/r", PR_NUMBER="7")
             for key, value in env_over.items():
                 if value is None:
                     env.pop(key, None)
@@ -396,118 +367,44 @@ class WrapperDetector(unittest.TestCase):
                                   env=env, capture_output=True, text=True)
             return proc.returncode, proc.stderr
 
-    def test_stacked_child_success_beside_failed_outer_gate_exits_1(self):
-        # The cop's merge-time run: outer gate (Checks API) failed, child's trusted-pair job succeeded on H.
-        failed_outer = dict(api_check("Review Gate", 41), conclusion="failure")
-        child = dict(job("Review Gate", 506), conclusion="success")
-        rc, err = self.wrapper([failed_outer, child], {"506": TRUSTED_RUN})
-        self.assertEqual(rc, 1, err)
+    def test_gate_job_from_the_trusted_pair_exits_0(self):
+        # Includes a pre-3.2.0 workflow's `Review Gate` job: same pair, also the real gate result.
+        rc, err = self.wrapper([job("Review Gate", 506), api_check("Review Gate", 41, pr=7)], {"506": TRUSTED_RUN})
+        self.assertEqual(rc, 0, err)
 
-    def test_checks_api_publication_alone_exits_0(self):
+    def test_legacy_api_run_alone_exits_0(self):
         rc, err = self.wrapper([api_check("Review Gate", 41)], {})
         self.assertEqual(rc, 0, err)
 
-    # S6: the wrapper's {"Review Gate": set()} scoping never flags a 3.2.0+ run's own output...
-    def test_3_2_0_run_exits_0(self):
-        rc, err = self.wrapper([api_check("Review Gate", 41), job("review-gate-runner", 501)], {"501": TRUSTED_RUN})
-        self.assertEqual(rc, 0, err)
-
-    # ...and names the fix when the forged job is a legacy (pre-3.2.0) workflow's `Review Gate` job.
-    def test_legacy_review_gate_job_exits_1_with_reinstall_hint(self):
-        rc, err = self.wrapper([api_check("Review Gate", 41), job("Review Gate", 507)], {"507": TRUSTED_RUN})
-        self.assertEqual(rc, 1, err)
-        self.assertIn("Reinstall the 3.2.0+ workflow", err)
-
-    def test_untrusted_forged_job_gets_no_reinstall_hint(self):
-        rc, err = self.wrapper([job("Review Gate", 508)], {"508": ".github/workflows/forge.yml\tpull_request"})
-        self.assertEqual(rc, 1, err)
-        self.assertNotIn("Reinstall", err)
-
-    # Bootstrap (nevar-integrations #11): a legacy job is accepted ONLY when the PR replaces that
-    # workflow, the file is on the default branch, and the event is pull_request_target.
-    def test_bootstrap_legacy_job_whose_file_the_pr_replaces_exits_0_with_message(self):
-        legacy = [api_check("Review Gate", 41), job("Review Gate", 507)]
-        for files in ([pr_file("README.md"), pr_file("x.py"), pr_file(RG_PATH)],  # second page
-                      [pr_file(RG_PATH, status="removed")],
-                      [pr_file(".github/workflows/gate.yml", status="renamed", previous=RG_PATH)]):
-            with self.subTest(files=files):
-                rc, err = self.wrapper(legacy, {"507": TRUSTED_RUN}, pr_files=files)
-                self.assertEqual(rc, 0, err)
-                self.assertIn("bootstrap", err)
-                self.assertIn(RG_PATH, err)
-
-    def test_bootstrap_forged_job_from_another_workflow_exits_1(self):
-        forge = ".github/workflows/forge.yml"
-        rc, err = self.wrapper([job("Review Gate", 510)], {"510": f"{forge}\tpull_request_target"},
-                               pr_files=[pr_file(forge)], default_files=[forge + "?ref=main"])
-        self.assertEqual(rc, 1, err)
-        self.assertNotIn("bootstrap", err)
-
-    def test_bootstrap_same_path_wrong_event_exits_1(self):
-        rc, err = self.wrapper([job("Review Gate", 511)], {"511": f"{RG_PATH}\tpull_request"},
-                               pr_files=[pr_file(RG_PATH)])
-        self.assertEqual(rc, 1, err)
-
-    def test_bootstrap_same_path_pr_does_not_touch_file_exits_1(self):
-        rc, err = self.wrapper([job("Review Gate", 512)], {"512": TRUSTED_RUN},
-                               pr_files=[pr_file("README.md"), pr_file(RG_PATH, status="added")])
-        self.assertEqual(rc, 1, err)
-        self.assertIn("does not change", err)
-
-    def test_bootstrap_workflow_not_on_default_branch_exits_1(self):
-        rc, err = self.wrapper([job("Review Gate", 513)], {"513": TRUSTED_RUN},
-                               pr_files=[pr_file(RG_PATH)], default_files=())
-        self.assertEqual(rc, 1, err)
-        self.assertIn("not on the default branch", err)
-
-    def test_bootstrap_ambiguous_input_exits_2(self):
-        legacy = [job("Review Gate", 514)]
-        for kwargs in ({"PR_NUMBER": None}, {"PR_NUMBER": "7abc"}, {"pr_files": None}):
-            with self.subTest(**{k: str(v) for k, v in kwargs.items()}):
-                rc, err = self.wrapper(legacy, {"514": TRUSTED_RUN}, **{"pr_files": [pr_file(RG_PATH)], **kwargs})
-                self.assertEqual(rc, 2, err)
-
-    # 3.2.6 (Codex r4582534712): the run must have been triggered for THIS PR, judged on the run's own
-    # head fields, never on its `.pull_requests` association.
-    def test_bootstrap_stacked_child_run_listing_outer_pr_exits_1(self):
-        # Child #8's run: GitHub's association array may list outer #7, but its head is the child's.
-        child_head = "c" * 40 + "\tfeat/child\to/r"
-        rc, err = self.wrapper([job("Review Gate", 515)], {"515": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
-                               provenance={"run_heads": {"515": child_head}})
-        self.assertEqual(rc, 1, err)
-        self.assertIn("not PR #7's head", err)
-        self.assertNotIn("bootstrap", err)
-
-    def test_bootstrap_same_sha_other_branch_or_fork_exits_1(self):
-        for other in ("a" * 40 + "\tfeat/other\to/r", "a" * 40 + "\tfeat/x\tfork/r"):
-            with self.subTest(other=other):
-                rc, err = self.wrapper([job("Review Gate", 516)], {"516": TRUSTED_RUN},
-                                       pr_files=[pr_file(RG_PATH)], provenance={"run_heads": {"516": other}})
+    def test_trusted_pair_job_of_another_pr_exits_1(self):
+        # A closed-unmerged child's run on this head: no PR listing shows it, its run title does.
+        for title in ("Review Gate - PR #8", "Review Gate - PR #77", "Review Gate - PR", "Review Gate"):
+            with self.subTest(title=title):
+                rc, err = self.wrapper([job("Review Gate", 517)], {"517": TRUSTED_RUN},
+                                       fixture={"titles": {"517": title}})
                 self.assertEqual(rc, 1, err)
+                self.assertIn("not 'Review Gate - PR #7'", err)
 
-    def test_bootstrap_head_shared_with_another_pr_exits_1(self):
-        # Open or closed: a child closed after its run fired still matches every head field.
-        rc, err = self.wrapper([job("Review Gate", 517)], {"517": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
-                               provenance={"shared_prs": ["8"]})
-        self.assertEqual(rc, 1, err)
-        self.assertIn("#8 share head", err)
-
-    # aec #163 Codex P1: the run must have executed the default branch's workflow revision. A stacked
-    # child targeting a contributor branch whose review-gate.yml publishes a `Review Gate` job, while the
-    # outer PR also modifies that path, must be refused: the base copy differs from the default copy.
-    def test_bootstrap_base_copy_differs_from_default_exits_1(self):
-        for base_blob in ("blob-contributor", None):
-            with self.subTest(base_blob=base_blob):
-                rc, err = self.wrapper([job("Review Gate", 519)], {"519": TRUSTED_RUN}, pr_files=[pr_file(RG_PATH)],
-                                       provenance={"base_blob": base_blob})
+    def test_untrusted_jobs_exit_1(self):
+        for pair in (".github/workflows/forge.yml\tpull_request",
+                     ".github/workflows/forge.yml\tpull_request_target",
+                     f"{RG_PATH}\tpull_request"):  # a PR-edited review-gate.yml runs under pull_request
+            with self.subTest(pair=pair):
+                rc, err = self.wrapper([job("Review Gate", 508)], {"508": pair})
                 self.assertEqual(rc, 1, err)
-                self.assertIn("differs from the default branch", err)
+                self.assertIn("untrusted workflow", err)
 
-    def test_bootstrap_provenance_lookup_failure_exits_2(self):
-        for provenance in ({"pr_head": None}, {"run_heads": {"518": None}}, {"pr_head": "garbage"}):
-            with self.subTest(provenance=provenance):
-                rc, err = self.wrapper([job("Review Gate", 518)], {"518": TRUSTED_RUN},
-                                       pr_files=[pr_file(RG_PATH)], provenance=provenance)
+    def test_untrusted_job_is_forged_even_beside_a_trusted_one(self):
+        rc, err = self.wrapper([job("Review Gate", 506), job("Review Gate", 508)],
+                               {"506": TRUSTED_RUN, "508": ".github/workflows/forge.yml\tpull_request"})
+        self.assertEqual(rc, 1, err)
+        self.assertIn("runs/508", err)
+        self.assertNotIn("runs/506", err)
+
+    def test_ambiguous_input_exits_2(self):
+        for kwargs in ({"PR_NUMBER": None}, {"PR_NUMBER": "7abc"}, {"fixture": {"titles": {}}}):
+            with self.subTest(kwargs=str(kwargs)):
+                rc, err = self.wrapper([job("Review Gate", 514)], {"514": TRUSTED_RUN}, **kwargs)
                 self.assertEqual(rc, 2, err)
 
     # aec #154 (dba592db): empty or runless input cannot be evaluated, so it fails closed.
@@ -539,7 +436,7 @@ class InstalledCopies(unittest.TestCase):
         root = next((d for d in SKILL.parents if (d / ".github/workflows/review-gate.yml").is_file()), None)
         if root is None:
             self.skipTest("review-gate is not installed into a repo above this skill")
-        for name in ("check-forged-gate-names.py", "check-forged-review-gate.py"):
+        for name in ("check-forged-gate-names.py", "check-forged-review-gate.py", "check-review-gate.py"):
             self.assertEqual((root / "scripts" / name).read_bytes(), (SCRIPTS / name).read_bytes(), name)
         self.assertEqual((root / ".github/workflows/review-gate.yml").read_bytes(), TEMPLATE.read_bytes())
 

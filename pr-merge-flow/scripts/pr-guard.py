@@ -22,6 +22,9 @@ text is what the agent sees.
    check SUCCESS/SKIPPED/NEUTRAL (PR #325 merged on a CANCELLED check). Fails closed.
 5. No polling: `sleep` plus a `gh pr checks|view|status` / `gh run view|watch|list` query in
    one command. Use `gh pr checks <n> --watch --fail-fast` in the background instead.
+6. No Codex mention in a posted comment (`gh pr comment`, `gh issue comment`, `gh pr review`,
+   `gh api` fields or `--input`): it spends Matt's Codex quota. Later heads get a fallback review and attestation.
+   Override only on Matt's explicit ask: a `# codex-review-ok: <reason>` comment.
 
 Every tool call passes through here, so non-Bash input exits at once.
 """
@@ -51,12 +54,13 @@ HIDE = {ord(c): 0xE000 + k for k, c in enumerate(";&|()\n")}
 UNHIDE = {v: k for k, v in HIDE.items()}
 
 
-def strip_comments_and_heredocs(cmd):
+def strip_comments_and_heredocs(cmd, comments=None):
     """Drop `#` comments and heredoc bodies, keeping the newlines that end them.
 
     shlex gets both wrong: its comments swallow the newline (and start mid-word),
     and it parses heredoc bodies as shell, so one stray quote hides every later
     command. Bash rules: `#` starts a comment only at the start of an unquoted word.
+    Dropped comments are appended to `comments` when given (see shell_comments).
 
     ponytail: `$(...)`/backtick nesting isn't tracked; a `#` or `<<` inside one is
     treated as top-level. Worst case is a missed or extra block, never a crash.
@@ -91,8 +95,11 @@ def strip_comments_and_heredocs(cmd):
             out.append(c)
             i += 1
         elif c == "#" and (not out or out[-1][-1] in " \t\r\n;&|()"):
+            start = i
             while i < n and cmd[i] != "\n":
                 i += 1
+            if comments is not None:
+                comments.append(cmd[start:i])
         elif cmd.startswith("<<", i) and not cmd.startswith("<<<", i):
             m = re.match(r"""<<(-?)[ \t]*((?:\\.|'[^']*'|"[^"]*"|[^\s;&|()<>'"\\])+)""", cmd[i:])
             if m:
@@ -124,6 +131,19 @@ def strip_comments_and_heredocs(cmd):
             i += 1
     # An unclosed quote hid everything after it; un-hide so the fallback checks it all.
     return "".join(out).translate(UNHIDE) if quote else "".join(out)
+
+
+def shell_comments(cmd):
+    """The command's real shell comments: not quoted text, not heredoc bodies."""
+    comments = []
+    strip_comments_and_heredocs(cmd.replace("\\\n", " "), comments)
+    return comments
+
+
+def has_override(cmd, marker):
+    """True when a real shell comment carries `# <marker>: <reason>`; the marker inside a quoted
+    body or a heredoc is text the command sends, not an override."""
+    return any(re.match(rf"#\s*{marker}(?::\s*|\s+)\S", c) for c in shell_comments(cmd))
 
 
 def shell_tokens(cmd):
@@ -303,10 +323,10 @@ def pr_state(d):
 GH_ALIASES = {"new": "create"}
 
 
-def gh_pr(argv):
-    """Return (subcommand, has_repo_flag) for a `gh pr <sub>` call, else None.
+def gh_words(argv):
+    """Return (positional words, has_repo_flag) for a `gh` call, else None.
 
-    `-R/--repo` is inherited, so it may come before `pr`; `new` is an alias of `create`.
+    `-R/--repo` is inherited, so it may come before the command group.
     """
     if argv[0] != "gh":
         return None
@@ -320,9 +340,76 @@ def gh_pr(argv):
             has_repo = True
         elif not a.startswith("-"):
             pos.append(a)
-    if len(pos) < 2 or pos[0] != "pr":
+    return pos, has_repo
+
+
+def gh_pr(argv):
+    """Return (subcommand, has_repo_flag) for a `gh pr <sub>` call, else None. `new` is an alias of `create`."""
+    words = gh_words(argv)
+    if not words or len(words[0]) < 2 or words[0][0] != "pr":
         return None
-    return GH_ALIASES.get(pos[1], pos[1]), has_repo
+    return GH_ALIASES.get(words[0][1], words[0][1]), words[1]
+
+
+# Any at-mention of the Codex bot starts a Codex task on Matt's quota (Program Cop, 2026-11-19).
+CODEX_MENTION = re.compile(r"(?<![\w.+-])@codex(?![\w-])", re.I)  # not an email like bob@codex.io
+# Commands that post a comment body: (words, flags whose value is a file holding the body).
+COMMENT_POSTS = {("pr", "comment"): ("-F", "--body-file"), ("issue", "comment"): ("-F", "--body-file"),
+                 ("pr", "review"): ("-F", "--body-file")}
+API_FIELD_FLAGS = ("-f", "--raw-field", "-F", "--field")
+MAX_BODY_FILE = 1 << 20
+
+
+def _body_file(d, path):
+    """Text of a body file, or None when it can't be read (stdin, a $-path, missing, binary)."""
+    if path == "-" or "$" in path or "`" in path or "$" in d or "`" in d:
+        return None
+    try:
+        with open(os.path.join(d, os.path.expanduser(path)), "rb") as f:
+            return f.read(MAX_BODY_FILE).decode("utf-8", "replace")
+    except OSError:
+        return None  # unreadable: the raw-command search in codex_mention_post still applies
+
+
+def codex_mention_post(cmd, cwd):
+    """True when the command posts a comment (gh pr/issue comment, gh pr review, gh api) whose body
+    mentions the Codex bot: in an argument, in a readable body file, or on stdin when the raw command
+    holds the mention (a heredoc fed to `--body-file -`, which strip_comments_and_heredocs drops)."""
+    for d, argv in walk(cmd, cwd):
+        words = gh_words(argv)
+        if not words:
+            continue
+        pos = words[0]
+        if tuple(pos[:2]) in COMMENT_POSTS:
+            file_flags = COMMENT_POSTS[tuple(pos[:2])]
+        elif pos[:1] == ["api"]:
+            file_flags = ("--input",)
+        else:
+            continue
+        api = pos[0] == "api"
+        # gh api: only the request body (fields and --input) posts; a --jq filter or path does not
+        texts, files = ([] if api else list(argv)), []
+        for i, a in enumerate(argv):
+            if re.match(r"-[A-Za-z].", a):  # pflag shorthand with an attached value: -Ffile, -fbody=x, -F=file
+                name, value = a[:2], a[2:].removeprefix("=")
+            else:
+                name, eq, value = a.partition("=")
+                value = value if eq else (argv[i + 1] if i + 1 < len(argv) else "")
+            if name in file_flags:
+                files.append(value)
+            elif api and name in API_FIELD_FLAGS:
+                texts.append(value)
+                if name in ("-F", "--field") and "=@" in value:  # -F body=@file reads the field from a file
+                    files.append(value.split("=@", 1)[1])
+        # A body file may be written earlier in this same command (`cat > b.md <<EOF … && gh … -F b.md`) or be
+        # stdin (`-`, /dev/stdin, /dev/fd/0), so the hook can't read what will be posted: any mention anywhere
+        # in the command blocks. Otherwise the file as it stands now is scanned.
+        if files and CODEX_MENTION.search(cmd):
+            return True
+        texts += [_body_file(d, path) or "" for path in files]
+        if any(CODEX_MENTION.search(t) for t in texts):
+            return True
+    return False
 
 
 def flag_on(argv, names):
@@ -585,6 +672,12 @@ def check(cmd, cwd):
     if polls(cmd):
         return ("Blocked: never poll: run `gh pr checks <n> --watch --fail-fast` in the background "
                 "and let the harness wake you.")
+    if codex_mention_post(cmd, cwd) and not has_override(cmd, "codex-review-ok"):
+        return ("Blocked: this comment mentions the Codex bot, which starts a Codex review on Matt's quota. "
+                "Codex reviews a PR's first head only. For a later head, run a fallback reviewer and add "
+                "`Fallback review: <reviewer> on <sha> — verdict: <clean|findings fixed>` to the PR's "
+                "## Review section. Only when Matt explicitly asked for a Codex review here, add "
+                "`# codex-review-ok: <reason>` (the colon is optional) to the command.")
     for d, ref, toks, repo in merge_calls(cmd, cwd):
         if repo is None:
             return ("Blocked: can't parse this merge (a short-flag cluster such as `-dR x` or `-st 5`). "
@@ -620,7 +713,7 @@ def check(cmd, cwd):
             return (f"Blocked: {fork} has no `gh repo set-default`, so `gh pr create` would open the "
                     "PR on the upstream repo. Pass `-R <owner>/<repo>` or run "
                     "`gh repo set-default <owner>/<repo>` first.")
-    if re.search(r"(^|\s)#\s*sync-base:", cmd):  # the documented override is a shell comment, not any substring
+    if any(re.match(r"#\s*sync-base:", c) for c in shell_comments(cmd)):  # a real shell comment, not quoted text
         return None
     for d, sub, refs in sync_calls(cmd, cwd):
         if "$" in d or "`" in d:

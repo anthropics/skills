@@ -485,6 +485,64 @@ for c in ["while true; do gh pr checks 12 | grep -q pending || break; sleep 30; 
 for c in ["gh pr checks 12 --watch --fail-fast", "sleep 5", "gh pr view 12", "echo gh pr checks; sleep 5",
           "sleep 5 # gh pr checks 12", "cat <<EOF\ngh pr checks 12\nEOF\nsleep 5"]:
     assert g.check(c, "/r") is None, c
+# 1.5.0: a posted comment that mentions the Codex bot is blocked (Matt's quota); `# codex-review-ok: <reason>` allows it
+import tempfile as _tf
+import os
+M = "@" + "codex"
+_blocked = lambda c, cwd="/r": (g.check(c, cwd) or "").startswith("Blocked: this comment mentions the Codex bot")
+for c in (f'gh pr comment 119 --body "{M} review"', f"gh pr comment 119 -b '{M} review'",
+          f'gh issue comment 7 --body="{M.upper()} please review"', f'gh -R o/r pr comment 5 --body "{M} review"',
+          f'gh pr review 5 --comment -b "{M} review"',
+          f"gh api repos/o/r/issues/5/comments -f body='{M} review'",
+          f"gh api -X POST repos/o/r/issues/5/comments --raw-field body='{M} review'",
+          f"gh pr comment 5 --body-file - <<'EOF'\nplease\n{M} review\nEOF",
+          f"cd wt && gh pr comment 5 --body '{M} review'"):
+    assert _blocked(c), c
+    assert g.check(c + f"  # codex-review-ok: Matt asked for a Codex pass on this head", "/r") is None, c
+# the marker needs a reason and must be a shell comment, not quoted text
+assert _blocked(f'gh pr comment 5 --body "{M} review"  # codex-review-ok:')
+assert _blocked(f'gh pr comment 5 --body "{M} review codex-review-ok: x"')
+# Codex P1 on #120: the marker inside the quoted body or a heredoc is sent text, not an override
+for c in (f"gh pr comment 5 --body '{M} review # codex-review-ok: bypass'",
+          f'gh pr comment 5 --body "{M} review  # codex-review-ok: bypass"',
+          f"gh pr comment 5 --body-file - <<'EOF'\n{M} review\n# codex-review-ok: bypass\nEOF"):
+    assert _blocked(c), c
+assert g.check("git -C wt/$w merge origin/staging  # sync-base: real conflict in x.py", "/r") is None
+assert g.check("git -C wt/$w merge origin/staging && echo '# sync-base: nope'", "/r") is not None
+# Sonnet P1 on #120: a body file written in the same command, or a stdin alias, can't be read by the hook
+for c in (f"cat > /tmp/b-{os.getpid()}.md <<'EOF'\n{M} review\nEOF\ngh pr comment 5 --body-file /tmp/b-{os.getpid()}.md",
+          f"printf '%s' '{M} review' > b.md && gh pr comment 5 -F b.md",
+          f"gh pr comment 5 -F /dev/stdin <<'EOF'\n{M} review\nEOF", f"gh pr comment 5 -F /dev/fd/0 <<'EOF'\n{M} review\nEOF"):
+    assert _blocked(c), c
+# the override's colon is optional; it still needs a reason
+assert g.check(f'gh pr comment 5 --body "{M} review"  # codex-review-ok Matt asked', "/r") is None
+assert _blocked(f'gh pr comment 5 --body "{M} review"  # codex-review-ok')
+assert _blocked(f'gh pr comment 5 --body "{M} review"  # codex-review-okay x')
+# an email address is not a mention
+assert not _blocked("gh pr comment 5 --body 'mail bob@codex.io'")
+# not a post, not the bot, or the phrase only in an unrelated heredoc / read
+for c in (f"cat > notes.md <<'EOF'\n{M} review\nEOF", f"git commit -q -F - <<'EOF'\nno {M} review\nEOF",
+          f'gh pr comment 5 --body "{M}-helper and {M}x are not the bot"', "gh pr comment 5 --body 'Codex review done'",
+          f"gh api repos/o/r/issues/5/comments --jq '.[] | select(.body | contains(\"{M}\"))'",
+          f'gh pr view 5 --json body -q .body | grep "{M}"',
+          f"cat <<'EOF' > b.md\n{M} review\nEOF\ngh pr comment 5 --body 'see the notes'"):
+    assert not _blocked(c), c
+# a body read from a file is scanned (--body-file, -F, gh api -F body=@file, --input), relative to cd
+with _tf.TemporaryDirectory() as d:
+    Path(d, "sub").mkdir()
+    Path(d, "sub", "bad.md").write_text(f"Round 2\n{M} review\n")
+    Path(d, "sub", "ok.md").write_text("Round 2, fallback attested\n")
+    for c in ("gh pr comment 5 --body-file sub/bad.md", "gh pr comment 5 -F sub/bad.md",
+              "gh pr comment 5 --body-file=sub/bad.md", "cd sub && gh issue comment 5 -F bad.md",
+              "gh api repos/o/r/issues/5/comments -F body=@sub/bad.md", "gh api repos/o/r/issues/5/comments --input sub/bad.md",
+              # Codex P2 on #120: pflag shorthand with the value attached
+              "gh pr comment 5 -Fsub/bad.md", "gh pr comment 5 -F=sub/bad.md", "gh api repos/o/r/issues/5/comments -Fbody=@sub/bad.md",
+              f"gh api repos/o/r/issues/5/comments -fbody='{M} review'"):
+        assert _blocked(c, d), c
+    for c in ("gh pr comment 5 --body-file sub/ok.md", "gh api repos/o/r/issues/5/comments -F body=@sub/ok.md",
+              "gh pr comment 5 --body-file sub/missing.md", "gh pr comment 5 --body-file $F"):
+        assert not _blocked(c, d), c
+
 print("ok")
 
 # Codex on prevost #332: the fork check uses the dir `gh pr create` runs in, not the hook cwd.

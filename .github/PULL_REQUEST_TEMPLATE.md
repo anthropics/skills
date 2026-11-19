@@ -1,6 +1,6 @@
 ## Summary
 
-<!-- What does this PR do? -->
+What this PR does, in a sentence or two.
 
 ## Changes
 
@@ -13,8 +13,6 @@
 - [ ] `python3 scripts/generate-manifest.py` run and skills-manifest.json committed
 
 ## Review
-
-<!-- Reviewers run and their P0/P1 outcome per round. -->
 
 ## Related Issues
 

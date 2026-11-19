@@ -3,7 +3,8 @@
 # Pair with GitHub ruleset pull_request.required_review_thread_resolution: true.
 #
 # Security: only `pull_request_target` so the workflow file always comes from the
-# PR base (never the merge commit). Same-repo `pull_request_review` /
+# repository default branch, whatever the PR base (never the merge commit; seen live:
+# review-gate-sandbox PR #27, base repro-api, ran main's file in run 43982863036). Same-repo `pull_request_review` /
 # `pull_request_review_comment` would run PR-modified workflow YAML with
 # checks/actions write — removed on purpose. Gate jobs never execute PR-head
 # or untrusted-base code; they load scripts/check-review-gate.py exclusively
@@ -17,25 +18,25 @@
 # body edit (agents: adversarial-review). Do not reintroduce review-event
 # workflow triggers.
 #
-# Required-check context is the Checks API check run named "Review Gate"
-# published on pull_request.head.sha (Actions job alone attaches to the base).
+# Required-check context is this workflow's own job, named "Review Gate" (3.2.8). A
+# pull_request_target job's check run is on pull_request.head.sha, in this run's own
+# check suite (email_demo #1068), which is the suite the required-status rule reads.
+# 3.2.0-3.2.7 named the job review-gate-runner and POSTed the result through the
+# Checks API instead, on the false premise that the job attaches to the base SHA; a
+# POST lands in the head's OLDEST suite (any workflow's), so the rule read "expected".
 #
 # Forged-name check (SEC-MVS-01 S5): required checks match by name, so a same-repo
 # PR can add its own job named "Review Gate" with `run: true`. After the checker,
 # scripts/check-forged-review-gate.py (vendored aec detector, scoped to this name)
-# lists the head SHA's check runs and fails the gate when any Actions job published
-# "Review Gate". The real result is only the Checks API run below; this workflow's
-# own job is named review-gate-runner, because under pull_request_target it attaches
-# to the base SHA, and a stacked child PR's base is the outer PR's head. Runs for
-# PRs into every branch. Residual: a PR job with `checks: write` POSTing the name
-# straight to the Checks API is not detectable here (needs a required workflow or a
-# distinct publisher app). A job publishing after this scan is caught by the
-# merger's own pre-merge run of the detector.
+# lists the head SHA's check runs and fails the gate when an Actions job other than
+# this workflow's (review-gate.yml, pull_request_target) published "Review Gate", or
+# when another PR shares the head. Runs for PRs into every branch. Residual: a PR job
+# with `checks: write` POSTing the name straight to the Checks API is not detectable
+# here (needs a required workflow or a distinct publisher app). A job publishing
+# after this scan is caught only if whoever merges runs the detector by hand
+# (pr-merge-flow rule 2). The merge-guard hook does NOT run it.
 name: Review Gate
-# The suite check below attributes a workflow run to its PR by this title (3.2.6): a run's head
-# fields and .pull_requests cannot tell two PRs on one head sha apart, nor a stacked child.
-# Quoted (3.2.7): unquoted, YAML reads " #" as a comment and the title loses the PR number, so
-# 3.2.6 matched no runs and skipped the suite check (fail-open). Keep in step with RUN_TITLE below.
+# Names the PR in the Actions run list. Quoted: unquoted, YAML reads " #" as a comment (3.2.7).
 run-name: "Review Gate - PR #${{ github.event.pull_request.number }}"
 
 on:
@@ -48,14 +49,16 @@ permissions:
   checks: write
   actions: read  # forged-check step looks up which workflow/event ran a job
 
-concurrency:
-  group: review-gate-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+# No `concurrency:` group, on purpose. The required check reads the newest run's result, and a rerun
+# lands in the old run's suite, so a cancelled newest run blocks the merge until it is re-run itself
+# (nevar-fund #27; review-gate-sandbox PR #30). `cancel-in-progress: false` still cancels a pending run
+# when a newer one queues. Each run is an idempotent ~8 s read of the PR's current state, so parallel
+# runs are safe: the newest one sees the latest event.
 
 jobs:
   gate:
-    # Not "Review Gate": this job attaches to the base SHA, which can be a stacked PR's head.
-    name: review-gate-runner
+    # This job IS the required check: its exit code is the gate result (3.2.8).
+    name: Review Gate
     runs-on: ubuntu-latest
     steps:
       - name: Run trusted review-gate checker
@@ -67,82 +70,63 @@ jobs:
           DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
           set -euo pipefail
-          # A NEW `Review Gate` check run on every evaluation (3.2.6), and every evaluation completes ALL
-          # of this PR's runs on the head with the same result. GitHub reads the required check from the
-          # newest Actions check suite for the head, and the Checks API cannot choose a suite: reusing
-          # one run per head (3.2.1-3.2.5) left it in an older suite, so a later edit-triggered suite held
-          # only review-gate-runner and the check read "expected" (nevar-audit #17, nevar-research #15).
-          # Completing all runs keeps the 3.2.1 fix: no earlier red run stays standing. Only the API runs
-          # this app published for THIS PR (external_id review-gate-pr-<n>, 3.2.2) are touched: two PRs
-          # can share a head sha. Unmarked (pre-3.2.2) or other-PR runs, and a same-named Actions job
-          # (.../actions/runs/<n>/job/<m>), are never touched.
-          # UNPROVEN until a live run: pull_request_target runs the default branch's copy of this file.
+          # 3.2.0-3.2.7 POSTed `Review Gate` check runs (external_id review-gate-pr-<n>). None are created
+          # any more; every evaluation completes this PR's existing ones with its own result, so no stale
+          # red or green API run stays standing beside the job. Two PRs can share a head sha: other-PR
+          # or unmarked runs, and same-named Actions jobs (.../actions/runs/<n>/job/<m>), are never touched.
           external_id="review-gate-pr-$PR_NUMBER"
-          RUN_TITLE="Review Gate - PR #$PR_NUMBER"  # = run-name above; a test parses both and compares
+          # Every API call goes through api(): a failure names the method and endpoint in the log and
+          # returns gh's status. Any API error fails this job, which IS the check, so the result is a
+          # terminal failure even when the Checks API itself is down (nevar-auth #26: a bare
+          # "gh: Not Found (HTTP 404)" from 3.2.7 left its POSTed run queued with no endpoint named).
+          api() {
+            local method="$1" endpoint="$2" rc
+            shift 2
+            if gh api -X "$method" "$endpoint" "$@"; then return 0; else rc=$?; fi
+            echo "::error::review-gate: gh api $method $endpoint failed (exit $rc)" >&2
+            return "$rc"
+          }
           list_runs() {
-            gh api "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
+            api GET "repos/$REPO/commits/$SHA/check-runs?check_name=Review%20Gate&filter=all&per_page=100" --paginate \
               | jq -r --arg ext "$external_id" '.check_runs[]
                        | select(.name == "Review Gate" and .app.slug == "github-actions" and .external_id == $ext)
                        | select((.details_url // "") | test("/actions/runs/[0-9]+/job/") | not)
-                       | "\(.id) \(.check_suite.id)"'
+                       | .id'
           }
-          new_id=$(gh api -X POST "repos/$REPO/check-runs" -f name="Review Gate" -f head_sha="$SHA" \
-            -f external_id="$external_id" --jq .id)
+          # Completes this PR's legacy runs with the given result. Returns non-zero when they cannot be
+          # listed or completed; the caller then fails the job. Cleanup itself is best effort: with the
+          # API down, a legacy run keeps its old state, and the failed job is what blocks the merge.
           complete_check() {
             local conclusion="$1" title="$2" summary="$3" listed id
-            # Re-list each time, so a run a cancelled evaluation POSTed after our start is completed too.
             if ! listed=$(list_runs); then
-              echo "::warning::could not list Review Gate check runs on $SHA; completing only this run"
-              listed=""
+              echo "::error::review-gate: could not list legacy Review Gate check runs on $SHA" >&2
+              return 1
             fi
-            for id in $(printf '%s\n' "$new_id" $(printf '%s\n' "$listed" | cut -d' ' -f1) | sort -u); do
-              gh api -X PATCH "repos/$REPO/check-runs/$id" \
+            for id in $listed; do
+              api PATCH "repos/$REPO/check-runs/$id" \
                 -f status="completed" \
                 -f conclusion="$conclusion" \
                 -f "output[title]=$title" \
-                -f "output[summary]=$summary" >/dev/null
+                -f "output[summary]=$summary" >/dev/null || return 1
             done
           }
-          # 3.2.6 invariant: every review-gate workflow run on this head that was not cancelled has a Review
-          # Gate run of this PR in its suite. A gap means a POST missed its own suite; a runner-only suite
-          # blocked nevar-logs #12 and nevar-audit #17 but not nevar-content #12, so the exact BLOCKED trigger
-          # is unresolved and this fails closed. A cancelled duplicate's suite is exempt (nevar-audit #18
-          # merged with one). Only THIS PR's workflow runs count (run-name above): two PRs can share a head
-          # sha, and each must not see the other's suite as a gap. Runs from a pre-3.2.6 template carry no
-          # such title and are not checked. This run must itself match (3.2.7): an empty match set is how
-          # 3.2.6's unquoted run-name skipped the check silently. Prints why it failed, else nothing.
-          uncovered_suites() {
-            local covered runs gap
-            covered=$(list_runs | cut -d' ' -f2) || return 1
-            runs=$(gh api "repos/$REPO/actions/runs?head_sha=$SHA&event=pull_request_target&per_page=100" --paginate \
-              | jq -r --arg title "$RUN_TITLE" '.workflow_runs[]
-                       | select((.path | split("@")[0]) == ".github/workflows/review-gate.yml")
-                       | select(.display_title == $title)
-                       | select(.conclusion != "cancelled") | "\(.id) \(.check_suite_id)"') || return 1
-            if ! printf '%s\n' "$runs" | cut -d' ' -f1 | grep -qx "$GITHUB_RUN_ID"; then
-              echo "this run ($GITHUB_RUN_ID) is not among the review-gate runs titled \"$RUN_TITLE\"; check run-name."
-              return 1
-            fi
-            gap=$(comm -23 <(printf '%s\n' "$runs" | cut -d' ' -f2 | sort -u) <(printf '%s\n' $covered | sort -u))
-            [ -z "$gap" ] || echo "review-gate suite(s) without this PR's Review Gate run: $gap."
-          }
-          # Invalidate any prior same-head success before reevaluation (edited /
-          # unlabeled / …): red until we complete below.
-          complete_check failure "review-gate running" "Reevaluating review gate…"
+          # Invalidate any prior same-head legacy API success before reevaluation: red until completed below.
+          complete_check failure "review-gate running" "Reevaluating review gate…" || exit 1
           # Only the default branch is trusted for the checker binary. A PR can
           # target any same-repo branch; that base SHA is not necessarily protected.
           ref="$DEFAULT_BRANCH"
           load_trusted() {
             local name="$1" meta msg
-            if meta=$(gh api "repos/$REPO/contents/scripts/$name?ref=$ref" 2>/dev/null); then
-              printf '%s' "$meta" | jq -r '.content' | base64 -d > "/tmp/$name"
+            # An empty or absent .content (a file over 1 MB) would run an empty script that exits 0: fail closed.
+            if meta=$(api GET "repos/$REPO/contents/scripts/$name?ref=$ref") \
+              && printf '%s' "$meta" | jq -r '.content // empty' | base64 -d > "/tmp/$name" && [ -s "/tmp/$name" ]; then
               echo "Loaded trusted $name from ref=$ref"
             else
               msg=$(printf '%s\n%s' \
-                "Missing trusted scripts/$name on default branch $DEFAULT_BRANCH." \
-                "Run install-workflow.py and merge it to the default branch.")
+                "Could not load trusted scripts/$name from default branch $DEFAULT_BRANCH (see the API error above, or it was empty)." \
+                "If it is missing, run install-workflow.py and merge it to the default branch.")
               printf '%s\n' "$msg"
-              complete_check failure "review-gate failed" "$msg"
+              complete_check failure "review-gate failed" "$msg" || true  # the job fails either way
               exit 1
             fi
           }
@@ -154,7 +138,7 @@ jobs:
           rc=$?
           # pipefail (set above) keeps a failed or truncated listing from reaching
           # the detector as empty input. Any non-zero result fails the gate.
-          forged=$(gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate \
+          forged=$(api GET "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate \
             | REPO="$REPO" python3 /tmp/check-forged-review-gate.py 2>&1)
           frc=$?
           set -e
@@ -162,20 +146,11 @@ jobs:
             out=$(printf '%s\n%s\n%s' "$out" "forged-check step failed (exit $frc):" "$forged")
             [ "$rc" -ne 0 ] || rc=1
           fi
-          if ! gap=$(uncovered_suites) || [ -n "$gap" ]; then
-            out=$(printf '%s\n%s\n%s' "$out" \
-              "suite check failed: ${gap:-<lookup failed>}" \
-              "Each evaluation POSTs one run, so a gap means a POST missed its own suite (report it with the run link)." \
-              "The required check may read \"expected\" (trigger unresolved). Rerun this run in place; if it stays red, push a new head.")
-            [ "$rc" -ne 0 ] || rc=1
-          fi
           printf '%s\n' "$out"
-          # pull_request_target attaches the Actions job to the base SHA — always
-          # publish Checks API on the PR head for the required-check context.
           summary=${out:0:60000}  # no pipe: head closing early SIGPIPEs under pipefail
-          if [ "$rc" -eq 0 ]; then
-            complete_check success "review-gate ok" "$summary"
-          else
-            complete_check failure "review-gate failed" "$summary"
+          if [ "$rc" -eq 0 ]; then conclusion=success; title="review-gate ok"; else conclusion=failure; title="review-gate failed"; fi
+          if ! complete_check "$conclusion" "$title" "$summary"; then
+            echo "::error::review-gate: legacy Review Gate runs on $SHA were not all completed; failing closed" >&2
+            rc=1
           fi
           exit "$rc"

@@ -13,50 +13,41 @@ staging" with no trusted pair (set()). Several downstream repos still publish th
 repos. The map stays unchanged; this wrapper checks only `Review Gate`. The other name stays the job
 of each repo's own main-via-staging guard.
 
-NO TRUSTED ACTIONS PAIR FOR `Review Gate`: the vendored map trusts (.github/workflows/review-gate.yml,
-pull_request_target), but a pull_request_target job attaches to the base SHA, and a stacked child PR's
-base is the outer PR's head. That child's trusted-pair success would satisfy the outer PR. So the job is
-named review-gate-runner and the real result is only the Checks API run; any Actions job named
-`Review Gate` is forged here. A job from the formerly trusted pair is almost always a pre-3.2.0
-review-gate.yml still naming its job `Review Gate`, so the wrapper adds a reinstall hint for it.
+THE GATE'S OWN JOB IS THE RESULT (3.2.8): the vendored map trusts (.github/workflows/review-gate.yml,
+pull_request_target), and that job publishes `Review Gate`. A pull_request_target job's check run is on
+the PR HEAD, in its own workflow run's suite (email_demo #1068: job 133165097976 on head 6402d452, suite
+118647401541), not on the base as 3.2.0-3.2.7 assumed. A Checks API POST cannot pick a suite and lands in
+the head's oldest one, which the required-status rule does not read (BLOCKED "expected", #104), so the
+job is the only placement that holds. Another PR's gate job reaches this head when a PR shares the head
+sha (open, merged, or closed: `commits/{sha}/pulls` omits closed-unmerged PRs, so a PR listing cannot
+rule them out). So a trusted-pair job is accepted only when its workflow run is THIS PR's: the run's
+display_title is the workflow's run-name, `Review Gate - PR #<n>` (RUN_TITLE), fixed from the event when
+the run is created and set only by the trusted default-branch workflow (confirmed live, nevar-auth #23).
+Any other Actions job named `Review Gate` is forged.
 
 DELETE THIS WRAPPER when Option A or B of the aec plan lands (a required workflow or a distinct
 publisher app, making the required checks unforgeable through the Checks API). The detector is then
 retired or kept as defence in depth (plan step S4) and review-gate.yml calls it directly or not at all.
 
-BOOTSTRAP (nevar-integrations #11): the PR that installs 3.2.x is itself evaluated by the default
-branch's legacy workflow, whose job is still named `Review Gate`. Such a job is accepted, with a
-notice, only when ALL hold: it ran from a formerly trusted (path, pull_request_target) pair; that path
-is on the default branch; this PR (PR_NUMBER) modifies, removes or renames that file; and the run was
-triggered for THIS PR and executed the default branch's file (3.2.6, Codex r4582534712 and aec #163).
-The PR is checked on the run's immutable head fields (head_sha, head_branch, head_repository: for
-pull_request_target they name the triggering PR's head, seen on nevar-integrations #11 run 43817384199),
-never on the run's `.pull_requests` array, which GitHub derives from the commit and can list an outer PR
-for a stacked child's run. Those fields cannot tell apart two PRs on the same head, so any other PR (open
-or closed) whose head is that sha refuses the bootstrap. The revision is checked as: the file at this PR's
-base sha equals the default branch's copy (no API field names the revision a run executed). A missing or
-malformed PR_NUMBER, or a failed PR, PR-files, run or default-branch lookup, exits 2; any other failed
-condition leaves the job forged (exit 1).
+A missing or malformed PR_NUMBER, or a failed run lookup, exits 2.
 
-env: REPO (required), PR_NUMBER (needed only to accept a legacy job), DEFAULT_BRANCH (else looked up).
+env: REPO (required), PR_NUMBER (needed to accept the gate's own job).
 stdin: `set -o pipefail; gh api "repos/$REPO/commits/$SHA/check-runs?per_page=100&filter=all" --paginate`
 Exit 0: none forged. 1: forged (listed on stderr). 2: could not evaluate (fails closed).
 """
 import importlib.util
-import json
 import os
 import re
 import subprocess
 import sys
 from pathlib import Path
 
-HINT = ("::error::a job named `Review Gate` ran from review-gate.yml (pull_request_target): that is a "
-        "pre-3.2.0 workflow. Reinstall the 3.2.0+ workflow (`aec run-script skill:review-gate "
-        "install-workflow.py --force`) and merge it to the default branch.")
+
+RUN_TITLE = "Review Gate - PR #{pr}"  # = run-name in review-gate.yml; a test parses both and compares
 
 
 class Ambiguous(Exception):
-    """The bootstrap conditions could not be evaluated: fail closed with exit 2."""
+    """A run's PR could not be established: fail closed with exit 2."""
 
 
 def _gh(*args):
@@ -66,70 +57,11 @@ def _gh(*args):
         raise Ambiguous(f"gh api {args[0]} failed: {exc.stderr.strip()}") from exc
 
 
-def _pr_files(repo, pr):
-    """`gh api --paginate` concatenates one JSON array per page."""
-    text, decoder, index, files = _gh(f"repos/{repo}/pulls/{pr}/files?per_page=100", "--paginate"), \
-        json.JSONDecoder(), 0, []
-    try:
-        while index < len(text):
-            if text[index].isspace():
-                index += 1
-                continue
-            page, index = decoder.raw_decode(text, index)
-            if not isinstance(page, list) or not all(isinstance(f, dict) and isinstance(f.get("filename"), str)
-                                                     for f in page):
-                raise ValueError("not a list of PR files")
-            files.extend(page)
-    except ValueError as exc:
-        raise Ambiguous(f"could not parse PR {pr} files: {exc}") from exc
-    return files
-
-
-def _blob(repo, path, ref):
-    """The file's blob sha at `ref`, or None when it is not there."""
-    try:
-        return subprocess.run(["gh", "api", f"repos/{repo}/contents/{path}?ref={ref}", "--jq", ".sha"],
-                              capture_output=True, text=True, check=True).stdout.strip() or None
-    except subprocess.CalledProcessError:
-        return None
-
-
-def bootstrap_refusal(repo, path, run_id):
-    """None when the legacy job from `path` is this PR's own bootstrap run; else why it stays forged."""
-    pr = os.environ.get("PR_NUMBER", "")
-    if not re.fullmatch(r"[1-9][0-9]*", pr):
-        raise Ambiguous(f"PR_NUMBER is missing or malformed ({pr!r}); it is needed to accept a legacy job")
-    fields = _gh(f"repos/{repo}/pulls/{pr}", "--jq",
-                 "[.head.sha, .head.ref, .head.repo.full_name, .base.sha] | @tsv").strip("\n").split("\t")
-    if len(fields) != 4 or not all(fields):
-        raise Ambiguous(f"could not read PR #{pr}'s head and base ({fields!r})")
-    pr_head, base_sha = "\t".join(fields[:3]), fields[3]
-    run_head = _gh(f"repos/{repo}/actions/runs/{run_id}", "--jq",
-                   "[.head_sha, .head_branch, .head_repository.full_name] | @tsv").strip("\n")
-    if run_head != pr_head:
-        return f"run {run_id} was triggered for {run_head!r}, not PR #{pr}'s head {pr_head!r}"
-    sha = fields[0]
-    # Any other PR on this head, open or closed: a child closed after its run would otherwise match.
-    shared = _gh(f"repos/{repo}/commits/{sha}/pulls?per_page=100", "--paginate", "--jq",
-                 f'.[] | select(.head.sha == "{sha}" and .number != {pr}) | .number').split()
-    if shared:
-        return f"PR(s) #{', #'.join(shared)} share head {sha}, so run {run_id} cannot be attributed to PR #{pr}"
-    touched = any((f["filename"] == path and f.get("status") != "added") or f.get("previous_filename") == path
-                  for f in _pr_files(repo, pr))
-    if not touched:
-        return f"PR #{pr} does not change {path}"
-    branch = os.environ.get("DEFAULT_BRANCH") or _gh(f"repos/{repo}", "--jq", ".default_branch").strip()
-    if not branch:
-        raise Ambiguous("could not determine the default branch")
-    default_blob = _blob(repo, path, branch)
-    if default_blob is None:
-        return f"{path} is not on the default branch {branch}"
-    # No API field names the workflow revision a run executed. pull_request_target runs the default
-    # branch's file (or, on older GitHub semantics, the base branch's): requiring the base copy to equal the
-    # default copy means the run executed the default-branch revision either way (aec #163 Codex P1).
-    if _blob(repo, path, base_sha) != default_blob:
-        return f"{path} at PR #{pr}'s base {base_sha} differs from the default branch {branch}'s copy"
-    return None
+def foreign_run(repo, pr, run_id):
+    """None when workflow run `run_id` is PR #pr's own gate run; else why its job is not this PR's."""
+    title = _gh(f"repos/{repo}/actions/runs/{run_id}", "--jq", ".display_title").strip()
+    want = RUN_TITLE.format(pr=pr)
+    return None if title == want else f"run {run_id} is titled {title!r}, not {want!r}"
 
 
 def main():
@@ -139,8 +71,8 @@ def main():
         )
         detector = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(detector)
-        legacy_pairs = detector.PROTECTED["Review Gate"]  # KeyError if a re-vendor drops the name: fail closed
-        scoped = {"Review Gate": set()}
+        trusted = detector.PROTECTED["Review Gate"]  # KeyError if a re-vendor drops the name: fail closed
+        scoped = {"Review Gate": set()}  # every job is looked at; trusted pairs are then checked below
     except (OSError, ImportError, KeyError, SyntaxError) as exc:
         print(f"::error::could not load the forged-check detector, failing closed: {exc}", file=sys.stderr)
         return 2
@@ -161,20 +93,20 @@ def main():
                 flagged.append((name, where, *seen[-1]))
         bad = []
         for name, where, run_id, pair in flagged:
-            refusal = bootstrap_refusal(repo, pair[0], run_id) if pair in legacy_pairs else "untrusted workflow"
-            if refusal is None:
-                print(f"::notice::bootstrap: `{name}` job {where} ran {pair[0]} ({pair[1]}) from the default "
-                      "branch, and this PR replaces that file; accepted as the legacy workflow it upgrades.",
-                      file=sys.stderr)
-            else:
-                bad.append((name, where, pair, refusal))
+            if pair not in trusted:
+                bad.append((name, where, "untrusted workflow"))
+                continue
+            pr = os.environ.get("PR_NUMBER", "")
+            if not re.fullmatch(r"[1-9][0-9]*", pr):
+                raise Ambiguous(f"PR_NUMBER is missing or malformed ({pr!r}); it is needed to accept the gate's job")
+            why = foreign_run(repo, pr, run_id)
+            if why:
+                bad.append((name, where, why))
     except (ValueError, KeyError, TypeError, subprocess.CalledProcessError, Ambiguous) as exc:
         print(f"::error::could not evaluate check runs, failing closed: {exc}", file=sys.stderr)
         return 2
-    for name, where, _, refusal in bad:
-        print(f"::error::forged check '{name}' from an untrusted Actions job: {where} ({refusal})", file=sys.stderr)
-    if any(pair in legacy_pairs for _, _, pair, _ in bad):
-        print(HINT, file=sys.stderr)
+    for name, where, why in bad:
+        print(f"::error::forged check '{name}' from an untrusted Actions job: {where} ({why})", file=sys.stderr)
     return 1 if bad else 0
 
 

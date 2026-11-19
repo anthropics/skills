@@ -16,15 +16,87 @@ def install(repo, *args):
     return subprocess.run([sys.executable, str(INSTALLER), *args], cwd=repo, capture_output=True, text=True)
 
 
+DETECTOR = (SKILL / "scripts" / "check-forged-gate-names.py").read_bytes()
+SIGNATURE = b"def forged(check_runs, run_lookup, protected=None):"
+assert SIGNATURE in DETECTOR
+# a newer/custom detector the bundled wrapper runs against
+COMPATIBLE = b"# newer aec copy\n" + DETECTOR
+# #105 Codex P2: these define every name the wrapper uses, yet the wrapper cannot run against them
+INCOMPATIBLE = DETECTOR.replace(SIGNATURE, b"def forged(check_runs, run_lookup):")  # old 2-arg forged
+INCOMPATIBLE_VARIANTS = (
+    INCOMPATIBLE,
+    b"# custom\nPROTECTED = {}\ndef forged(c, l, protected=None): return []\n"
+    b"def _gh_run_lookup(repo): return None\ndef _load_check_runs(text): return []\n",  # no Review Gate entry
+    b"# old custom detector\nPROTECTED = {}\ndef forged(c, l): return []\n",
+    b"def broken(:\n",
+    DETECTOR.replace(SIGNATURE, b"def forged(check_runs, run_lookup, protected=None, *, audit):"),  # required kw-only
+)
+
+
 class VendoredDetector(unittest.TestCase):
+    def test_incompatible_custom_detector_refuses_without_force(self):
+        # 3.2.8 P2: a KEPT detector the upgraded wrapper cannot use would fail every gate run
+        with tempfile.TemporaryDirectory() as repo:
+            dest = Path(repo) / "scripts" / "check-forged-gate-names.py"
+            dest.parent.mkdir()
+            for variant in INCOMPATIBLE_VARIANTS:
+                with self.subTest(variant=variant[:40]):
+                    dest.write_bytes(variant)
+                    proc = install(repo)
+                    self.assertEqual(proc.returncode, 1, proc.stderr)
+                    self.assertIn("cannot run against", proc.stderr)
+                    self.assertEqual(dest.read_bytes(), variant)
+                    self.assertFalse((Path(repo) / "scripts" / "check-forged-review-gate.py").exists())
+                    self.assertFalse((Path(repo) / ".github").exists())
+
+    def test_the_installer_never_executes_the_repo_detector(self):
+        # #105 Codex P1: compatibility is decided by parsing; repo code never runs on install
+        with tempfile.TemporaryDirectory() as repo, tempfile.TemporaryDirectory() as side:
+            marker = Path(side) / "ran"
+            dest = Path(repo) / "scripts" / "check-forged-gate-names.py"
+            dest.parent.mkdir()
+            for body in (b"open(%r, 'w').close()\nraise SystemExit(0)\n" % str(marker).encode(),
+                         COMPATIBLE + b"\nopen(%r, 'w').close()\n" % str(marker).encode()):
+                with self.subTest(body=body[:30]):
+                    dest.write_bytes(body)
+                    install(repo)
+                    install(repo, "--force")
+                    self.assertFalse(marker.exists())
+
+    def test_incompatible_custom_detector_is_backed_up_and_replaced_with_force(self):
+        with tempfile.TemporaryDirectory() as repo:
+            dest = Path(repo) / "scripts" / "check-forged-gate-names.py"
+            dest.parent.mkdir()
+            dest.write_bytes(INCOMPATIBLE)
+            proc = install(repo, "--force")
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertEqual(dest.read_bytes(), (SKILL / "scripts" / dest.name).read_bytes())
+            self.assertEqual(dest.with_name(dest.name + ".custom.bak").read_bytes(), INCOMPATIBLE)
+            self.assertIn("REPLACED", proc.stderr)
+
+    def test_a_second_forced_replacement_keeps_the_first_backup(self):
+        # #105 Codex P2: the first custom copy must survive a later forced upgrade of a second one
+        with tempfile.TemporaryDirectory() as repo:
+            dest = Path(repo) / "scripts" / "check-forged-gate-names.py"
+            dest.parent.mkdir()
+            first, second = INCOMPATIBLE_VARIANTS[1], INCOMPATIBLE_VARIANTS[2]
+            dest.write_bytes(first)
+            self.assertEqual(install(repo, "--force").returncode, 0)
+            dest.write_bytes(second)
+            proc = install(repo, "--force")
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            self.assertEqual(dest.with_name(dest.name + ".custom.bak").read_bytes(), first)
+            self.assertEqual(dest.with_name(dest.name + ".custom.1.bak").read_bytes(), second)
+
+
     def test_differing_repo_detector_is_left_untouched_even_with_force(self):
         with tempfile.TemporaryDirectory() as repo:
             dest = Path(repo) / "scripts" / "check-forged-gate-names.py"
             dest.parent.mkdir()
-            dest.write_bytes(b"# newer aec copy\n")
+            dest.write_bytes(COMPATIBLE)
             proc = install(repo, "--force")
             self.assertEqual(proc.returncode, 0, proc.stderr)
-            self.assertEqual(dest.read_bytes(), b"# newer aec copy\n")
+            self.assertEqual(dest.read_bytes(), COMPATIBLE)
             self.assertIn("KEPT", proc.stderr)
             # everything else is still (re)installed
             self.assertEqual((Path(repo) / "scripts" / "check-forged-review-gate.py").read_bytes(),
@@ -67,6 +139,24 @@ class VendoredDetector(unittest.TestCase):
             self.assertEqual((Path(repo) / "scripts" / "check-forged-gate-names.py").read_bytes(),
                              (SKILL / "scripts" / "check-forged-gate-names.py").read_bytes())
             self.assertNotIn("KEPT", proc.stderr)
+
+    def test_linter_is_vendored_and_runs_beside_the_checker(self):
+        with tempfile.TemporaryDirectory() as repo:
+            proc = install(repo)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            linter = Path(repo) / "scripts" / "lint-review-body.py"
+            self.assertEqual(linter.read_bytes(), (SKILL / "scripts" / "lint-review-body.py").read_bytes())
+            bad = subprocess.run([sys.executable, str(linter)], input="## Review\n\n- x\n", capture_output=True, text=True)
+            self.assertEqual(bad.returncode, 1, bad.stderr)
+            self.assertIn("PR body line 3:", bad.stderr)
+
+    def test_this_repo_mirrors_are_byte_identical(self):
+        # claude-skills runs its own gate from scripts/ and .github/workflows/; they must equal the skill's copies.
+        root = SKILL.parent
+        for name in ("check-review-gate.py", "check-forged-review-gate.py", "lint-review-body.py"):
+            self.assertEqual((root / "scripts" / name).read_bytes(), (SKILL / "scripts" / name).read_bytes(), name)
+        self.assertEqual((root / ".github" / "workflows" / "review-gate.yml").read_bytes(),
+                         (SKILL / "templates" / "review-gate.yml").read_bytes())
 
 
 if __name__ == "__main__":
