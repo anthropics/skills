@@ -1,7 +1,7 @@
 ---
 name: pr-merge-flow
 description: Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.
-version: 1.4.7
+version: 1.5.0
 author: Bernier LLC
 ---
 
@@ -66,6 +66,20 @@ hooks dormant). It blocks:
   `gh pr view --json statusCheckRollup`; an empty rollup or a `gh` failure blocks). Only the newest workflow run of each check counts, identified by the run id in its details URL (GitHub already lists only a run's latest attempt): an older red run superseded by a newer green run of the same workflow (a new PR's first Review Gate run) does not block, while a newer red or still-running run does. Same-named jobs inside one run are distinct jobs and each must be green, so a later green job never hides a failed sibling. A run's start is its earliest job's start, so a dependency-delayed job never makes an older run look newer. Runs started in the same second cannot be ordered, so all of them count (fail closed). An entry with no parsable run id in its details URL has an unknown run, so it supersedes nothing and must be green on its own (fail closed). A workflow is identified by its run's file path and event from the Actions API (one `gh api repos/<repo>/actions/runs?head_sha=<head>` call), never by its editable `name:`: a PR that adds a workflow also named `CI` cannot supersede the real CI's failed job. A run the API does not list (or an API failure) supersedes nothing (fail closed). Because `detailsUrl` is writable, an entry counts as a run's job only when that run's jobs API lists its job id with the same name and conclusion; a custom check pointing at a legitimate run supersedes nothing. Two PRs can share a head sha (one branch into staging and main), and the rollup lists both PRs' runs: a run counts for the merged PR only when its `pull_requests` list is exactly that PR, its head branch and repo are the PR's, and a review-gate run-name (`Review Gate - PR #<n>`, 3.2.6+) names no other PR. Any other run (another PR's, one listing several PRs, a fork's with none) supersedes nothing and must be green on its own (1.4.7). The lookups use the PR's own host and repo from its URL, so a URL selector from another checkout or an Enterprise `-R HOST/OWNER/REPO` resolves runs, and read JSON rather than `@tsv`, so a job name with a backslash or tab still matches (1.4.7). All of a merge check's `gh` calls share one 15 s budget under the hook's 20 s timeout; a run whose jobs lookup would overrun it supersedes nothing (fail closed). Boolean flags are last-wins like gh's own parser: `--disable-auto --disable-auto=false` merges and gets the full checks. PR #325 once
   merged on a CANCELLED check. The wanted shape is `gh pr merge <n> --squash --match-head-commit <sha>` (`--merge`
   for promotions into main);
+- a posted comment that mentions the Codex bot (the at-sign followed by `codex`, any case): `gh pr comment`,
+  `gh issue comment`, `gh pr review`, and a `gh api` call whose `-f`/`-F`/`--field`/`--raw-field` value or
+  `--input` file holds it (1.5.0). Each mention starts a Codex review on Matt's quota; Codex reviews a PR's
+  first head only, and later heads get a fallback review plus the `Fallback review:` line in `## Review`.
+  The body is scanned in the arguments and in a readable `--body-file`/`-F`, `-F body=@file` or `--input`
+  file (relative to the command's `cd`). When the body comes from a file or stdin (`-`, `/dev/stdin`,
+  `/dev/fd/0`), the command is also blocked when the mention appears anywhere in it, because that file may
+  be written earlier in the same command (`cat > b.md <<EOF … && gh pr comment 5 -F b.md`). The mention is
+  the at-sign plus `codex` as its own word, so an email address such as `bob@codex.io` does not count.
+  Known limits, not checked: a body built by command substitution (`--body "$(cat f)"`) or a variable;
+  a file written by an earlier command; stdin piped from another command; `gh` not run as a bare word
+  (an absolute path, `time`/`nohup`, `bash -c`, `xargs`); `gh pr create`/`edit` and `gh issue create`
+  bodies; a comment line ending in a backslash, which folds the next line into the comment; and a heredoc
+  nested in `$(...)` inside quotes. A heredoc that feeds no posting command (`cat > notes.md`) is never blocked;
 - a `sleep` plus a status query (`gh pr checks|view|status`, `gh run view|watch|list`) in one
   command, loop or not. The wanted shape is `gh pr checks <n> --watch --fail-fast` run in the
   background.
@@ -81,6 +95,10 @@ scope unless an agent actually ran it.
 **Override:** when you genuinely need a specific commit from the base (a fix your tests
 depend on), append `# sync-base: <reason>` to the command. Say which commit and why.
 The reason stays in the transcript.
+
+**Codex override:** only when Matt explicitly asked for a Codex review on this head, append
+`# codex-review-ok: <reason>` (a shell comment with a reason; the colon is optional, so
+`# codex-review-ok <reason>` works too; quoted text does not count).
 
 Self-check: `python3 pr-merge-flow/tests/test_pr_guard.py`.
 

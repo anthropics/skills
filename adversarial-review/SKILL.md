@@ -1,7 +1,7 @@
 ---
 name: adversarial-review
 description: Run the adversarial PR review loop with Codex-first spend and inline line-item PR comments. Use whenever you open or push a PR, say a PR is ready, hand work to a traffic cop, need a code review, or fall through reviewers after Codex/agy quota failures. Prefer this skill over remembering review order from AGENTS.md prose.
-version: 2.1.1
+version: 2.2.0
 author: Bernier LLC
 ---
 
@@ -25,7 +25,7 @@ After opening a PR or pushing commits to one. Never declare "ready" in the same 
 ## Reviewer order (fall through only when unavailable)
 
 1. **Codex first**
-   - **GitHub:** on first open Codex may auto-review; after every later push post `gh pr comment <n> --body "@codex review"` without asking.
+   - **GitHub:** Codex reviews the PR's first head on open. **Never post a comment that mentions the Codex bot** (the at-sign followed by `codex`, e.g. asking it to review): each one starts a review on Matt's Codex quota (Program Cop, 2026-11-19). Every later head gets a fallback review (below) and the `Fallback review:` attestation line in `## Review` (see PR body). Only Matt's explicit ask overrides; then the command carries a `# codex-review-ok: <reason>` shell comment (colon optional), which `pr-merge-flow`'s guard requires.
    - **T3 parallel local:** `delegate_task` with `modelSelection` `{ "instanceId": "codex", "model": "gpt-6.1-sol" }` against the PR diff.
    - Unavailable: quota exhausted, not started within ~15 min of first request, or absent from the repo.
    - **After Codex completes:** if required check `Review Gate` is still red (parallel open/synchronize often failed before the review landed), re-fire the trusted `pull_request_target` workflow with a no-op label toggle (e.g. add then remove `review:refresh`) or a trivial PR body edit — do not wait on review-event Actions (those are intentionally disabled for security).

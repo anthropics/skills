@@ -1,9 +1,9 @@
 {
   "manifestVersion": 1,
-  "generatedAt": "2026-11-19T00:35:02.032576+00:00",
+  "generatedAt": "2026-11-19T01:05:17.399488+00:00",
   "skills": {
     "adversarial-review": {
-      "version": "2.1.1",
+      "version": "2.2.0",
       "description": "Run the adversarial PR review loop with Codex-first spend and inline line-item PR comments. Use whenever you open or push a PR, say a PR is ready, hand work to a traffic cop, need a code review, or fall through reviewers after Codex/agy quota failures. Prefer this skill over remembering review order from AGENTS.md prose.",
       "author": "Bernier LLC"
     },
@@ -99,7 +99,7 @@
       "description": "Autonomous Playwright test execution, environment management, profiling, and bug-fixing loop. Spins up isolated test environments (database, server), executes test suites, profiles performance, diagnoses failures, implements fixes, cleans up all test artifacts, and tears down the environment. Companion to playwright-test-generator. Use when running Playwright test suites, when tests are failing and need diagnosis/fixing, when validating a feature branch before merge, or when the test suite needs a full pass with autonomous repair. Triggered by test failures, CI red builds, pre-merge validation, or explicit user request to run and fix tests."
     },
     "pr-merge-flow": {
-      "version": "1.4.7",
+      "version": "1.5.0",
       "description": "Use after opening or pushing to a pull request, while waiting on CI, or before merging the base branch (staging/main) into a feature branch. Keeps parallel PRs from restarting each other's CI and review — hand the merge to the repo's traffic cop (`gh pr merge <n> --squash --match-head-commit <sha>`, never `--auto`), wait on checks in the background, and sync the base only on a real conflict. Ships a PreToolUse guard that enforces it.",
       "author": "Bernier LLC"
     },
