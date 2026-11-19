@@ -106,7 +106,8 @@ def main() -> int:
     force = "--force" in sys.argv
     workflow_src = skill_root / "templates" / "review-gate.yml"
     # The workflow loads each of these from the default branch.
-    scripts = ("check-review-gate.py", "check-forged-gate-names.py", "check-forged-review-gate.py")
+    # lint-review-body.py is for authors (it imports the checker beside it); the workflow never runs it.
+    scripts = ("check-review-gate.py", "check-forged-gate-names.py", "check-forged-review-gate.py", "lint-review-body.py")
     script_srcs = [skill_root / "scripts" / name for name in scripts]
     for src in (workflow_src, *script_srcs):
         if not src.is_file():

@@ -140,6 +140,24 @@ class VendoredDetector(unittest.TestCase):
                              (SKILL / "scripts" / "check-forged-gate-names.py").read_bytes())
             self.assertNotIn("KEPT", proc.stderr)
 
+    def test_linter_is_vendored_and_runs_beside_the_checker(self):
+        with tempfile.TemporaryDirectory() as repo:
+            proc = install(repo)
+            self.assertEqual(proc.returncode, 0, proc.stderr)
+            linter = Path(repo) / "scripts" / "lint-review-body.py"
+            self.assertEqual(linter.read_bytes(), (SKILL / "scripts" / "lint-review-body.py").read_bytes())
+            bad = subprocess.run([sys.executable, str(linter)], input="## Review\n\n- x\n", capture_output=True, text=True)
+            self.assertEqual(bad.returncode, 1, bad.stderr)
+            self.assertIn("PR body line 3:", bad.stderr)
+
+    def test_this_repo_mirrors_are_byte_identical(self):
+        # claude-skills runs its own gate from scripts/ and .github/workflows/; they must equal the skill's copies.
+        root = SKILL.parent
+        for name in ("check-review-gate.py", "check-forged-review-gate.py", "lint-review-body.py"):
+            self.assertEqual((root / "scripts" / name).read_bytes(), (SKILL / "scripts" / name).read_bytes(), name)
+        self.assertEqual((root / ".github" / "workflows" / "review-gate.yml").read_bytes(),
+                         (SKILL / "templates" / "review-gate.yml").read_bytes())
+
 
 if __name__ == "__main__":
     unittest.main()

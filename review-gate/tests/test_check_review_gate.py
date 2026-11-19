@@ -2329,6 +2329,10 @@ assert (_r, _rc, _calls) == ([], 0, []), (_r, _out, _calls)
 # a thread an association-closer already closed makes no lookup, so a failing lookup cannot fail it (#116 P2-2)
 _r, _rc, _out, _calls = _run_perm([_priv("gone"), _priv(assoc="MEMBER", login="m")], {"gone": "ERROR"})
 assert (_r, _rc, _calls) == ([], 0, []), (_r, _out, _calls)
+# the skip is per thread: a MEMBER closing thread 1 does not let a read-permission CONTRIBUTOR close thread 2
+_r, _rc, _out = _run(_fixture(reviewThreads=[[], [_thread("T1", [_p2_root, _priv(assoc="MEMBER", login="m")]),
+                                                  _thread("T2", [_p2_root, _priv("r")])]], permissions={"r": "read"}))[:3]
+assert _rc == 1 and len(_r) == 1 and "P2 thread #2" in _r[0] and "r (CONTRIBUTOR, permission read)" in _r[0], (_r, _out)
 # an enterprise-managed login (`handle_shortcode`) is looked up and closes with write (#116 P2-3)
 _r, _rc, _out, _calls = _run_perm([_priv("jdoe_acme")], {"jdoe_acme": "write"})
 assert (_r, _rc, _calls) == ([], 0, ["jdoe_acme", "jdoe_acme"]), (_r, _out, _calls)

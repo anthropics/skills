@@ -437,10 +437,20 @@ def review_region(body: str) -> tuple[list[str], list[str]]:
         if _is_blank(line) or (_PROSE_LINE.fullmatch(line) and not _ORDERED_MARKER.match(line)):
             continue
         problems.append(
-            f"PR body line {n}: in ## Review every line must be plain prose (starting with a letter or "
-            "digit, no list marker, none of ` < > | [ ] ( ) * _ ~ $)"
+            f"PR body line {n}: {_prose_offence(line)}; in ## Review every line must be plain prose (starting "
+            "with a letter or digit, no list marker, none of ` < > | [ ] ( ) * _ ~ $)"
         )
     return region, problems
+
+
+def _prose_offence(line: str) -> str:
+    """Name what makes a non-blank ## Review line fail _PROSE_LINE / _ORDERED_MARKER (message only)."""
+    if not re.match(r"[A-Za-z0-9]", line):
+        return f"starts with {line[0]!r}, not a letter or digit"
+    if _ORDERED_MARKER.match(line):
+        return "starts with an ordered-list marker"
+    col, ch = next((i, c) for i, c in enumerate(line, 1) if c in "`<>|[]()*_~$")
+    return f"character {ch!r} at column {col}"
 
 
 def review_section_names_fallback(body: str, head: str | None = None) -> bool:
