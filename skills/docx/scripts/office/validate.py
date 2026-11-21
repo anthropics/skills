@@ -14,6 +14,7 @@ Auto-repair fixes:
 """
 
 import argparse
+import shlex
 import sys
 import tempfile
 import zipfile
@@ -22,15 +23,32 @@ from pathlib import Path
 import defusedxml.ElementTree as ET
 from defusedxml.common import DefusedXmlException
 
-from helpers import OOXML_FAMILY, rezip, safe_extract
+from helpers import OOXML_FAMILY, folder_entries, rezip, safe_extract
 from validators import DOCXSchemaValidator, PPTXSchemaValidator, RedliningValidator
 
 WORD_NS = "http://schemas.openxmlformats.org/wordprocessingml/2006/main"
 
 
+def _as_argument(path: Path) -> str:
+    name = str(path)
+    return shlex.quote("./" + name if name.startswith("-") else name)
+
+
+def _count(folders: list[str]) -> str:
+    return "1 folder entry" if len(folders) == 1 else f"{len(folders)} folder entries"
+
+
 def _fail(message: str):
     print(f"Error: {message}", file=sys.stderr)
     sys.exit(2)
+
+
+def _unpack(package: Path, dest: Path):
+    try:
+        with zipfile.ZipFile(package, "r") as zf:
+            safe_extract(zf, dest)
+    except Exception as e:  
+        _fail(f"cannot unpack {package}: {e}")
 
 
 def _has_tracked_changes(unpacked_dir: Path) -> bool:
@@ -95,6 +113,8 @@ def main():
             _fail(f"{original_file} is not a file")
         if original_file.suffix.lower() not in OOXML_FAMILY:
             _fail(f"{original_file} must be one of: {', '.join(sorted(OOXML_FAMILY))}")
+        with tempfile.TemporaryDirectory() as scratch:
+            _unpack(original_file, Path(scratch))
 
     family = OOXML_FAMILY.get((original_file or path).suffix.lower())
     if family is None:
@@ -111,11 +131,7 @@ def main():
         packed_file = path
         temp_dir_ctx = tempfile.TemporaryDirectory()
         unpacked_dir = Path(temp_dir_ctx.name)
-        try:
-            with zipfile.ZipFile(path, "r") as zf:
-                safe_extract(zf, unpacked_dir)
-        except (zipfile.BadZipFile, ValueError, OSError) as e:
-            _fail(f"cannot unpack {path}: {e}")
+        _unpack(path, unpacked_dir)
     else:
         if not path.is_dir():
             _fail(f"{path} is not a directory or Office file")
@@ -150,15 +166,42 @@ def main():
             print(f"Error: Validation not supported for file type {family}")
             sys.exit(1)
 
+    folders = folder_entries(packed_file) if packed_file is not None else []
+
+    unsaved_repairs = 0
     if args.auto_repair:
         total_repairs = sum(v.repair() for v in validators)
         if total_repairs:
             print(f"Auto-repaired {total_repairs} issue(s)")
-            if packed_file is not None:
+        if packed_file is not None and (total_repairs or folders):
+            try:
                 rezip(unpacked_dir, packed_file)
+            except OSError as e:
+                unsaved_repairs = total_repairs
+                left = []
+                if total_repairs:
+                    left.append(f"{total_repairs} repair(s) not saved")
+                if folders:
+                    left.append(f"{_count(folders)} in its ZIP")
+                print(f"Could not write {packed_file} ({e.strerror or e}): it is as it was, "
+                      f"with {' and '.join(left)}. Run --auto-repair on a copy in a folder "
+                      "you can write to.")
+            else:
+                if folders:
+                    print(f"Removed {_count(folders)} from the ZIP")
                 print(f"Wrote repaired file to {packed_file}")
+    elif folders:
+        print(
+            f"Note: {_count(folders)} in the ZIP. Such files have failed to open or co-edit "
+            f"through a cloud service. Remove them: zip -dq {_as_argument(packed_file)} '*/'"
+        )
 
     success = all([v.validate() for v in validators])
+
+    if unsaved_repairs:
+        print(f"FAILED - {packed_file} was not rewritten and still has the {unsaved_repairs} "
+              "issue(s) repaired above; the checks ran on a repaired copy")
+        success = False
 
     if temp_dir_ctx is not None:
         temp_dir_ctx.cleanup()

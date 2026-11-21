@@ -2,6 +2,7 @@
 Base validator with common validation logic for document files.
 """
 
+import os
 import re
 from pathlib import Path
 
@@ -10,7 +11,7 @@ from functools import lru_cache
 
 import lxml.etree
 
-from helpers import safe_extract
+from helpers import names_another_root, safe_extract
 
 
 @lru_cache(maxsize=None)
@@ -352,6 +353,9 @@ class BaseSchemaValidator:
                     if target and not target.startswith(
                         ("http", "mailto:")
                     ):  
+                        if names_another_root(target.lstrip("/")):
+                            broken_refs.append((target, rel.sourceline))
+                            continue
                         if target.startswith("/"):
                             target_path = self.unpacked_dir / target.lstrip("/")
                         elif rels_file.name == ".rels":
@@ -360,9 +364,18 @@ class BaseSchemaValidator:
                             base_dir = rels_dir.parent
                             target_path = base_dir / target
 
+                        target_path = Path(os.path.normpath(target_path))
+                        if not target_path.is_relative_to(self.unpacked_dir):
+                            broken_refs.append((target, rel.sourceline))
+                            continue
+
                         try:
                             target_path = target_path.resolve()
-                            if target_path.exists() and target_path.is_file():
+                            if (
+                                target_path.is_relative_to(self.unpacked_dir)
+                                and target_path.exists()
+                                and target_path.is_file()
+                            ):
                                 referenced_files.add(target_path)
                                 all_referenced_files.add(target_path)
                             else:
@@ -783,8 +796,7 @@ class BaseSchemaValidator:
         try:
             schema = _load_schema(str(schema_path))
 
-            with open(xml_file, "r") as f:
-                xml_doc = lxml.etree.parse(f)
+            xml_doc = lxml.etree.parse(str(xml_file))
 
             xml_doc, _ = self._remove_template_tags_from_text_nodes(xml_doc)
             xml_doc = self._preprocess_for_mc_ignorable(xml_doc)

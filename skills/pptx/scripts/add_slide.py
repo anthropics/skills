@@ -7,6 +7,7 @@ Does all of the package bookkeeping, so the deck stays valid:
   - adds a slide relationship with a fresh rId to presentation.xml.rels
   - inserts <p:sldId id="..." r:id="..."/> with a fresh id into
     <p:sldIdLst> — at the end, or after --after SLIDE
+  - counts the new slide in docProps/app.xml
 
 Works on an unpacked directory (during an editing session) or directly on a
 .pptx/.potx file (extracted to a temp dir, then rezipped atomically; the
@@ -25,6 +26,7 @@ A duplicated slide still holds the source's content: edit ppt/slides/slideN.xml
 """
 
 import argparse
+import posixpath
 import re
 import shutil
 import sys
@@ -32,8 +34,12 @@ from typing import NoReturn
 import tempfile
 import zipfile
 from pathlib import Path
+from xml.parsers.expat import ExpatError
 
-from office.helpers import rezip, safe_extract
+import defusedxml.minidom
+from defusedxml.common import DefusedXmlException
+
+from office.helpers import opc_target, rezip, safe_extract
 
 MINIMAL_SLIDE_XML = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
@@ -62,6 +68,8 @@ MINIMAL_SLIDE_XML = '''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 SHARED_PART_TYPES = ("chart", "diagramData", "oleObject", "package")
 
 NOTES_SLIDE_TYPE_RE = re.compile(r"""Type=["'][^"']*/relationships/notesSlide["']""")
+TAGS_TYPE_RE = re.compile(r"""Type=["'][^"']*/relationships/tags["']""")
+TAGS_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.presentationml.tags+xml"
 RELATIONSHIP_RE = re.compile(r"<Relationship\b[^>]*?(?:/>|>.*?</Relationship\s*>)", re.DOTALL)
 
 SLIDE_ID_MIN = 256
@@ -136,6 +144,11 @@ def duplicate_slide(unpacked_dir: Path, source: str, after: str | None = None) -
             lambda m: "" if NOTES_SLIDE_TYPE_RE.search(m.group(0)) else m.group(0),
             rels_content,
         )
+        rels_content = RELATIONSHIP_RE.sub(
+            lambda m: _with_own_tags_part(unpacked_dir, m.group(0), f"ppt/slides/{dest}")
+            if TAGS_TYPE_RE.search(m.group(0)) else m.group(0),
+            rels_content,
+        )
         dest_rels.write_text(rels_content, encoding="utf-8")
         shared_parts = sorted({
             t for t in re.findall(r'Type="[^"]*/relationships/(\w+)"', rels_content)
@@ -149,6 +162,32 @@ def duplicate_slide(unpacked_dir: Path, source: str, after: str | None = None) -
             f"(they are referenced, not copied) — editing those parts changes both slides"
         )
     return dest
+
+
+def _with_own_tags_part(unpacked_dir: Path, relationship: str, slide_part: str) -> str:
+    target = re.search(r"""Target=["']([^"']*)["']""", relationship)
+    try:
+        source = opc_target(target.group(1), slide_part) if target else None
+    except ValueError:
+        source = None
+    if source is None or not (unpacked_dir / source).is_file():
+        return relationship
+
+    tags_dir = (unpacked_dir / source).parent
+    content_types_path = unpacked_dir / "[Content_Types].xml"
+    content_types = content_types_path.read_text(encoding="utf-8")
+    names = [f.name for f in tags_dir.iterdir()] + re.findall(r"""PartName=["'][^"']*/([^/"']+)["']""", content_types)
+    taken = [int(m.group(1)) for name in names if (m := re.fullmatch(r"tag(\d{1,9})\.xml", name, re.I))]
+    copy = tags_dir / f"tag{max(taken, default=0) + 1}.xml"
+    shutil.copy2(unpacked_dir / source, copy)
+
+    part = copy.relative_to(unpacked_dir).as_posix()
+    override = f'<Override PartName="/{part}" ContentType="{TAGS_CONTENT_TYPE}"/>'
+    content_types_path.write_text(
+        content_types.replace("</Types>", f"  {override}\n</Types>"), encoding="utf-8"
+    )
+    relative = posixpath.relpath(part, posixpath.dirname(slide_part))
+    return relationship.replace(target.group(0), f'Target="{relative}"')
 
 
 def _precheck_registration(unpacked_dir: Path, after: str | None, dest: str) -> str | None:
@@ -194,11 +233,68 @@ def _register_slide(unpacked_dir: Path, dest: str, source_desc: str, after_rid: 
     slide_id = _get_next_slide_id(unpacked_dir)
     pos, total = _insert_into_sld_id_lst(unpacked_dir, slide_id, rid, after_rid)
 
+    _count_slide_in_app_properties(unpacked_dir, pos)
+
     print(f"Created ppt/slides/{dest} from {source_desc}")
     print(
         f'Inserted <p:sldId id="{slide_id}" r:id="{rid}"/> into <p:sldIdLst> '
         f"at position {pos} of {total}"
     )
+
+
+def _count_slide_in_app_properties(unpacked_dir: Path, position: int) -> None:
+    path = unpacked_dir / "docProps" / "app.xml"
+    if not path.is_file():
+        return
+    try:
+        dom = defusedxml.minidom.parse(str(path))
+        slides = _only_child(dom.documentElement, "Slides")
+        was = int(slides.firstChild.data)
+        if not _add_slide_title(dom, was, position):
+            return
+    except (AttributeError, LookupError, ValueError, TypeError, OSError, ExpatError, DefusedXmlException):
+        return  
+    slides.firstChild.data = str(was + 1)
+    path.write_bytes(dom.toxml(encoding="UTF-8", standalone=dom.standalone))
+
+
+def _add_slide_title(dom, was: int, position: int) -> bool:
+    heading_pairs = _only_child(dom.documentElement, "HeadingPairs")
+    titles_of_parts = _only_child(dom.documentElement, "TitlesOfParts")
+    if heading_pairs is None and titles_of_parts is None:
+        return True
+    headings, titles = _only_child(heading_pairs, "vector"), _only_child(titles_of_parts, "vector")
+    pairs = [v.getElementsByTagName("*")[0] for v in _elements(headings)]
+    names = [n.firstChild.data if n.firstChild else "" for n in pairs[0::2]]
+    counts = pairs[1::2]
+    sizes = [int(c.firstChild.data) for c in counts]
+    entries = _elements(titles)
+    consistent = (
+        int(headings.getAttribute("size")) == 2 * len(counts) == len(_elements(headings))
+        and int(titles.getAttribute("size")) == len(entries) == sum(sizes)
+    )
+    titled = [i for i, name in enumerate(names) if name == "Slide Titles"]
+    as_long = [i for i in titled or range(len(sizes)) if sizes[i] == was > 0]
+    if not consistent or len(as_long) != 1:
+        return False
+    (group,) = as_long
+
+    title = entries[0].cloneNode(False)
+    title.appendChild(dom.createTextNode(f"Slide {was + 1}"))
+    at = sum(sizes[:group]) + min(position - 1, was)
+    titles.insertBefore(title, entries[at] if at < len(entries) else None)
+    titles.setAttribute("size", str(len(entries) + 1))
+    counts[group].firstChild.data = str(was + 1)
+    return True
+
+
+def _elements(node) -> list:
+    return [c for c in node.childNodes if c.nodeType == c.ELEMENT_NODE]
+
+
+def _only_child(node, local_name: str):
+    found = [c for c in _elements(node) if c.localName == local_name] if node else []
+    return found[0] if len(found) == 1 else None
 
 
 def _add_to_content_types(unpacked_dir: Path, dest: str) -> None:
