@@ -44,6 +44,8 @@ pdftoppm -jpeg -r 100 output.pdf page
 ls page-*.jpg   # then Read the images
 ```
 
+If `soffice` or `pdftoppm` is unavailable, run `python scripts/office/validate.py output.docx` to check the document structure and `pandoc -t plain output.docx` to check its extracted text. These checks do not verify page layout; report the visual check as unverified.
+
 `pdftoppm` zero-pads page numbers to the width of the page count (`page-01.jpg`…`page-12.jpg`).
 
 ## Editing existing documents
