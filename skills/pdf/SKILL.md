@@ -256,13 +256,12 @@ from pypdf import PdfReader, PdfWriter
 # Create watermark (or load existing)
 watermark = PdfReader("watermark.pdf").pages[0]
 
-# Apply to all pages
-reader = PdfReader("document.pdf")
-writer = PdfWriter()
+# Apply to all pages. Merge into pages the writer owns: since pypdf 7.0,
+# merge_page() on a reader's page raises DeprecationError.
+writer = PdfWriter(clone_from="document.pdf")
 
-for page in reader.pages:
+for page in writer.pages:
     page.merge_page(watermark)
-    writer.add_page(page)
 
 with open("watermarked.pdf", "wb") as output:
     writer.write(output)
