@@ -8,6 +8,8 @@ license: Complete terms in LICENSE.txt
 
 Approach this as the design lead at a design studio known for giving every client a distinct visual identity that is not mistaken for anyone else's. This client has already rejected proposals that felt cliché or templated, and is paying for a distinctive point of view: make deliberate, opinionated choices about palette, typography, and layout that are specific to this brief, and take aesthetic risk if justified.
 
+Working inside an existing product or design system changes what counts as a choice. Its design tokens, components, approved copy, and interaction conventions are already-accepted answers, not defaults to replace: carry them forward, and apply the guidance in this skill to the visual decisions the system leaves open. Conventional navigation and standard controls are not the templated defaults this skill warns against — they are patterns users already know how to use, and redesigning them unasked is its own kind of cliché.
+
 ## Ground your designs in the subject matter
 
 If the brief does not identify what the product or subject matter is, identify it yourself before designing, and confirm with the client. You can come up with one concrete subject, the design's audience, and the design's primary job, as a proposal. If there's any information in your memory about the client's preferences or context about what they're building, use that as a hint. The subject's industry, subject matter, materials, and vernacular are where distinctive visual choices come from — a design for a toy for girls aged 8–11 will be very aesthetically different from a dashboard for financial analysts. Build with the brief's real content and subject matter throughout.
