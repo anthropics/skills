@@ -1,0 +1,8 @@
+<!doctype html><title>Columns fixture</title><main><h1>Tasks</h1>
+<button id=cols aria-haspopup="true">Columns</button>
+<div id=menu role="menu" hidden><label><input type=checkbox id=pri> Priority</label><button id=apply>Apply</button></div>
+<table><thead><tr><th>Flow</th><th>Status</th><th class=p hidden>Priority</th></tr></thead><tbody>
+<tr><td>Add to cart</td><td>Verified</td><td class=p hidden>3</td></tr>
+<tr><td>Checkout</td><td>Broken</td><td class=p hidden>2</td></tr>
+<tr><td>Cancel</td><td>Verified</td><td class=p hidden>0</td></tr></tbody></table></main>
+<script>cols.onclick=()=>menu.hidden=!menu.hidden;apply.onclick=()=>{document.querySelectorAll('.p').forEach(e=>e.hidden=!pri.checked);menu.hidden=true};</script>
