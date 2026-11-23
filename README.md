@@ -50,6 +50,11 @@ Alternatively, directly install either Plugin via:
 
 After installing the plugin, you can use the skill by just mentioning it. For instance, if you install the `document-skills` plugin from the marketplace, you can ask Claude Code to do something like: "Use the PDF skill to extract the form fields from `path/to/some-file.pdf`"
 
+You can also install individual skills from this repository with the [GitHub CLI](https://cli.github.com/manual/gh_skill):
+```
+gh skill install anthropics/skills
+```
+
 ## Claude.ai
 
 These example skills are all already available to paid plans in Claude.ai. 
