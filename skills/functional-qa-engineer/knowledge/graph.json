@@ -1,0 +1,1965 @@
+{
+ "edges": [
+  [
+   "check:consistency",
+   "applies_to",
+   "surface:overview"
+  ],
+  [
+   "check:consistency",
+   "applies_to",
+   "surface:list"
+  ],
+  [
+   "check:consistency",
+   "uses",
+   "oracle:O1"
+  ],
+  [
+   "check:state-truth",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "check:state-truth",
+   "uses",
+   "oracle:O2"
+  ],
+  [
+   "check:causality",
+   "applies_to",
+   "surface:error-state"
+  ],
+  [
+   "check:causality",
+   "uses",
+   "oracle:O3"
+  ],
+  [
+   "check:round-trip",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:round-trip",
+   "uses",
+   "oracle:O4"
+  ],
+  [
+   "check:round-trip",
+   "uses",
+   "oracle:O8"
+  ],
+  [
+   "check:claims",
+   "applies_to",
+   "surface:copy"
+  ],
+  [
+   "check:claims",
+   "uses",
+   "oracle:O5"
+  ],
+  [
+   "check:recovery",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "check:recovery",
+   "uses",
+   "oracle:O6"
+  ],
+  [
+   "check:permission",
+   "applies_to",
+   "surface:actor"
+  ],
+  [
+   "check:permission",
+   "uses",
+   "oracle:O9"
+  ],
+  [
+   "check:cross-surface",
+   "applies_to",
+   "surface:integration"
+  ],
+  [
+   "check:cross-surface",
+   "uses",
+   "oracle:O10"
+  ],
+  [
+   "check:cross-surface",
+   "uses",
+   "oracle:O13"
+  ],
+  [
+   "check:dark-contrast",
+   "applies_to",
+   "surface:theme"
+  ],
+  [
+   "check:dark-contrast",
+   "uses",
+   "oracle:O15"
+  ],
+  [
+   "check:rawness",
+   "applies_to",
+   "surface:copy"
+  ],
+  [
+   "check:rawness",
+   "uses",
+   "oracle:O14"
+  ],
+  [
+   "check:deploy-verified",
+   "applies_to",
+   "surface:retest"
+  ],
+  [
+   "check:bug-by-bug-rerun",
+   "applies_to",
+   "surface:retest"
+  ],
+  [
+   "bug:M16",
+   "found_on",
+   "surface:cta"
+  ],
+  [
+   "bug:M16",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M16",
+   "taught",
+   "lesson:a-button-s-label-is-a-promise-about-where-it-goe"
+  ],
+  [
+   "lesson:a-button-s-label-is-a-promise-about-where-it-goe",
+   "enforced_by",
+   "check:every-cta-destination"
+  ],
+  [
+   "check:every-cta-destination",
+   "applies_to",
+   "surface:cta"
+  ],
+  [
+   "check:every-cta-destination",
+   "uses",
+   "oracle:O17"
+  ],
+  [
+   "bug:M17",
+   "found_on",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M17",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M17",
+   "taught",
+   "lesson:what-is-hidden-by-default-is-still-product-inspe"
+  ],
+  [
+   "lesson:what-is-hidden-by-default-is-still-product-inspe",
+   "enforced_by",
+   "check:hidden-options-on"
+  ],
+  [
+   "check:hidden-options-on",
+   "applies_to",
+   "surface:hidden-option"
+  ],
+  [
+   "check:hidden-options-on",
+   "uses",
+   "oracle:O18"
+  ],
+  [
+   "check:hidden-options-on",
+   "uses",
+   "oracle:O14"
+  ],
+  [
+   "bug:M18",
+   "found_on",
+   "surface:loading"
+  ],
+  [
+   "bug:M18",
+   "missed_because",
+   "cause:instrument-gap"
+  ],
+  [
+   "bug:M18",
+   "taught",
+   "lesson:measure-what-the-screen-shows-while-waiting-not-"
+  ],
+  [
+   "lesson:measure-what-the-screen-shows-while-waiting-not-",
+   "enforced_by",
+   "check:loading-frames"
+  ],
+  [
+   "check:loading-frames",
+   "applies_to",
+   "surface:loading"
+  ],
+  [
+   "check:loading-frames",
+   "uses",
+   "oracle:O7"
+  ],
+  [
+   "bug:M19",
+   "found_on",
+   "surface:live-view"
+  ],
+  [
+   "bug:M19",
+   "missed_because",
+   "cause:baseline-gap"
+  ],
+  [
+   "bug:M19",
+   "taught",
+   "lesson:expectations-arrive-mid-test-the-baseline-must-b"
+  ],
+  [
+   "lesson:expectations-arrive-mid-test-the-baseline-must-b",
+   "enforced_by",
+   "check:linked-views-and-thread"
+  ],
+  [
+   "check:linked-views-and-thread",
+   "applies_to",
+   "surface:live-view"
+  ],
+  [
+   "check:linked-views-and-thread",
+   "uses",
+   "oracle:O19"
+  ],
+  [
+   "bug:M20",
+   "found_on",
+   "surface:live-view"
+  ],
+  [
+   "bug:M20",
+   "missed_because",
+   "cause:instrument-gap"
+  ],
+  [
+   "bug:M20",
+   "taught",
+   "lesson:dom-sampling-can-t-see-repaints-use-pixel-frame-"
+  ],
+  [
+   "lesson:dom-sampling-can-t-see-repaints-use-pixel-frame-",
+   "enforced_by",
+   "check:frame-diff-flicker"
+  ],
+  [
+   "check:frame-diff-flicker",
+   "applies_to",
+   "surface:live-view"
+  ],
+  [
+   "check:frame-diff-flicker",
+   "uses",
+   "oracle:O20"
+  ],
+  [
+   "bug:M12",
+   "found_on",
+   "surface:overview"
+  ],
+  [
+   "bug:M12",
+   "missed_because",
+   "cause:probe-error"
+  ],
+  [
+   "bug:M12",
+   "taught",
+   "lesson:most-false-alarms-come-from-the-probe-confirm-wi"
+  ],
+  [
+   "lesson:most-false-alarms-come-from-the-probe-confirm-wi",
+   "enforced_by",
+   "check:verify-probe"
+  ],
+  [
+   "check:verify-probe",
+   "applies_to",
+   "surface:overview"
+  ],
+  [
+   "check:verify-probe",
+   "uses",
+   "oracle:O1"
+  ],
+  [
+   "bug:M10",
+   "found_on",
+   "surface:api"
+  ],
+  [
+   "bug:M10",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M10",
+   "taught",
+   "lesson:severity-follows-how-a-real-user-reaches-the-bug"
+  ],
+  [
+   "lesson:severity-follows-how-a-real-user-reaches-the-bug",
+   "enforced_by",
+   "check:reachability"
+  ],
+  [
+   "check:reachability",
+   "applies_to",
+   "surface:api"
+  ],
+  [
+   "check:reachability",
+   "uses",
+   "oracle:O21"
+  ],
+  [
+   "bug:M11",
+   "found_on",
+   "surface:retest"
+  ],
+  [
+   "bug:M11",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M11",
+   "taught",
+   "lesson:retest-with-the-original-steps-first-artificial-"
+  ],
+  [
+   "lesson:retest-with-the-original-steps-first-artificial-",
+   "enforced_by",
+   "check:original-steps-first"
+  ],
+  [
+   "check:original-steps-first",
+   "applies_to",
+   "surface:retest"
+  ],
+  [
+   "check:loading-frames",
+   "applies_to",
+   "surface:navigation"
+  ],
+  [
+   "check:boundary-values",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:boundary-values",
+   "uses",
+   "oracle:O8"
+  ],
+  [
+   "check:boundary-values",
+   "uses",
+   "oracle:O4"
+  ],
+  [
+   "check:equivalence-classes",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:syntax-malformed",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:decision-table",
+   "applies_to",
+   "surface:settings"
+  ],
+  [
+   "check:decision-table",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:pairwise-settings",
+   "applies_to",
+   "surface:settings"
+  ],
+  [
+   "check:state-transitions",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "check:crud-matrix",
+   "applies_to",
+   "surface:integration"
+  ],
+  [
+   "check:scenarios",
+   "applies_to",
+   "surface:integration"
+  ],
+  [
+   "check:error-guessing",
+   "applies_to",
+   "surface:overview"
+  ],
+  [
+   "check:test-plan",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "check:smoke-first",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "check:release-recommendation",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "check:api-contract",
+   "applies_to",
+   "surface:api"
+  ],
+  [
+   "check:authz-idor",
+   "applies_to",
+   "surface:security"
+  ],
+  [
+   "check:authz-idor",
+   "applies_to",
+   "surface:actor"
+  ],
+  [
+   "check:xss-injection",
+   "applies_to",
+   "surface:security"
+  ],
+  [
+   "check:xss-injection",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "check:secrets-hygiene",
+   "applies_to",
+   "surface:security"
+  ],
+  [
+   "check:perf-measured",
+   "applies_to",
+   "surface:performance"
+  ],
+  [
+   "check:keyboard-a11y",
+   "applies_to",
+   "surface:accessibility"
+  ],
+  [
+   "check:compat-matrix",
+   "applies_to",
+   "surface:compatibility"
+  ],
+  [
+   "check:i18n-time",
+   "applies_to",
+   "surface:i18n"
+  ],
+  [
+   "check:reliability",
+   "applies_to",
+   "surface:reliability"
+  ],
+  [
+   "check:legacy-data",
+   "applies_to",
+   "surface:data"
+  ],
+  [
+   "check:automation-candidates",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "bug:M14",
+   "found_on",
+   "surface:planning"
+  ],
+  [
+   "bug:M14",
+   "missed_because",
+   "cause:baseline-gap"
+  ],
+  [
+   "bug:M14",
+   "taught",
+   "lesson:build-a-role-top-down-from-its-full-competency-m"
+  ],
+  [
+   "lesson:build-a-role-top-down-from-its-full-competency-m",
+   "enforced_by",
+   "check:competency-audit"
+  ],
+  [
+   "check:competency-audit",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "check:sentinel-triaged",
+   "applies_to",
+   "surface:signals"
+  ],
+  [
+   "check:sentinel-triaged",
+   "uses",
+   "oracle:O2"
+  ],
+  [
+   "check:sentinel-triaged",
+   "uses",
+   "oracle:O3"
+  ],
+  [
+   "check:prereport-gate",
+   "applies_to",
+   "surface:planning"
+  ],
+  [
+   "bug:M02",
+   "found_on",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M02",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M02",
+   "taught",
+   "lesson:every-container-type-top-level-if-branch-else-el"
+  ],
+  [
+   "lesson:every-container-type-top-level-if-branch-else-el",
+   "enforced_by",
+   "check:per-container-menus"
+  ],
+  [
+   "check:per-container-menus",
+   "applies_to",
+   "surface:hidden-option"
+  ],
+  [
+   "check:per-container-menus",
+   "uses",
+   "oracle:O18"
+  ],
+  [
+   "bug:M04",
+   "found_on",
+   "surface:run-state"
+  ],
+  [
+   "bug:M04",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M04",
+   "taught",
+   "lesson:re-running-a-child-of-a-container-loop-branch-mo"
+  ],
+  [
+   "lesson:re-running-a-child-of-a-container-loop-branch-mo",
+   "enforced_by",
+   "check:container-rerun-semantics"
+  ],
+  [
+   "check:container-rerun-semantics",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "check:container-rerun-semantics",
+   "uses",
+   "oracle:O3"
+  ],
+  [
+   "bug:M05",
+   "found_on",
+   "surface:run-state"
+  ],
+  [
+   "bug:M05",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M05",
+   "taught",
+   "lesson:a-behaviour-on-one-target-is-only-a-parity-bug-i"
+  ],
+  [
+   "lesson:a-behaviour-on-one-target-is-only-a-parity-bug-i",
+   "enforced_by",
+   "check:reference-parity-first"
+  ],
+  [
+   "check:reference-parity-first",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "check:reference-parity-first",
+   "uses",
+   "oracle:O1"
+  ],
+  [
+   "bug:M03",
+   "found_on",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M03",
+   "missed_because",
+   "cause:baseline-gap"
+  ],
+  [
+   "bug:M03",
+   "taught",
+   "lesson:when-a-feature-ships-with-prs-read-the-diff-for-"
+  ],
+  [
+   "lesson:when-a-feature-ships-with-prs-read-the-diff-for-",
+   "enforced_by",
+   "check:read-pr-gating"
+  ],
+  [
+   "check:read-pr-gating",
+   "applies_to",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M09",
+   "found_on",
+   "surface:copy"
+  ],
+  [
+   "bug:M09",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M09",
+   "taught",
+   "lesson:a-bug-card-is-for-someone-who-was-not-there-numb"
+  ],
+  [
+   "lesson:a-bug-card-is-for-someone-who-was-not-there-numb",
+   "enforced_by",
+   "check:bug-card-complete"
+  ],
+  [
+   "check:bug-card-complete",
+   "applies_to",
+   "surface:copy"
+  ],
+  [
+   "bug:M07",
+   "found_on",
+   "surface:run-state"
+  ],
+  [
+   "bug:M07",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M07",
+   "taught",
+   "lesson:on-shared-accounts-or-single-device-envs-content"
+  ],
+  [
+   "lesson:on-shared-accounts-or-single-device-envs-content",
+   "enforced_by",
+   "check:shared-env-contention"
+  ],
+  [
+   "check:shared-env-contention",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "bug:M08",
+   "found_on",
+   "surface:form-field"
+  ],
+  [
+   "bug:M08",
+   "missed_because",
+   "cause:probe-error"
+  ],
+  [
+   "bug:M08",
+   "taught",
+   "lesson:synthetic-input-and-coordinate-clicks-misreprese"
+  ],
+  [
+   "lesson:synthetic-input-and-coordinate-clicks-misreprese",
+   "enforced_by",
+   "check:verify-probe"
+  ],
+  [
+   "check:verify-probe",
+   "applies_to",
+   "surface:form-field"
+  ],
+  [
+   "bug:M06",
+   "found_on",
+   "surface:run-state"
+  ],
+  [
+   "bug:M06",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M06",
+   "taught",
+   "lesson:a-control-flow-feature-must-be-tested-as-a-compo"
+  ],
+  [
+   "lesson:a-control-flow-feature-must-be-tested-as-a-compo",
+   "enforced_by",
+   "check:control-flow-composition-matrix"
+  ],
+  [
+   "check:control-flow-composition-matrix",
+   "applies_to",
+   "surface:run-state"
+  ],
+  [
+   "bug:M30",
+   "found_on",
+   "surface:overview"
+  ],
+  [
+   "bug:M30",
+   "caught_by",
+   "check:consistency"
+  ],
+  [
+   "bug:M31",
+   "found_on",
+   "surface:run-state"
+  ],
+  [
+   "bug:M31",
+   "caught_by",
+   "check:state-truth"
+  ],
+  [
+   "bug:M32",
+   "found_on",
+   "surface:list"
+  ],
+  [
+   "bug:M32",
+   "caught_by",
+   "check:consistency"
+  ],
+  [
+   "bug:M33",
+   "found_on",
+   "surface:copy"
+  ],
+  [
+   "bug:M33",
+   "caught_by",
+   "check:claims"
+  ],
+  [
+   "bug:M34",
+   "found_on",
+   "surface:copy"
+  ],
+  [
+   "bug:M34",
+   "caught_by",
+   "check:rawness"
+  ],
+  [
+   "bug:M28",
+   "found_on",
+   "surface:theme"
+  ],
+  [
+   "bug:M28",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M28",
+   "taught",
+   "lesson:a-theme-pass-is-a-full-pass-every-panel-drawer-a"
+  ],
+  [
+   "lesson:a-theme-pass-is-a-full-pass-every-panel-drawer-a",
+   "enforced_by",
+   "check:theme-full-sweep"
+  ],
+  [
+   "check:theme-full-sweep",
+   "applies_to",
+   "surface:theme"
+  ],
+  [
+   "check:theme-full-sweep",
+   "uses",
+   "oracle:O15"
+  ],
+  [
+   "bug:M25",
+   "found_on",
+   "surface:overview"
+  ],
+  [
+   "bug:M25",
+   "missed_because",
+   "cause:oracle-gap"
+  ],
+  [
+   "bug:M25",
+   "taught",
+   "lesson:when-a-layout-defect-clipping-truncation-overlap"
+  ],
+  [
+   "lesson:when-a-layout-defect-clipping-truncation-overlap",
+   "enforced_by",
+   "check:sibling-sweep"
+  ],
+  [
+   "check:sibling-sweep",
+   "applies_to",
+   "surface:overview"
+  ],
+  [
+   "check:sibling-sweep",
+   "uses",
+   "oracle:O1"
+  ],
+  [
+   "bug:M29",
+   "found_on",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M29",
+   "missed_because",
+   "cause:baseline-gap"
+  ],
+  [
+   "bug:M29",
+   "taught",
+   "lesson:a-prototype-is-a-list-of-controls-diff-every-opt"
+  ],
+  [
+   "lesson:a-prototype-is-a-list-of-controls-diff-every-opt",
+   "enforced_by",
+   "check:proto-control-diff"
+  ],
+  [
+   "check:proto-control-diff",
+   "applies_to",
+   "surface:hidden-option"
+  ],
+  [
+   "check:proto-control-diff",
+   "uses",
+   "oracle:O14"
+  ],
+  [
+   "bug:M23",
+   "found_on",
+   "surface:copy"
+  ],
+  [
+   "bug:M23",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M23",
+   "taught",
+   "lesson:before-filing-a-claim-gap-plan-gap-or-raw-value-"
+  ],
+  [
+   "lesson:before-filing-a-claim-gap-plan-gap-or-raw-value-",
+   "enforced_by",
+   "check:scope-confirm"
+  ],
+  [
+   "check:scope-confirm",
+   "applies_to",
+   "surface:copy"
+  ],
+  [
+   "check:scope-confirm",
+   "uses",
+   "oracle:O14"
+  ],
+  [
+   "bug:M21",
+   "found_on",
+   "surface:hidden-option"
+  ],
+  [
+   "bug:M21",
+   "missed_because",
+   "cause:oracle-gap"
+  ],
+  [
+   "bug:M21",
+   "taught",
+   "lesson:a-display-option-is-verified-by-the-change-it-ma"
+  ],
+  [
+   "lesson:a-display-option-is-verified-by-the-change-it-ma",
+   "enforced_by",
+   "check:hidden-options-on"
+  ],
+  [
+   "bug:M27",
+   "found_on",
+   "surface:integration"
+  ],
+  [
+   "bug:M27",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M27",
+   "taught",
+   "lesson:environment-selection-in-internal-stage-tooling-"
+  ],
+  [
+   "lesson:environment-selection-in-internal-stage-tooling-",
+   "enforced_by",
+   "check:scope-confirm"
+  ],
+  [
+   "check:scope-confirm",
+   "applies_to",
+   "surface:integration"
+  ],
+  [
+   "bug:M22",
+   "found_on",
+   "surface:live-view"
+  ],
+  [
+   "bug:M22",
+   "missed_because",
+   "cause:judgement"
+  ],
+  [
+   "bug:M22",
+   "taught",
+   "lesson:auto-refresh-of-an-open-page-after-background-wo"
+  ],
+  [
+   "lesson:auto-refresh-of-an-open-page-after-background-wo",
+   "enforced_by",
+   "check:scope-confirm"
+  ],
+  [
+   "check:scope-confirm",
+   "applies_to",
+   "surface:live-view"
+  ],
+  [
+   "bug:M26",
+   "found_on",
+   "surface:navigation"
+  ],
+  [
+   "bug:M26",
+   "missed_because",
+   "cause:probe-error"
+  ],
+  [
+   "bug:M26",
+   "taught",
+   "lesson:before-calling-something-unreachable-scroll-ever"
+  ],
+  [
+   "lesson:before-calling-something-unreachable-scroll-ever",
+   "enforced_by",
+   "check:reachability-scroll"
+  ],
+  [
+   "check:reachability-scroll",
+   "applies_to",
+   "surface:navigation"
+  ],
+  [
+   "check:reachability-scroll",
+   "uses",
+   "oracle:O21"
+  ],
+  [
+   "bug:M24",
+   "found_on",
+   "surface:overview"
+  ],
+  [
+   "bug:M24",
+   "missed_because",
+   "cause:probe-error"
+  ],
+  [
+   "bug:M24",
+   "taught",
+   "lesson:the-screenshot-must-show-the-exact-state-the-bug"
+  ],
+  [
+   "lesson:the-screenshot-must-show-the-exact-state-the-bug",
+   "enforced_by",
+   "check:evidence-matches-state"
+  ],
+  [
+   "check:evidence-matches-state",
+   "applies_to",
+   "surface:overview"
+  ],
+  [
+   "check:evidence-matches-state",
+   "uses",
+   "oracle:O1"
+  ],
+  [
+   "bug:M15",
+   "found_on",
+   "surface:overview"
+  ],
+  [
+   "bug:M15",
+   "caught_by",
+   "check:boundary-values"
+  ],
+  [
+   "bug:M13",
+   "found_on",
+   "surface:cta"
+  ],
+  [
+   "bug:M13",
+   "caught_by",
+   "check:verify-probe"
+  ],
+  [
+   "bug:M01",
+   "found_on",
+   "surface:theme"
+  ],
+  [
+   "bug:M01",
+   "missed_because",
+   "cause:coverage-gap"
+  ],
+  [
+   "bug:M01",
+   "taught",
+   "lesson:a-new-labeled-chip-pill-is-a-layout-surface-chec"
+  ],
+  [
+   "lesson:a-new-labeled-chip-pill-is-a-layout-surface-chec",
+   "enforced_by",
+   "check:labeled-chip-centering"
+  ],
+  [
+   "check:labeled-chip-centering",
+   "applies_to",
+   "surface:theme"
+  ],
+  [
+   "check:labeled-chip-centering",
+   "uses",
+   "oracle:O15"
+  ]
+ ],
+ "nodes": {
+  "bug:M01": {
+   "caught": false,
+   "date": "2026-11-20",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Status chip label vertically misaligned inside its pill",
+   "type": "bug"
+  },
+  "bug:M02": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Mobile app",
+   "title": "Loop block's action menu lacked an option the If-branch menu had; only the If-branch menu was opened",
+   "type": "bug"
+  },
+  "bug:M03": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "self",
+   "product": "Mobile app",
+   "title": "Called a missing nested option a defect; the feature PR hid it inside containers on purpose",
+   "type": "bug"
+  },
+  "bug:M04": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Mobile app",
+   "title": "Filed 're-running a step inside a loop does nothing' as a bug; re-running a child restarts its loop from the condition (by design)",
+   "type": "bug"
+  },
+  "bug:M05": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Mobile app",
+   "title": "Filed 'edits inside blocks not tracked as out of sync' as a mobile bug; counters track parent steps and web behaves the same",
+   "type": "bug"
+  },
+  "bug:M06": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Mobile app",
+   "title": "Never combined user-authored If/While blocks with auto-generated conditions or nested conditionals",
+   "type": "bug"
+  },
+  "bug:M07": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "self",
+   "product": "Mobile app",
+   "title": "Nearly blamed the product for 'No devices' / 'already in progress' while another user held the only device on a shared account",
+   "type": "bug"
+  },
+  "bug:M08": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "self",
+   "product": "Mobile app",
+   "title": "Probe errors: fill() mangled a rich condition input; fixed-coordinate clicks hit an upsell button and a step checkbox",
+   "type": "bug"
+  },
+  "bug:M09": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Process",
+   "title": "Bug cards lacked numbered repro steps, used cryptic setup shorthand and did not embed screenshots",
+   "type": "bug"
+  },
+  "bug:M10": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Process",
+   "title": "Over-rated a bug only reachable by bypassing the UI",
+   "type": "bug"
+  },
+  "bug:M11": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Process",
+   "title": "Started engineering an artificial trigger without asking",
+   "type": "bug"
+  },
+  "bug:M12": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "self",
+   "product": "Process",
+   "title": "False alarm: count parser read chart labels as tile values",
+   "type": "bug"
+  },
+  "bug:M13": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Process",
+   "title": "False alarm avoided: CTA probe clicked a hidden duplicate tab during load",
+   "type": "bug"
+  },
+  "bug:M14": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Process",
+   "title": "QA skill lacked classic techniques and non-functional testing until asked",
+   "type": "bug"
+  },
+  "bug:M15": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "Count tile not filtered when the count is 0 (fix only covered counts above 0)",
+   "type": "bug"
+  },
+  "bug:M16": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "'Open Secrets' opened a blank Settings page",
+   "type": "bug"
+  },
+  "bug:M17": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Hidden Priority column showed raw 3/2/0",
+   "type": "bug"
+  },
+  "bug:M18": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Blank page with a divider line for 12+ s on first open after idle",
+   "type": "bug"
+  },
+  "bug:M19": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "dev",
+   "product": "Web app",
+   "title": "Selecting a live worker doesn't highlight its node in the graph",
+   "type": "bug"
+  },
+  "bug:M20": {
+   "caught": false,
+   "date": "2026-11-18",
+   "found_by": "dev",
+   "product": "Web app",
+   "title": "Graph flickers (seen in a screen recording)",
+   "type": "bug"
+  },
+  "bug:M21": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "A View-menu toggle switches on and persists but has no visible effect; it was marked as working",
+   "type": "bug"
+  },
+  "bug:M22": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Filed 'open tab doesn't refresh after a background sync' as a bug; owner says not valid",
+   "type": "bug"
+  },
+  "bug:M23": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Three bugs filed that the owner rejected as invalid: legacy page content, tab gating for new projects, panel values",
+   "type": "bug"
+  },
+  "bug:M24": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Zoom bug's screenshot taken at 27% while the overlap only happens at 20%; quoted text came from a DOM read, not the picture",
+   "type": "bug"
+  },
+  "bug:M25": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Summary panel truncation not reported although the same defect was filed for a sibling panel",
+   "type": "bug"
+  },
+  "bug:M26": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Filed toolbar 'unreachable at 1024 px'; the inner content area scrolls sideways and every control is reachable",
+   "type": "bug"
+  },
+  "bug:M27": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "CLI",
+   "title": "Filed a CLI defaulting to prod unless an env var selects stage as a bug; owner says expected",
+   "type": "bug"
+  },
+  "bug:M28": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Summary panel rows cut at the panel edge with no ellipsis in dark mode; dark mode was only contrast-scanned on one view",
+   "type": "bug"
+  },
+  "bug:M29": {
+   "caught": false,
+   "date": "2026-11-19",
+   "found_by": "user",
+   "product": "Web app",
+   "title": "Several View-menu options shown in the prototype were missing from the build; not reported",
+   "type": "bug"
+  },
+  "bug:M30": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "One panel lists items as Failing that two other views show as Passing",
+   "type": "bug"
+  },
+  "bug:M31": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "Items with 0 tests labelled 'Not verified yet' instead of 'No test yet'",
+   "type": "bug"
+  },
+  "bug:M32": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "Out-of-date filter drops 17 of 41 stale items; Summary shows 58 vs 41",
+   "type": "bug"
+  },
+  "bug:M33": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "A report ignores the data its header says it covers",
+   "type": "bug"
+  },
+  "bug:M34": {
+   "caught": true,
+   "date": "2026-11-19",
+   "product": "Web app",
+   "title": "Raw ids, enums and escaped markdown shown in a detail panel",
+   "type": "bug"
+  },
+  "cause:baseline-gap": {
+   "text": "the expectation was not in the checklist (new or unread requirement)",
+   "type": "cause"
+  },
+  "cause:coverage-gap": {
+   "text": "the surface/state was never exercised",
+   "type": "cause"
+  },
+  "cause:instrument-gap": {
+   "text": "the tool could not observe it (e.g. DOM vs pixels)",
+   "type": "cause"
+  },
+  "cause:judgement": {
+   "text": "it was seen but wrongly dismissed or mis-rated",
+   "type": "cause"
+  },
+  "cause:oracle-gap": {
+   "text": "it was exercised but nothing judged it wrong",
+   "type": "cause"
+  },
+  "cause:probe-error": {
+   "text": "the test script measured the wrong thing",
+   "type": "cause"
+  },
+  "check:api-contract": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "API: status codes per error class, error body format, schema/types, limits = UI, idempotency/double submit, pagination/sort/filter edges",
+   "type": "check"
+  },
+  "check:authz-idor": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Another user/org can't read or change entities by ID; role limits enforced server-side",
+   "type": "check"
+  },
+  "check:automation-candidates": {
+   "mandatory": true,
+   "text": "List cases to automate as regression tests and generate them where the team's tooling allows (e.g. a test-generation CLI)",
+   "type": "check"
+  },
+  "check:boundary-values": {
+   "mandatory": true,
+   "text": "BVA on every length/number/count/time input: testgen.py bva → min-1, min, min+1, max-1, max, max+1, empty, multi-byte at the boundary; in UI, API and after reload",
+   "type": "check"
+  },
+  "check:bug-by-bug-rerun": {
+   "mandatory": true,
+   "text": "After the last deploy, re-run every bug's original steps; record verified-on-build per bug",
+   "type": "check"
+  },
+  "check:bug-card-complete": {
+   "mandatory": true,
+   "text": "Before publishing: every bug card has preconditions, numbered steps, expected, actual and embedded screenshots; setups have descriptive names, no shorthand; run prereport.py check",
+   "type": "check"
+  },
+  "check:causality": {
+   "mandatory": true,
+   "text": "Every failure names the real failed step and what is missing, and offers the fix",
+   "type": "check"
+  },
+  "check:claims": {
+   "mandatory": true,
+   "text": "Every sentence of helper/banner/empty-state copy is observably true",
+   "type": "check"
+  },
+  "check:compat-matrix": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Supported browsers and viewports tested, or recorded as out of scope with reason",
+   "type": "check"
+  },
+  "check:competency-audit": {
+   "mandatory": true,
+   "text": "At the start of every engagement walk references/competencies.md; every area planned or N/A with reason; when building or changing the skill, audit it against the competency list",
+   "type": "check"
+  },
+  "check:consistency": {
+   "mandatory": true,
+   "text": "Every count/state/name shown in 2+ places (headline, tiles, badges, list, API) matches",
+   "type": "check"
+  },
+  "check:container-rerun-semantics": {
+   "mandatory": true,
+   "text": "For every re-run/run-this-step inside a block: note which instruction ids the request targets, compute the expected outcome from the container's current condition, and only file what differs from that (e.g. stale display)",
+   "type": "check"
+  },
+  "check:control-flow-composition-matrix": {
+   "mandatory": true,
+   "text": "Build the container x child-kind matrix (authored If/Else-If/Else/While x natural if-else, wait-until, scroll-until, click-until, nested if) with testgen.py pairwise and run each cell with a deterministic oracle",
+   "type": "check"
+  },
+  "check:cross-surface": {
+   "mandatory": true,
+   "text": "Create in CLI/API, view in UI and vice versa; open page notices changes made elsewhere",
+   "type": "check"
+  },
+  "check:crud-matrix": {
+   "mandatory": true,
+   "text": "CRUD × surface (UI/API/CLI) for every entity: possible, correct, reflected everywhere, survives reload, permission-checked",
+   "type": "check"
+  },
+  "check:dark-contrast": {
+   "mandatory": true,
+   "text": "contrast_scan.js on every view/drawer/dialog in dark and light; eyeball graphs, toggles, avatars",
+   "type": "check"
+  },
+  "check:decision-table": {
+   "mandatory": true,
+   "text": "Decision table for every outcome that depends on combined conditions (e.g. can Start be pressed): one expected result per column",
+   "type": "check"
+  },
+  "check:deploy-verified": {
+   "mandatory": true,
+   "text": "Before judging a fix: PR merged, deploy run's failing step inspected, build live",
+   "type": "check"
+  },
+  "check:equivalence-classes": {
+   "mandatory": true,
+   "text": "EP: one representative per valid class and one test per invalid reason (wrong type/format/range, empty, forbidden)",
+   "type": "check"
+  },
+  "check:error-guessing": {
+   "mandatory": true,
+   "text": "Error guessing from kb.py misses and this product's bug history",
+   "type": "check"
+  },
+  "check:every-cta-destination": {
+   "mandatory": true,
+   "text": "cta_destinations.js on every state with CTAs (empty, failed, warnings, Needs Attention, toasts, drawers): no BLANK or MISMATCH landing",
+   "type": "check"
+  },
+  "check:evidence-matches-state": {
+   "mandatory": true,
+   "text": "Before attaching evidence: confirm the screenshot's state matches the steps (zoom %, width, theme) and that every quoted string is visible in it",
+   "type": "check"
+  },
+  "check:frame-diff-flicker": {
+   "mandatory": true,
+   "text": "flicker_scan.js on the region while data refreshes (positive control first); ask for the action/timing shown in any recording",
+   "type": "check"
+  },
+  "check:hidden-options-on": {
+   "mandatory": true,
+   "text": "For every view/display toggle: measure the affected elements (labels, rows, lines) off vs on; the label's promise ('on every line') sets the expected count",
+   "type": "check"
+  },
+  "check:i18n-time": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Time zones, midnight crossings, date/number formats, long and non-Latin strings",
+   "type": "check"
+  },
+  "check:keyboard-a11y": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Keyboard only: every action reachable, visible focus, logical order, Escape closes dialogs, no traps; screen-reader names; zoom 200%",
+   "type": "check"
+  },
+  "check:labeled-chip-centering": {
+   "mandatory": true,
+   "text": "For every new chip/pill/badge label: screenshot at 100% zoom; assert text optically centered (equal padding top/bottom); if a twin surface exists (two views showing the same label), diff both.",
+   "type": "check"
+  },
+  "check:legacy-data": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Data created before the change (old runs, notes, states) still displays and works",
+   "type": "check"
+  },
+  "check:linked-views-and-thread": {
+   "mandatory": true,
+   "text": "Re-read the dev/PM thread at every resume and add new expectations; select each entity and check every linked view follows",
+   "type": "check"
+  },
+  "check:loading-frames": {
+   "mandatory": true,
+   "text": "loading_sweep.js: frames every 0.5 s for tab click, direct URL, reload, first open after ~15 min idle, sub-tabs, drawers, fast+throttled; look at blank frames",
+   "type": "check"
+  },
+  "check:original-steps-first": {
+   "mandatory": true,
+   "text": "Re-run original steps; ask before forcing a trigger; use the Not reproduced status",
+   "type": "check"
+  },
+  "check:pairwise-settings": {
+   "mandatory": true,
+   "text": "testgen.py pairwise over the feature's parameters (policy, concurrency, sign-in, tunnel, actor, entry…) + known risky full combinations",
+   "type": "check"
+  },
+  "check:per-container-menus": {
+   "mandatory": true,
+   "text": "Open the / (or action) menu inside EVERY container type at least once and diff its entries against the expected per-container list",
+   "type": "check"
+  },
+  "check:perf-measured": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Time main API calls (p50/p95 over 10-20 requests), page-to-content, large data, repeated actions, long-open pages",
+   "type": "check"
+  },
+  "check:permission": {
+   "mandatory": true,
+   "text": "Repeat key flows as another member and as a UI-only user without the creator's setup",
+   "type": "check"
+  },
+  "check:prereport-gate": {
+   "mandatory": true,
+   "text": "Record every bug in ./qa-bugs/<feature>.json and run prereport.py check <feature>; nothing is reported or published until it passes",
+   "type": "check"
+  },
+  "check:proto-control-diff": {
+   "mandatory": true,
+   "text": "Extract each prototype menu/toolbar/strip option list (from its source when possible), diff with the build's, and cite the decision for every intentional removal",
+   "type": "check"
+  },
+  "check:rawness": {
+   "mandatory": true,
+   "text": "No raw codes, enums, CLI flags, placeholders or backend error text reach the user",
+   "type": "check"
+  },
+  "check:reachability": {
+   "mandatory": true,
+   "text": "For every bug state the user path; if it needs API/crafted request/race, mark it and lower severity",
+   "type": "check"
+  },
+  "check:reachability-scroll": {
+   "mandatory": true,
+   "text": "For any 'cut off / unreachable' claim: list scrollable ancestors (overflow auto/scroll with scrollWidth > clientWidth), scroll each, and click the control",
+   "type": "check"
+  },
+  "check:read-pr-gating": {
+   "mandatory": true,
+   "text": "List the feature's PRs; grep their diffs for the gating of every option/menu under test and cite the line when classifying a missing option",
+   "type": "check"
+  },
+  "check:recovery": {
+   "mandatory": true,
+   "text": "A late partial failure (one worker, one slot, an outage) doesn't erase or misdescribe completed work",
+   "type": "check"
+  },
+  "check:reference-parity-first": {
+   "mandatory": true,
+   "text": "Before filing any target-specific or parity bug, reproduce the same steps on the reference target/env and record its result next to the bug; if identical, classify as shared behaviour or by design",
+   "type": "check"
+  },
+  "check:release-recommendation": {
+   "mandatory": true,
+   "text": "Go / No-go / Go-with-conditions against exit criteria, with coverage line and open risks",
+   "type": "check"
+  },
+  "check:reliability": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Refresh/back/close mid-action, network drop and return, retries, timeouts, double submit",
+   "type": "check"
+  },
+  "check:round-trip": {
+   "mandatory": true,
+   "text": "Every saved field at 1, limit, limit+1 is read back whole via UI and API after reload",
+   "type": "check"
+  },
+  "check:scenarios": {
+   "mandatory": true,
+   "text": "Use-case scenarios end to end: main, alternative and exception flows with real data",
+   "type": "check"
+  },
+  "check:scope-confirm": {
+   "mandatory": true,
+   "text": "Before filing a staleness bug: find the requirement or on-screen promise of live updates; without one, log it as a question",
+   "type": "check"
+  },
+  "check:secrets-hygiene": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "Secrets never in URLs, page source, logs, evidence, screenshots or activity; masked in UI",
+   "type": "check"
+  },
+  "check:sentinel-triaged": {
+   "mandatory": true,
+   "text": "Run sentinel_start.js at the start of every session and label states; before sign-off, every group in sentinel_report.js is triaged: bug filed (with state/page), known bug id, or expected with reason",
+   "type": "check"
+  },
+  "check:shared-env-contention": {
+   "mandatory": true,
+   "text": "When a resource is unavailable or locked: look for other users' artifacts (new records, sessions), wait one full release window, retry, and note the shared-env caveat on the bug",
+   "type": "check"
+  },
+  "check:sibling-sweep": {
+   "mandatory": true,
+   "text": "For each layout bug filed, enumerate all panels/lists/cards of the same kind and record pass/fail for each in the bug",
+   "type": "check"
+  },
+  "check:smoke-first": {
+   "mandatory": true,
+   "text": "Smoke test the main job end to end before deep testing; stop and report if it fails",
+   "type": "check"
+  },
+  "check:state-transitions": {
+   "mandatory": true,
+   "text": "testgen.py states: every valid transition, critical 2-step paths, and every invalid event blocked in UI and refused by API; UI shown in and during each state",
+   "type": "check"
+  },
+  "check:state-truth": {
+   "mandatory": true,
+   "text": "UI state (badge, stepper, banner) matches backend session + job log at every lifecycle state",
+   "type": "check"
+  },
+  "check:syntax-malformed": {
+   "mandatory": true,
+   "text": "Syntax/format: each valid form once, then missing/extra/wrong-delimiter/case/whitespace/unicode look-alike/injection-shaped inputs",
+   "type": "check"
+  },
+  "check:test-plan": {
+   "mandatory": true,
+   "text": "Plan from references/competencies.md: scope/out-of-scope, risks, entry+exit criteria, environments, test data; every competency area applicable or N/A with reason",
+   "type": "check"
+  },
+  "check:theme-full-sweep": {
+   "mandatory": true,
+   "text": "In dark AND light: open every panel/drawer/summary/menu and each card type; screenshot each; flag text cut without ellipsis, clipped descenders and low contrast",
+   "type": "check"
+  },
+  "check:verify-probe": {
+   "mandatory": true,
+   "text": "Re-check every surprising input result with real keyboard typing; never click by coordinates in a live session",
+   "type": "check"
+  },
+  "check:xss-injection": {
+   "mandatory": false,
+   "note": "Not required by the user (18 Nov): run only when explicitly asked",
+   "text": "XSS/injection-shaped strings in every text field render as text everywhere they appear (lists, drawers, activity, exports)",
+   "type": "check"
+  },
+  "lesson:a-behaviour-on-one-target-is-only-a-parity-bug-i": {
+   "text": "A behaviour on one target is only a parity bug if the reference target differs; before filing, run the same steps on the reference (web, stage or prod) and confirm what the counter or state model counts",
+   "type": "lesson"
+  },
+  "lesson:a-bug-card-is-for-someone-who-was-not-there-numb": {
+   "text": "A bug card is for someone who was not there: numbered steps from a named setup, expected vs actual, ids, and the screenshots embedded in the published report",
+   "type": "lesson"
+  },
+  "lesson:a-button-s-label-is-a-promise-about-where-it-goe": {
+   "text": "A button's label is a promise about where it goes; untested destinations hide broken links",
+   "type": "lesson"
+  },
+  "lesson:a-control-flow-feature-must-be-tested-as-a-compo": {
+   "text": "A control-flow feature must be tested as a composition matrix: every container (If, Else-If, Else, While) x every child kind the product can produce, including AI-derived conditionals and until-loops (wait/scroll/click-until) and nested conditionals, not only the slash commands",
+   "type": "lesson"
+  },
+  "lesson:a-display-option-is-verified-by-the-change-it-ma": {
+   "text": "A display option is verified by the change it makes on screen, not by its checkmark or persistence: count the affected elements with it off and on, and compare with what the label promises",
+   "type": "lesson"
+  },
+  "lesson:a-new-labeled-chip-pill-is-a-layout-surface-chec": {
+   "text": "A new labeled chip/pill is a layout surface: check vertical centering and padding symmetry in the shipped UI (light and dark), and compare both views when two of them render the same label.",
+   "type": "lesson"
+  },
+  "lesson:a-prototype-is-a-list-of-controls-diff-every-opt": {
+   "text": "A prototype is a list of controls: diff every option in every menu, toolbar and strip against the build, item by item, and report each missing one unless a decision (thread/PR) removed it",
+   "type": "lesson"
+  },
+  "lesson:a-theme-pass-is-a-full-pass-every-panel-drawer-a": {
+   "text": "A theme pass is a full pass: every panel, drawer and card type is re-opened in the other theme and judged for clipping and truncation too, not just contrast on the main view",
+   "type": "lesson"
+  },
+  "lesson:auto-refresh-of-an-open-page-after-background-wo": {
+   "text": "Auto-refresh of an open page after background work is a product choice, not a defect, unless the spec or UI copy promises live updates; record it as an observation and ask",
+   "type": "lesson"
+  },
+  "lesson:before-calling-something-unreachable-scroll-ever": {
+   "text": "Before calling something unreachable, scroll every scrollable ancestor (not just the window) and try to reach it with a real action",
+   "type": "lesson"
+  },
+  "lesson:before-filing-a-claim-gap-plan-gap-or-raw-value-": {
+   "text": "Before filing a claim-gap, plan-gap or raw-value bug, confirm the surface is in the feature's scope and the value isn't intended; a plan line or a pre-existing surface alone is not enough evidence",
+   "type": "lesson"
+  },
+  "lesson:build-a-role-top-down-from-its-full-competency-m": {
+   "text": "Build a role top-down from its full competency model (ISTQB-level), then layer project lessons; audit against the standard before calling it complete",
+   "type": "lesson"
+  },
+  "lesson:dom-sampling-can-t-see-repaints-use-pixel-frame-": {
+   "text": "DOM sampling can't see repaints; use pixel frame-diff for visual stability, and get exact steps from recordings",
+   "type": "lesson"
+  },
+  "lesson:environment-selection-in-internal-stage-tooling-": {
+   "text": "Environment selection in internal/stage tooling (env vars, profiles) is a deliberate design choice; an internal-only setup step is a note for the testers, not a product bug, unless docs or the owner say the profile should drive it",
+   "type": "lesson"
+  },
+  "lesson:every-container-type-top-level-if-branch-else-el": {
+   "text": "Every container type (top level, If branch, Else, Else-If, While body, nested block) has its OWN slash/action menu; inventory each one separately and compare it with the design, never infer one from another",
+   "type": "lesson"
+  },
+  "lesson:expectations-arrive-mid-test-the-baseline-must-b": {
+   "text": "Expectations arrive mid-test; the baseline must be refreshed from the thread every session; selection in one view must reflect in linked views",
+   "type": "lesson"
+  },
+  "lesson:measure-what-the-screen-shows-while-waiting-not-": {
+   "text": "Measure what the screen shows while waiting, not only how long it takes; include first open after idle",
+   "type": "lesson"
+  },
+  "lesson:most-false-alarms-come-from-the-probe-confirm-wi": {
+   "text": "Most false alarms come from the probe; confirm with a screenshot and a real user action before filing",
+   "type": "lesson"
+  },
+  "lesson:on-shared-accounts-or-single-device-envs-content": {
+   "text": "On shared accounts or single-device envs, contention and slow resource release look like product bugs; check for other users' activity and wait out the release before attributing them to the product",
+   "type": "lesson"
+  },
+  "lesson:re-running-a-child-of-a-container-loop-branch-mo": {
+   "text": "Re-running a child of a container (loop, branch, module) re-runs the container; derive the expected result from the container's semantics at the moment of re-run (is the condition still true?), read the request payload, and ask the dev before filing",
+   "type": "lesson"
+  },
+  "lesson:retest-with-the-original-steps-first-artificial-": {
+   "text": "Retest with the original steps first; artificial triggers need the user's go-ahead; not reproduced is not fixed",
+   "type": "lesson"
+  },
+  "lesson:severity-follows-how-a-real-user-reaches-the-bug": {
+   "text": "Severity follows how a real user reaches the bug; a UI that blocks the action means the UI bug is fixed",
+   "type": "lesson"
+  },
+  "lesson:synthetic-input-and-coordinate-clicks-misreprese": {
+   "text": "Synthetic input and coordinate clicks misrepresent rich inputs; confirm any odd input result with real keystrokes and target by role/label, never by screen coordinates",
+   "type": "lesson"
+  },
+  "lesson:the-screenshot-must-show-the-exact-state-the-bug": {
+   "text": "The screenshot must show the exact state the bug describes; quote only what is visible in it",
+   "type": "lesson"
+  },
+  "lesson:what-is-hidden-by-default-is-still-product-inspe": {
+   "text": "What is hidden by default is still product; inspect it",
+   "type": "lesson"
+  },
+  "lesson:when-a-feature-ships-with-prs-read-the-diff-for-": {
+   "text": "When a feature ships with PRs, read the diff for the gates on what you test (menus, flags, mode checks); a deliberate gate in code makes the gap a requirements question, not a regression",
+   "type": "lesson"
+  },
+  "lesson:when-a-layout-defect-clipping-truncation-overlap": {
+   "text": "When a layout defect (clipping, truncation, overlap) is found in one container, sweep every container of the same kind before filing, and list every place in the one bug",
+   "type": "lesson"
+  },
+  "oracle:O1": {
+   "type": "oracle"
+  },
+  "oracle:O10": {
+   "type": "oracle"
+  },
+  "oracle:O13": {
+   "type": "oracle"
+  },
+  "oracle:O14": {
+   "type": "oracle"
+  },
+  "oracle:O15": {
+   "type": "oracle"
+  },
+  "oracle:O17": {
+   "type": "oracle"
+  },
+  "oracle:O18": {
+   "type": "oracle"
+  },
+  "oracle:O19": {
+   "type": "oracle"
+  },
+  "oracle:O2": {
+   "type": "oracle"
+  },
+  "oracle:O20": {
+   "type": "oracle"
+  },
+  "oracle:O21": {
+   "type": "oracle"
+  },
+  "oracle:O3": {
+   "type": "oracle"
+  },
+  "oracle:O4": {
+   "type": "oracle"
+  },
+  "oracle:O5": {
+   "type": "oracle"
+  },
+  "oracle:O6": {
+   "type": "oracle"
+  },
+  "oracle:O7": {
+   "type": "oracle"
+  },
+  "oracle:O8": {
+   "type": "oracle"
+  },
+  "oracle:O9": {
+   "type": "oracle"
+  },
+  "surface:accessibility": {
+   "type": "surface"
+  },
+  "surface:actor": {
+   "type": "surface"
+  },
+  "surface:api": {
+   "type": "surface"
+  },
+  "surface:compatibility": {
+   "type": "surface"
+  },
+  "surface:copy": {
+   "type": "surface"
+  },
+  "surface:cta": {
+   "type": "surface"
+  },
+  "surface:data": {
+   "type": "surface"
+  },
+  "surface:error-state": {
+   "type": "surface"
+  },
+  "surface:form-field": {
+   "type": "surface"
+  },
+  "surface:hidden-option": {
+   "type": "surface"
+  },
+  "surface:i18n": {
+   "type": "surface"
+  },
+  "surface:integration": {
+   "type": "surface"
+  },
+  "surface:list": {
+   "type": "surface"
+  },
+  "surface:live-view": {
+   "type": "surface"
+  },
+  "surface:loading": {
+   "type": "surface"
+  },
+  "surface:navigation": {
+   "type": "surface"
+  },
+  "surface:overview": {
+   "type": "surface"
+  },
+  "surface:performance": {
+   "type": "surface"
+  },
+  "surface:planning": {
+   "type": "surface"
+  },
+  "surface:reliability": {
+   "type": "surface"
+  },
+  "surface:retest": {
+   "type": "surface"
+  },
+  "surface:run-state": {
+   "type": "surface"
+  },
+  "surface:security": {
+   "type": "surface"
+  },
+  "surface:settings": {
+   "type": "surface"
+  },
+  "surface:signals": {
+   "type": "surface"
+  },
+  "surface:theme": {
+   "type": "surface"
+  }
+ }
+}

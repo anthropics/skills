@@ -1,0 +1,2 @@
+<!doctype html><title>Signals fixture</title><main><h1>Orders</h1></main>
+<script>fetch('/api/orders-missing').then(r=>{if(!r.ok)console.error('orders API failed '+r.status)});setTimeout(()=>{throw new Error('Save handler crashed')},200)</script>

@@ -68,6 +68,15 @@
       "skills": [
         "./skills/discernment-nudge"
       ]
+    },
+    {
+      "name": "functional-qa-engineer",
+      "description": "Functional QA engineer: tests features end to end, enforces a 100% coverage gate, blocks weak bug reports, and learns from every bug it misses",
+      "source": "./",
+      "strict": false,
+      "skills": [
+        "./skills/functional-qa-engineer"
+      ]
     }
   ]
 }
