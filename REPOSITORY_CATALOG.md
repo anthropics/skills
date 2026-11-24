@@ -69,6 +69,10 @@ Generated from the 54 repositories visible to the connected GitHub account on 20
 6. Before executing third-party code, assess licenses, dependencies, supply-chain and permissions risks. Require approval for dangerous actions or live transactions.
 7. Record verified findings and test results, with repository revision and date, in a future audited catalog update.
 
+## Optional discovery source
+
+[Claude Skills Hub](https://claudeskills.info/) provides public, read-only skill search when the user requests an external lookup or the catalog and installed skills leave a gap. Follow the [router's on-demand search procedure](AGENTS.md#on-demand-discovery-with-claude-skills-hub) for query privacy, upstream verification, and local fallback. The Hub returns one representative skill per repository and has no published numeric request quota. [API documentation](https://claudeskills.info/llms.txt) · [Terms](https://claudeskills.info/terms/) · [Crawler policy](https://claudeskills.info/robots.txt)
+
 ## Codex onboarding
 
 Open or clone `yogesh-jpg/my-ai-skills` in Codex as a workspace, then refer to its root `AGENTS.md`. Ensure GitHub access is configured in that Codex environment. This repository serves as the discovery index; selected tools still need their own installation, adapters, and permission checks.
