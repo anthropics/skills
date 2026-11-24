@@ -75,6 +75,8 @@ with sync_playwright() as p:
 
 3. **Execute actions** using discovered selectors
 
+4. **Verify the result** when the task is to check functionality: state the expected outcome first (e.g. a success message becomes visible), compare it with what the page shows after the action, and report a mismatch as a failure. Screenshots and console logs are for debugging, not proof that the action worked. See `examples/static_html_automation.py`.
+
 ## Common Pitfall
 
 ❌ **Don't** inspect the DOM before waiting for `networkidle` on dynamic apps
