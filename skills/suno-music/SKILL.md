@@ -11,7 +11,7 @@ Use this skill to drive Suno music generation through AceDataCloud's external AP
 
 - This skill performs external network requests to `https://api.acedata.cloud`
 - It requires `ACEDATACLOUD_API_TOKEN`
-- If the user has not provided a token or does not want to use a third-party API, stop and ask before continuing
+- Use the token from the local environment. If it is missing, direct the user to application-key setup.
 - Prefer the smallest workflow that satisfies the user's request
 
 ## Authentication
@@ -29,12 +29,12 @@ All requests go to `https://api.acedata.cloud` with `Authorization: Bearer $ACED
 | User goal | Endpoint | Notes |
 |-----------|----------|-------|
 | Generate a song from a prompt | `POST /suno/audios` | Use default generation |
-| Generate a song from explicit lyrics/style | `POST /suno/audios` with `action: "custom"` | Best when user provides lyrics |
+| Generate a song from explicit lyrics/style | `POST /suno/audios` with `action: "generate"` and `custom: true` | Best when user provides lyrics |
 | Continue an existing track | `POST /suno/audios` with `action: "extend"` | Requires `audio_id` |
 | Make a cover or remix | `POST /suno/audios` with `action: "cover"` | Requires `audio_id` |
 | Generate lyrics first | `POST /suno/lyrics` | Good for vague music requests |
 | Refine style text | `POST /suno/style` | Helps produce better prompts |
-| Poll long-running tasks | `POST /suno/tasks` | Use when `wait` is false or omitted |
+| Poll long-running tasks | `POST /suno/tasks` | Query the `task_id` returned by an asynchronous request |
 | Extract stems or convert output | `/suno/vox`, `/suno/wav`, `/suno/midi`, `/suno/mp4` | Post-processing |
 
 ## Recommended Workflow
@@ -56,18 +56,12 @@ All requests go to `https://api.acedata.cloud` with `Authorization: Bearer $ACED
 curl -X POST https://api.acedata.cloud/suno/audios \
   -H "Authorization: Bearer $ACEDATACLOUD_API_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"prompt": "a happy pop song about coding", "model": "chirp-v4-5", "wait": true}'
+  -d '{"prompt": "a happy pop song about coding", "model": "chirp-v6", "async": true}'
 ```
 
 ## Models
 
-| Model | Best For |
-|-------|---------|
-| `chirp-v5` | Latest, highest quality |
-| `chirp-v4-5-plus` | Enhanced v4.5 |
-| `chirp-v4-5` | Good balance of quality and speed |
-| `chirp-v4` | Fast, reliable |
-| `chirp-v3-5` | Legacy, stable |
+Choose the model requested by the user. Examples include `chirp-v6`, `chirp-v6-wild`, and `chirp-v6-mini`. The current list is the `model` enum in the [Suno Audios API definition](https://platform.acedata.cloud/api/v1/apis/09a26295-5972-4392-9318-dcd9b218f90d).
 
 ## Core Workflows
 
@@ -75,8 +69,9 @@ curl -X POST https://api.acedata.cloud/suno/audios \
 
 Use this when the user gives a concept and wants the system to invent lyrics and style.
 
+Send `POST /suno/audios` with this body.
+
 ```json
-POST /suno/audios
 {
   "prompt": "an upbeat electronic track about the future of AI",
   "model": "chirp-v4-5",
@@ -88,10 +83,12 @@ POST /suno/audios
 
 Use this when the user already knows the lyrics, title, or style.
 
+Send `POST /suno/audios` with this body.
+
 ```json
-POST /suno/audios
 {
-  "action": "custom",
+  "action": "generate",
+  "custom": true,
   "lyric": "[Verse]\nCode is poetry in motion\n[Chorus]\nWe build the future tonight",
   "title": "Digital Dreams",
   "style": "Synthwave, Electronic, Dreamy",
@@ -103,10 +100,12 @@ POST /suno/audios
 
 Use this when the user wants to continue an existing track from a specific time offset.
 
+Send `POST /suno/audios` with this body.
+
 ```json
-POST /suno/audios
 {
   "action": "extend",
+  "custom": true,
   "audio_id": "existing-audio-id",
   "lyric": "[Bridge]\nNew section lyrics here",
   "continue_at": 120.0,
@@ -118,8 +117,9 @@ POST /suno/audios
 
 Use this when the user wants the same song idea reinterpreted in another style.
 
+Send `POST /suno/audios` with this body.
+
 ```json
-POST /suno/audios
 {
   "action": "cover",
   "audio_id": "existing-audio-id",
@@ -133,8 +133,8 @@ Use this when the original prompt is too vague to produce a good song directly.
 
 1. **Generate lyrics** — `POST /suno/lyrics` with a topic/prompt
 2. **Optimize style** — `POST /suno/style` to refine style description
-3. **Generate music** — `POST /suno/audios` with custom action, lyrics + style
-4. **Poll task** — `POST /suno/tasks` with task_id until status is complete
+3. **Generate music** — `POST /suno/audios` with `custom: true`, lyrics and style
+4. **Poll task** — `POST /suno/tasks` with `{"id": "<original task_id>"}` until the task finishes
 5. **Extend** — Use extend action to add more sections (optional)
 6. **Convert** — Get WAV (`/suno/wav`), MIDI (`/suno/midi`), or MP4 (`/suno/mp4`) (optional)
 
@@ -155,16 +155,15 @@ Use this when the original prompt is too vague to produce a good song directly.
 
 ## Task Polling
 
-Generation is usually asynchronous. Either use `"wait": true` for synchronous mode, or poll:
+Set `"async": true` on the generation request to receive a task ID immediately. Save that value and send it as `id` to the [task lookup API](https://platform.acedata.cloud/api/v1/apis/f1143f0b-8146-4fc0-b02c-ac8db969392d).
+
+Send `POST /suno/tasks` with this body.
 
 ```json
-POST /suno/tasks
-{"task_id": "your-task-id"}
+{"id": "your-task-id"}
 ```
 
-Poll every 3–5 seconds until `status` is `"complete"`.
-
-If polling fails repeatedly, report the last known task state instead of pretending the generation succeeded.
+Check the same task while it is pending. When `finished_at` is populated, inspect the stored `response` for success or failure before returning the audio URLs. If a lookup fails, keep the original ID for the next lookup. Submitting another generation may incur another charge.
 
 ## Lyrics Format
 
@@ -215,8 +214,7 @@ Typical tools include:
 
 ## Gotchas
 
-- All generation is async unless `wait` is enabled
-- Lyrics over roughly 3000 characters should usually be split into an extend workflow
+- Check the lyric length for the selected model. The Audios API documents separate limits for older and newer models.
 - Style tags are descriptive phrases, not enum values
 - `cover`, `extend`, and some post-processing flows require an existing `audio_id`
 - Upload external audio via `/suno/upload` before using it with extend/cover
