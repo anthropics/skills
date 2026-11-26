@@ -1,10 +1,10 @@
-# Streaming — Go
+# Streaming - Go
 
 ## Streaming
 
 ```go
 stream := client.Messages.NewStreaming(context.Background(), anthropic.MessageNewParams{
-    Model:     anthropic.ModelClaudeOpus4_8,
+    Model:     "claude-opus-5-5",
     MaxTokens: 64000,
     Messages: []anthropic.MessageParam{
         anthropic.NewUserMessage(anthropic.NewTextBlock("Write a haiku")),

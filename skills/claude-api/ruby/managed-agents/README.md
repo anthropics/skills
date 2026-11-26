@@ -1,8 +1,8 @@
-# Managed Agents — Ruby
+# Managed Agents - Ruby
 
 > **Bindings not shown here:** This README covers the most common managed-agents flows for Ruby. If you need a class, method, namespace, field, or behavior that isn't shown, WebFetch the Ruby SDK repo **or the relevant docs page** from `shared/live-sources.md` rather than guess. Do not extrapolate from cURL shapes or another language's SDK.
 
-> **Agents are persistent — create once, reference by ID.** Store the agent ID returned by `client.beta.agents.create` and pass it to every subsequent `client.beta.sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled YAML applied with the `ant` CLI — see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
+> **Agents are persistent - create once, reference by ID.** Store the agent ID returned by `client.beta.agents.create` and pass it to every subsequent `client.beta.sessions.create`; do not call `agents.create` in the request path. **Recommended:** define agents and environments as version-controlled files synced with `ant apply` - see `shared/anthropic-cli.md` (its live-docs URL is in `shared/live-sources.md`). The CLI owns the control plane (create/update); your code owns the data plane (sessions with the stored ID). The examples below show in-code creation for when you must provision programmatically; in production the create call belongs in setup, not in the request path.
 
 ## Installation
 
@@ -22,7 +22,7 @@ client = Anthropic::Client.new
 client = Anthropic::Client.new(api_key: "your-api-key")
 ```
 
-> ⚠️ **Trailing underscores:** The Ruby SDK uses `system_:` and `send_(` (trailing underscore) to avoid shadowing `Kernel#system` and `Kernel#send`. Use these forms throughout managed-agents code.
+> Warning: **Trailing underscores:** The Ruby SDK uses `system_:` and `send_(` (trailing underscore) to avoid shadowing `Kernel#system` and `Kernel#send`. Use these forms throughout managed-agents code.
 
 ---
 
@@ -33,7 +33,7 @@ environment = client.beta.environments.create(
   name: "my-dev-env",
   config: {
     type: "cloud",
-    networking: {type: "unrestricted"}
+    networking: {type: "limited", allow_package_managers: true, allow_mcp_servers: true}
   }
 )
 puts "Environment ID: #{environment.id}" # env_...
@@ -43,17 +43,28 @@ puts "Environment ID: #{environment.id}" # env_...
 
 ## Create an Agent (required first step)
 
-> ⚠️ **There is no inline agent config.** `model`/`system_`/`tools` live on the agent object, not the session. Always start with `client.beta.agents.create()` — the session takes either `agent: agent.id` or the typed hash form `agent: {type: "agent", id: agent.id, version: agent.version}`.
+> Warning: **There is no inline agent config.** `model`/`system_`/`tools` live on the agent object, not the session. Always start with `client.beta.agents.create()` - the session takes either `agent: agent.id` or the typed hash form `agent: {type: "agent", id: agent.id, version: agent.version}`.
 
 ### Minimal
+
+The examples on this page turn both web tools off. Set `enabled` to true on `web_fetch` / `web_search` only when the job as described needs the web (a general-purpose or open-ended job stays off; tell the user how to switch it on) - see `shared/managed-agents-tools.md` § Agent Toolset. They also set the `auto` permission policy, under which a call can pause for your approval - the event loop under Stream Events answers it. When nobody is watching the run, answer `deny`; never answer `allow` to every paused call.
 
 ```ruby
 # 1. Create the agent (reusable, versioned)
 agent = client.beta.agents.create(
   name: "Coding Assistant",
-  model: :"claude-opus-5",
+  model: :"claude-opus-5-5",
   system_: "You are a helpful coding assistant.",
-  tools: [{type: "agent_toolset_20260401"}]
+  tools: [
+    {
+      type: "agent_toolset_20260401",
+      default_config: {permission_policy: {type: "auto"}},
+      configs: [
+        {name: "web_fetch", enabled: false},
+        {name: "web_search", enabled: false}
+      ]
+    }
+  ]
 )
 
 # 2. Start a session
@@ -102,7 +113,7 @@ client.beta.sessions.events.send_(
 )
 ```
 
-> 💡 **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens — stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
+> Tip: **Stream-first:** Open the stream *before* (or concurrently with) sending the message. The stream only delivers events that occur after it opens - stream-after-send means early events arrive buffered in one batch. See [Steering Patterns](../../shared/managed-agents-events.md#steering-patterns).
 
 ---
 
@@ -124,10 +135,22 @@ stream.each do |event|
   case event.type
   in :"agent.message"
     event.content.each { |block| print block.text }
-  in :"agent.tool_use"
+  in :"agent.tool_use" | :"agent.mcp_tool_use"
     puts "\n[Using tool: #{event.name}]"
+    if event.evaluated_permission == :ask
+      # Paused for your decision (always_ask, or auto with no determination)
+      client.beta.sessions.events.send_(
+        session.id,
+        events: [{
+          type: "user.tool_confirmation",
+          tool_use_id: event.id,
+          # you write approve: ask a person or apply your own rule; deny when unattended
+          result: approve(event) ? "allow" : "deny"
+        }]
+      )
+    end
   in :"session.status_idle"
-    break
+    break unless event.stop_reason.type == :requires_action # waiting on you, keep streaming
   in :"session.error"
     puts "\n[Error: #{event.error&.message || "unknown"}]"
     break
@@ -137,11 +160,11 @@ stream.each do |event|
 end
 ```
 
-> ℹ️ Event `.type` is a Symbol (compare with `:"agent.message"`, not `"agent.message"`).
+> Note: Event `.type` is a Symbol (compare with `:"agent.message"`, not `"agent.message"`).
 
 ### Reconnecting and Tailing
 
-When reconnecting mid-session, list past events first to dedupe, then tail live events:
+When reconnecting mid-session, list past events first to dedupe, then tail live events. Answer paused calls as in the loop above, including an `ask` in the history that no `user.tool_confirmation` follows.
 
 ```ruby
 require "set"
@@ -160,7 +183,8 @@ stream.each do |event|
   in :"agent.message"
     event.content.each { |block| print block.text }
   in :"session.status_idle"
-    break
+    # requires_action: answer the paused call as under Stream Events, then keep streaming
+    break unless event.stop_reason.type == :requires_action
   else
     # ignore other event types
   end
@@ -171,7 +195,7 @@ end
 
 ## Provide Custom Tool Result
 
-> ℹ️ The Ruby managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic` Ruby gem repository for the corresponding params.
+> Note: The Ruby managed-agents bindings for `user.custom_tool_result` are not yet documented in this skill or in the apps source examples. Refer to `shared/managed-agents-events.md` for the wire format and the `anthropic` Ruby gem repository for the corresponding params.
 
 ---
 
@@ -201,7 +225,7 @@ session = client.beta.sessions.create(
     {
       type: "file",
       file_id: file.id,
-      mount_path: "/workspace/data.csv"
+      mount_path: "/data.csv"
     }
   ]
 )
@@ -262,10 +286,10 @@ client.beta.sessions.delete(session.id)
 ## MCP Server Integration
 
 ```ruby
-# Agent declares MCP server (no auth here — auth goes in a vault)
+# Agent declares MCP server (no auth here - auth goes in a vault)
 agent = client.beta.agents.create(
   name: "GitHub Assistant",
-  model: :"claude-opus-5",
+  model: :"claude-opus-5-5",
   mcp_servers: [
     {
       type: "url",
@@ -274,7 +298,14 @@ agent = client.beta.agents.create(
     }
   ],
   tools: [
-    {type: "agent_toolset_20260401"},
+    {
+      type: "agent_toolset_20260401",
+      default_config: {permission_policy: {type: "auto"}},
+      configs: [
+        {name: "web_fetch", enabled: false},
+        {name: "web_search", enabled: false}
+      ]
+    },
     {type: "mcp_toolset", mcp_server_name: "github"}
   ]
 )

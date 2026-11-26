@@ -6,12 +6,13 @@ import random
 import re
 import tempfile
 import zipfile
+from collections import Counter
 from pathlib import Path
 
 import defusedxml.minidom
 import lxml.etree
 
-from helpers import safe_extract
+from helpers import one_line, safe_extract
 
 from .base import BaseSchemaValidator
 
@@ -60,6 +61,9 @@ class DOCXSchemaValidator(BaseSchemaValidator):
             all_valid = False
 
         if not self.validate_comment_markers():
+            all_valid = False
+
+        if not self.validate_style_ids():
             all_valid = False
 
         self.compare_paragraph_counts()
@@ -264,7 +268,9 @@ class DOCXSchemaValidator(BaseSchemaValidator):
 
         for xml_file in self.xml_files:
             try:
-                for elem in lxml.etree.parse(str(xml_file)).iter():
+                tree = lxml.etree.parse(str(xml_file))
+                is_numbering = lxml.etree.QName(tree.getroot()).localname == "numbering"
+                for elem in tree.iter():
                     if val := elem.get(para_id_attr):
                         try:
                             if self._parse_id_value(val, base=16) >= 0x80000000:
@@ -278,7 +284,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                             )
 
                     if val := elem.get(durable_id_attr):
-                        if xml_file.name == "numbering.xml":
+                        if is_numbering:
                             try:
                                 if self._parse_id_value(val, base=10) >= 0x7FFFFFFF:
                                     errors.append(
@@ -288,7 +294,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
                             except ValueError:
                                 errors.append(
                                     f"  {xml_file.name}:{elem.sourceline}: "
-                                    f"durableId={val} must be decimal in numbering.xml"
+                                    f"durableId={val} must be decimal in a numbering part"
                                 )
                         else:
                             try:
@@ -308,9 +314,56 @@ class DOCXSchemaValidator(BaseSchemaValidator):
         if errors:
             print(f"FAILED - {len(errors)} ID constraint violations:")
             for e in errors:
-                print(e)
+                print(one_line(e, 300))
         elif self.verbose:
             print("PASSED - All paraId/durableId values within constraints")
+        return not errors
+
+    def _repeated_style_ids(self, styles_root) -> set[str]:
+        attr = f"{{{self.WORD_2006_NAMESPACE}}}styleId"
+        ids = Counter(s.get(attr) for s in styles_root.iter(f"{{{self.WORD_2006_NAMESPACE}}}style"))
+        return {i for i, n in ids.items() if i is not None and n > 1}
+
+    def _original_part(self, xml_file) -> bytes | None:
+        if self.original_file is None:
+            return None
+        name = xml_file.relative_to(self.unpacked_dir).as_posix()
+        try:
+            with zipfile.ZipFile(self.original_file) as zf:
+                return zf.read(name)
+        except (KeyError, OSError, zipfile.BadZipFile):
+            return None
+
+    def validate_style_ids(self):
+        errors = []
+        styles_tag = f"{{{self.WORD_2006_NAMESPACE}}}styles"
+        if self.original_file is None:
+            return True
+
+        for xml_file in self.xml_files:
+            try:
+                root = lxml.etree.parse(str(xml_file)).getroot()
+                if root.tag != styles_tag:
+                    continue
+                repeated = self._repeated_style_ids(root)
+                original = self._original_part(xml_file) if repeated else None
+                if original is not None:
+                    repeated -= self._repeated_style_ids(lxml.etree.fromstring(original))
+            except lxml.etree.XMLSyntaxError:
+                continue  
+            errors.extend(
+                f"  {xml_file.relative_to(self.unpacked_dir)}: style id {style_id!r:.40} is now "
+                f"defined more than once, and Word uses only the last definition, without "
+                f"warning. Delete the earlier ones"
+                for style_id in sorted(repeated)
+            )
+
+        if errors:
+            print(f"FAILED - Found {len(errors)} style id(s) defined more than once:")
+            for error in errors:
+                print(one_line(error, 300))
+        elif self.verbose:
+            print("PASSED - The edit defined no style id a second time")
         return not errors
 
     def validate_comment_markers(self):
@@ -415,7 +468,7 @@ class DOCXSchemaValidator(BaseSchemaValidator):
             try:
                 content = xml_file.read_text(encoding="utf-8")
                 dom = defusedxml.minidom.parseString(content)
-                is_numbering = xml_file.name == "numbering.xml"
+                is_numbering = dom.documentElement.localName == "numbering"
                 base = 10 if is_numbering else 16
                 pending = []  
                 seen_in_file = set()

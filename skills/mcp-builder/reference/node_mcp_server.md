@@ -1,5 +1,7 @@
 # Node/TypeScript MCP Server Implementation Guide
 
+> **This guide covers v1 of the TypeScript SDK (`@modelcontextprotocol/sdk`).** Use it only for projects that already depend on v1. For new servers, use the [v2 guide](./node_mcp_server_v2.md).
+
 ## Overview
 
 This document provides Node/TypeScript-specific best practices and examples for implementing MCP servers using the MCP TypeScript SDK. It covers project structure, server setup, tool registration patterns, input validation with Zod, error handling, and complete working examples.
