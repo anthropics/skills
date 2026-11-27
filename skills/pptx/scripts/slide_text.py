@@ -10,6 +10,7 @@ import re
 import sys
 import zipfile
 
+from pptx.enum.shapes import PP_PLACEHOLDER
 from pptx.package import Package
 
 
@@ -62,7 +63,10 @@ def _shape(shape) -> list[str]:
         return ["", *_chart(shape.chart), ""]
     if shape.has_text_frame and shape.text_frame.text.strip():
         text = shape.text_frame.text.replace("\v", "\n")
-        is_title = shape.is_placeholder and shape.placeholder_format.idx == 0
+        is_title = shape.is_placeholder and shape.placeholder_format.type in (
+            PP_PLACEHOLDER.TITLE,
+            PP_PLACEHOLDER.CENTER_TITLE,
+        )
         return ["# " + text.lstrip() if is_title else text]
     return []
 
